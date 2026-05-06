@@ -1,4 +1,5 @@
 import axios from "axios";
+import authStore from "../store/authStore";
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
@@ -11,6 +12,7 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
+            const { clearUser } = authStore.getState();
             window.location.href = "/login";
         }
         return Promise.reject(error);

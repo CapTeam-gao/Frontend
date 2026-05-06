@@ -1,25 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getMe } from "../api/authApi";
+import authStore from "../store/authStore";
 
 const useAuth = () => {
-    const [isLogin, setIsLogin] = useState(null);
-    const [user, setUser] = useState(null);
+    const { setUser, clearUser, isLogin } = authStore();
 
     useEffect(() => {
         const checkLogin = async () => {
             try {
                 const res = await getMe();
-                setIsLogin(true);
                 setUser(res.data);
             } catch (e) {
-                setIsLogin(false);
-                setUser(null);
+                clearUser();
             }
         };
         checkLogin();
     }, []);
 
-    return { isLogin, user };
+    return { isLogin };
 };
 
 export default useAuth;

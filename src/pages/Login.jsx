@@ -4,9 +4,7 @@ import "./Login.css";
 import Button from "../components/common/Button";
 import Logo from "../assets/images/logo.png";
 import { login } from "../api/authApi";
-// import authStore from "../store/authStore";
-
-// const { setToken } = authStore();
+import { getMe } from "../api/authApi";
 
 const Login = () => {
     const [studentId, setStudentId] = useState("");
@@ -25,7 +23,14 @@ const Login = () => {
         try {
             await login(studentId, password);
 
-            nav("/main");
+            const res = await getMe();
+            const user = res.data;
+
+            if (user.roll === "admin") {
+                nav("/admin/main");
+            } else {
+                nav("/main");
+            }
         } catch (e) {
             if (e.response?.status === 401) {
                 setError("아이디 또는 비밀번호가 올바르지 않습니다.");
