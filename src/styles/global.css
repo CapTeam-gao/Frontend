@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+    --color-primary: #60c49b;
+    --color-primary-dark: #5aa889;
+    --color-primary-bg: #e8f5ee;
+
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f9fafb;
+
+    --color-border: #dcdfe3;
+    --color-border-active: #4caf8a;
+
+    --color-success: #4caf8a;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+
+    --font-family: "Inter", -apple-system, sans-serif;
+
+    --font-size-xs: 12px;
+    --font-size-sm: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-2xl: 24px;
+    --font-size-3xl: 32px;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --header-height: 70px;
+    --page-padding: 40px;
+    --max-width: 1280px;
+
+    --border-radius-xs: 2px;
+    --border-radius-sm: 6px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 16px;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    --transition: 0.2s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+input,
+textarea {
+    font-family: var(--font-family);
+    outline: none;
+}
