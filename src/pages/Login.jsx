@@ -27,7 +27,11 @@ const Login = () => {
 
             nav("/main");
         } catch (e) {
-            setError("아이디 또는 비밀번호가 올바르지 않습니다.");
+            if (e.response?.status === 401) {
+                setError("아이디 또는 비밀번호가 올바르지 않습니다.");
+            } else {
+                setError("서버 오류입니다.");
+            }
         }
     };
     return (
