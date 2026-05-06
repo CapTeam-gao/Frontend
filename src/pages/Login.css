@@ -1,0 +1,81 @@
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px 0 60px 0px;
+}
+
+.logo {
+    height: 150px;
+    width: 150px;
+}
+
+.login-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 10px;
+    color: var(--color-text-secondary);
+    text-align: center;
+}
+
+.login-subtitle {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 50px 60px;
+    border-radius: var(--border-radius-sm);
+    width: 100%;
+    max-width: 500px;
+}
+
+.login-form input::placeholder {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-md);
+}
+
+.studentId,
+.password {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-form label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.login-form input {
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-xs);
+    font-size: var(--font-size-md);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg);
+}
+
+.login-form input:focus {
+    border: 1px solid var(--color-primary);
+}

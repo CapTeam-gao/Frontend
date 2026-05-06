@@ -1,7 +1,11 @@
-import "./App.css";
-
+import Login from "./pages/Login";
+import "./styles/global.css";
 function App() {
-    return <></>;
+    return (
+        <>
+            <Login />
+        </>
+    );
 }
 
 export default App;
