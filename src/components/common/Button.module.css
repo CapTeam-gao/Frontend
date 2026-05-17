@@ -1,11 +1,14 @@
-.Button {
+.button {
     cursor: pointer;
     border: none;
-    border-radius: var(--border-radius-sm);
     white-space: nowrap;
     font-family: var(--font-family);
     font-weight: var(--font-weight-medium);
     transition: var(--transition);
+}
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .primary {
@@ -13,7 +16,7 @@
     color: #ffffff;
 }
 
-.primary:hover {
+.primary:hover:not(:disabled) {
     background-color: var(--color-primary-dark);
 }
 

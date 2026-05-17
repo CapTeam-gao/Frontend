@@ -1,4 +1,4 @@
-.login-container {
+.container {
     display: flex;
     min-height: 100vh;
     background-color: var(--color-bg);
@@ -6,7 +6,7 @@
     align-items: center;
 }
 
-.login-header {
+.header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,7 +18,7 @@
     width: 150px;
 }
 
-.login-title {
+.title {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     margin-bottom: 10px;
@@ -26,14 +26,14 @@
     text-align: center;
 }
 
-.login-subtitle {
+.subtitle {
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     text-align: center;
 }
 
-.login-form {
+.form {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -46,13 +46,12 @@
     max-width: 500px;
 }
 
-.login-form input::placeholder {
+.form input::placeholder {
     color: var(--color-text-muted);
     font-size: var(--font-size-md);
 }
 
-.studentId,
-.password {
+.field {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -60,13 +59,13 @@
     max-width: 450px;
 }
 
-.login-form label {
+.form label {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-primary);
 }
 
-.login-form input {
+.form input {
     width: 100%;
     padding: 16px 18px;
     border: 1px solid var(--color-border);
@@ -76,6 +75,11 @@
     background-color: var(--color-bg);
 }
 
-.login-form input:focus {
+.form input:focus {
     border: 1px solid var(--color-primary);
+}
+
+.error {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
 }

@@ -1,0 +1,28 @@
+.header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    height: var(--header-height);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+}
+
+.nav {
+    display: flex;
+    gap: 100px;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.user {
+    color: var(--color-primary);
+    margin-right: 20px;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}

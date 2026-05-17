@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import styles from "./Login.module.css";
 import Button from "../components/common/Button";
 import Logo from "../assets/images/logo.png";
-import { login } from "../api/authApi";
-import { getMe } from "../api/authApi";
+import { login, getMe } from "../api/authApi";
+import authStore from "../store/authStore";
+import Header from "../components/common/Header";
+import SearchBar from "../components/common/SearchBar";
 
 const Login = () => {
     const [studentId, setStudentId] = useState("");
@@ -12,6 +14,7 @@ const Login = () => {
     const [error, setError] = useState("");
     const isDisabled = !studentId || !password;
     const nav = useNavigate();
+    const setUser = authStore((state) => state.setUser);
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
@@ -22,14 +25,13 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             await login(studentId, password);
-
             const res = await getMe();
             const user = res.data;
-
-            if (user.roll === "admin") {
-                nav("/admin/main");
+            await setUser(user);
+            if (user.role === "admin") {
+                nav("/admin/dashboard");
             } else {
-                nav("/main");
+                nav("/user/dashboard");
             }
         } catch (e) {
             if (e.response?.status === 401) {
@@ -39,17 +41,20 @@ const Login = () => {
             }
         }
     };
+
     return (
-        <div className="login-container">
-            <div className="login-header">
-                <img className="logo" src={Logo} alt="로고" />
-                <p className="login-title">로그인</p>
-                <p className="login-subtitle">
+        <div className={styles.container}>
+            <Header />
+            <SearchBar />
+            <div className={styles.header}>
+                <img className={styles.logo} src={Logo} alt="로고" />
+                <p className={styles.title}>로그인</p>
+                <p className={styles.subtitle}>
                     서비스를 이용하려면 로그인하세요
                 </p>
             </div>
-            <div className="login-form">
-                <div className="studentId">
+            <div className={styles.form}>
+                <div className={styles.field}>
                     <label htmlFor="studentId">학번</label>
                     <input
                         type="text"
@@ -59,7 +64,7 @@ const Login = () => {
                         onKeyDown={handleKeyDown}
                     />
                 </div>
-                <div className="password">
+                <div className={styles.field}>
                     <label htmlFor="password">비밀번호</label>
                     <input
                         type="password"
@@ -69,9 +74,7 @@ const Login = () => {
                         onKeyDown={handleKeyDown}
                     />
                 </div>
-                {error && (
-                    <p style={{ color: "red", fontSize: "15px" }}>{error}</p>
-                )}
+                {error && <p className={styles.error}>{error}</p>}
                 <Button
                     buttonSize="large"
                     buttonColor="primary"
