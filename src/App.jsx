@@ -1,9 +1,11 @@
-import Login from "./pages/Login";
+import Router from "./router/index";
 import "./styles/global.css";
+// import useAuth from "./hooks/useAuth";
 function App() {
+    // useAuth();
     return (
         <>
-            <Login />
+            <Router />
         </>
     );
 }

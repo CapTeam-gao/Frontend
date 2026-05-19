@@ -3,19 +3,36 @@
 
 import styles from "./SearchBar.module.css";
 
-const SearchBar = ({ placeholder, searchText, setSearchText }) => {
-    const onChange = (e) => {
-        setSearchText(e.target.value);
+const SearchBar = ({
+    placeholder = "이름 또는 팀을 입력하세요",
+    value,
+    onChange,
+    onSubmit,
+}) => {
+    const inputProps = value === undefined ? {} : { value };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit?.(e);
     };
+
     return (
-        <input
-            className={styles.input}
-            type="search"
-            value={searchText}
-            // placeholder={placeholder}
-            placeholder="이름 또는 팀을 입력하세요"
-            onChange={onChange}
-        />
+        <form className={styles.searchBar} onSubmit={handleSubmit}>
+            <input
+                className={styles.input}
+                type="search"
+                placeholder={placeholder}
+                onChange={onChange}
+                {...inputProps}
+            />
+            <button
+                className={styles.searchButton}
+                type="submit"
+                aria-label="검색"
+            >
+                <span className={styles.searchIcon} aria-hidden="true" />
+            </button>
+        </form>
     );
 };
 

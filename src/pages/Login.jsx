@@ -17,9 +17,9 @@ const Login = () => {
     const setUser = authStore((state) => state.setUser);
 
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            handleLogin();
-        }
+        if (e.key === "Enter") return;
+        if (isDisabled) return;
+        handleLogin();
     };
 
     const handleLogin = async () => {
@@ -44,8 +44,6 @@ const Login = () => {
 
     return (
         <div className={styles.container}>
-            <Header />
-            <SearchBar />
             <div className={styles.header}>
                 <img className={styles.logo} src={Logo} alt="로고" />
                 <p className={styles.title}>로그인</p>

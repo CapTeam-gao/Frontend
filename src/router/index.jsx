@@ -3,26 +3,28 @@ import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/Login";
 
-import AdminDashboard from "../pages/admin/Dashboard";
-import TeamCreate from "../pages/admin/TeamCreate";
-import TeamCreateLoading from "../pages/admin/TeamCreateLoading";
-import TeamEdit from "../pages/admin/TeamEdit";
-import TeamManage from "../pages/admin/TeamManage";
-import LogList from "../pages/admin/LogList";
-import LogDetail from "../pages/admin/LogDetail";
-import StudentManage from "../pages/admin/StudentManage";
-import NoticeList from "../pages/admin/NoticeList";
-import NoticeDetail from "../pages/admin/NoticeDetail";
-import NoticeCreate from "../pages/admin/NoticeCreate";
-import AdminProfile from "../pages/admin/Profile";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminTeamCreate from "../pages/admin/AdminTeamCreate";
+import AdminTeamCreateLoading from "../pages/admin/AdminTeamCreateLoading";
+import AdminTeamEdit from "../pages/admin/AdminTeamEdit";
+import AdminTeamManage from "../pages/admin/AdminTeamManage";
+import AdminLogList from "../pages/admin/AdminLogList";
+import AdminLogDetail from "../pages/admin/AdminLogDetail";
+import AdminStudentManage from "../pages/admin/AdminStudentManage";
+import AdminNoticeList from "../pages/admin/AdminNoticeList";
+import AdminNoticeDetail from "../pages/admin/AdminNoticeDetail";
+import AdminNoticeCreate from "../pages/admin/AdminNoticeCreate";
+import AdminProfile from "../pages/admin/AdminProfile";
+import AdminChatManage from "../pages/admin/AdminChatManage";
 
-import UserDashboard from "../pages/user/Dashboard";
-import LogWrite from "../pages/user/LogWrite";
-import LogResult from "../pages/user/LogResult";
-import Project from "../pages/user/Project";
-import UserNoticeList from "../pages/user/NoticeList";
-import UserNoticeDetail from "../pages/user/NoticeDetail";
-import UserProfile from "../pages/user/Profile";
+import UserDashboard from "../pages/user/UserDashboard";
+import UserLogWrite from "../pages/user/UserLogWrite";
+import UserLogResult from "../pages/user/UserLogResult";
+import UserProject from "../pages/user/UserProject";
+import UserNoticeList from "../pages/user/UserNoticeList";
+import UserNoticeDetail from "../pages/user/UserNoticeDetail";
+import UserProfile from "../pages/user/UserProfile";
+import UserTeamChat from "../pages/user/UserTeamChat";
 
 // router 설정하는 파일
 const Router = () => {
@@ -31,7 +33,7 @@ const Router = () => {
             <Route path="/login" element={<Login />} />
 
             {/* / 경로로 들어가면 로그인 페이지 반환 */}
-            <Route paht="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route
                 path="/admin/dashboard"
                 element={
@@ -44,7 +46,7 @@ const Router = () => {
                 path="/admin/team-create"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <TeamCreate />
+                        <AdminTeamCreate />
                     </ProtectedRoute>
                 }
             />
@@ -52,7 +54,7 @@ const Router = () => {
                 path="/admin/team-create/loading"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <TeamCreateLoading />
+                        <AdminTeamCreateLoading />
                     </ProtectedRoute>
                 }
             />
@@ -60,7 +62,7 @@ const Router = () => {
                 path="/admin/team-edit"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <TeamEdit />
+                        <AdminTeamEdit />
                     </ProtectedRoute>
                 }
             />
@@ -68,7 +70,7 @@ const Router = () => {
                 path="/admin/team-manage"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <TeamManage />
+                        <AdminTeamManage />
                     </ProtectedRoute>
                 }
             />
@@ -76,7 +78,7 @@ const Router = () => {
                 path="/admin/log"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <LogList />
+                        <AdminLogList />
                     </ProtectedRoute>
                 }
             />
@@ -84,7 +86,7 @@ const Router = () => {
                 path="/admin/log/:id"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <LogDetail />
+                        <AdminLogDetail />
                     </ProtectedRoute>
                 }
             />
@@ -92,7 +94,7 @@ const Router = () => {
                 path="/admin/student"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <StudentManage />
+                        <AdminStudentManage />
                     </ProtectedRoute>
                 }
             />
@@ -100,7 +102,7 @@ const Router = () => {
                 path="/admin/notice"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <NoticeList />
+                        <AdminNoticeList />
                     </ProtectedRoute>
                 }
             />
@@ -108,7 +110,7 @@ const Router = () => {
                 path="/admin/notice/create"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <NoticeCreate />
+                        <AdminNoticeCreate />
                     </ProtectedRoute>
                 }
             />
@@ -116,7 +118,7 @@ const Router = () => {
                 path="/admin/notice/:id"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <NoticeDetail />
+                        <AdminNoticeDetail />
                     </ProtectedRoute>
                 }
             />
@@ -132,7 +134,7 @@ const Router = () => {
                 path="/admin/chat"
                 element={
                     <ProtectedRoute requiredRole="admin">
-                        <ChatManage />
+                        <AdminChatManage />
                     </ProtectedRoute>
                 }
             />
@@ -149,7 +151,7 @@ const Router = () => {
                 path="/user/log"
                 element={
                     <ProtectedRoute requiredRole="user">
-                        <LogWrite />
+                        <UserLogWrite />
                     </ProtectedRoute>
                 }
             />
@@ -157,7 +159,7 @@ const Router = () => {
                 path="/user/log/result"
                 element={
                     <ProtectedRoute requiredRole="user">
-                        <LogResult />
+                        <UserLogResult />
                     </ProtectedRoute>
                 }
             />
@@ -165,16 +167,16 @@ const Router = () => {
                 path="/user/project"
                 element={
                     <ProtectedRoute requiredRole="user">
-                        <Project />
+                        <UserProject />
                     </ProtectedRoute>
                 }
             />
             <Route
                 path="/user/notice"
                 element={
-                    <ProtectedRoute requiredRole="user">
-                        <UserNoticeList />
-                    </ProtectedRoute>
+                    // <ProtectedRoute requiredRole="user">
+                    <UserNoticeList />
+                    // {/* </ProtectedRoute> */}
                 }
             />
             <Route
@@ -198,7 +200,7 @@ const Router = () => {
                 path="/user/chat"
                 element={
                     <ProtectedRoute requiredRole="user">
-                        <TeamChat />
+                        <UserTeamChat />
                     </ProtectedRoute>
                 }
             />
