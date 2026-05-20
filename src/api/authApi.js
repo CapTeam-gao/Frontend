@@ -1,13 +1,25 @@
 import api from "./api";
 
-export const login = (studentId, password) => {
-    return api.post("/api/auth/login", {
-        // studentId와 password를 서버한테 저장해달라고 요청함
-        studentId,
-        password,
-    });
+const makeAuthHeader = (token) => {
+    return {
+        Authorization: `Bearer ${token}`,
+    };
 };
 
-export const getMe = () => {
-    return api.get("/api/auth/me"); // 지금 로그인이 되있는 상태인지 서버한테 보내달라고 요청함, user 정보가 올 수도 있고 401이 올 수도 있음
+export const requestLogin = async (userId, password) => {
+    const response = await api.post("/api/auth/login", {
+        userId,
+        password,
+    });
+
+    return response.data;
+};
+
+export const requestMyInfo = async (token) => {
+    const response = await api.get("/api/auth/me", {
+        // JWT는 요청할 때마다 토큰을 직접 같이 보냄
+        headers: makeAuthHeader(token),
+    });
+
+    return response.data;
 };

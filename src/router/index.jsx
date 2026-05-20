@@ -37,7 +37,7 @@ const Router = () => {
             <Route
                 path="/admin/dashboard"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminDashboard />
                     </ProtectedRoute>
                 }
@@ -45,7 +45,7 @@ const Router = () => {
             <Route
                 path="/admin/team-create"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminTeamCreate />
                     </ProtectedRoute>
                 }
@@ -53,7 +53,7 @@ const Router = () => {
             <Route
                 path="/admin/team-create/loading"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminTeamCreateLoading />
                     </ProtectedRoute>
                 }
@@ -61,7 +61,7 @@ const Router = () => {
             <Route
                 path="/admin/team-edit"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminTeamEdit />
                     </ProtectedRoute>
                 }
@@ -69,7 +69,7 @@ const Router = () => {
             <Route
                 path="/admin/team-manage"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminTeamManage />
                     </ProtectedRoute>
                 }
@@ -77,7 +77,7 @@ const Router = () => {
             <Route
                 path="/admin/log"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminLogList />
                     </ProtectedRoute>
                 }
@@ -85,7 +85,7 @@ const Router = () => {
             <Route
                 path="/admin/log/:id"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminLogDetail />
                     </ProtectedRoute>
                 }
@@ -93,7 +93,7 @@ const Router = () => {
             <Route
                 path="/admin/student"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminStudentManage />
                     </ProtectedRoute>
                 }
@@ -101,7 +101,7 @@ const Router = () => {
             <Route
                 path="/admin/notice"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminNoticeList />
                     </ProtectedRoute>
                 }
@@ -109,7 +109,7 @@ const Router = () => {
             <Route
                 path="/admin/notice/create"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminNoticeCreate />
                     </ProtectedRoute>
                 }
@@ -117,7 +117,7 @@ const Router = () => {
             <Route
                 path="/admin/notice/:id"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminNoticeDetail />
                     </ProtectedRoute>
                 }
@@ -125,7 +125,7 @@ const Router = () => {
             <Route
                 path="/admin/profile"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminProfile />
                     </ProtectedRoute>
                 }
@@ -133,7 +133,7 @@ const Router = () => {
             <Route
                 path="/admin/chat"
                 element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMIN">
                         <AdminChatManage />
                     </ProtectedRoute>
                 }
@@ -142,7 +142,7 @@ const Router = () => {
             <Route
                 path="/user/dashboard"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserDashboard />
                     </ProtectedRoute>
                 }
@@ -150,7 +150,7 @@ const Router = () => {
             <Route
                 path="/user/log"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserLogWrite />
                     </ProtectedRoute>
                 }
@@ -158,7 +158,7 @@ const Router = () => {
             <Route
                 path="/user/log/result"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserLogResult />
                     </ProtectedRoute>
                 }
@@ -166,7 +166,7 @@ const Router = () => {
             <Route
                 path="/user/project"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserProject />
                     </ProtectedRoute>
                 }
@@ -174,15 +174,15 @@ const Router = () => {
             <Route
                 path="/user/notice"
                 element={
-                    // <ProtectedRoute requiredRole="user">
-                    <UserNoticeList />
-                    // {/* </ProtectedRoute> */}
+                    <ProtectedRoute requiredRole="STUDENT">
+                        <UserNoticeList />
+                    </ProtectedRoute>
                 }
             />
             <Route
                 path="/user/notice/:id"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserNoticeDetail />
                     </ProtectedRoute>
                 }
@@ -190,7 +190,7 @@ const Router = () => {
             <Route
                 path="/user/profile"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserProfile />
                     </ProtectedRoute>
                 }
@@ -199,7 +199,7 @@ const Router = () => {
             <Route
                 path="/user/chat"
                 element={
-                    <ProtectedRoute requiredRole="user">
+                    <ProtectedRoute requiredRole="STUDENT">
                         <UserTeamChat />
                     </ProtectedRoute>
                 }

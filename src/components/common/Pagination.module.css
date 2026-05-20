@@ -1,0 +1,29 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+
+.pageButton {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.pageButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.activePage,
+.activePage:hover {
+    border-color: var(--color-primary);
+    color: white;
+    background-color: var(--color-primary);
+}

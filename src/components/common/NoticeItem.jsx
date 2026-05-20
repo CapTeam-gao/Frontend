@@ -1,6 +1,6 @@
-import styles from "./UserNoticeItem.module.css";
+import styles from "./NoticeItem.module.css";
 
-const UserNoticeItem = ({ notice }) => {
+const NoticeItem = ({ notice }) => {
     return (
         <li className={styles.item}>
             <div className={styles.titleArea}>
@@ -16,4 +16,4 @@ const UserNoticeItem = ({ notice }) => {
     );
 };
 
-export default UserNoticeItem;
+export default NoticeItem;

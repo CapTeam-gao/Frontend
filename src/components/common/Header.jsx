@@ -5,18 +5,16 @@ import authStore from "../../store/authStore";
 
 const Header = () => {
     const user = authStore((state) => state.user);
-    const role = authStore((state) => state.role);
+    const isAdmin = user?.role === "ADMIN";
 
     return (
         <div className={styles.header}>
-            <Link
-                to={role === "admin" ? "/admin/dashboard" : "/user/dashboard"}
-            >
+            <Link to={isAdmin ? "/admin/dashboard" : "/user/dashboard"}>
                 <img className={styles.logo} src={Logo} alt="로고" />
             </Link>
 
             <nav className={styles.nav}>
-                {role === "admin" ? (
+                {isAdmin ? (
                     <>
                         <Link to="/admin/team-create">팀 생성</Link>
                         <Link to="/admin/chat">채팅 관리</Link>
@@ -33,10 +31,8 @@ const Header = () => {
                 )}
             </nav>
 
-            <Link to={role === "admin" ? "/admin/profile" : "/user/profile"}>
-                <p className={styles.user}>2313 허재원</p>
-
-                {/* <span className={styles.user}>{user?.name}</span> */}
+            <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
+                <p className={styles.user}>{user?.name}</p>
             </Link>
         </div>
     );

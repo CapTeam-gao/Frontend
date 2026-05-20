@@ -1,5 +1,6 @@
 import styles from "./UserNoticeList.module.css";
-import UserNoticeItem from "../../components/user/UserNoticeItem";
+import NoticeItem from "../../components/common/NoticeItem";
+import Pagination from "../../components/common/Pagination";
 import Header from "../../components/common/Header";
 import { useState } from "react";
 
@@ -62,59 +63,19 @@ const notices = [
         date: "2026.05.13",
         important: false,
     },
-    {
-        id: 8,
-        title: "팀 정보 수정 기간 안내",
-        writer: "관리자",
-        content: "팀명과 프로젝트 주제 수정 기간을 확인해주세요.",
-        date: "2026.05.12",
-        important: false,
-    },
-    {
-        id: 9,
-        title: "멘토링 신청 안내",
-        writer: "관리자",
-        content: "멘토링이 필요한 팀은 신청 기간 안에 신청해주세요.",
-        date: "2026.05.11",
-        important: false,
-    },
-    {
-        id: 10,
-        title: "최종 발표 리허설 안내",
-        writer: "관리자",
-        content: "최종 발표 전 리허설 일정을 확인해주세요.",
-        date: "2026.05.10",
-        important: true,
-    },
-    {
-        id: 11,
-        title: "깃허브 저장소 제출 안내",
-        writer: "관리자",
-        content: "팀별 깃허브 저장소 주소를 제출해주세요.",
-        date: "2026.05.09",
-        important: false,
-    },
-    {
-        id: 12,
-        title: "캡스톤 운영 규칙 안내",
-        writer: "관리자",
-        content: "캡스톤 진행 중 지켜야 할 운영 규칙을 확인해주세요.",
-        date: "2026.05.08",
-        important: false,
-    },
 ];
 
 const UserNoticeList = () => {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 설정
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE); // 공지 수 / 나눠서 보여줄 공지 수
     const startIndex = (currentPage - 1) * NOTICE_PER_PAGE;
-    // 예를 들어서 currentPage = 1 이면 (1-1) * 6 = 0 임 그럼 0번 페이지부터 보ㅓ여줌
+    // 예를 들어서 currentPage = 1 이면 (1-1) * 6 = 0 임 그럼 0번 페이지부터 보여줌
     // currentPage = 2 이면 (2-1) * 6 = 6 임 그럼 6번 페이지부터 보여줌
     const currentNotices = notices.slice(
         startIndex,
         startIndex + NOTICE_PER_PAGE
     );
-    // startIndex는 1부터 시작하므로 0부터 6번 인덱스까지의 공지를 갖고옴
+    // startIndex는 0부터 시작하므로 0부터 6을 잘라서 0부터 5번까지의 공지를 배열로 만듦
 
     return (
         <div className={styles.container}>
@@ -123,30 +84,15 @@ const UserNoticeList = () => {
                 <h1 className={styles.title}>공지사항</h1>
                 <ul className={styles.list}>
                     {currentNotices.map((notice) => (
-                        <UserNoticeItem key={notice.id} notice={notice} />
+                        <NoticeItem key={notice.id} notice={notice} />
                     ))}
                 </ul>
 
-                <div className={styles.pagination}>
-                    {Array.from({ length: totalPage }, (_, index) => {
-                        const pageNumber = index + 1;
-
-                        return (
-                            <button
-                                key={pageNumber}
-                                className={`${styles.pageButton} ${
-                                    currentPage === pageNumber
-                                        ? styles.activePage
-                                        : ""
-                                }`}
-                                type="button"
-                                onClick={() => setCurrentPage(pageNumber)}
-                            >
-                                {pageNumber}
-                            </button>
-                        );
-                    })}
-                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                />
             </div>
         </div>
     );

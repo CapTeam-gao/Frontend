@@ -1,44 +1,57 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import Button from "../components/common/Button";
 import Logo from "../assets/images/logo.png";
-import { login, getMe } from "../api/authApi";
+import { requestLogin, requestMyInfo } from "../api/authApi";
 import authStore from "../store/authStore";
-import Header from "../components/common/Header";
-import SearchBar from "../components/common/SearchBar";
 
 const Login = () => {
-    const [studentId, setStudentId] = useState("");
+    const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const isDisabled = !studentId || !password;
-    const nav = useNavigate();
-    const setUser = authStore((state) => state.setUser);
+    const [isLoading, setIsLoading] = useState(false);
+    const isDisabled = !userId.trim() || !password || isLoading;
+    const navigate = useNavigate();
+    const saveLogin = authStore((state) => state.saveLogin);
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") return;
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
         if (isDisabled) return;
-        handleLogin();
-    };
 
-    const handleLogin = async () => {
         try {
-            await login(studentId, password);
-            const res = await getMe();
-            const user = res.data;
-            await setUser(user);
-            if (user.role === "admin") {
-                nav("/admin/dashboard");
-            } else {
-                nav("/user/dashboard");
+            setError("");
+            setIsLoading(true);
+
+            const trimmedUserId = userId.trim();
+            const loginData = await requestLogin(trimmedUserId, password);
+            const token = loginData.accessToken;
+
+            if (!token) {
+                setError("로그인 토큰을 받지 못했습니다.");
+                return;
             }
+
+            const user = loginData.user || (await requestMyInfo(token));
+
+            if (!user || !user.role) {
+                setError("사용자 권한 정보를 받지 못했습니다.");
+                return;
+            }
+
+            saveLogin(user, token);
+            navigate(
+                user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
+            );
         } catch (e) {
             if (e.response?.status === 401) {
                 setError("아이디 또는 비밀번호가 올바르지 않습니다.");
             } else {
                 setError("서버 오류입니다.");
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -51,15 +64,15 @@ const Login = () => {
                     서비스를 이용하려면 로그인하세요
                 </p>
             </div>
-            <div className={styles.form}>
+            <form className={styles.form} onSubmit={handleLogin}>
                 <div className={styles.field}>
-                    <label htmlFor="studentId">학번</label>
+                    <label htmlFor="userId">아이디</label>
                     <input
                         type="text"
-                        placeholder="학번을 입력해주세요"
-                        id="studentId"
-                        onChange={(e) => setStudentId(e.target.value)}
-                        onKeyDown={handleKeyDown}
+                        placeholder="아이디를 입력해주세요"
+                        id="userId"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
                     />
                 </div>
                 <div className={styles.field}>
@@ -68,20 +81,20 @@ const Login = () => {
                         type="password"
                         placeholder="비밀번호를 입력해주세요"
                         id="password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 {error && <p className={styles.error}>{error}</p>}
                 <Button
+                    type="submit"
                     buttonSize="large"
                     buttonColor="primary"
                     disabled={isDisabled}
-                    onClick={handleLogin}
                 >
-                    로그인
+                    {isLoading ? "로그인 중..." : "로그인"}
                 </Button>
-            </div>
+            </form>
         </div>
     );
 };
