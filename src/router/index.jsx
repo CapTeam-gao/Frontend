@@ -174,17 +174,17 @@ const Router = () => {
             <Route
                 path="/user/notice"
                 element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserNoticeList />
-                    </ProtectedRoute>
+                    // <ProtectedRoute requiredRole="STUDENT">
+                    <UserNoticeList />
+                    // </ProtectedRoute>
                 }
             />
             <Route
                 path="/user/notice/:id"
                 element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserNoticeDetail />
-                    </ProtectedRoute>
+                    // <ProtectedRoute requiredRole="STUDENT">
+                    <UserNoticeDetail />
+                    // </ProtectedRoute>
                 }
             />
             <Route

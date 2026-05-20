@@ -1,0 +1,60 @@
+const notices = [
+    {
+        id: 1,
+        title: "캡스톤 일정 안내",
+        writer: "관리자",
+        content: "캡스톤 발표 일정과 준비 사항을 확인해주세요.",
+        date: "2026.05.19",
+        important: true,
+    },
+    {
+        id: 2,
+        title: "일지 제출 안내",
+        writer: "관리자",
+        content: "이번 주 캡스톤 일지는 금요일까지 제출해주세요.",
+        date: "2026.05.18",
+        important: false,
+    },
+    {
+        id: 3,
+        title: "프로젝트 기획서 제출 안내",
+        writer: "관리자",
+        content: "팀별 프로젝트 기획서를 마감 전까지 작성해주세요.",
+        date: "2026.05.17",
+        important: true,
+    },
+    {
+        id: 4,
+        title: "예산 신청 폼 작성 안내",
+        writer: "관리자",
+        content: "필요한 장비와 재료가 있다면 예산 신청 폼을 작성해주세요.",
+        date: "2026.05.16",
+        important: false,
+    },
+    {
+        id: 5,
+        title: "팀 채팅방 이용 안내",
+        writer: "관리자",
+        content: "팀 확정 후 생성된 팀 채팅방에서 소통을 시작해주세요.",
+        date: "2026.05.15",
+        important: false,
+    },
+    {
+        id: 6,
+        title: "중간 점검 일정 안내",
+        writer: "관리자",
+        content: "중간 점검은 팀별로 지정된 시간에 진행됩니다.",
+        date: "2026.05.14",
+        important: true,
+    },
+    {
+        id: 7,
+        title: "발표자료 형식 안내",
+        writer: "관리자",
+        content: "발표자료는 지정된 양식에 맞춰 제출해주세요.",
+        date: "2026.05.13",
+        important: false,
+    },
+];
+
+export default notices;
