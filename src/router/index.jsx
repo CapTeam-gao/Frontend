@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
+// 테스트 중에는 각 페이지를 바로 확인하기 위해 ProtectedRoute를 잠시 비활성화함
+// import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/Login";
 
@@ -34,176 +35,35 @@ const Router = () => {
 
             {/* / 경로로 들어가면 로그인 페이지 반환 */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route
-                path="/admin/dashboard"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminDashboard />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/team-create"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminTeamCreate />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/team-create" element={<AdminTeamCreate />} />
             <Route
                 path="/admin/team-create/loading"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminTeamCreateLoading />
-                    </ProtectedRoute>
-                }
+                element={<AdminTeamCreateLoading />}
             />
-            <Route
-                path="/admin/team-edit"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminTeamEdit />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/team-manage"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminTeamManage />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/log"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminLogList />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/log/:id"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminLogDetail />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/student"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminStudentManage />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/notice"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminNoticeList />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/admin/team-edit" element={<AdminTeamEdit />} />
+            <Route path="/admin/team-manage" element={<AdminTeamManage />} />
+            <Route path="/admin/log" element={<AdminLogList />} />
+            <Route path="/admin/log/:id" element={<AdminLogDetail />} />
+            <Route path="/admin/student" element={<AdminStudentManage />} />
+            <Route path="/admin/notice" element={<AdminNoticeList />} />
             <Route
                 path="/admin/notice/create"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminNoticeCreate />
-                    </ProtectedRoute>
-                }
+                element={<AdminNoticeCreate />}
             />
-            <Route
-                path="/admin/notice/:id"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminNoticeDetail />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/profile"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminProfile />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/chat"
-                element={
-                    <ProtectedRoute requiredRole="ADMIN">
-                        <AdminChatManage />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/admin/notice/:id" element={<AdminNoticeDetail />} />
+            <Route path="/admin/profile" element={<AdminProfile />} />
+            <Route path="/admin/chat" element={<AdminChatManage />} />
             {/* 유저 페이지들 - user만 접근 가능 */}
-            <Route
-                path="/user/dashboard"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserDashboard />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/log"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserLogWrite />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/log/result"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserLogResult />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/project"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserProject />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/notice"
-                element={
-                    // <ProtectedRoute requiredRole="STUDENT">
-                    <UserNoticeList />
-                    // </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/notice/:id"
-                element={
-                    // <ProtectedRoute requiredRole="STUDENT">
-                    <UserNoticeDetail />
-                    // </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/user/profile"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserProfile />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/log" element={<UserLogWrite />} />
+            <Route path="/user/log/result" element={<UserLogResult />} />
+            <Route path="/user/project" element={<UserProject />} />
+            <Route path="/user/notice" element={<UserNoticeList />} />
+            <Route path="/user/notice/:id" element={<UserNoticeDetail />} />
+            <Route path="/user/profile" element={<UserProfile />} />
 
-            <Route
-                path="/user/chat"
-                element={
-                    <ProtectedRoute requiredRole="STUDENT">
-                        <UserTeamChat />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/user/chat" element={<UserTeamChat />} />
             {/* 없는 주소 접근 시 로그인으로 */}
             <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

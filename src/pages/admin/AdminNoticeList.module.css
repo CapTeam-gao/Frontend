@@ -1,0 +1,34 @@
+.body {
+    padding: 50px 150px;
+    width: 100%;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.writeLink {
+    text-decoration: none;
+}
+
+.writeButton {
+    min-width: 96px;
+    font-weight: var(--font-weight-bold);
+}

@@ -3,7 +3,7 @@
     border: none;
     white-space: nowrap;
     font-family: var(--font-family);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
     transition: var(--transition);
 }
 .button:disabled {
@@ -53,6 +53,7 @@
 
 .small {
     font-size: var(--font-size-sm);
-    padding: 8px 30px;
+    font-weight: var(--font-weight-bold);
+    padding: 8px 16px;
     border-radius: var(--border-radius-xs);
 }

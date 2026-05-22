@@ -25,13 +25,13 @@
 .card {
     width: 100%;
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     background-color: var(--color-bg);
     overflow: hidden;
 }
 
 .cardHeader {
-    padding: 38px 42px 34px;
+    padding: 30px 30px 34px;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -39,13 +39,13 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 22px;
+    margin-bottom: 15px;
 }
 
 .title {
     color: #000000;
-    font-size: 34px;
-    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-2xl-lg);
+    font-weight: var(--font-weight-semibold);
     line-height: 1.25;
 }
 
@@ -65,7 +65,7 @@
     gap: 14px;
     color: var(--color-text-secondary);
     font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
 }
 
 .contentArea {
@@ -75,14 +75,14 @@
 
 .content {
     color: #000000;
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.55;
+    line-height: 1.2;
     white-space: pre-line;
 }
 
 .content + .content {
-    margin-top: 28px;
+    margin-top: 10px;
 }
 
 .emptyBox {

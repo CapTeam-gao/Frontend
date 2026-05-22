@@ -7,6 +7,22 @@ const Header = () => {
     const user = authStore((state) => state.user);
     const isAdmin = user?.role === "ADMIN";
 
+    const makeHeaderName = (user) => {
+        if (!user) return "";
+
+        if (user.userId.startsWith("stu")) {
+            return `${user.userId.replace("stu", "")} ${user.name}`;
+        }
+
+        if (user.userId.startsWith("tea")) {
+            return `${user.name} 선생님`;
+        }
+
+        return user.name;
+    };
+
+    const displayName = makeHeaderName(user);
+
     return (
         <div className={styles.header}>
             <Link to={isAdmin ? "/admin/dashboard" : "/user/dashboard"}>
@@ -32,7 +48,7 @@ const Header = () => {
             </nav>
 
             <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
-                <p className={styles.user}>{user?.name}</p>
+                <p className={styles.user}>{displayName}</p>
             </Link>
         </div>
     );

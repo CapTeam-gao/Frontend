@@ -1,0 +1,128 @@
+.page {
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+.body {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 20px 72px;
+}
+
+.backLink {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.backLink:hover {
+    color: var(--color-primary);
+}
+
+.card {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg);
+    overflow: hidden;
+}
+
+.cardHeader {
+    padding: 30px 30px 34px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.title {
+    color: #000000;
+    font-size: var(--font-size-2xl-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+}
+
+.tag {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+}
+
+.contentArea {
+    min-height: 460px;
+    padding: 48px 42px 56px;
+}
+
+.content {
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    white-space: pre-line;
+}
+
+.content + .content {
+    margin-top: 10px;
+}
+
+.emptyBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+.important {
+    color: var(--color-danger);
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding: 32px 16px 56px;
+    }
+
+    .cardHeader,
+    .contentArea {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .titleRow {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .title {
+        font-size: var(--font-size-2xl-lg);
+    }
+
+    .content {
+        font-size: var(--font-size-xl);
+    }
+}
