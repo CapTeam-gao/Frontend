@@ -27,22 +27,23 @@ const Login = () => {
             const trimmedUserId = userId.trim();
             const loginData = await requestLogin(trimmedUserId, password);
             const token = loginData.accessToken;
+            const role = loginData.role;        //로그인할 때 role 정보 담으려고 변수 추가
 
-            if (!token) {
+            if (!token || !role) {  //예외처리에 role 추가
                 setError("로그인 토큰을 받지 못했습니다.");
                 return;
             }
 
-            const user = loginData.user || (await requestMyInfo(token));
-
-            if (!user || !user.role) {
-                setError("사용자 권한 정보를 받지 못했습니다.");
-                return;
-            }
-
-            saveLogin(user, token);
+            // const user = loginData.user || (await requestMyInfo(token));
+            //
+            // if (!user || !user.role) {
+            //     setError("사용자 권한 정보를 받지 못했습니다.");
+            //     return;
+            // }
+            //
+            saveLogin({ role }, token);
             navigate(
-                user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
+                role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
             );
         } catch (e) {
             if (e.response?.status === 401) {
