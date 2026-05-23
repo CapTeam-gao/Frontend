@@ -1,12 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 import styles from "./UserNoticeDetail.module.css";
-import notices from "../../data/noticeDummy";
+import { getVisibleNotices } from "../../data/noticeDummy";
 import Header from "../../components/common/Header";
 
 const UserNoticeDetail = () => {
     const { id } = useParams();
 
-    const notice = notices.find((notice) => notice.id === Number(id));
+    const notice = getVisibleNotices().find(
+        (notice) => notice.id === Number(id)
+    );
 
     if (!notice) {
         return (

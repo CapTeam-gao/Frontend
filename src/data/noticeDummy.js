@@ -162,4 +162,36 @@ const notices = [
     },
 ];
 
+const DELETED_NOTICE_IDS_KEY = "deletedNoticeIds";
+
+export const getDeletedNoticeIds = () => {
+    const savedIds = localStorage.getItem(DELETED_NOTICE_IDS_KEY);
+
+    if (!savedIds) return [];
+
+    try {
+        return JSON.parse(savedIds);
+    } catch {
+        return [];
+    }
+};
+
+export const saveDeletedNoticeId = (noticeId) => {
+    const deletedNoticeIds = getDeletedNoticeIds();
+    const nextDeletedNoticeIds = [
+        ...new Set([...deletedNoticeIds, Number(noticeId)]),
+    ];
+
+    localStorage.setItem(
+        DELETED_NOTICE_IDS_KEY,
+        JSON.stringify(nextDeletedNoticeIds)
+    );
+};
+
+export const getVisibleNotices = () => {
+    const deletedNoticeIds = getDeletedNoticeIds();
+
+    return notices.filter((notice) => !deletedNoticeIds.includes(notice.id));
+};
+
 export default notices;

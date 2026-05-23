@@ -4,12 +4,13 @@ import Pagination from "../../components/common/Pagination";
 import Header from "../../components/common/Header";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import notices from "../../data/noticeDummy";
+import { getVisibleNotices } from "../../data/noticeDummy";
 
 const NOTICE_PER_PAGE = 6; // 공지 몇 개로 페이지를 나눌지 선정
 
 const UserNoticeList = () => {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 설정
+    const [notices] = useState(() => getVisibleNotices());
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE); // 공지 수 / 나눠서 보여줄 공지 수
     const startIndex = (currentPage - 1) * NOTICE_PER_PAGE;
     // 예를 들어서 currentPage = 1 이면 (1-1) * 6 = 0 임 그럼 0번 페이지부터 보여줌
