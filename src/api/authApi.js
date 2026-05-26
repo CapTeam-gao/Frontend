@@ -16,7 +16,7 @@ export const requestLogin = async (userId, password) => {
 };
 
 export const requestMyInfo = async (token) => {
-    const response = await api.get("/api/auth/me", {
+    const response = await api.get("/api/user/header", {
         // JWT는 요청할 때마다 토큰을 직접 같이 보냄
         headers: makeAuthHeader(token),
     });

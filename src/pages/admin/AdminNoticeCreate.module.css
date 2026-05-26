@@ -1,0 +1,232 @@
+.page {
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+.body {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 20px 72px;
+}
+
+.backLink {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.backLink:hover {
+    color: var(--color-primary);
+}
+
+.card {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg);
+    overflow: hidden;
+}
+
+.cardHeader {
+    padding: 30px 30px 28px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+}
+
+.description {
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+}
+
+.form {
+    padding: 36px 42px 42px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field + .field {
+    margin-top: 28px;
+}
+
+.label {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-family: var(--font-family);
+    outline: none;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 320px;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.markdownEditor {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.markdownEditor:global(.w-md-editor) {
+    background-color: #ffffff;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar) {
+    border-bottom: 1px solid var(--color-border);
+    background-color: #ffffff;
+}
+
+.markdownEditor :global(.w-md-editor-content),
+.markdownEditor :global(.w-md-editor-input),
+.markdownEditor :global(.w-md-editor-text) {
+    height: 100%;
+}
+
+.markdownEditor :global(.w-md-editor-text) {
+    min-height: 100%;
+}
+
+.markdownEditor :global(.w-md-editor-text-input) {
+    min-height: 100%;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+    caret-color: var(--color-primary);
+}
+
+.markdownEditor :global(.w-md-editor-text-pre > code),
+.markdownEditor :global(.w-md-editor-text-pre) {
+    min-height: 100%;
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+}
+
+.checkBoxArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+}
+
+.checkBox {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.customCheck {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-xs);
+    background-color: #ffffff;
+}
+
+.customCheck::after {
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 5px;
+    height: 10px;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    content: "";
+    opacity: 0;
+    transform: rotate(45deg);
+}
+
+.checkBox:checked + .customCheck {
+    background-color: var(--color-primary);
+}
+
+.checkBox:checked + .customCheck::after {
+    opacity: 1;
+}
+
+.checkBox:focus-visible + .customCheck {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.buttonArea {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 36px;
+}
+
+.cancelLink {
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding: 32px 16px 56px;
+    }
+
+    .cardHeader,
+    .form {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .textarea {
+        min-height: 260px;
+    }
+
+    .buttonArea {
+        justify-content: stretch;
+    }
+}

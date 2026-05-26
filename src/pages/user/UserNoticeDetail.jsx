@@ -50,7 +50,10 @@ const UserNoticeDetail = () => {
                     </div>
 
                     <div className={styles.contentArea}>
-                        <p className={styles.content}>{notice.content}</p>
+                        <MDEditor.Markdown
+                            className={styles.content}
+                            source={notice.content}
+                        />
                         {notice.important && (
                             <p className={styles.content}>
                                 중요한 공지이므로 내용을 확인한 뒤 팀원들과
