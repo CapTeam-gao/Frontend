@@ -5,7 +5,7 @@ import authStore from "../../store/authStore";
 
 const Header = () => {
     const user = authStore((state) => state.user);
-    const isAdmin = user?.role === "ADMIN";
+    const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
 
     const makeHeaderName = (user) => {
         if (!user) return "";

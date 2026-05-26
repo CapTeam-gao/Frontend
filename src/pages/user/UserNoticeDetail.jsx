@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import styles from "./UserNoticeDetail.module.css";
 import { getVisibleNotices } from "../../data/noticeDummy";
 import Header from "../../components/common/Header";
+import MDEditor from "@uiw/react-md-editor";
 
 const UserNoticeDetail = () => {
     const { id } = useParams();

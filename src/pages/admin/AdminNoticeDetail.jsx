@@ -6,6 +6,7 @@ import Header from "../../components/common/Header";
 import Button from "../../components/common/Button";
 import { requestDeleteNotice } from "../../api/noticeApi";
 import authStore from "../../store/authStore";
+import MDEditor from "@uiw/react-md-editor";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();

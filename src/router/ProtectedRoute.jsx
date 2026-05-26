@@ -12,13 +12,15 @@ const ProtectedRoute = ({ children, requiredRole }) => {
         return <Navigate to="/login" replace />;
     }
 
-    if (!user?.role) {
+    if (!user?.accountRole) {
         return <Navigate to="/login" replace />;
     }
 
-    if (requiredRole && user.role !== requiredRole) {
+    if (requiredRole && user.accountRole !== requiredRole) {
         const homePath =
-            user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard";
+            user.accountRole === "ADMIN"
+                ? "/admin/dashboard"
+                : "/user/dashboard";
 
         return <Navigate to={homePath} replace />;
     }

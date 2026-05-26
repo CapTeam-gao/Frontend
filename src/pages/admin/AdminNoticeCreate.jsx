@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import Button from "../../components/common/Button";
 import styles from "./AdminNoticeCreate.module.css";
@@ -11,10 +11,30 @@ const AdminNoticeCreate = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [important, setImportant] = useState(false);
-    const [error, serError] = useState("");
+    const [error, setError] = useState("");
 
-    const onClick = () => {
-        console.log(title, content, important);
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!title.trim()) {
+            setError("제목을 입력해주세요.");
+            return;
+        }
+
+        if (!content.trim()) {
+            setError("내용을 입력해주세요.");
+            return;
+        }
+
+        console.log({
+            title,
+            content,
+            important,
+        });
+
+        navigate("/admin/notice");
     };
     return (
         <div className={styles.page}>
@@ -26,7 +46,7 @@ const AdminNoticeCreate = () => {
                 </Link>
 
                 <section className={styles.card}>
-                    <form className={styles.form}>
+                    <form className={styles.form} onSubmit={handleSubmit}>
                         <div className={styles.field}>
                             <label htmlFor="title" className={styles.label}>
                                 제목
@@ -69,18 +89,15 @@ const AdminNoticeCreate = () => {
                             <span className={styles.customCheck}></span>
                             <span>중요 공지로 등록</span>
                         </label>
-
+                        {error && <p className={styles.error}>{error}</p>}
                         <div className={styles.buttonArea}>
-                            <Link to={"/admin/notice"}>
-                                <Button
-                                    type="submit"
-                                    buttonSize="small"
-                                    buttonColor="primary"
-                                    onClick={onClick}
-                                >
-                                    등록
-                                </Button>
-                            </Link>
+                            <Button
+                                type="submit"
+                                buttonSize="small"
+                                buttonColor="primary"
+                            >
+                                등록
+                            </Button>
                         </div>
                     </form>
                 </section>
