@@ -77,8 +77,67 @@
     color: #000000;
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.2;
+    line-height: 1.75;
     white-space: pre-line;
+}
+
+.content :global(h1),
+.content :global(h2),
+.content :global(h3) {
+    margin: 20px 0 12px;
+    color: #000000;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.content :global(h1) {
+    font-size: var(--font-size-3xl);
+}
+
+.content :global(h2) {
+    font-size: var(--font-size-2xl-lg);
+}
+
+.content :global(h3) {
+    font-size: var(--font-size-2xl);
+}
+
+.content :global(p) {
+    margin: 12px 0;
+}
+
+.content :global(strong),
+.content :global(b) {
+    color: #000000;
+    font-weight: 900;
+}
+
+.content :global(blockquote) {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary-bg);
+    color: var(--color-text-primary);
+}
+
+.content :global(ul),
+.content :global(ol) {
+    margin: 14px 0;
+    padding-left: 26px;
+}
+
+.content :global(li) {
+    margin: 6px 0;
+}
+
+.content :global(code) {
+    padding: 3px 7px;
+    border-radius: var(--border-radius-xs);
+    background-color: var(--color-bg-secondary);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
 }
 
 .content + .content {

@@ -1,4 +1,5 @@
 import styles from "./NoticeItem.module.css";
+import { formatCreatedAt } from "../../utils/format";
 
 const NoticeItem = ({ notice }) => {
     // 글자수 100 글자 넘어가면 ... 처리하는 로직
@@ -17,7 +18,9 @@ const NoticeItem = ({ notice }) => {
             </p>
             <div className={styles.meta}>
                 <p className={styles.writer}>{notice.writer}</p>
-                <p className={styles.date}>{notice.date}</p>
+                <p className={styles.date}>
+                    {formatCreatedAt(notice.createdAt)}
+                </p>
             </div>
         </li>
     );

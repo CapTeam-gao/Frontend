@@ -16,3 +16,19 @@
     margin: 0;
     list-style: none;
 }
+
+.errorText {
+    color: var(--color-danger);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-3xl);
+}
+
+.loadingText {
+    color: var(--color-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-3xl);
+}

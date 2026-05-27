@@ -32,3 +32,18 @@
     min-width: 96px;
     font-weight: var(--font-weight-bold);
 }
+
+.errorText {
+    color: var(--color-danger);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-3xl);
+}
+.loadingText {
+    color: var(--color-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-3xl);
+}

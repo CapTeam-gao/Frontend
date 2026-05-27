@@ -1,15 +1,64 @@
 import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import styles from "./UserNoticeDetail.module.css";
-import { getVisibleNotices } from "../../data/noticeDummy";
 import Header from "../../components/common/Header";
 import MDEditor from "@uiw/react-md-editor";
+import authStore from "../../store/authStore";
+import { requestNoticeDetail } from "../../api/noticeApi";
+import { formatCreatedAt } from "../../utils/format";
 
 const UserNoticeDetail = () => {
     const { id } = useParams();
 
-    const notice = getVisibleNotices().find(
-        (notice) => notice.id === Number(id)
-    );
+    const [notice, setNotice] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+    const token = authStore((state) => state.accessToken);
+
+    useEffect(() => {
+        const getNoticeDetail = async () => {
+            try {
+                const data = await requestNoticeDetail(id, token);
+                setNotice(data);
+            } catch {
+                setError("공지 상세 정보를 불러오지 못했습니다.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        getNoticeDetail();
+    }, [id, token]);
+
+    if (isLoading) {
+        return (
+            <div className={styles.page}>
+                <Header />
+                <main className={styles.body}>
+                    <Link to="/user/notice" className={styles.backLink}>
+                        ← 목록
+                    </Link>
+                    <section className={styles.emptyBox}>
+                        공지를 불러오는 중입니다.
+                    </section>
+                </main>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.page}>
+                <Header />
+                <main className={styles.body}>
+                    <Link to="/user/notice" className={styles.backLink}>
+                        ← 목록
+                    </Link>
+                    <section className={styles.emptyBox}>{error}</section>
+                </main>
+            </div>
+        );
+    }
 
     if (!notice) {
         return (
@@ -46,7 +95,7 @@ const UserNoticeDetail = () => {
 
                         <div className={styles.meta}>
                             <span>교사 {notice.writer}</span>
-                            <span>{notice.date}</span>
+                            <span>{formatCreatedAt(notice.createdAt)}</span>
                         </div>
                     </div>
 

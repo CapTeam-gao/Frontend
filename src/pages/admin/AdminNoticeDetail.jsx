@@ -7,18 +7,18 @@ import Button from "../../components/common/Button";
 import { requestDeleteNotice } from "../../api/noticeApi";
 import authStore from "../../store/authStore";
 import MDEditor from "@uiw/react-md-editor";
+import { requestNoticeDetail } from "../../api/noticeApi";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const accessToken = authStore((state) => state.accessToken);
+    const [notice, setNotice] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState("");
-
-    const notice = getVisibleNotices().find(
-        (notice) => notice.id === Number(id)
-    );
 
     const handleDeleteNotice = async () => {
         try {
