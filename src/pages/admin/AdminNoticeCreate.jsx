@@ -42,7 +42,7 @@ const AdminNoticeCreate = () => {
                 {
                     title,
                     content,
-                    important,
+                    important: important ? "IMPORTANT" : "COMMON",
                 },
                 accessToken
             );

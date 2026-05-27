@@ -88,7 +88,7 @@ const UserNoticeDetail = () => {
                     <div className={styles.cardHeader}>
                         <div className={styles.titleRow}>
                             <h1 className={styles.title}>{notice.title}</h1>
-                            {notice.important && (
+                            {notice.important === "IMPORTANT" && (
                                 <span className={styles.tag}>중요</span>
                             )}
                         </div>
@@ -104,7 +104,7 @@ const UserNoticeDetail = () => {
                             className={styles.content}
                             source={notice.content}
                         />
-                        {notice.important && (
+                        {notice.important === "IMPORTANT" && (
                             <p className={styles.content}>
                                 중요한 공지이므로 내용을 확인한 뒤 팀원들과
                                 공유해주세요.

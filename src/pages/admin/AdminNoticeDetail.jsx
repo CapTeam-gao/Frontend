@@ -1,24 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./AdminNoticeDetail.module.css";
-import { getVisibleNotices, saveDeletedNoticeId } from "../../data/noticeDummy";
 import Header from "../../components/common/Header";
 import Button from "../../components/common/Button";
-import { requestDeleteNotice } from "../../api/noticeApi";
+import { requestDeleteNotice, requestNoticeDetail } from "../../api/noticeApi";
 import authStore from "../../store/authStore";
 import MDEditor from "@uiw/react-md-editor";
-import { requestNoticeDetail } from "../../api/noticeApi";
+import { formatCreatedAt } from "../../utils/format";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const accessToken = authStore((state) => state.accessToken);
-    const [notice, setNotice] = useState("");
+    const [notice, setNotice] = useState(null);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState("");
+
+    useEffect(() => {
+        const getNoticeDetail = async () => {
+            try {
+                const data = await requestNoticeDetail(id, accessToken);
+                console.log("공지 상세 응답:", data);
+
+                setNotice(data);
+            } catch {
+                setError("공지 상세 정보를 불러오지 못했습니다.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        getNoticeDetail();
+    }, [id, accessToken]);
 
     const handleDeleteNotice = async () => {
         try {
@@ -31,7 +47,6 @@ const AdminNoticeDetail = () => {
             }
 
             await requestDeleteNotice(notice.id, accessToken);
-            saveDeletedNoticeId(notice.id);
             navigate("/admin/notice");
         } catch {
             setDeleteError(
@@ -41,6 +56,36 @@ const AdminNoticeDetail = () => {
             setIsDeleting(false);
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className={styles.page}>
+                <Header />
+                <main className={styles.body}>
+                    <Link to="/admin/notice" className={styles.backLink}>
+                        ← 목록
+                    </Link>
+                    <section className={styles.emptyBox}>
+                        공지를 불러오는 중입니다.
+                    </section>
+                </main>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.page}>
+                <Header />
+                <main className={styles.body}>
+                    <Link to="/admin/notice" className={styles.backLink}>
+                        ← 목록
+                    </Link>
+                    <section className={styles.emptyBox}>{error}</section>
+                </main>
+            </div>
+        );
+    }
 
     if (!notice) {
         return (
@@ -74,26 +119,43 @@ const AdminNoticeDetail = () => {
                                     <h1 className={styles.title}>
                                         {notice.title}
                                     </h1>
-                                    {notice.important && (
+                                    {notice.important === "IMPORTANT" && (
                                         <span className={styles.tag}>중요</span>
                                     )}
                                 </div>
 
                                 <div className={styles.meta}>
                                     <span>교사 {notice.writer}</span>
-                                    <span>{notice.date}</span>
+                                    <span>
+                                        {formatCreatedAt(notice.createdAt)}
+                                    </span>
                                 </div>
                             </div>
 
-                            <Button
-                                type="button"
-                                buttonSize="small"
-                                buttonColor="danger"
-                                onClick={() => setIsDeleteModalOpen(true)}
-                                className={styles.button}
-                            >
-                                삭제
-                            </Button>
+                            <div className={styles.actionButtons}>
+                                <Link
+                                    to={`/admin/notice/${id}/edit`}
+                                    className={styles.editLink}
+                                >
+                                    <Button
+                                        type="button"
+                                        buttonSize="small"
+                                        buttonColor="secondary"
+                                        className={`${styles.button} ${styles.editButton}`}
+                                    >
+                                        수정
+                                    </Button>
+                                </Link>
+                                <Button
+                                    type="button"
+                                    buttonSize="small"
+                                    buttonColor="danger"
+                                    onClick={() => setIsDeleteModalOpen(true)}
+                                    className={`${styles.button} ${styles.deleteButton}`}
+                                >
+                                    삭제
+                                </Button>
+                            </div>
                         </div>
                     </div>
 
@@ -102,7 +164,7 @@ const AdminNoticeDetail = () => {
                             className={styles.content}
                             source={notice.content}
                         />
-                        {notice.important && (
+                        {notice.important === "IMPORTANT" && (
                             <p className={styles.important}>
                                 중요한 공지이므로 내용을 확인한 뒤 팀원들과
                                 공유해주세요.

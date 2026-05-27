@@ -15,6 +15,7 @@ import AdminStudentManage from "../pages/admin/AdminStudentManage";
 import AdminNoticeList from "../pages/admin/AdminNoticeList";
 import AdminNoticeDetail from "../pages/admin/AdminNoticeDetail";
 import AdminNoticeCreate from "../pages/admin/AdminNoticeCreate";
+import AdminNoticeEdit from "../pages/admin/AdminNoticeEdit";
 import AdminProfile from "../pages/admin/AdminProfile";
 import AdminChatManage from "../pages/admin/AdminChatManage";
 
@@ -51,6 +52,7 @@ const Router = () => {
                 path="/admin/notice/create"
                 element={<AdminNoticeCreate />}
             />
+            <Route path="/admin/notice/:id/edit" element={<AdminNoticeEdit />} />
             <Route path="/admin/notice/:id" element={<AdminNoticeDetail />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
             <Route path="/admin/chat" element={<AdminChatManage />} />

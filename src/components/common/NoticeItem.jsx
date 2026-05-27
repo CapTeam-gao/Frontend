@@ -9,15 +9,21 @@ const NoticeItem = ({ notice }) => {
     return (
         <li className={styles.item}>
             <div className={styles.titleArea}>
-                {notice.important && <span className={styles.tag}>중요</span>}
+                {notice.important === "IMPORTANT" && (
+                    <span className={styles.tag}>중요</span>
+                )}
                 <h3 className={styles.title}>{notice.title}</h3>
             </div>
-            <p className={styles.content}>
-                {/* truncate 함수로 감싸서 100글자 넘으면 ... 처리 */}
-                <span>{truncate(notice.content, 100)}</span>
-            </p>
+            {notice.content && (
+                <p className={styles.content}>
+                    {/* truncate 함수로 감싸서 100글자 넘으면 ... 처리 */}
+                    <span>{truncate(notice.content, 100)}</span>
+                </p>
+            )}
             <div className={styles.meta}>
-                <p className={styles.writer}>{notice.writer}</p>
+                <p className={styles.writer}>
+                    {notice.writer || notice.authorName}
+                </p>
                 <p className={styles.date}>
                     {formatCreatedAt(notice.createdAt)}
                 </p>
