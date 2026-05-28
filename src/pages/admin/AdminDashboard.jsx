@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import TeamCreateIcon from "../../assets/icons/teamCreate.svg";
 import TeamIcon from "../../assets/icons/team.svg";
@@ -9,7 +9,7 @@ import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
     const isTeamCreated = false;
-
+    const navigate = useNavigate();
     return (
         <div className={styles.page}>
             <Header />
@@ -17,7 +17,16 @@ const AdminDashboard = () => {
             <main className={styles.body}>
                 <section className={styles.dashboard}>
                     <div className={styles.topGrid}>
-                        <article className={styles.mainCard}>
+                        <Link
+                            to={
+                                isTeamCreated
+                                    ? "/admin/team-manage"
+                                    : "/admin/team-create"
+                            }
+                            className={`${styles.mainCard} ${
+                                !isTeamCreated ? styles.mainCardPending : ""
+                            }`}
+                        >
                             <div className={styles.mainContent}>
                                 <div className={styles.mainHeader}>
                                     <h1 className={styles.mainTitle}>
@@ -56,13 +65,13 @@ const AdminDashboard = () => {
                                         : "학생 데이터를 분석하여 최적의 팀을 자동으로 생성합니다."}
                                 </p>
                             </div>
-                        </article>
+                        </Link>
 
-                        <article className={styles.sideCard}>
+                        <Link to="/admin/chat" className={styles.sideCard}>
                             <div className={styles.mediumIcon}>
                                 <img src={ChatIcon} alt="" />
                             </div>
-                            <div>
+                            <div className={styles.sideText}>
                                 <h2 className={styles.cardTitle}>
                                     팀별 채팅방
                                 </h2>
@@ -72,11 +81,11 @@ const AdminDashboard = () => {
                                         : "팀 생성 후 이용 가능합니다"}
                                 </p>
                             </div>
-                        </article>
+                        </Link>
                     </div>
 
                     <div className={styles.bottomGrid}>
-                        <article className={styles.smallCard}>
+                        <Link to="/admin/log" className={styles.smallCard}>
                             <div className={styles.logText}>
                                 <h2 className={styles.cardTitle}>
                                     캡스톤 일지
@@ -90,10 +99,13 @@ const AdminDashboard = () => {
                             <div className={styles.smallIcon}>
                                 <img src={CapstonLogIcon} alt="" />
                             </div>
-                        </article>
+                        </Link>
 
-                        <article className={styles.smallCard}>
-                            <div>
+                        <Link
+                            to="/admin/student"
+                            className={`${styles.smallCard} ${styles.studentCard}`}
+                        >
+                            <div className={styles.smallText}>
                                 <h2 className={styles.cardTitle}>학생</h2>
                                 <span className={styles.countBadge}>
                                     135명 등록
@@ -102,14 +114,20 @@ const AdminDashboard = () => {
                             <div className={styles.smallIcon}>
                                 <img src={TeamIcon} alt="" />
                             </div>
-                        </article>
+                        </Link>
 
-                        <article className={styles.smallCard}>
-                            <div>
+                        <article
+                            className={`${styles.smallCard} ${styles.noticeCard}`}
+                            onClick={() => {
+                                navigate("/admin/notice");
+                            }}
+                        >
+                            <div className={styles.smallText}>
                                 <h2 className={styles.cardTitle}>공지</h2>
                                 <Link
                                     to="/admin/notice/create"
                                     className={styles.quickButton}
+                                    onClick={(e) => e.stopPropagation()}
                                 >
                                     빠른 작성
                                 </Link>

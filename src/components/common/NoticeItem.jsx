@@ -6,6 +6,22 @@ const NoticeItem = ({ notice }) => {
     const truncate = (str, n) => {
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
     };
+
+    const removeMarkdown = (text = "") => {
+        return text
+            .replace(/```[\s\S]*?```/g, "")
+            .replace(/`([^`]+)`/g, "$1")
+            .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+            .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+            .replace(/#{1,6}\s?/g, "")
+            .replace(/(\*\*|__)(.*?)\1/g, "$2")
+            .replace(/(\*|_)(.*?)\1/g, "$2")
+            .replace(/^>\s?/gm, "")
+            .replace(/^[-*+]\s+/gm, "")
+            .replace(/^\d+\.\s+/gm, "")
+            .replace(/\n+/g, " ")
+            .trim();
+    };
     return (
         <li className={styles.item}>
             <div className={styles.titleArea}>
@@ -17,7 +33,7 @@ const NoticeItem = ({ notice }) => {
             {notice.content && (
                 <p className={styles.content}>
                     {/* truncate 함수로 감싸서 100글자 넘으면 ... 처리 */}
-                    <span>{truncate(notice.content, 100)}</span>
+                    <span>{truncate(removeMarkdown(notice.content), 100)}</span>
                 </p>
             )}
             <div className={styles.meta}>
