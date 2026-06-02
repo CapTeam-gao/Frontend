@@ -1,17 +1,155 @@
-# React + Vite
+# CapTeam Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CapTeam은 캡스톤 프로젝트 팀 구성을 자동화하고, 팀 생성 이후의 공지, 일지, 채팅, 학생 관리를 한곳에서 처리할 수 있도록 만든 캡스톤 팀 관리 서비스입니다.
 
-Currently, two official plugins are available:
+프론트엔드는 학생과 관리자의 사용 흐름을 분리하고, 로그인 이후 권한에 따라 각자 필요한 화면으로 진입할 수 있도록 설계했습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 프로젝트 목적
 
-## React Compiler
+캡스톤 프로젝트 팀 구성은 학생의 희망 직군, 기술 스택, 구현 경험, 협업 성향을 함께 고려해야 하기 때문에 수작업으로 처리하기 어렵습니다.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+CapTeam은 학생 설문 데이터를 기반으로 팀 구성에 필요한 정보를 수집하고, 관리자가 학년별 팀 생성을 요청한 뒤 생성된 팀을 검토하고 수정할 수 있는 흐름을 제공합니다.
 
-## Expanding the ESLint configuration
+## 핵심 사용자
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# Frontend
+| 사용자 | 역할 |
+| --- | --- |
+| 학생 | 설문 작성, 팀 채팅, 공지 확인, 캡스톤 일지 작성 |
+| 관리자 | 팀 생성, 팀 수정, 학생 관리, 공지 관리, 캡스톤 일지 확인 |
+
+## 서비스 흐름
+
+```txt
+로그인
+ ├─ 학생 계정
+ │   ├─ 설문 안내
+ │   ├─ 팀 매칭 설문 작성
+ │   ├─ 학생 대시보드
+ │   ├─ 공지 확인
+ │   ├─ 캡스톤 일지 작성
+ │   └─ 팀 채팅
+ │
+ └─ 관리자 계정
+     ├─ 관리자 대시보드
+     ├─ 팀 생성 요청
+     ├─ 팀 생성 로딩
+     ├─ 팀 결과 확인
+     ├─ 팀 수동 수정
+     ├─ 공지 작성/수정/삭제
+     ├─ 학생 관리
+     └─ 캡스톤 일지 관리
+```
+
+## 주요 기능
+
+### 인증 및 권한 흐름
+
+- JWT 기반 로그인 흐름을 기준으로 `accessToken`과 사용자 정보를 관리합니다.
+- Zustand 기반 `authStore`를 사용해 로그인 상태를 전역에서 관리합니다.
+- 사용자 권한에 따라 학생 페이지와 관리자 페이지의 진입 흐름을 분리했습니다.
+
+### 학생 설문
+
+- 학생의 희망 직군, 기술 스택, 구현 경험, 선호 팀원, 팀장 선호 여부를 입력받습니다.
+- 성격 성향과 개발 성향 문항을 통해 팀 구성에 참고할 데이터를 수집합니다.
+- 설문 완료 전 서비스 이용을 제한하는 흐름을 고려해 설계했습니다.
+
+### 관리자 팀 생성
+
+- 관리자가 2학년 또는 3학년을 선택해 팀 생성을 요청할 수 있습니다.
+- API 응답 대기 중 사용할 로딩 화면을 구성했습니다.
+- 생성된 팀 결과를 카드 형태로 확인하고, 필요 시 학생을 선택해 팀원을 교체할 수 있는 수정 화면을 제공합니다.
+
+### 공지 관리
+
+- 관리자 공지 작성, 목록 조회, 상세 조회, 수정, 삭제 기능을 제공합니다.
+- 공지 작성 화면에는 마크다운 에디터를 적용해 긴 공지를 구조적으로 작성할 수 있도록 했습니다.
+- 학생은 공지 목록과 상세 내용을 확인할 수 있습니다.
+
+### 대시보드
+
+- 학생 대시보드는 팀 채팅, 프로젝트, 캡스톤 일지, 공지로 이동하는 기능 중심 구조입니다.
+- 관리자 대시보드는 팀 생성, 채팅 관리, 캡스톤 일지, 학생 관리, 공지 관리로 이동하는 관리 중심 구조입니다.
+
+## 기술 스택
+
+| 영역 | 기술 |
+| --- | --- |
+| Framework | React, Vite |
+| Routing | React Router |
+| State | Zustand |
+| API | Axios |
+| Styling | CSS Module, Global CSS Variables |
+| Editor | @uiw/react-md-editor |
+| Deploy | Vercel |
+
+## 폴더 구조
+
+```txt
+src
+ ├─ api          # 기능별 API 요청 함수
+ ├─ assets       # 이미지, 아이콘 등 정적 파일
+ ├─ components   # 공통/관리자/학생 컴포넌트
+ ├─ data         # API 연결 전 확인용 더미데이터
+ ├─ hooks        # 인증, 모달 등 커스텀 훅
+ ├─ pages        # 라우터에 연결되는 페이지
+ │   ├─ admin    # 관리자 페이지
+ │   └─ user     # 학생 페이지
+ ├─ router       # 라우팅 설정
+ ├─ store        # 전역 상태 관리
+ ├─ styles       # 전역 스타일, CSS 변수
+ └─ utils        # 포맷팅, 검증 유틸 함수
+```
+
+## 주요 라우트
+
+| 경로 | 설명 |
+| --- | --- |
+| `/login` | 로그인 |
+| `/user/survey/intro` | 학생 설문 안내 |
+| `/user/survey` | 학생 팀 매칭 설문 |
+| `/user/dashboard` | 학생 대시보드 |
+| `/user/notice` | 학생 공지 목록 |
+| `/admin/dashboard` | 관리자 대시보드 |
+| `/admin/team-create` | 팀 생성 |
+| `/admin/team-create/loading` | 팀 생성 로딩 |
+| `/admin/team-edit` | 팀 수정 |
+| `/admin/notice` | 관리자 공지 목록 |
+| `/admin/notice/create` | 공지 작성 |
+| `/admin/notice/:id/edit` | 공지 수정 |
+
+## 실행 방법
+
+```bash
+npm install
+npm run dev
+```
+
+개발 서버 실행 후 아래 주소로 접속합니다.
+
+```txt
+http://localhost:5173
+```
+
+## 빌드
+
+```bash
+npm run build
+```
+
+## 개발 상태
+
+| 기능 | 상태 |
+| --- | --- |
+| 로그인/JWT 인증 흐름 | 구현 및 백엔드 연동 진행 |
+| 공지 CRUD | 구현 및 백엔드 연동 |
+| 학생/관리자 대시보드 | 퍼블리싱 완료 |
+| 학생 설문 | UI 및 기본 입력 로직 구현 |
+| 팀 생성/로딩/수정 화면 | UI 및 더미데이터 기반 흐름 구현 |
+| 채팅/일지/학생 관리 | 화면 기반 구현 진행 |
+
+## 최종 서비스 방향
+
+CapTeam은 단순히 팀을 자동으로 나누는 화면이 아니라, 캡스톤 프로젝트 운영 흐름 전체를 관리하는 서비스를 목표로 합니다.
+
+학생은 설문을 통해 자신의 기술과 협업 성향을 입력하고, 관리자는 이를 바탕으로 생성된 팀을 검토하고 수정할 수 있습니다. 이후 공지, 일지, 채팅 기능을 통해 팀 생성 이후의 프로젝트 운영까지 이어지는 구조를 제공합니다.
