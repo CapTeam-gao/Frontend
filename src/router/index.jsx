@@ -8,7 +8,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminTeamCreate from "../pages/admin/AdminTeamCreate";
 import AdminTeamCreateLoading from "../pages/admin/AdminTeamCreateLoading";
 import AdminTeamEdit from "../pages/admin/AdminTeamEdit";
-import AdminTeamManage from "../pages/admin/AdminTeamManage";
+// import AdminTeamManage from "../pages/admin/AdminTeamManage";
 import AdminLogList from "../pages/admin/AdminLogList";
 import AdminLogDetail from "../pages/admin/AdminLogDetail";
 import AdminStudentManage from "../pages/admin/AdminStudentManage";
@@ -27,6 +27,8 @@ import UserNoticeList from "../pages/user/UserNoticeList";
 import UserNoticeDetail from "../pages/user/UserNoticeDetail";
 import UserProfile from "../pages/user/UserProfile";
 import UserTeamChat from "../pages/user/UserTeamChat";
+import UserSurvey from "../pages/user/UserSurvey";
+import UserSurveyIntro from "../pages/user/UserSurveyIntro";
 
 // router 설정하는 파일
 const Router = () => {
@@ -43,7 +45,7 @@ const Router = () => {
                 element={<AdminTeamCreateLoading />}
             />
             <Route path="/admin/team-edit" element={<AdminTeamEdit />} />
-            <Route path="/admin/team-manage" element={<AdminTeamManage />} />
+            {/* <Route path="/admin/team-manage" element={<AdminTeamManage />} /> */}
             <Route path="/admin/log" element={<AdminLogList />} />
             <Route path="/admin/log/:id" element={<AdminLogDetail />} />
             <Route path="/admin/student" element={<AdminStudentManage />} />
@@ -52,7 +54,10 @@ const Router = () => {
                 path="/admin/notice/create"
                 element={<AdminNoticeCreate />}
             />
-            <Route path="/admin/notice/:id/edit" element={<AdminNoticeEdit />} />
+            <Route
+                path="/admin/notice/:id/edit"
+                element={<AdminNoticeEdit />}
+            />
             <Route path="/admin/notice/:id" element={<AdminNoticeDetail />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
             <Route path="/admin/chat" element={<AdminChatManage />} />
@@ -64,6 +69,8 @@ const Router = () => {
             <Route path="/user/notice" element={<UserNoticeList />} />
             <Route path="/user/notice/:id" element={<UserNoticeDetail />} />
             <Route path="/user/profile" element={<UserProfile />} />
+            <Route path="/user/survey/intro" element={<UserSurveyIntro />} />
+            <Route path="/user/survey" element={<UserSurvey />} />
 
             <Route path="/user/chat" element={<UserTeamChat />} />
             {/* 없는 주소 접근 시 로그인으로 */}

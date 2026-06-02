@@ -1,0 +1,91 @@
+.page {
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+.pageTitle {
+    margin: 0 0 18px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1300px;
+    min-height: 760px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+.loadingContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-18px);
+}
+
+.loadingIcon {
+    width: 170px;
+    height: 170px;
+    background-color: var(--color-primary);
+    mask: url("../../assets/icons/teamCreate.svg") center / contain no-repeat;
+}
+
+.loadingText {
+    margin: 48px 0 0;
+    color: #000000;
+    font-size: 42px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.3;
+}
+
+.dots::after {
+    display: inline-block;
+    width: 48px;
+    text-align: left;
+    content: "";
+    animation: loadingDots 1.4s steps(4, end) infinite;
+}
+
+@keyframes loadingDots {
+    0% {
+        content: "";
+    }
+
+    25% {
+        content: ".";
+    }
+
+    50% {
+        content: "..";
+    }
+
+    75%,
+    100% {
+        content: "...";
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 24px 16px 56px;
+    }
+
+    .panel {
+        min-height: 560px;
+    }
+
+    .loadingIcon {
+        width: 120px;
+        height: 120px;
+    }
+
+    .loadingText {
+        font-size: var(--font-size-3xl);
+        text-align: center;
+    }
+}

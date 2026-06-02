@@ -20,6 +20,7 @@ const UserDashboard = () => {
 
                         <div className={styles.cardText}>
                             <h1 className={styles.cardTitle}>팀 채팅</h1>
+                            {/* WebSocket을 통한 현재 채팅방 페이지에 접속해있는 학생 수 나타내기(백엔드 Api 호출) */}
                             <p className={styles.statusText}>2명 현재 활동중</p>
                         </div>
                     </Link>

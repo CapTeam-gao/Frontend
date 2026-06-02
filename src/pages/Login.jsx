@@ -34,9 +34,6 @@ const Login = () => {
                 setError("로그인 토큰을 받지 못했습니다.");
                 return;
             }
-            console.log(user.accountRole); //role - > accountRole로 변경
-            console.log(user);
-
             // 주석 해제
             if (!user || !user.accountRole) {
                 //role - > accountRole로 변경
@@ -45,10 +42,14 @@ const Login = () => {
             }
 
             saveLogin(user, token);
+
+            if (user.accountRole === "ADMIN") {
+                navigate("/admin/dashboard");
+                return;
+            }
+
             navigate(
-                user.accountRole === "ADMIN"
-                    ? "/admin/dashboard"
-                    : "/user/dashboard"
+                user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro"
             );
         } catch (e) {
             if (e.response?.status === 401) {

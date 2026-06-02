@@ -56,7 +56,7 @@
 
 .mainCardPending {
     border-color: var(--color-primary);
-    animation: teamBorderBlink 1.4s ease-in-out infinite;
+    animation: teamBorderBlink 0.8s ease-in-out infinite;
 }
 
 @keyframes teamBorderBlink {
