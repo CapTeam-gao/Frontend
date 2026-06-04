@@ -4,7 +4,6 @@ import Pagination from "../../components/common/Pagination";
 import Header from "../../components/common/Header";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import authStore from "../../store/authStore";
 import { requestNoticeList } from "../../api/noticeApi";
 
 const NOTICE_PER_PAGE = 6;
@@ -14,8 +13,6 @@ const UserNoticeList = () => {
     const [notices, setNotices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-
-    const token = authStore((state) => state.accessToken);
 
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE);
 
@@ -28,7 +25,7 @@ const UserNoticeList = () => {
     useEffect(() => {
         const getNoticeList = async () => {
             try {
-                const data = await requestNoticeList(token);
+                const data = await requestNoticeList();
                 setNotices(data);
             } catch {
                 setError("공지 목록을 불러오지 못했습니다.");
@@ -38,7 +35,7 @@ const UserNoticeList = () => {
         };
 
         getNoticeList();
-    }, [token]);
+    }, []);
 
     let content;
 

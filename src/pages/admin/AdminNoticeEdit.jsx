@@ -7,12 +7,10 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import styles from "./AdminNoticeCreate.module.css";
 import { requestNoticeDetail, requestUpdateNotice } from "../../api/noticeApi";
-import authStore from "../../store/authStore";
 
 const AdminNoticeEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const accessToken = authStore((state) => state.accessToken);
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -24,7 +22,7 @@ const AdminNoticeEdit = () => {
     useEffect(() => {
         const getNoticeDetail = async () => {
             try {
-                const notice = await requestNoticeDetail(id, accessToken);
+                const notice = await requestNoticeDetail(id);
 
                 setTitle(notice.title ?? "");
                 setContent(notice.content ?? "");
@@ -37,7 +35,7 @@ const AdminNoticeEdit = () => {
         };
 
         getNoticeDetail();
-    }, [id, accessToken]);
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,15 +56,11 @@ const AdminNoticeEdit = () => {
             setError("");
             setIsSubmitting(true);
 
-            await requestUpdateNotice(
-                id,
-                {
-                    title,
-                    content,
-                    important: important ? "IMPORTANT" : "COMMON",
-                },
-                accessToken
-            );
+            await requestUpdateNotice(id, {
+                title,
+                content,
+                important: important ? "IMPORTANT" : "COMMON",
+            });
 
             navigate(`/admin/notice/${id}`);
         } catch {

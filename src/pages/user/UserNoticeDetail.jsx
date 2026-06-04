@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import styles from "./UserNoticeDetail.module.css";
 import Header from "../../components/common/Header";
 import MDEditor from "@uiw/react-md-editor";
-import authStore from "../../store/authStore";
 import { requestNoticeDetail } from "../../api/noticeApi";
 import { formatCreatedAt } from "../../utils/format";
 
@@ -13,12 +12,11 @@ const UserNoticeDetail = () => {
     const [notice, setNotice] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-    const token = authStore((state) => state.accessToken);
 
     useEffect(() => {
         const getNoticeDetail = async () => {
             try {
-                const data = await requestNoticeDetail(id, token);
+                const data = await requestNoticeDetail(id);
                 setNotice(data);
             } catch {
                 setError("공지 상세 정보를 불러오지 못했습니다.");
@@ -28,7 +26,7 @@ const UserNoticeDetail = () => {
         };
 
         getNoticeDetail();
-    }, [id, token]);
+    }, [id]);
 
     if (isLoading) {
         return (

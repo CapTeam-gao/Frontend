@@ -7,7 +7,6 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import styles from "./AdminNoticeCreate.module.css";
 import { requestCreateNotice } from "../../api/noticeApi";
-import authStore from "../../store/authStore";
 
 const AdminNoticeCreate = () => {
     const [title, setTitle] = useState("");
@@ -17,7 +16,6 @@ const AdminNoticeCreate = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
-    const accessToken = authStore((state) => state.accessToken);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,14 +36,11 @@ const AdminNoticeCreate = () => {
             setError("");
             setIsSubmitting(true);
 
-            await requestCreateNotice(
-                {
-                    title,
-                    content,
-                    important: important ? "IMPORTANT" : "COMMON",
-                },
-                accessToken
-            );
+            await requestCreateNotice({
+                title,
+                content,
+                important: important ? "IMPORTANT" : "COMMON",
+            });
 
             navigate("/admin/notice");
         } catch {

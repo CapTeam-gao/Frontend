@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/common/Button";
 import { requestNoticeList } from "../../api/noticeApi";
-import authStore from "../../store/authStore";
 
 const NOTICE_PER_PAGE = 6; // 공지 몇 개로 페이지를 나눌지 선정
 
@@ -18,8 +17,6 @@ const AdminNoticeList = () => {
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE); // 공지 수 / 나눠서 보여줄 공지 수
     const startIndex = (currentPage - 1) * NOTICE_PER_PAGE;
 
-    const token = authStore((state) => state.accessToken);
-
     const currentNotices = notices.slice(
         startIndex,
         startIndex + NOTICE_PER_PAGE
@@ -28,7 +25,7 @@ const AdminNoticeList = () => {
     useEffect(() => {
         const getNoticeList = async () => {
             try {
-                const data = await requestNoticeList(token);
+                const data = await requestNoticeList();
                 setNotices(data);
             } catch {
                 setError("공지를 불러오지 못했습니다.");
@@ -37,7 +34,7 @@ const AdminNoticeList = () => {
             }
         };
         getNoticeList();
-    }, [token]);
+    }, []);
 
     let content;
 

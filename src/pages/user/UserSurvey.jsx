@@ -7,44 +7,137 @@ const roles = [
     "DevOps",
     "디자인",
     "AI",
+    "앱 개발",
     "게임개발",
+    "보안",
     "풀스택",
 ];
 
-const mainRoles = ["프론트엔드", "백엔드", "풀스택"];
-
-const personalityQuestions = [
-    "팀원들과 의견을 자주 공유하는 편입니다.",
-    "갈등이 생겼을 때 먼저 조율하려고 노력합니다.",
-    "맡은 일을 끝까지 책임지고 마무리하는 편입니다.",
-    "팀 안에서 필요한 일을 먼저 찾아서 움직입니다.",
-    "다른 사람의 의견을 듣고 내 생각을 조정할 수 있습니다.",
-    "일정이 밀릴 때 팀원에게 빠르게 공유합니다.",
-    "발표나 회의에서 의견을 말하는 것이 어렵지 않습니다.",
-    "팀 분위기가 어색할 때 먼저 말을 거는 편입니다.",
-    "역할 분담이 명확할수록 더 편하게 일합니다.",
-    "팀 목표를 위해 개인 선호를 어느 정도 조정할 수 있습니다.",
+const personalityGroups = [
+    {
+        key: "communication",
+        label: "소통 성향",
+        questions: [
+            "나는 작업 중 막히는 부분이 있으면 팀원에게 상황을 공유하는 편이다.",
+            "나는 팀원의 의견이 내 생각과 달라도 먼저 들어보려고 한다.",
+        ],
+    },
+    {
+        key: "responsibility",
+        label: "책임감",
+        questions: [
+            "나는 맡은 일을 정해진 시간 안에 끝내려고 노력하는 편이다.",
+            "나는 내가 맡은 일이 늦어질 것 같으면 미리 팀원에게 알린다.",
+        ],
+    },
+    {
+        key: "collaboration",
+        label: "협업 선호도",
+        questions: [
+            "나는 혼자 작업하는 것보다 팀원과 역할을 나눠 작업하는 것이 편하다.",
+            "나는 팀원이 어려움을 겪고 있으면 내 일이 아니어도 도와주려는 편이다.",
+        ],
+    },
+    {
+        key: "flexibility",
+        label: "유연성",
+        questions: [
+            "나는 프로젝트 도중 역할이나 계획이 바뀌어도 적응하려고 노력한다.",
+            "나는 내 작업물에 대한 피드백을 받으면 수정 방향을 고민해본다.",
+        ],
+    },
+    {
+        key: "emotionalStability",
+        label: "감정 안정성",
+        questions: [
+            "나는 프로젝트 중 의견 충돌이 생겨도 감정적으로 대응하지 않으려고 한다.",
+            "나는 일정이 바빠져도 차분하게 우선순위를 정하려고 한다.",
+        ],
+    },
 ];
 
-const devQuestions = [
-    "새로운 기술을 찾아보고 적용하는 것을 좋아합니다.",
-    "구현 전 구조를 먼저 정리하고 개발하는 편입니다.",
-    "오류가 생기면 원인을 끝까지 추적하려고 합니다.",
-    "코드 작성 후 스스로 테스트하는 습관이 있습니다.",
-    "문서나 주석으로 작업 내용을 정리하는 편입니다.",
-    "기능을 작게 나누어 순서대로 구현하는 편입니다.",
-    "디자인과 사용자 경험을 고려하며 개발합니다.",
-    "Git/GitHub를 활용한 협업 흐름에 익숙합니다.",
-    "마감 전에 여유 있게 작업을 끝내려고 합니다.",
-    "어려운 기능도 자료를 찾아가며 구현해보려 합니다.",
+const developmentGroups = [
+    {
+        key: "leadership",
+        label: "리더십",
+        questions: [
+            "나는 팀 프로젝트에서 필요한 일을 먼저 정리하고 역할을 나누는 편이다.",
+            "나는 팀이 방향을 잃었을 때 먼저 의견을 내고 정리하려고 한다.",
+        ],
+    },
+    {
+        key: "problemSolving",
+        label: "문제 해결력",
+        questions: [
+            "나는 오류가 생기면 바로 포기하기보다 원인을 찾아보는 편이다.",
+            "나는 모르는 기능이 있어도 검색이나 문서를 보며 해결해보려고 한다.",
+        ],
+    },
+    {
+        key: "implementation",
+        label: "구현 실행력",
+        questions: [
+            "나는 정해진 기능을 실제 코드로 구현해보는 과정에 자신이 있다.",
+            "나는 작은 기능이라도 완성해서 화면에 보이게 만드는 것을 중요하게 생각한다.",
+        ],
+    },
+    {
+        key: "learningAbility",
+        label: "학습 성장성",
+        questions: [
+            "나는 프로젝트에 필요한 기술이라면 처음 접해도 배우려고 한다.",
+            "나는 내가 부족한 부분을 알게 되면 따로 공부해서 보완하려고 한다.",
+        ],
+    },
+    {
+        key: "planning",
+        label: "기획 정리력",
+        questions: [
+            "나는 기능을 만들기 전에 필요한 화면 흐름이나 데이터를 먼저 정리하는 편이다.",
+            "나는 프로젝트 내용을 문서나 발표 자료로 정리하는 것에 부담이 적다.",
+        ],
+    },
 ];
 
-const RatingRow = ({ number, question }) => {
+const flattenQuestions = (groups, type) => {
+    return groups.flatMap((group) =>
+        group.questions.map((question, index) => ({
+            id: `${type}-${group.key}-${index + 1}`,
+            category: group.key,
+            categoryLabel: group.label,
+            question,
+        }))
+    );
+};
+
+const personalityQuestions = flattenQuestions(personalityGroups, "personality");
+const developmentQuestions = flattenQuestions(developmentGroups, "development");
+const allRatingQuestions = [...personalityQuestions, ...developmentQuestions];
+
+const calculateAverageScores = (groups, answers, type) => {
+    return groups.reduce((scores, group) => {
+        const questionIds = group.questions.map(
+            (_, index) => `${type}-${group.key}-${index + 1}`
+        );
+        const total = questionIds.reduce(
+            (sum, questionId) => sum + Number(answers[questionId]),
+            0
+        );
+
+        return {
+            ...scores,
+            [group.key]: total / questionIds.length,
+        };
+    }, {});
+};
+
+const RatingRow = ({ number, question, categoryLabel, value, onChange }) => {
     return (
         <li className={styles.questionItem}>
             <p className={styles.questionText}>
                 {number}. {question}
             </p>
+            <p className={styles.questionCategory}>{categoryLabel}</p>
 
             <div className={styles.scaleArea}>
                 <div className={styles.scaleLabels}>
@@ -62,6 +155,8 @@ const RatingRow = ({ number, question }) => {
                                 type="radio"
                                 name={`question-${number}`}
                                 value={score}
+                                checked={value === score}
+                                onChange={() => onChange(score)}
                             />
                             <span>{score}</span>
                         </label>
@@ -73,7 +168,7 @@ const RatingRow = ({ number, question }) => {
 };
 
 const UserSurvey = () => {
-    const [selectedRoles, setSelectedRoles] = useState([]);
+    const [selectedRole, setSelectedRole] = useState("");
     const [stackText, setStackText] = useState("");
     const [experiences, setExperiences] = useState([
         {
@@ -83,28 +178,11 @@ const UserSurvey = () => {
     ]);
     const [preferredMembers, setPreferredMembers] = useState([""]);
     const [leaderPreference, setLeaderPreference] = useState("");
+    const [answers, setAnswers] = useState({});
+    const [error, setError] = useState("");
 
-    const toggleRole = (role) => {
-        setSelectedRoles((prevRoles) => {
-            const isSelected = prevRoles.includes(role);
-
-            if (isSelected) {
-                return prevRoles.filter(
-                    (selectedRole) => selectedRole !== role
-                );
-            }
-
-            if (mainRoles.includes(role)) {
-                return [
-                    ...prevRoles.filter(
-                        (selectedRole) => !mainRoles.includes(selectedRole)
-                    ),
-                    role,
-                ];
-            }
-
-            return [...prevRoles, role];
-        });
+    const selectRole = (role) => {
+        setSelectedRole(role);
     };
 
     const updateExperience = (id, value) => {
@@ -151,6 +229,55 @@ const UserSurvey = () => {
         );
     };
 
+    const updateAnswer = (questionId, score) => {
+        setAnswers((prevAnswers) => ({
+            ...prevAnswers,
+            [questionId]: score,
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const hasEmptyRating = allRatingQuestions.some(
+            (question) => !answers[question.id]
+        );
+
+        if (hasEmptyRating) {
+            setError("성격 성향과 개발 성향 문항을 모두 선택해주세요.");
+            return;
+        }
+
+        setError("");
+
+        const surveyData = {
+            role: selectedRole,
+            skills: stackText
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean),
+            experiences: experiences
+                .map((experience) => experience.value.trim())
+                .filter(Boolean),
+            preferredMembers: preferredMembers
+                .map((member) => member.trim())
+                .filter(Boolean),
+            wantsLeader: leaderPreference === "O",
+            personalityScores: calculateAverageScores(
+                personalityGroups,
+                answers,
+                "personality"
+            ),
+            developmentScores: calculateAverageScores(
+                developmentGroups,
+                answers,
+                "development"
+            ),
+        };
+
+        console.log(surveyData);
+    };
+
     return (
         <div className={styles.page}>
             <main className={styles.body}>
@@ -162,7 +289,7 @@ const UserSurvey = () => {
                 </section>
 
                 <section className={styles.layout}>
-                    <form className={styles.form}>
+                    <form className={styles.form} onSubmit={handleSubmit}>
                         <section className={styles.card}>
                             <div className={styles.cardHeader}>
                                 <span>STEP 1</span>
@@ -187,11 +314,11 @@ const UserSurvey = () => {
                                             className={`${
                                                 styles.optionButton
                                             } ${
-                                                selectedRoles.includes(role)
+                                                selectedRole === role
                                                     ? styles.selectedOption
                                                     : ""
                                             }`}
-                                            onClick={() => toggleRole(role)}
+                                            onClick={() => selectRole(role)}
                                         >
                                             {role}
                                         </button>
@@ -363,9 +490,14 @@ const UserSurvey = () => {
                             <ul className={styles.questionList}>
                                 {personalityQuestions.map((question, index) => (
                                     <RatingRow
-                                        key={question}
+                                        key={question.id}
                                         number={index + 1}
-                                        question={question}
+                                        question={question.question}
+                                        categoryLabel={question.categoryLabel}
+                                        value={answers[question.id]}
+                                        onChange={(score) =>
+                                            updateAnswer(question.id, score)
+                                        }
                                     />
                                 ))}
                             </ul>
@@ -382,22 +514,31 @@ const UserSurvey = () => {
                             </div>
 
                             <ul className={styles.questionList}>
-                                {devQuestions.map((question, index) => (
-                                    <RatingRow
-                                        key={question}
-                                        number={index + 11}
-                                        question={question}
-                                    />
-                                ))}
+                                {developmentQuestions.map(
+                                    (question, index) => (
+                                        <RatingRow
+                                            key={question.id}
+                                            number={index + 11}
+                                            question={question.question}
+                                            categoryLabel={
+                                                question.categoryLabel
+                                            }
+                                            value={answers[question.id]}
+                                            onChange={(score) =>
+                                                updateAnswer(question.id, score)
+                                            }
+                                        />
+                                    )
+                                )}
                             </ul>
                         </section>
 
                         <div className={styles.submitArea}>
-                            <p>
-                                제출 후에는 마이페이지에서 일부 정보를 수정할 수
-                                있습니다.
+                            <p className={error ? styles.errorText : ""}>
+                                {error ||
+                                    "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다."}
                             </p>
-                            <button type="button">설문 제출</button>
+                            <button type="submit">설문 제출</button>
                         </div>
                     </form>
                 </section>

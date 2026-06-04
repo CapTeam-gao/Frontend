@@ -210,7 +210,8 @@
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
-    transition: border-color var(--transition), background-color var(--transition), color var(--transition);
+    transition: border-color var(--transition),
+        background-color var(--transition), color var(--transition);
 }
 
 .optionButton:hover,
@@ -220,8 +221,8 @@
 }
 
 .optionButton {
-    min-width: 128px;
-    padding: 0 18px;
+    min-width: 100px;
+    padding: 0 10px;
 }
 
 .selectedOption {
@@ -279,7 +280,8 @@
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
-    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    transition: background-color var(--transition),
+        border-color var(--transition), color var(--transition);
 }
 
 .addRow button:hover,
@@ -393,8 +395,19 @@
     line-height: 1.5;
 }
 
+.questionCategory {
+    width: fit-content;
+    margin-top: 12px;
+    padding: 6px 12px;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
 .scaleArea {
-    margin-top: 34px;
+    margin-top: 14px;
 }
 
 .scaleLabels {
@@ -461,6 +474,10 @@
     font-weight: var(--font-weight-semibold);
 }
 
+.submitArea .errorText {
+    color: var(--color-danger);
+}
+
 .submitArea button {
     flex-shrink: 0;
     height: 48px;
@@ -472,7 +489,8 @@
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
-    transition: background-color var(--transition), border-color var(--transition);
+    transition: background-color var(--transition),
+        border-color var(--transition);
 }
 
 .submitArea button:hover {
@@ -500,7 +518,6 @@
     .optionButton {
         min-width: calc(50% - 4px);
     }
-
 }
 
 @media (max-width: 768px) {

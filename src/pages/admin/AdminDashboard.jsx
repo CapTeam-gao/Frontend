@@ -7,12 +7,10 @@ import ChatIcon from "../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../assets/icons/notice.svg";
 import { requestAdminDashboard } from "../../api/dashboardApi";
-import authStore from "../../store/authStore";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
-    const token = authStore((state) => state.accessToken);
     const [dashboard, setDashboard] = useState({
         teamCreated: false,
         totalTeamCount: 0,
@@ -27,10 +25,8 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         const getDashboard = async () => {
-            if (!token) return;
-
             try {
-                const data = await requestAdminDashboard(token);
+                const data = await requestAdminDashboard();
                 setDashboard((prevDashboard) => ({
                     ...prevDashboard,
                     ...data,
@@ -41,7 +37,7 @@ const AdminDashboard = () => {
         };
 
         getDashboard();
-    }, [token]);
+    }, []);
 
     const isTeamCreated = dashboard.teamCreated;
 

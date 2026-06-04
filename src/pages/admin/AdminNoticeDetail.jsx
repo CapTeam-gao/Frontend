@@ -4,14 +4,12 @@ import styles from "./AdminNoticeDetail.module.css";
 import Header from "../../components/common/Header";
 import Button from "../../components/common/Button";
 import { requestDeleteNotice, requestNoticeDetail } from "../../api/noticeApi";
-import authStore from "../../store/authStore";
 import MDEditor from "@uiw/react-md-editor";
 import { formatCreatedAt } from "../../utils/format";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const accessToken = authStore((state) => state.accessToken);
     const [notice, setNotice] = useState(null);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +20,7 @@ const AdminNoticeDetail = () => {
     useEffect(() => {
         const getNoticeDetail = async () => {
             try {
-                const data = await requestNoticeDetail(id, accessToken);
+                const data = await requestNoticeDetail(id);
 
                 setNotice(data);
             } catch {
@@ -33,19 +31,14 @@ const AdminNoticeDetail = () => {
         };
 
         getNoticeDetail();
-    }, [id, accessToken]);
+    }, [id]);
 
     const handleDeleteNotice = async () => {
         try {
             setDeleteError("");
             setIsDeleting(true);
 
-            if (!accessToken) {
-                setDeleteError("로그인 정보가 없어 공지를 삭제할 수 없습니다.");
-                return;
-            }
-
-            await requestDeleteNotice(notice.id, accessToken);
+            await requestDeleteNotice(notice.id);
             navigate("/admin/notice");
         } catch {
             setDeleteError(
