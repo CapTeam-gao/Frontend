@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-// 테스트 중에는 각 페이지를 바로 확인하기 위해 ProtectedRoute를 잠시 비활성화함
+// 개발 중에는 각 페이지를 바로 확인하기 위해 ProtectedRoute를 잠시 비활성화함
 // import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/Login";

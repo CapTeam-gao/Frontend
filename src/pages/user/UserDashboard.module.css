@@ -18,6 +18,17 @@
     margin: 0 auto;
 }
 
+.errorText {
+    width: fit-content;
+    margin: 0 auto 18px;
+    padding: 9px 12px;
+    border-radius: var(--border-radius-sm);
+    background-color: #fff1f1;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
 .card {
     position: relative;
     display: flex;
@@ -28,10 +39,12 @@
     background-color: #ffffff;
     color: inherit;
     text-decoration: none;
+    transition: border-color var(--transition), background-color var(--transition);
 }
 
 .card:hover {
-    background-color: rgb(250, 250, 250);
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-hover);
     cursor: pointer;
 }
 

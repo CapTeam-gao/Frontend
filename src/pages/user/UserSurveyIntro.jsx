@@ -5,7 +5,8 @@ import styles from "./UserSurveyIntro.module.css";
 const surveySections = [
     {
         title: "기술 정보",
-        description: "희망 직군, 구현 경험, 사용 가능한 기술 스택을 입력합니다.",
+        description:
+            "희망 직군, 구현 경험, 사용 가능한 기술 스택을 입력합니다.",
     },
     {
         title: "협업 성향",
@@ -34,7 +35,10 @@ const UserSurveyIntro = () => {
 
                 <div className={styles.infoGrid}>
                     {surveySections.map((section, index) => (
-                        <article key={section.title} className={styles.infoCard}>
+                        <article
+                            key={section.title}
+                            className={styles.infoCard}
+                        >
                             <span>STEP {index + 1}</span>
                             <h2>{section.title}</h2>
                             <p>{section.description}</p>
@@ -46,8 +50,8 @@ const UserSurveyIntro = () => {
                     <strong>예상 소요 시간</strong>
                     <span>약 5분</span>
                     <p>
-                        설문은 한 번만 진행하며, 제출 후 일부 정보는 마이페이지에서
-                        수정할 수 있습니다.
+                        설문은 한 번만 진행하며 수정할 수 없으니 신중하게 설문에
+                        임하기 바랍니다.
                     </p>
                 </div>
 

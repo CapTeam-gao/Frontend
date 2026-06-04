@@ -4,13 +4,31 @@ import Header from "../../components/common/Header";
 import { cloneTeams } from "../../data/teamDummy";
 import styles from "./AdminTeamEdit.module.css";
 
+// 전체 팀 목록에서 선택한 학생이 몇 번째 팀, 몇 번째 위치에 있는지 찾는 함수
 const findMember = (teams, target) => {
+    // target.teamId와 같은 id를 가진 팀의 위치를 찾음
     const teamIndex = teams.findIndex((team) => team.id === target.teamId);
+
+    // 팀을 찾지 못하면 -1이 나오기 때문에, 에러를 막기 위해 null 반환
+    if (teamIndex === -1) {
+        return null;
+    }
+
+    // 찾은 팀 안에서 target.memberId와 같은 id를 가진 학생의 위치를 찾음
     const memberIndex = teams[teamIndex].members.findIndex(
         (member) => member.id === target.memberId
     );
 
-    return { teamIndex, memberIndex };
+    // 학생을 찾지 못하면 -1이 나오기 때문에, 에러를 막기 위해 null 반환
+    if (memberIndex === -1) {
+        return null;
+    }
+
+    // 팀 위치와 학생 위치를 객체로 반환
+    return {
+        teamIndex,
+        memberIndex,
+    };
 };
 
 const MemberRow = ({ member, selected, leaderSlot, onClick }) => {
@@ -216,6 +234,8 @@ const AdminTeamEdit = () => {
             const first = findMember(copiedTeams, selectedMember);
             const second = findMember(copiedTeams, nextSelected);
 
+            if (!first || !second) return copiedTeams;
+
             const firstMember =
                 copiedTeams[first.teamIndex].members[first.memberIndex];
             const secondMember =
@@ -247,13 +267,11 @@ const AdminTeamEdit = () => {
         setTeams(cloneTeams());
         setSelectedMember(null);
         setFlippedTeamIds([]);
-        setMessage("더미 팀 구성이 처음 상태로 돌아갔습니다.");
+        setMessage("팀 구성이 처음 상태로 돌아갔습니다.");
     };
 
     const handleApprove = () => {
-        setMessage(
-            "더미 팀 구성이 승인되었습니다. API 연결 전 임시 동작입니다."
-        );
+        setMessage("");
     };
 
     return (
@@ -262,7 +280,7 @@ const AdminTeamEdit = () => {
 
             <section className={styles.panel}>
                 <main className={styles.content}>
-                    <Link to="/admin/team-manage" className={styles.backLink}>
+                    <Link to="/admin/team-create" className={styles.backLink}>
                         ← 처음으로
                     </Link>
                     <div className={styles.titleArea}>

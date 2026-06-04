@@ -6,12 +6,16 @@ const makeAuthHeader = (token) => {
     };
 };
 
+const getResponseData = (response) => {
+    return response.data.data ?? response.data;
+};
+
 export const requestNoticeList = async (token) => {
     const response = await api.get("/api/notices", {
         headers: makeAuthHeader(token),
     });
 
-    return response.data.data ?? [];
+    return getResponseData(response) ?? [];
 };
 
 export const requestNoticeDetail = async (noticeId, token) => {
@@ -19,7 +23,7 @@ export const requestNoticeDetail = async (noticeId, token) => {
         headers: makeAuthHeader(token),
     });
 
-    return response.data.data;
+    return getResponseData(response);
 };
 
 export const requestCreateNotice = async (noticeData, token) => {
@@ -27,7 +31,7 @@ export const requestCreateNotice = async (noticeData, token) => {
         headers: makeAuthHeader(token),
     });
 
-    return response.data.data;
+    return getResponseData(response);
 };
 
 export const requestUpdateNotice = async (noticeId, noticeData, token) => {
@@ -39,7 +43,7 @@ export const requestUpdateNotice = async (noticeId, noticeData, token) => {
         }
     );
 
-    return response.data.data;
+    return getResponseData(response);
 };
 
 export const requestDeleteNotice = async (noticeId, token) => {
@@ -47,5 +51,5 @@ export const requestDeleteNotice = async (noticeId, token) => {
         headers: makeAuthHeader(token),
     });
 
-    return response.data.data;
+    return getResponseData(response);
 };

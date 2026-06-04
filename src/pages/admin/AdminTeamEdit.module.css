@@ -30,6 +30,10 @@
     text-decoration: none;
 }
 
+.backLink:hover {
+    color: var(--color-primary-dark);
+}
+
 .titleArea {
     display: flex;
     align-items: flex-end;
@@ -79,10 +83,18 @@
     color: var(--color-primary);
 }
 
+.secondaryButton:hover {
+    background-color: var(--color-primary-bg);
+}
+
 .primaryButton {
     border: 1px solid var(--color-primary);
     background-color: var(--color-primary);
     color: #ffffff;
+}
+
+.primaryButton:hover {
+    background-color: var(--color-primary-dark);
 }
 
 .messageText {

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import TeamCreateIcon from "../../assets/icons/teamCreate.svg";
@@ -5,16 +6,52 @@ import TeamIcon from "../../assets/icons/team.svg";
 import ChatIcon from "../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../assets/icons/notice.svg";
+import { requestAdminDashboard } from "../../api/dashboardApi";
+import authStore from "../../store/authStore";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
-    const isTeamCreated = false;
     const navigate = useNavigate();
+    const token = authStore((state) => state.accessToken);
+    const [dashboard, setDashboard] = useState({
+        teamCreated: false,
+        totalTeamCount: 0,
+        grade2TeamCount: 0,
+        grade3TeamCount: 0,
+        activeChatRoomCount: 0,
+        journalNotSubmittedTeamCount: 0,
+        totalStudentCount: 0,
+        hasUnreadNotice: false,
+    });
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const getDashboard = async () => {
+            if (!token) return;
+
+            try {
+                const data = await requestAdminDashboard(token);
+                setDashboard((prevDashboard) => ({
+                    ...prevDashboard,
+                    ...data,
+                }));
+            } catch {
+                setError("대시보드 정보를 불러오지 못했습니다.");
+            }
+        };
+
+        getDashboard();
+    }, [token]);
+
+    const isTeamCreated = dashboard.teamCreated;
+
     return (
         <div className={styles.page}>
             <Header />
 
             <main className={styles.body}>
+                {error && <p className={styles.errorText}>{error}</p>}
+
                 <section className={styles.dashboard}>
                     <div className={styles.topGrid}>
                         <Link
@@ -49,10 +86,12 @@ const AdminDashboard = () => {
                                 {isTeamCreated && (
                                     <>
                                         <strong className={styles.teamCount}>
-                                            17팀
+                                            {dashboard.totalTeamCount}팀
                                         </strong>
                                         <p className={styles.teamMeta}>
-                                            2학년: 12팀 | 3학년: 5팀
+                                            2학년: {dashboard.grade2TeamCount}
+                                            팀 | 3학년:{" "}
+                                            {dashboard.grade3TeamCount}팀
                                         </p>
                                     </>
                                 )}
@@ -77,7 +116,7 @@ const AdminDashboard = () => {
                                 </h2>
                                 <p className={styles.description}>
                                     {isTeamCreated
-                                        ? "7개 진행중"
+                                        ? `${dashboard.activeChatRoomCount}개 진행중`
                                         : "팀 생성 후 이용 가능합니다"}
                                 </p>
                             </div>
@@ -92,7 +131,7 @@ const AdminDashboard = () => {
                                 </h2>
                                 <p className={styles.statusText}>
                                     {isTeamCreated
-                                        ? "2팀 미제출"
+                                        ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
                                         : "팀 생성 후 이용 가능합니다"}
                                 </p>
                             </div>
@@ -108,7 +147,7 @@ const AdminDashboard = () => {
                             <div className={styles.smallText}>
                                 <h2 className={styles.cardTitle}>학생</h2>
                                 <span className={styles.countBadge}>
-                                    135명 등록
+                                    {dashboard.totalStudentCount}명 등록
                                 </span>
                             </div>
                             <div className={styles.smallIcon}>

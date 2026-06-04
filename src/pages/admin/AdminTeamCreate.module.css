@@ -90,7 +90,7 @@
     margin-top: 40px;
     padding: 20px 28px;
     border-radius: var(--border-radius-lg);
-    background-color: var(--color-bg);
+    background-color: rgb(234, 234, 234);
 }
 
 .criteriaTitle {

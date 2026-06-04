@@ -119,7 +119,7 @@ const UserSurvey = () => {
         setExperiences((prevExperiences) => [
             ...prevExperiences,
             {
-                id: Date.now(),
+                id: crypto.randomUUID(), // 고유한 ID 생성해주는 함수
                 value: "",
             },
         ]);

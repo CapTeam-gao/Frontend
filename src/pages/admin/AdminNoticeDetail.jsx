@@ -23,7 +23,6 @@ const AdminNoticeDetail = () => {
         const getNoticeDetail = async () => {
             try {
                 const data = await requestNoticeDetail(id, accessToken);
-                console.log("공지 상세 응답:", data);
 
                 setNotice(data);
             } catch {

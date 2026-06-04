@@ -1,41 +1,88 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/common/Header";
 import ChatIcon from "../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../assets/icons/notice.svg";
 import ProjectIcon from "../../assets/icons/project.svg";
+import { requestUserDashboard } from "../../api/dashboardApi";
+import authStore from "../../store/authStore";
 import styles from "./UserDashboard.module.css";
 
 const UserDashboard = () => {
+    const token = authStore((state) => state.accessToken);
+    const [dashboard, setDashboard] = useState({
+        teamCreated: false,
+        teamChatActiveStudentCount: 0,
+        capstoneTime: false,
+        todayJournalSubmitted: false,
+        hasUnreadNotice: false,
+    });
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const getDashboard = async () => {
+            if (!token) return;
+
+            try {
+                const data = await requestUserDashboard(token);
+                setDashboard((prevDashboard) => ({
+                    ...prevDashboard,
+                    ...data,
+                }));
+            } catch {
+                setError("대시보드 정보를 불러오지 못했습니다.");
+            }
+        };
+
+        getDashboard();
+    }, [token]);
+
+    const featurePath = (path) =>
+        dashboard.teamCreated ? path : "/user/dashboard";
+
     return (
         <div className={styles.page}>
             <Header />
 
             <main className={styles.body}>
+                {error && <p className={styles.errorText}>{error}</p>}
+
                 <section className={styles.dashboard}>
-                    <Link to="/user/chat" className={styles.card}>
+                    <Link to={featurePath("/user/chat")} className={styles.card}>
                         <div className={styles.iconBox}>
                             <img src={ChatIcon} alt="" />
                         </div>
 
                         <div className={styles.cardText}>
                             <h1 className={styles.cardTitle}>팀 채팅</h1>
-                            {/* WebSocket을 통한 현재 채팅방 페이지에 접속해있는 학생 수 나타내기(백엔드 Api 호출) */}
-                            <p className={styles.statusText}>2명 현재 활동중</p>
+                            <p className={styles.statusText}>
+                                {dashboard.teamCreated
+                                    ? `${dashboard.teamChatActiveStudentCount}명 현재 활동중`
+                                    : "팀 생성 전입니다"}
+                            </p>
                         </div>
                     </Link>
 
-                    <Link to="/user/project" className={styles.card}>
+                    <Link
+                        to={featurePath("/user/project")}
+                        className={styles.card}
+                    >
                         <div className={styles.iconBox}>
                             <img src={ProjectIcon} alt="" />
                         </div>
 
                         <div className={styles.cardText}>
                             <h2 className={styles.cardTitle}>프로젝트</h2>
+                            {!dashboard.teamCreated && (
+                                <p className={styles.statusText}>
+                                    팀 생성 전입니다
+                                </p>
+                            )}
                         </div>
                     </Link>
 
-                    <Link to="/user/log" className={styles.card}>
+                    <Link to={featurePath("/user/log")} className={styles.card}>
                         <div className={styles.iconBox}>
                             <img src={CapstonLogIcon} alt="" />
                         </div>
@@ -45,13 +92,20 @@ const UserDashboard = () => {
                             <p
                                 className={`${styles.statusText} ${styles.dangerStatus}`}
                             >
-                                오늘 일지 미제출
+                                {!dashboard.teamCreated
+                                    ? "팀 생성 전입니다"
+                                    : dashboard.capstoneTime &&
+                                        !dashboard.todayJournalSubmitted
+                                      ? "오늘 일지 미제출"
+                                      : ""}
                             </p>
                         </div>
                     </Link>
 
                     <Link to="/user/notice" className={styles.card}>
-                        <span className={styles.newBadge}>N</span>
+                        {dashboard.hasUnreadNotice && (
+                            <span className={styles.newBadge}>N</span>
+                        )}
 
                         <div className={styles.iconBox}>
                             <img src={NoticeIcon} alt="" />

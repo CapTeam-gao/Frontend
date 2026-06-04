@@ -24,11 +24,13 @@ const AdminTeamCreate = () => {
                                 value="2"
                                 defaultChecked
                             />
+                            {/* 백엔드한테 응답받은 2학년 수 렌더링 */}
                             <span>2학년 (59명)</span>
                         </label>
 
                         <label className={styles.gradeOption}>
                             <input type="radio" name="grade" value="3" />
+                            {/* 백엔드한테 응답받은 3학년 수 렌더링 */}
                             <span>3학년 (76명)</span>
                         </label>
                     </div>
