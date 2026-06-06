@@ -1,11 +1,33 @@
 import styles from "./Header.module.css";
 import Logo from "../../assets/images/logo.png";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authStore from "../../store/authStore";
+import { requestAdminDashboard } from "../../api/dashboardApi";
 
 const Header = () => {
     const user = authStore((state) => state.user);
     const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
+    const [teamCreated, setTeamCreated] = useState(false);
+
+    useEffect(() => {
+        if (!isAdmin) return;
+
+        const getTeamStatus = async () => {
+            try {
+                const dashboard = await requestAdminDashboard();
+                setTeamCreated(
+                    Boolean(
+                        dashboard?.teamCreated || dashboard?.totalTeamCount > 0
+                    )
+                );
+            } catch {
+                setTeamCreated(false);
+            }
+        };
+
+        getTeamStatus();
+    }, [isAdmin]);
 
     const makeHeaderName = (user) => {
         if (!user) return "";
@@ -32,7 +54,15 @@ const Header = () => {
             <nav className={styles.nav}>
                 {isAdmin ? (
                     <>
-                        <Link to="/admin/team-create">팀 생성</Link>
+                        <Link
+                            to={
+                                teamCreated
+                                    ? "/admin/team-manage"
+                                    : "/admin/team-create"
+                            }
+                        >
+                            {teamCreated ? "팀 관리" : "팀 생성"}
+                        </Link>
                         <Link to="/admin/chat">채팅 관리</Link>
                         <Link to="/admin/log">캡스톤 일지</Link>
                         <Link to="/admin/student">학생 관리</Link>

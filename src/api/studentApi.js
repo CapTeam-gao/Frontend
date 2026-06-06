@@ -1,13 +1,17 @@
 import api from "./api";
 
+const getResponseData = (response) => response.data?.data ?? response.data;
+
 export const requestAdminStudentList = async () => {
     const response = await api.get("/api/admin/students");
 
-    return response.data;
+    return getResponseData(response);
 };
 
 export const requestAdminStudentDetail = async (userId) => {
-    const response = await api.get(`/api/admin/students/${userId}`);
+    const response = await api.get(`/api/admin/students/${userId}`, {
+        skipAuthRedirect: true,
+    });
 
-    return response.data;
+    return getResponseData(response);
 };

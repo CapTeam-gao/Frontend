@@ -1,8 +1,9 @@
 import { create } from "zustand";
+import { getStoredAccessToken, isValidAccessToken } from "../utils/authToken";
 
 export const ACCESS_TOKEN_KEY = "accessToken";
 
-const savedToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+const savedToken = getStoredAccessToken();
 
 const authStore = create((set) => ({
     isLogin: savedToken ? null : false,
@@ -10,11 +11,21 @@ const authStore = create((set) => ({
     accessToken: savedToken,
 
     saveLogin: (user, accessToken) => {
-        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+        if (!isValidAccessToken(accessToken)) {
+            localStorage.removeItem(ACCESS_TOKEN_KEY);
+            set({
+                user: null,
+                accessToken: null,
+                isLogin: false,
+            });
+            return;
+        }
+
+        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken.trim());
 
         set({
             user,
-            accessToken,
+            accessToken: accessToken.trim(),
             isLogin: true,
         });
     },

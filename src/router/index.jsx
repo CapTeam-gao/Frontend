@@ -8,7 +8,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminTeamCreate from "../pages/admin/AdminTeamCreate";
 import AdminTeamCreateLoading from "../pages/admin/AdminTeamCreateLoading";
 import AdminTeamEdit from "../pages/admin/AdminTeamEdit";
-// import AdminTeamManage from "../pages/admin/AdminTeamManage";
+import AdminTeamManage from "../pages/admin/AdminTeamManage";
 import AdminLogList from "../pages/admin/AdminLogList";
 import AdminLogDetail from "../pages/admin/AdminLogDetail";
 import AdminStudentManage from "../pages/admin/AdminStudentManage";
@@ -45,7 +45,7 @@ const Router = () => {
                 element={<AdminTeamCreateLoading />}
             />
             <Route path="/admin/team-edit" element={<AdminTeamEdit />} />
-            {/* <Route path="/admin/team-manage" element={<AdminTeamManage />} /> */}
+            <Route path="/admin/team-manage" element={<AdminTeamManage />} />
             <Route path="/admin/log" element={<AdminLogList />} />
             <Route path="/admin/log/:id" element={<AdminLogDetail />} />
             <Route path="/admin/student" element={<AdminStudentManage />} />

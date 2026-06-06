@@ -1,61 +1,153 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
-import { cloneTeams } from "../../data/teamDummy";
+import {
+    requestAcceptAllTeamRecommendations,
+    requestSwapTeamMembers,
+    requestTeamRecommendationsByGrade,
+} from "../../api/teamApi";
 import styles from "./AdminTeamEdit.module.css";
 
-// 전체 팀 목록에서 선택한 학생이 몇 번째 팀, 몇 번째 위치에 있는지 찾는 함수
-const findMember = (teams, target) => {
-    // target.teamId와 같은 id를 가진 팀의 위치를 찾음
-    const teamIndex = teams.findIndex((team) => team.id === target.teamId);
-
-    // 팀을 찾지 못하면 -1이 나오기 때문에, 에러를 막기 위해 null 반환
-    if (teamIndex === -1) {
-        return null;
-    }
-
-    // 찾은 팀 안에서 target.memberId와 같은 id를 가진 학생의 위치를 찾음
-    const memberIndex = teams[teamIndex].members.findIndex(
-        (member) => member.id === target.memberId
-    );
-
-    // 학생을 찾지 못하면 -1이 나오기 때문에, 에러를 막기 위해 null 반환
-    if (memberIndex === -1) {
-        return null;
-    }
-
-    // 팀 위치와 학생 위치를 객체로 반환
-    return {
-        teamIndex,
-        memberIndex,
-    };
+const roleLabels = {
+    FRONTEND: "프론트엔드",
+    BACKEND: "백엔드",
+    AI: "AI",
+    DESIGN: "디자인",
+    APP: "앱",
+    GAME: "게임",
+    DEVOPS: "DevOps",
+    SECURITY: "보안",
+    FULLSTACK: "풀스택",
 };
 
-const MemberRow = ({ member, selected, leaderSlot, onClick }) => {
+const gradeLabels = {
+    GRADE_2: "2학년",
+    GRADE_3: "3학년",
+};
+
+const levelLabels = {
+    UPPER: "상",
+    MIDDLE: "중",
+    LOWER: "하",
+};
+
+const roleOrder = {
+    FRONTEND: 1,
+    BACKEND: 2,
+    AI: 3,
+    DESIGN: 4,
+    APP: 5,
+    FULLSTACK: 6,
+    DEVOPS: 7,
+    SECURITY: 8,
+    GAME: 9,
+};
+
+const getSortedMembers = (members = []) => {
+    return [...members].sort((a, b) => {
+        if (a.recommendedLeader !== b.recommendedLeader) {
+            return a.recommendedLeader ? -1 : 1;
+        }
+
+        const roleA = roleOrder[a.studentRole] || 99;
+        const roleB = roleOrder[b.studentRole] || 99;
+
+        if (roleA !== roleB) return roleA - roleB;
+
+        return a.name.localeCompare(b.name, "ko");
+    });
+};
+
+const normalizeRecommendations = (recommendations = []) => {
+    return recommendations.map((team) => ({
+        ...team,
+        members: getSortedMembers(team.members),
+    }));
+};
+
+const swapMembersInTeams = (teams, firstSelected, secondSelected) => {
+    const nextTeams = teams.map((team) => ({
+        ...team,
+        members: team.members.map((member) => ({ ...member })),
+    }));
+
+    const firstTeamIndex = nextTeams.findIndex(
+        (team) => team.id === firstSelected.recommendationId
+    );
+    const secondTeamIndex = nextTeams.findIndex(
+        (team) => team.id === secondSelected.recommendationId
+    );
+
+    if (firstTeamIndex === -1 || secondTeamIndex === -1) return nextTeams;
+
+    const firstMemberIndex = nextTeams[firstTeamIndex].members.findIndex(
+        (member) => member.userId === firstSelected.userId
+    );
+    const secondMemberIndex = nextTeams[secondTeamIndex].members.findIndex(
+        (member) => member.userId === secondSelected.userId
+    );
+
+    if (firstMemberIndex === -1 || secondMemberIndex === -1) return nextTeams;
+
+    const firstMember = nextTeams[firstTeamIndex].members[firstMemberIndex];
+    const secondMember = nextTeams[secondTeamIndex].members[secondMemberIndex];
+
+    nextTeams[firstTeamIndex].members[firstMemberIndex] = secondMember;
+    nextTeams[secondTeamIndex].members[secondMemberIndex] = firstMember;
+
+    return nextTeams;
+};
+
+const getRoleSummary = (members = []) => {
+    const frontend = members.filter(
+        (member) => member.studentRole === "FRONTEND"
+    ).length;
+    const backend = members.filter(
+        (member) => member.studentRole === "BACKEND"
+    ).length;
+    const ai = members.filter((member) => member.studentRole === "AI").length;
+
+    return `프론트엔드 : ${frontend}명 / 백엔드 : ${backend}명 / AI : ${ai}명`;
+};
+
+const MemberRow = ({ member, selected, highlighted, onClick }) => {
+    const isLeader = member.recommendedLeader;
+
     return (
         <li
             className={`${styles.memberItem} ${
                 selected ? styles.selectedMember : ""
-            } ${leaderSlot ? styles.leaderMember : ""}`}
+            } ${highlighted ? styles.highlightedMember : ""} ${
+                isLeader ? styles.leaderMember : ""
+            }`}
         >
             <button
                 type="button"
                 className={styles.memberButton}
+                disabled={isLeader}
                 onClick={onClick}
+                title={isLeader ? "팀장은 변경할 수 없습니다." : undefined}
             >
                 <div className={styles.memberMain}>
                     <strong className={styles.memberName}>
-                        {member.number} {member.name}
+                        {member.name}
                     </strong>
-                    {leaderSlot && (
+                    {isLeader && (
                         <span className={styles.leaderBadge}>팀장</span>
                     )}
                 </div>
                 <div className={styles.memberSub}>
                     <span className={styles.positionBadge}>
-                        {member.position}
+                        {roleLabels[member.studentRole] || member.studentRole}
                     </span>
-                    <span className={styles.stackText}>{member.stack}</span>
+                    <span className={styles.stackText}>
+                        {member.skill || "스택 미입력"}
+                    </span>
+                    <span className={styles.levelText}>
+                        {levelLabels[member.studentLevel] ||
+                            member.studentLevel ||
+                            "-"}
+                    </span>
                 </div>
             </button>
         </li>
@@ -64,19 +156,13 @@ const MemberRow = ({ member, selected, leaderSlot, onClick }) => {
 
 const TeamCard = ({
     team,
+    teamNumber,
     selectedMember,
+    highlightedUserIds,
     flipped,
     onMemberClick,
     onHeaderDoubleClick,
 }) => {
-    const roleNames = ["프론트엔드", "백엔드", "AI"];
-    const roleCounts = roleNames.map((role) => ({
-        role,
-        count: team.members.filter((member) => member.position === role).length,
-    }));
-    const leaderMember = team.members[0];
-    const normalMembers = team.members.slice(1);
-
     return (
         <article className={styles.teamCardShell}>
             <div
@@ -91,9 +177,12 @@ const TeamCard = ({
                     >
                         <div className={styles.teamHeaderTop}>
                             <div>
-                                <h2 className={styles.teamName}>{team.name}</h2>
+                                <h2 className={styles.teamName}>
+                                    {teamNumber}팀
+                                </h2>
                                 <p className={styles.teamSummary}>
-                                    총 {team.members.length}명
+                                    총 {team.members.length}명 ·{" "}
+                                    {gradeLabels[team.grade] || team.grade}
                                 </p>
                             </div>
                             <button
@@ -105,37 +194,25 @@ const TeamCard = ({
                             </button>
                         </div>
                         <div className={styles.roleSummary}>
-                            {roleCounts.map((item) => (
-                                <span key={item.role}>
-                                    {item.role} {item.count}
-                                </span>
-                            ))}
+                            <span>{getRoleSummary(team.members)}</span>
                         </div>
                     </header>
 
                     <ul className={styles.memberList}>
-                        <MemberRow
-                            member={leaderMember}
-                            leaderSlot
-                            selected={
-                                selectedMember?.teamId === team.id &&
-                                selectedMember?.memberId === leaderMember.id
-                            }
-                            onClick={() =>
-                                onMemberClick(team.id, leaderMember.id)
-                            }
-                        />
-
-                        {normalMembers.map((member) => (
+                        {team.members.map((member) => (
                             <MemberRow
-                                key={member.id}
+                                key={member.userId}
                                 member={member}
                                 selected={
-                                    selectedMember?.teamId === team.id &&
-                                    selectedMember?.memberId === member.id
+                                    selectedMember?.recommendationId ===
+                                        team.id &&
+                                    selectedMember?.userId === member.userId
                                 }
+                                highlighted={highlightedUserIds.includes(
+                                    member.userId
+                                )}
                                 onClick={() =>
-                                    onMemberClick(team.id, member.id)
+                                    onMemberClick(team.id, member.userId)
                                 }
                             />
                         ))}
@@ -149,9 +226,12 @@ const TeamCard = ({
                     >
                         <div className={styles.teamHeaderTop}>
                             <div>
-                                <h2 className={styles.teamName}>{team.name}</h2>
+                                <h2 className={styles.teamName}>
+                                    {teamNumber}팀
+                                </h2>
                                 <p className={styles.teamSummary}>
-                                    총 {team.members.length}명
+                                    총 {team.members.length}명 ·{" "}
+                                    {gradeLabels[team.grade] || team.grade}
                                 </p>
                             </div>
                             <button
@@ -163,24 +243,20 @@ const TeamCard = ({
                             </button>
                         </div>
                         <div className={styles.roleSummary}>
-                            {roleCounts.map((item) => (
-                                <span key={item.role}>
-                                    {item.role} {item.count}
-                                </span>
-                            ))}
+                            <span>{getRoleSummary(team.members)}</span>
                         </div>
                     </header>
 
                     <div className={styles.reasonArea}>
                         <h3 className={styles.reasonTitle}>팀 배정 이유</h3>
                         <div className={styles.reasonList}>
-                            {team.reasons.map((reason) => (
+                            {(team.reasons || []).map((reason) => (
                                 <section
-                                    key={reason.title}
+                                    key={`${team.id}-${reason.title}`}
                                     className={styles.reasonBox}
                                 >
                                     <strong>{reason.title}</strong>
-                                    <p>{reason.text}</p>
+                                    <p>{reason.description}</p>
                                 </section>
                             ))}
                         </div>
@@ -192,23 +268,64 @@ const TeamCard = ({
 };
 
 const AdminTeamEdit = () => {
-    const [teams, setTeams] = useState(() => cloneTeams());
+    const navigate = useNavigate();
+    const location = useLocation();
+    const grade = location.state?.grade || "GRADE_2";
+    const [teams, setTeams] = useState([]);
     const [selectedMember, setSelectedMember] = useState(null);
+    const [highlightedUserIds, setHighlightedUserIds] = useState([]);
     const [flippedTeamIds, setFlippedTeamIds] = useState([]);
     const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const highlightTimerRef = useRef(null);
 
-    const selectedMemberName = selectedMember
-        ? teams
-              .find((team) => team.id === selectedMember.teamId)
-              ?.members.find((member) => member.id === selectedMember.memberId)
-              ?.name
-        : "";
-    const selectedTeamName = selectedMember
-        ? teams.find((team) => team.id === selectedMember.teamId)?.name
-        : "";
+    const selectedMemberName = useMemo(() => {
+        if (!selectedMember) return "";
 
-    const handleMemberClick = (teamId, memberId) => {
-        const nextSelected = { teamId, memberId };
+        return teams
+            .find((team) => team.id === selectedMember.recommendationId)
+            ?.members.find((member) => member.userId === selectedMember.userId)
+            ?.name;
+    }, [selectedMember, teams]);
+
+    const getRecommendations = async (targetGrade = grade) => {
+        try {
+            setIsLoading(true);
+            setError("");
+
+            const data = await requestTeamRecommendationsByGrade(targetGrade);
+            setTeams(Array.isArray(data) ? normalizeRecommendations(data) : []);
+        } catch {
+            setError("팀 추천안을 불러오지 못했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getRecommendations(grade);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (highlightTimerRef.current) {
+                clearTimeout(highlightTimerRef.current);
+            }
+        };
+    }, []);
+
+    const handleMemberClick = async (recommendationId, userId) => {
+        const clickedMember = teams
+            .find((team) => team.id === recommendationId)
+            ?.members.find((member) => member.userId === userId);
+
+        if (clickedMember?.recommendedLeader) {
+            setMessage("팀장은 변경할 수 없습니다.");
+            return;
+        }
+
+        const nextSelected = { recommendationId, userId };
 
         if (!selectedMember) {
             setSelectedMember(nextSelected);
@@ -217,40 +334,36 @@ const AdminTeamEdit = () => {
         }
 
         if (
-            selectedMember.teamId === teamId &&
-            selectedMember.memberId === memberId
+            selectedMember.recommendationId === recommendationId &&
+            selectedMember.userId === userId
         ) {
             setSelectedMember(null);
             setMessage("선택이 취소되었습니다.");
             return;
         }
 
-        setTeams((prevTeams) => {
-            const copiedTeams = prevTeams.map((team) => ({
-                ...team,
-                members: team.members.map((member) => ({ ...member })),
-            }));
-
-            const first = findMember(copiedTeams, selectedMember);
-            const second = findMember(copiedTeams, nextSelected);
-
-            if (!first || !second) return copiedTeams;
-
-            const firstMember =
-                copiedTeams[first.teamIndex].members[first.memberIndex];
-            const secondMember =
-                copiedTeams[second.teamIndex].members[second.memberIndex];
-
-            copiedTeams[first.teamIndex].members[first.memberIndex] =
-                secondMember;
-            copiedTeams[second.teamIndex].members[second.memberIndex] =
-                firstMember;
-
-            return copiedTeams;
-        });
-
-        setSelectedMember(null);
-        setMessage("두 학생의 팀 위치가 변경되었습니다.");
+        try {
+            await requestSwapTeamMembers(
+                selectedMember.recommendationId,
+                selectedMember.userId,
+                recommendationId,
+                userId
+            );
+            setTeams((prevTeams) =>
+                swapMembersInTeams(prevTeams, selectedMember, nextSelected)
+            );
+            setSelectedMember(null);
+            setHighlightedUserIds([selectedMember.userId, userId]);
+            if (highlightTimerRef.current) {
+                clearTimeout(highlightTimerRef.current);
+            }
+            highlightTimerRef.current = setTimeout(() => {
+                setHighlightedUserIds([]);
+            }, 1000);
+            setMessage("두 학생의 팀 위치가 변경되었습니다.");
+        } catch {
+            setMessage("학생 교환에 실패했습니다.");
+        }
     };
 
     const handleHeaderDoubleClick = (teamId) => {
@@ -263,15 +376,21 @@ const AdminTeamEdit = () => {
         });
     };
 
-    const handleReset = () => {
-        setTeams(cloneTeams());
-        setSelectedMember(null);
-        setFlippedTeamIds([]);
-        setMessage("팀 구성이 처음 상태로 돌아갔습니다.");
+    const handleRegenerate = () => {
+        navigate("/admin/team-create/loading", {
+            state: {
+                grade,
+            },
+        });
     };
 
-    const handleApprove = () => {
-        setMessage("");
+    const handleApprove = async () => {
+        try {
+            await requestAcceptAllTeamRecommendations(grade);
+            navigate("/admin/team-manage");
+        } catch {
+            setMessage("팀 구성 승인에 실패했습니다.");
+        }
     };
 
     return (
@@ -298,16 +417,10 @@ const AdminTeamEdit = () => {
                             <button
                                 type="button"
                                 className={styles.secondaryButton}
-                                onClick={handleReset}
-                            >
-                                초기화
-                            </button>
-                            <Link
-                                to="/admin/team-create/loading"
-                                className={styles.secondaryButton}
+                                onClick={handleRegenerate}
                             >
                                 재생성
-                            </Link>
+                            </button>
                             <button
                                 type="button"
                                 className={styles.primaryButton}
@@ -319,13 +432,14 @@ const AdminTeamEdit = () => {
                     </div>
 
                     {message && <p className={styles.messageText}>{message}</p>}
+                    {error && <p className={styles.messageText}>{error}</p>}
 
                     <section className={styles.selectionBar}>
                         <div>
                             <strong>선택 상태</strong>
                             <p>
                                 {selectedMemberName
-                                    ? `${selectedTeamName} · ${selectedMemberName} 선택됨`
+                                    ? `${selectedMemberName} 선택됨`
                                     : "학생을 선택하면 이곳에 선택 상태가 표시됩니다."}
                             </p>
                         </div>
@@ -336,20 +450,28 @@ const AdminTeamEdit = () => {
                         </span>
                     </section>
 
-                    <div className={styles.teamGrid}>
-                        {teams.map((team) => (
-                            <TeamCard
-                                key={team.id}
-                                team={team}
-                                selectedMember={selectedMember}
-                                flipped={flippedTeamIds.includes(team.id)}
-                                onMemberClick={handleMemberClick}
-                                onHeaderDoubleClick={() =>
-                                    handleHeaderDoubleClick(team.id)
-                                }
-                            />
-                        ))}
-                    </div>
+                    {isLoading ? (
+                        <p className={styles.messageText}>
+                            팀 추천안을 불러오는 중입니다.
+                        </p>
+                    ) : (
+                        <div className={styles.teamGrid}>
+                            {teams.map((team, index) => (
+                                <TeamCard
+                                    key={team.id}
+                                    team={team}
+                                    teamNumber={index + 1}
+                                    selectedMember={selectedMember}
+                                    highlightedUserIds={highlightedUserIds}
+                                    flipped={flippedTeamIds.includes(team.id)}
+                                    onMemberClick={handleMemberClick}
+                                    onHeaderDoubleClick={() =>
+                                        handleHeaderDoubleClick(team.id)
+                                    }
+                                />
+                            ))}
+                        </div>
+                    )}
                 </main>
             </section>
         </div>

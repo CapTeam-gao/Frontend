@@ -26,7 +26,7 @@ const AdminNoticeList = () => {
         const getNoticeList = async () => {
             try {
                 const data = await requestNoticeList();
-                setNotices(data);
+                setNotices(Array.isArray(data) ? data : []);
             } catch {
                 setError("공지를 불러오지 못했습니다.");
             } finally {

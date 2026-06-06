@@ -1,9 +1,21 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import TeamCreateIcon from "../../assets/icons/teamCreate.svg";
 import styles from "./AdminTeamCreate.module.css";
 
 const AdminTeamCreate = () => {
+    const navigate = useNavigate();
+    const [selectedGrade, setSelectedGrade] = useState("GRADE_2");
+
+    const handleCreate = () => {
+        navigate("/admin/team-create/loading", {
+            state: {
+                grade: selectedGrade,
+            },
+        });
+    };
+
     return (
         <div className={styles.page}>
             <Header />
@@ -21,17 +33,26 @@ const AdminTeamCreate = () => {
                             <input
                                 type="radio"
                                 name="grade"
-                                value="2"
-                                defaultChecked
+                                value="GRADE_2"
+                                checked={selectedGrade === "GRADE_2"}
+                                onChange={(e) =>
+                                    setSelectedGrade(e.target.value)
+                                }
                             />
-                            {/* 백엔드한테 응답받은 2학년 수 렌더링 */}
-                            <span>2학년 (59명)</span>
+                            <span>2학년</span>
                         </label>
 
                         <label className={styles.gradeOption}>
-                            <input type="radio" name="grade" value="3" />
-                            {/* 백엔드한테 응답받은 3학년 수 렌더링 */}
-                            <span>3학년 (76명)</span>
+                            <input
+                                type="radio"
+                                name="grade"
+                                value="GRADE_3"
+                                checked={selectedGrade === "GRADE_3"}
+                                onChange={(e) =>
+                                    setSelectedGrade(e.target.value)
+                                }
+                            />
+                            <span>3학년</span>
                         </label>
                     </div>
 
@@ -53,12 +74,13 @@ const AdminTeamCreate = () => {
                         </ul>
                     </section>
 
-                    <Link
-                        to="/admin/team-create/loading"
+                    <button
+                        type="button"
                         className={styles.createButton}
+                        onClick={handleCreate}
                     >
                         생성
-                    </Link>
+                    </button>
                 </main>
             </section>
         </div>

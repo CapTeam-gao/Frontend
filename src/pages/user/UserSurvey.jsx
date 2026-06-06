@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { requestSubmitSurvey } from "../../api/userApi";
+import authStore from "../../store/authStore";
 import styles from "./UserSurvey.module.css";
 
 const roles = [
@@ -131,6 +134,29 @@ const calculateAverageScores = (groups, answers, type) => {
     }, {});
 };
 
+const getAnswerScores = (questions, answers) => {
+    return questions.map((question) => Number(answers[question.id]));
+};
+
+const getSkillsFromText = (stackText) => {
+    return stackText
+        .split(",")
+        .map((skill) => skill.trim())
+        .filter(Boolean);
+};
+
+const roleToStudentRole = {
+    프론트엔드: "FRONTEND",
+    백엔드: "BACKEND",
+    DevOps: "BACKEND",
+    디자인: "DESIGN",
+    AI: "AI",
+    "앱 개발": "APP",
+    게임개발: "APP",
+    보안: "BACKEND",
+    풀스택: "BACKEND",
+};
+
 const RatingRow = ({ number, question, categoryLabel, value, onChange }) => {
     return (
         <li className={styles.questionItem}>
@@ -168,6 +194,10 @@ const RatingRow = ({ number, question, categoryLabel, value, onChange }) => {
 };
 
 const UserSurvey = () => {
+    const navigate = useNavigate();
+    const user = authStore((state) => state.user);
+    const accessToken = authStore((state) => state.accessToken);
+    const saveLogin = authStore((state) => state.saveLogin);
     const [selectedRole, setSelectedRole] = useState("");
     const [stackText, setStackText] = useState("");
     const [experiences, setExperiences] = useState([
@@ -180,6 +210,7 @@ const UserSurvey = () => {
     const [leaderPreference, setLeaderPreference] = useState("");
     const [answers, setAnswers] = useState({});
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const selectRole = (role) => {
         setSelectedRole(role);
@@ -236,8 +267,36 @@ const UserSurvey = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const cleanExperiences = experiences
+            .map((experience) => experience.value.trim())
+            .filter(Boolean);
+        const cleanPreferredMembers = preferredMembers
+            .map((member) => member.trim())
+            .filter(Boolean);
+        const cleanSkills = getSkillsFromText(stackText);
+
+        if (!selectedRole) {
+            setError("희망 직군을 선택해주세요.");
+            return;
+        }
+
+        if (cleanSkills.length === 0) {
+            setError("사용 가능한 기술 스택을 입력해주세요.");
+            return;
+        }
+
+        if (cleanExperiences.length === 0) {
+            setError("구현 경험을 1개 이상 입력해주세요.");
+            return;
+        }
+
+        if (!leaderPreference) {
+            setError("팀장 선호 여부를 선택해주세요.");
+            return;
+        }
 
         const hasEmptyRating = allRatingQuestions.some(
             (question) => !answers[question.id]
@@ -251,18 +310,26 @@ const UserSurvey = () => {
         setError("");
 
         const surveyData = {
-            role: selectedRole,
-            skills: stackText
-                .split(",")
-                .map((skill) => skill.trim())
-                .filter(Boolean),
-            experiences: experiences
-                .map((experience) => experience.value.trim())
-                .filter(Boolean),
-            preferredMembers: preferredMembers
-                .map((member) => member.trim())
-                .filter(Boolean),
+            studentRole: roleToStudentRole[selectedRole],
+            selectedRoles: [selectedRole],
+            stackText,
+            skill: cleanSkills,
+            experience: cleanExperiences,
+            experiences: cleanExperiences.map((experience) => ({
+                value: experience,
+            })),
+            preferredTeammates: cleanPreferredMembers,
+            preferredMembers: cleanPreferredMembers,
             wantsLeader: leaderPreference === "O",
+            leaderPreference,
+            personalityScoreAnswers: getAnswerScores(
+                personalityQuestions,
+                answers
+            ),
+            developmentScoreAnswers: getAnswerScores(
+                developmentQuestions,
+                answers
+            ),
             personalityScores: calculateAverageScores(
                 personalityGroups,
                 answers,
@@ -275,7 +342,30 @@ const UserSurvey = () => {
             ),
         };
 
-        console.log(surveyData);
+        try {
+            setIsSubmitting(true);
+            await requestSubmitSurvey(surveyData);
+
+            if (user && accessToken) {
+                saveLogin(
+                    {
+                        ...user,
+                        surveyCompleted: true,
+                    },
+                    accessToken
+                );
+            }
+
+            navigate("/user/dashboard");
+        } catch (e) {
+            setError(
+                e.response?.data?.message ||
+                    e.response?.data?.error ||
+                    "설문 저장 중 오류가 발생했습니다."
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -514,22 +604,18 @@ const UserSurvey = () => {
                             </div>
 
                             <ul className={styles.questionList}>
-                                {developmentQuestions.map(
-                                    (question, index) => (
-                                        <RatingRow
-                                            key={question.id}
-                                            number={index + 11}
-                                            question={question.question}
-                                            categoryLabel={
-                                                question.categoryLabel
-                                            }
-                                            value={answers[question.id]}
-                                            onChange={(score) =>
-                                                updateAnswer(question.id, score)
-                                            }
-                                        />
-                                    )
-                                )}
+                                {developmentQuestions.map((question, index) => (
+                                    <RatingRow
+                                        key={question.id}
+                                        number={index + 11}
+                                        question={question.question}
+                                        categoryLabel={question.categoryLabel}
+                                        value={answers[question.id]}
+                                        onChange={(score) =>
+                                            updateAnswer(question.id, score)
+                                        }
+                                    />
+                                ))}
                             </ul>
                         </section>
 
@@ -538,7 +624,9 @@ const UserSurvey = () => {
                                 {error ||
                                     "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다."}
                             </p>
-                            <button type="submit">설문 제출</button>
+                            <button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? "제출 중..." : "설문 제출"}
+                            </button>
                         </div>
                     </form>
                 </section>
