@@ -1,0 +1,402 @@
+.page {
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+.body {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 20px 72px;
+}
+
+.backLink {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.backLink:hover {
+    color: var(--color-primary);
+}
+
+.card {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg);
+    overflow: hidden;
+}
+
+.cardHeader {
+    padding: 30px 30px 28px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+}
+
+.description {
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+}
+
+.form {
+    padding: 36px 42px 42px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field + .field {
+    margin-top: 28px;
+}
+
+.label {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+.input {
+    width: 100%;
+    height: 54px;
+    padding: 0 18px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-family: var(--font-family);
+    outline: none;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 320px;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.markdownEditor {
+    width: 100%;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.markdownEditor:global(.w-md-editor) {
+    background-color: #ffffff;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar) {
+    min-height: 48px !important;
+    padding: 7px 12px !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    background-color: #ffffff !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar ul) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li) {
+    height: 34px !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li > button) {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: var(--border-radius-sm) !important;
+    color: var(--color-text-secondary) !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li > button:hover) {
+    background-color: var(--color-bg-hover) !important;
+    color: var(--color-primary-dark) !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li > button svg) {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li.active > button),
+.markdownEditor :global(.w-md-editor-toolbar li > button[aria-pressed="true"]) {
+    background-color: var(--color-primary-bg) !important;
+    color: var(--color-primary-dark) !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar-child) {
+    overflow: hidden;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--border-radius-sm) !important;
+    background-color: #ffffff !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar-child .w-md-editor-toolbar) {
+    min-height: auto !important;
+    padding: 6px !important;
+    background-color: #ffffff !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar-child .w-md-editor-toolbar ul) {
+    display: block;
+}
+
+.markdownEditor
+    :global(.w-md-editor-toolbar-child .w-md-editor-toolbar ul > li) {
+    height: auto !important;
+}
+
+.markdownEditor
+    :global(.w-md-editor-toolbar-child .w-md-editor-toolbar ul > li button) {
+    width: 160px !important;
+    height: auto !important;
+    padding: 8px 10px !important;
+    color: var(--color-text-primary) !important;
+    font-size: var(--font-size-md) !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+}
+
+.markdownEditor
+    :global(.w-md-editor-toolbar-child .w-md-editor-toolbar ul > li button:hover) {
+    background-color: var(--color-bg-hover) !important;
+    color: var(--color-primary-dark) !important;
+}
+
+.markdownEditor :global(.w-md-editor-bar) {
+    background-color: var(--color-primary);
+}
+
+.markdownEditor :global(.w-md-editor-content),
+.markdownEditor :global(.w-md-editor-input),
+.markdownEditor :global(.w-md-editor-text) {
+    height: 100%;
+}
+
+.markdownEditor :global(.w-md-editor-text) {
+    min-height: 100%;
+}
+
+.markdownEditor :global(.w-md-editor-text-input) {
+    min-height: 100%;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-xl) !important;
+    line-height: 1.8 !important;
+    caret-color: var(--color-primary);
+}
+
+.markdownEditor :global(.w-md-editor-text-pre > code),
+.markdownEditor :global(.w-md-editor-text-pre) {
+    min-height: 100%;
+    font-family: var(--font-family);
+    font-size: var(--font-size-xl) !important;
+    line-height: 1.8 !important;
+}
+
+.markdownEditor :global(.wmde-markdown) {
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-xl) !important;
+    line-height: 1.8 !important;
+}
+
+.markdownEditor :global(.w-md-editor-preview) {
+    padding: 24px 28px;
+    background-color: #ffffff;
+}
+
+.markdownEditor :global(.wmde-markdown h1),
+.markdownEditor :global(.wmde-markdown h2),
+.markdownEditor :global(.wmde-markdown h3) {
+    margin: 20px 0 12px;
+    color: #000000;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.markdownEditor :global(.wmde-markdown h1) {
+    font-size: var(--font-size-3xl);
+}
+
+.markdownEditor :global(.wmde-markdown h2) {
+    font-size: var(--font-size-2xl-lg);
+}
+
+.markdownEditor :global(.wmde-markdown h3) {
+    font-size: var(--font-size-2xl);
+}
+
+.markdownEditor :global(.wmde-markdown p) {
+    margin: 12px 0;
+}
+
+.markdownEditor :global(.wmde-markdown strong),
+.markdownEditor :global(.wmde-markdown b) {
+    color: #000000;
+    font-weight: 900;
+}
+
+.markdownEditor :global(.wmde-markdown blockquote) {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary-bg);
+    color: var(--color-text-primary);
+}
+
+.markdownEditor :global(.wmde-markdown ul),
+.markdownEditor :global(.wmde-markdown ol) {
+    margin: 14px 0;
+    padding-left: 26px;
+}
+
+.markdownEditor :global(.wmde-markdown li) {
+    margin: 6px 0;
+}
+
+.markdownEditor :global(.wmde-markdown code) {
+    padding: 3px 7px;
+    border-radius: var(--border-radius-xs);
+    background-color: var(--color-bg-secondary);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.checkBoxArea {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: fit-content;
+    margin-top: 32px;
+    padding: 14px 18px;
+
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+}
+
+.checkBox {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.customCheck {
+    position: relative;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--color-primary);
+    background-color: #ffffff;
+}
+
+.customCheck::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 14px;
+    border-right: 3px solid #ffffff;
+    border-bottom: 3px solid #ffffff;
+    content: "";
+    opacity: 0;
+    transform: translate(-50%, -58%) rotate(45deg);
+}
+
+.checkBox:checked + .customCheck {
+    background-color: var(--color-primary);
+}
+
+.checkBox:checked + .customCheck::after {
+    opacity: 1;
+}
+
+.checkBox:focus-visible + .customCheck {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.checkBoxText {
+    line-height: 1.4;
+}
+
+.buttonArea {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.submitButton {
+    min-width: 88px;
+    padding: 10px 10px !important;
+    border-radius: 2px !important;
+    font-size: var(--font-size-lg) !important;
+}
+
+.cancelLink {
+    text-decoration: none;
+}
+
+.error {
+    color: var(--color-danger);
+    display: flex;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding: 32px 16px 56px;
+    }
+
+    .cardHeader,
+    .form {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .textarea {
+        min-height: 260px;
+    }
+
+    .buttonArea {
+        justify-content: stretch;
+    }
+}

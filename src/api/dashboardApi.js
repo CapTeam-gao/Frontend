@@ -11,6 +11,14 @@ const makeAuthHeader = () => {
         : {};
 };
 
+export const requestAdminDashboard = async () => {
+    const response = await api.get("/api/admin/dashboard", {
+        headers: makeAuthHeader(),
+    });
+
+    return response.data.data;
+};
+
 export const requestUserDashboard = async () => {
     const response = await api.get("/api/user/dashboard", {
         headers: makeAuthHeader(),

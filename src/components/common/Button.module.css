@@ -3,7 +3,7 @@
     border: none;
     white-space: nowrap;
     font-family: var(--font-family);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
     transition: var(--transition);
 }
 .button:disabled {
@@ -26,16 +26,29 @@
     border: 1px solid var(--color-primary);
 }
 
+.secondary:hover:not(:disabled) {
+    background-color: var(--color-primary-bg);
+}
+
 .ghost {
     background-color: white;
     color: var(--color-text-secondary);
     border: 1px solid var(--color-border);
 }
 
+.ghost:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+
 .danger {
     background-color: white;
     color: var(--color-danger);
     border: 1px solid var(--color-danger);
+}
+
+.danger:hover:not(:disabled) {
+    background-color: #fff1f1;
 }
 
 .large {
@@ -53,6 +66,7 @@
 
 .small {
     font-size: var(--font-size-sm);
-    padding: 8px 30px;
+    font-weight: var(--font-weight-bold);
+    padding: 8px 16px;
     border-radius: var(--border-radius-xs);
 }
