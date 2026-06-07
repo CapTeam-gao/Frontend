@@ -27,16 +27,15 @@ const Login = () => {
             const trimmedUserId = userId.trim();
             const loginData = await requestLogin(trimmedUserId, password);
             const token = loginData.accessToken;
-            const user = loginData.user || (await requestMyInfo(token));
 
-            if (!token || !user) {
-                //예외처리에 accountRole 추가
+            if (!token) {
                 setError("로그인 토큰을 받지 못했습니다.");
                 return;
             }
-            // 주석 해제
+
+            const user = loginData.user || (await requestMyInfo(token));
+
             if (!user || !user.accountRole) {
-                //role - > accountRole로 변경
                 setError("사용자 권한 정보를 받지 못했습니다.");
                 return;
             }
