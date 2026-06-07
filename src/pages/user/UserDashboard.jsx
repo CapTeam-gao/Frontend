@@ -6,9 +6,12 @@ import CapstonLogIcon from "../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../assets/icons/notice.svg";
 import ProjectIcon from "../../assets/icons/project.svg";
 import { requestUserDashboard } from "../../api/dashboardApi";
+import { subscribeNoticeCreated } from "../../api/noticeSocket";
+import authStore from "../../store/authStore";
 import styles from "./UserDashboard.module.css";
 
 const UserDashboard = () => {
+    const accessToken = authStore((state) => state.accessToken);
     const [dashboard, setDashboard] = useState({
         teamCreated: false,
         teamChatActiveStudentCount: 0,
@@ -33,6 +36,17 @@ const UserDashboard = () => {
 
         getDashboard();
     }, []);
+
+    useEffect(() => {
+        if (!accessToken) return undefined;
+
+        return subscribeNoticeCreated(accessToken, () => {
+            setDashboard((prevDashboard) => ({
+                ...prevDashboard,
+                hasUnreadNotice: true,
+            }));
+        });
+    }, [accessToken]);
 
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
