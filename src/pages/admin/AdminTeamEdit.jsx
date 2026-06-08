@@ -43,6 +43,18 @@ const roleOrder = {
     GAME: 9,
 };
 
+const summaryRoleOrder = [
+    "FRONTEND",
+    "BACKEND",
+    "AI",
+    "DESIGN",
+    "APP",
+    "FULLSTACK",
+    "DEVOPS",
+    "SECURITY",
+    "GAME",
+];
+
 const getSortedMembers = (members = []) => {
     return [...members].sort((a, b) => {
         if (a.recommendedLeader !== b.recommendedLeader) {
@@ -99,15 +111,16 @@ const swapMembersInTeams = (teams, firstSelected, secondSelected) => {
 };
 
 const getRoleSummary = (members = []) => {
-    const frontend = members.filter(
-        (member) => member.studentRole === "FRONTEND"
-    ).length;
-    const backend = members.filter(
-        (member) => member.studentRole === "BACKEND"
-    ).length;
-    const ai = members.filter((member) => member.studentRole === "AI").length;
+    const counts = members.reduce((acc, member) => {
+        if (!member.studentRole) return acc;
+        acc[member.studentRole] = (acc[member.studentRole] || 0) + 1;
+        return acc;
+    }, {});
 
-    return `프론트엔드 : ${frontend}명 / 백엔드 : ${backend}명 / AI : ${ai}명`;
+    return summaryRoleOrder
+        .filter((role) => counts[role])
+        .map((role) => `${roleLabels[role] || role} : ${counts[role]}명`)
+        .join(" / ");
 };
 
 const MemberRow = ({ member, selected, highlighted, onClick }) => {
@@ -129,9 +142,7 @@ const MemberRow = ({ member, selected, highlighted, onClick }) => {
                 title={isLeader ? "팀장은 변경할 수 없습니다." : undefined}
             >
                 <div className={styles.memberMain}>
-                    <strong className={styles.memberName}>
-                        {member.name}
-                    </strong>
+                    <strong className={styles.memberName}>{member.name}</strong>
                     {isLeader && (
                         <span className={styles.leaderBadge}>팀장</span>
                     )}
