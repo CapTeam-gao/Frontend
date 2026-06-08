@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Header from "../../components/common/Header";
-import { requestAdminTeamDetail, requestAdminTeamList } from "../../api/teamApi";
+import {
+    requestAdminTeamDetail,
+    requestAdminTeamList,
+} from "../../api/teamApi";
 import styles from "./AdminTeamManage.module.css";
 
 const roleLabels = {
@@ -15,6 +18,18 @@ const roleLabels = {
     FULLSTACK: "풀스택",
 };
 
+const summaryRoleOrder = [
+    "FRONTEND",
+    "BACKEND",
+    "AI",
+    "DESIGN",
+    "APP",
+    "FULLSTACK",
+    "DEVOPS",
+    "SECURITY",
+    "GAME",
+];
+
 const gradeLabels = {
     GRADE_2: "2학년",
     GRADE_3: "3학년",
@@ -23,11 +38,16 @@ const gradeLabels = {
 const getRoleCount = (roleCount = {}, role) => roleCount[role] || 0;
 
 const getRoleSummary = (roleCount = {}) => {
-    const frontend = getRoleCount(roleCount, "FRONTEND");
-    const backend = getRoleCount(roleCount, "BACKEND");
-    const ai = getRoleCount(roleCount, "AI");
-
-    return `프론트엔드 : ${frontend}명 / 백엔드 : ${backend}명 / AI : ${ai}명`;
+    return summaryRoleOrder
+        .filter((role) => getRoleCount(roleCount, role))
+        .map(
+            (role) =>
+                `${roleLabels[role] || role} : ${getRoleCount(
+                    roleCount,
+                    role
+                )}명`
+        )
+        .join(" / ");
 };
 
 const hasProjectInfo = (team) => Boolean(team?.serviceName);
@@ -99,7 +119,9 @@ const TeamDetailModal = ({ team, loading, error, onClose }) => {
                     X
                 </button>
 
-                {loading && <p className={styles.modalStatus}>불러오는 중...</p>}
+                {loading && (
+                    <p className={styles.modalStatus}>불러오는 중...</p>
+                )}
                 {error && <p className={styles.modalError}>{error}</p>}
 
                 {team && (
@@ -237,7 +259,9 @@ const AdminTeamManage = () => {
                 team.serviceName || ""
             } ${memberNames}`.toLowerCase();
 
-            return isSameGrade && (!keyword || searchableText.includes(keyword));
+            return (
+                isSameGrade && (!keyword || searchableText.includes(keyword))
+            );
         });
     }, [searchText, selectedGrade, teams]);
 
@@ -268,7 +292,9 @@ const AdminTeamManage = () => {
 
             <main className={styles.body}>
                 <section className={styles.summaryArea}>
-                    <article className={`${styles.summaryCard} ${styles.active}`}>
+                    <article
+                        className={`${styles.summaryCard} ${styles.active}`}
+                    >
                         <div>
                             <p>전체 팀</p>
                             <strong>{counts.total}</strong>
@@ -292,7 +318,9 @@ const AdminTeamManage = () => {
                         <button
                             type="button"
                             className={
-                                selectedGrade === "GRADE_2" ? styles.selected : ""
+                                selectedGrade === "GRADE_2"
+                                    ? styles.selected
+                                    : ""
                             }
                             onClick={() => setSelectedGrade("GRADE_2")}
                         >
@@ -301,7 +329,9 @@ const AdminTeamManage = () => {
                         <button
                             type="button"
                             className={
-                                selectedGrade === "GRADE_3" ? styles.selected : ""
+                                selectedGrade === "GRADE_3"
+                                    ? styles.selected
+                                    : ""
                             }
                             onClick={() => setSelectedGrade("GRADE_3")}
                         >
