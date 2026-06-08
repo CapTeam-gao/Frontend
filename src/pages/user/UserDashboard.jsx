@@ -50,6 +50,12 @@ const UserDashboard = () => {
 
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
+    const chatStatusText = dashboard.teamCreated ? "" : "팀 생성 전입니다";
+    const logStatusText = !dashboard.teamCreated
+        ? "팀 생성 전입니다"
+        : dashboard.capstoneTime && !dashboard.todayJournalSubmitted
+        ? "오늘 일지 미제출"
+        : "";
 
     return (
         <div className={styles.page}>
@@ -59,18 +65,21 @@ const UserDashboard = () => {
                 {error && <p className={styles.errorText}>{error}</p>}
 
                 <section className={styles.dashboard}>
-                    <Link to={featurePath("/user/chat")} className={styles.card}>
+                    <Link
+                        to={featurePath("/user/chat")}
+                        className={styles.card}
+                    >
                         <div className={styles.iconBox}>
                             <img src={ChatIcon} alt="" />
                         </div>
 
                         <div className={styles.cardText}>
                             <h1 className={styles.cardTitle}>팀 채팅</h1>
-                            <p className={styles.statusText}>
-                                {dashboard.teamCreated
-                                    ? `${dashboard.teamChatActiveStudentCount}명 현재 활동중`
-                                    : "팀 생성 전입니다"}
-                            </p>
+                            {chatStatusText && (
+                                <p className={styles.statusText}>
+                                    {chatStatusText}
+                                </p>
+                            )}
                         </div>
                     </Link>
 
@@ -99,16 +108,17 @@ const UserDashboard = () => {
 
                         <div className={styles.cardText}>
                             <h2 className={styles.cardTitle}>캡스톤 일지</h2>
-                            <p
-                                className={`${styles.statusText} ${styles.dangerStatus}`}
-                            >
-                                {!dashboard.teamCreated
-                                    ? "팀 생성 전입니다"
-                                    : dashboard.capstoneTime &&
-                                        !dashboard.todayJournalSubmitted
-                                      ? "오늘 일지 미제출"
-                                      : ""}
-                            </p>
+                            {logStatusText && (
+                                <p
+                                    className={`${styles.statusText} ${
+                                        dashboard.teamCreated
+                                            ? styles.dangerStatus
+                                            : ""
+                                    }`}
+                                >
+                                    {logStatusText}
+                                </p>
+                            )}
                         </div>
                     </Link>
 

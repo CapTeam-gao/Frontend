@@ -4,6 +4,7 @@ import {
     requestAdminTeamDetail,
     requestAdminTeamList,
 } from "../../api/teamApi";
+import TeamIcon from "../../assets/icons/team.svg";
 import styles from "./AdminTeamManage.module.css";
 
 const roleLabels = {
@@ -74,7 +75,9 @@ const TeamCard = ({ team, onClick }) => {
                     <h2>{projectWritten ? team.serviceName : team.teamName}</h2>
                     <span>{gradeLabels[team.grade] || team.grade}</span>
                 </div>
-                <p>{getRoleSummary(team.roleCount)}</p>
+                <p className={styles.roleSummary}>
+                    {getRoleSummary(team.roleCount)}
+                </p>
             </header>
 
             {projectWritten ? (
@@ -299,7 +302,9 @@ const AdminTeamManage = () => {
                             <p>전체 팀</p>
                             <strong>{counts.total}</strong>
                         </div>
-                        <span className={styles.summaryIcon}>▣</span>
+                        <span className={styles.summaryIcon}>
+                            <img src={TeamIcon} alt="" />
+                        </span>
                     </article>
 
                     <article className={styles.summaryCard}>

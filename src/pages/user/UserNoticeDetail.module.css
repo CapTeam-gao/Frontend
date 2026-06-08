@@ -144,6 +144,13 @@
     margin-top: 10px;
 }
 
+.importantContent {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.75;
+    white-space: pre-line;
+}
 .emptyBox {
     display: flex;
     align-items: center;
