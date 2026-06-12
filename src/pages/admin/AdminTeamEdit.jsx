@@ -56,17 +56,23 @@ const summaryRoleOrder = [
 ];
 
 const getSortedMembers = (members = []) => {
+    // members 배열이 들어오지 않으면 빈 배열로 처리하여 오류 예외처리
     return [...members].sort((a, b) => {
+        // sort가 원본 배열 순서를 바꾸기 때문에 얕은 복사한 배열을 정렬
         if (a.recommendedLeader !== b.recommendedLeader) {
-            return a.recommendedLeader ? -1 : 1;
+            // 둘다 팀장이거나 팀장이 둘 다 아니면 밑으로 내려감
+            // recommendedLeader는 추천된 팀장
+            return a.recommendedLeader ? -1 : 1; //sort 문법에선 -1이면 a가 앞으로, 1이면 b가 앞으로 온다
         }
 
         const roleA = roleOrder[a.studentRole] || 99;
         const roleB = roleOrder[b.studentRole] || 99;
-
+        // 미리 정해놓은 Role 객체에 지정된 숫자로 정렬하는 로직
+        // 프론트엔드는 1 백엔드는 2로 서로 - 했을 때 음수면 a가 앞으로 양수면 b가 앞으로 감
         if (roleA !== roleB) return roleA - roleB;
 
-        return a.name.localeCompare(b.name, "ko");
+        return a.name.localeCompare(b.name, "ko"); // ko는 korea기준
+        // localeCompare은 문자열을 비교하여 정렬하는 함수
     });
 };
 

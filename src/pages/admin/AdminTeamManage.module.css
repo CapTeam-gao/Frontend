@@ -282,6 +282,8 @@
     justify-content: center;
     padding: 32px;
     background-color: rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    overscroll-behavior: contain;
 }
 
 .modal {
@@ -289,6 +291,8 @@
     width: min(100%, 980px);
     max-height: calc(100vh - 80px);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 64px 72px;
     border-radius: var(--border-radius-md);
     background-color: #ffffff;

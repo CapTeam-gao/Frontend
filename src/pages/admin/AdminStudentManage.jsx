@@ -57,6 +57,25 @@ const getStudentNumberInfo = (userId = "") => {
     };
 };
 
+const normalizeSearchText = (value = "") =>
+    String(value).toLowerCase().replace(/\s/g, "");
+
+const getStudentSearchText = (student) => {
+    const numberInfo = getStudentNumberInfo(student.userId);
+    const roleText = roleLabels[student.studentRole] || student.studentRole;
+
+    return [
+        student.name,
+        student.userId,
+        numberInfo.number,
+        numberInfo.classText,
+        roleText,
+    ]
+        .filter(Boolean)
+        .map(normalizeSearchText)
+        .join(" ");
+};
+
 const AdminStudentManage = () => {
     const [students, setStudents] = useState([]);
     const [summaryCounts, setSummaryCounts] = useState({
@@ -98,16 +117,23 @@ const AdminStudentManage = () => {
         getStudents();
     }, []);
 
+    useEffect(() => {
+        if (!selectedStudent) return undefined;
+
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, [selectedStudent]);
+
     const filteredStudents = useMemo(() => {
         return students.filter((student) => {
-            const keyword = searchKeyword.trim().toLowerCase();
-            const roleText =
-                roleLabels[student.studentRole] || student.studentRole || "";
+            const keyword = normalizeSearchText(searchKeyword);
+            const studentSearchText = getStudentSearchText(student);
             const matchesKeyword =
-                !keyword ||
-                student.name?.toLowerCase().includes(keyword) ||
-                student.userId?.toLowerCase().includes(keyword) ||
-                roleText.toLowerCase().includes(keyword);
+                !keyword || studentSearchText.includes(keyword);
             const matchesSummary =
                 activeSummaryFilter === "all" ||
                 (activeSummaryFilter === "grade2" &&
@@ -192,7 +218,9 @@ const AdminStudentManage = () => {
                 {error && <p className={styles.errorText}>{error}</p>}
 
                 {isLoading ? (
-                    <p className={styles.emptyText}>학생 정보를 불러오는 중입니다.</p>
+                    <p className={styles.emptyText}>
+                        학생 정보를 불러오는 중입니다.
+                    </p>
                 ) : filteredStudents.length === 0 ? (
                     <p className={styles.emptyText}>
                         표시할 학생이 없습니다. 팀 생성 승인 후 학생 목록이
@@ -276,10 +304,17 @@ const AdminStudentManage = () => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className={styles.modalHeader}>
-                            <div>
+                            <div className={styles.meta}>
                                 <h2 id="student-modal-title">
                                     {selectedStudent.name}
                                 </h2>
+                                <span>
+                                    {levelLabels[
+                                        selectedStudent.studentLevel
+                                    ] ||
+                                        selectedStudent.studentLevel ||
+                                        "분석 전"}
+                                </span>
                             </div>
                             <button
                                 type="button"
@@ -324,20 +359,12 @@ const AdminStudentManage = () => {
                                             ] || selectedStudent.studentRole}
                                         </strong>
                                     </article>
-                                    <article>
-                                        <span>분석 등급</span>
-                                        <strong>
-                                            {levelLabels[
-                                                selectedStudent.studentLevel
-                                            ] ||
-                                                selectedStudent.studentLevel ||
-                                                "분석 전"}
-                                        </strong>
-                                    </article>
+
                                     <article>
                                         <span>소속 팀</span>
                                         <strong>
-                                            {selectedStudent.teamName || "미배정"}
+                                            {selectedStudent.teamName ||
+                                                "미배정"}
                                         </strong>
                                     </article>
                                     <article>
