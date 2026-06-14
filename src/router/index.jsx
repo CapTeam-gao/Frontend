@@ -2,33 +2,33 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // 개발 중에는 각 페이지를 바로 확인하기 위해 ProtectedRoute를 잠시 비활성화함
 // import ProtectedRoute from "./ProtectedRoute";
 
-import Login from "../pages/Login";
+import Login from "../pages/auth/Login";
 
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import AdminTeamCreate from "../pages/admin/AdminTeamCreate";
-import AdminTeamCreateLoading from "../pages/admin/AdminTeamCreateLoading";
-import AdminTeamEdit from "../pages/admin/AdminTeamEdit";
-import AdminTeamManage from "../pages/admin/AdminTeamManage";
-import AdminLogList from "../pages/admin/AdminLogList";
-import AdminLogDetail from "../pages/admin/AdminLogDetail";
-import AdminStudentManage from "../pages/admin/AdminStudentManage";
-import AdminNoticeList from "../pages/admin/AdminNoticeList";
-import AdminNoticeDetail from "../pages/admin/AdminNoticeDetail";
-import AdminNoticeCreate from "../pages/admin/AdminNoticeCreate";
-import AdminNoticeEdit from "../pages/admin/AdminNoticeEdit";
-import AdminProfile from "../pages/admin/AdminProfile";
-import AdminChatManage from "../pages/admin/AdminChatManage";
+import AdminDashboard from "../pages/admin/dashboard/AdminDashboard";
+import AdminTeamCreate from "../pages/admin/team/AdminTeamCreate";
+import AdminTeamCreateLoading from "../pages/admin/team/AdminTeamCreateLoading";
+import AdminTeamEdit from "../pages/admin/team/AdminTeamEdit";
+import AdminTeamManage from "../pages/admin/team/AdminTeamManage";
+import AdminLogList from "../pages/admin/log/AdminLogList";
+import AdminLogDetail from "../pages/admin/log/AdminLogDetail";
+import AdminStudentManage from "../pages/admin/student/AdminStudentManage";
+import AdminNoticeList from "../pages/admin/notice/AdminNoticeList";
+import AdminNoticeDetail from "../pages/admin/notice/AdminNoticeDetail";
+import AdminNoticeCreate from "../pages/admin/notice/AdminNoticeCreate";
+import AdminNoticeEdit from "../pages/admin/notice/AdminNoticeEdit";
+import AdminProfile from "../pages/admin/profile/AdminProfile";
+import AdminChatManage from "../pages/admin/chat/AdminChatManage";
 
-import UserDashboard from "../pages/user/UserDashboard";
-import UserLogWrite from "../pages/user/UserLogWrite";
-import UserLogResult from "../pages/user/UserLogResult";
-import UserProject from "../pages/user/UserProject";
-import UserNoticeList from "../pages/user/UserNoticeList";
-import UserNoticeDetail from "../pages/user/UserNoticeDetail";
-import UserProfile from "../pages/user/UserProfile";
-import UserTeamChat from "../pages/user/UserTeamChat";
-import UserSurvey from "../pages/user/UserSurvey";
-import UserSurveyIntro from "../pages/user/UserSurveyIntro";
+import UserDashboard from "../pages/user/dashboard/UserDashboard";
+import UserLogWrite from "../pages/user/log/UserLogWrite";
+import UserLogResult from "../pages/user/log/UserLogResult";
+import UserProject from "../pages/user/project/UserProject";
+import UserNoticeList from "../pages/user/notice/UserNoticeList";
+import UserNoticeDetail from "../pages/user/notice/UserNoticeDetail";
+import UserProfile from "../pages/user/profile/UserProfile";
+import UserTeamChat from "../pages/user/chat/UserTeamChat";
+import UserSurvey from "../pages/user/survey/UserSurvey";
+import UserSurveyIntro from "../pages/user/survey/UserSurveyIntro";
 
 // router 설정하는 파일
 const Router = () => {
