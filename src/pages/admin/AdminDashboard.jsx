@@ -85,14 +85,12 @@ const AdminDashboard = () => {
                                             {dashboard.totalTeamCount}팀
                                         </strong>
                                         <p className={styles.teamMeta}>
-                                            2학년: {dashboard.grade2TeamCount}
-                                            팀 | 3학년:{" "}
-                                            {dashboard.grade3TeamCount}팀
+                                            2학년: {dashboard.grade2TeamCount}팀
+                                            | 3학년: {dashboard.grade3TeamCount}
+                                            팀
                                         </p>
                                     </>
                                 )}
-
-                                <div className={styles.divider} />
 
                                 <p className={styles.description}>
                                     {isTeamCreated

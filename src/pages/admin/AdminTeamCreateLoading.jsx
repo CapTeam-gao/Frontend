@@ -5,11 +5,16 @@ import styles from "./AdminTeamCreateLoading.module.css";
 
 const AdminTeamCreateLoading = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const grade = location.state?.grade || "GRADE_2";
+    const location = useLocation(); // navigate 안에 state값을 확인할 수 있는 함수
+    const grade = location.state?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 언디파인드
     const [error, setError] = useState("");
 
     useEffect(() => {
+        if (!grade) {
+            navigate("/admin/team-create", { replace: true });
+            return;
+        } // 하지만 팀 로딩 페이지 이동시 api 호출되는 불상사 막기 위해 학생 선택을 안 했다면 다시 팀 생성 페이지로 이동
+
         const createTeamRecommendation = async () => {
             try {
                 await requestCreateTeamRecommendation(grade);

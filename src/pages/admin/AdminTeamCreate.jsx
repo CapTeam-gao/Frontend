@@ -11,7 +11,7 @@ const AdminTeamCreate = () => {
     const handleCreate = () => {
         navigate("/admin/team-create/loading", {
             state: {
-                grade: selectedGrade,
+                grade: selectedGrade, // 페이지를 로딩페이지로 넘어갈 때 스테이트 값으로 그레이드까지 같이 넘기는 로직
             },
         });
     };

@@ -103,7 +103,7 @@ const UserNoticeDetail = () => {
                             source={notice.content}
                         />
                         {notice.important === "IMPORTANT" && (
-                            <p className={styles.content}>
+                            <p className={styles.importantContent}>
                                 중요한 공지이므로 내용을 확인한 뒤 팀원들과
                                 공유해주세요.
                             </p>
