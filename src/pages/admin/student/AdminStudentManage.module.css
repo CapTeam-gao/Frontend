@@ -83,7 +83,7 @@
 
 .summaryCard:hover {
     border-color: var(--color-primary);
-    background-color: var(--color-bg-hover);
+    background-color: #ffffff;
 }
 
 .summaryCard span {
@@ -102,8 +102,10 @@
 }
 
 .summaryCard.active {
+    border: 2px solid;
+
     border-color: var(--color-primary);
-    background-color: var(--color-primary-bg);
+    background-color: #ffffff;
 }
 
 .summaryCard.active span,

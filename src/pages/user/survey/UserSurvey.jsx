@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { requestSubmitSurvey } from "../../../api/userApi";
+import { requestSubmitSurvey } from "../../../api/surveyApi";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
 import {
