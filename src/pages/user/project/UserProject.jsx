@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import {
-    loadProjectPlan,
-    saveProjectPlan,
-} from "../../../utils/projectPlanStorage";
+    requestSaveUserProjectPlan,
+    requestUserProjectPlan,
+} from "../../../api/projectApi";
 import styles from "./UserProject.module.css";
 
 const guideItems = [
@@ -37,19 +37,55 @@ const summaryItems = [
     },
 ];
 
+const emptyProjectPlan = {
+    projectId: null,
+    teamName: "",
+    serviceName: "",
+    serviceSummary: "",
+    coreFeatures: "",
+};
+
+const normalizeProjectPlan = (data) => {
+    const project = data ?? {};
+
+    return {
+        ...emptyProjectPlan,
+        projectId: project.projectId ?? null,
+        teamName: project.teamName ?? "",
+        serviceName: project.serviceName ?? "",
+        serviceSummary: project.serviceSummary ?? project.serviceIntro ?? "",
+        coreFeatures: project.coreFeatures ?? project.mainFeatures ?? "",
+    };
+};
+
 const UserProject = () => {
     const navigate = useNavigate();
-    const [projectPlan, setProjectPlan] = useState(() => loadProjectPlan());
+    const [projectPlan, setProjectPlan] = useState(emptyProjectPlan);
     const [error, setError] = useState("");
-    const hasSavedPlan = Boolean(projectPlan.savedAt);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const hasSavedPlan = Boolean(projectPlan.projectId);
+
+    useEffect(() => {
+        const getProjectPlan = async () => {
+            try {
+                const data = await requestUserProjectPlan();
+                setProjectPlan(normalizeProjectPlan(data));
+            } catch {
+                setError("저장된 기획서를 불러오지 못했습니다.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        getProjectPlan();
+    }, []);
 
     const requiredFields = [
         projectPlan.teamName,
         projectPlan.serviceName,
         projectPlan.serviceSummary,
-        projectPlan.targetUser,
         projectPlan.coreFeatures,
-        projectPlan.expectedEffect,
     ];
 
     const updateField = (field, value) => {
@@ -60,7 +96,7 @@ const UserProject = () => {
         setError("");
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const hasEmptyField = requiredFields.some(
@@ -72,9 +108,16 @@ const UserProject = () => {
             return;
         }
 
-        const savedPlan = saveProjectPlan(projectPlan);
-        setProjectPlan(savedPlan);
-        navigate("/user/dashboard");
+        try {
+            setIsSubmitting(true);
+            const savedPlan = await requestSaveUserProjectPlan(projectPlan);
+            setProjectPlan(normalizeProjectPlan(savedPlan));
+            navigate("/user/dashboard");
+        } catch {
+            setError("기획서를 저장하지 못했습니다.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -104,6 +147,12 @@ const UserProject = () => {
                     </aside>
 
                     <form className={styles.formCard} onSubmit={handleSubmit}>
+                        {isLoading && (
+                            <p className={styles.loadingText}>
+                                기획서를 불러오는 중입니다...
+                            </p>
+                        )}
+
                         <div className={styles.formSectionHeader}>
                             <span>STEP 1</span>
                             <h2>기본 정보</h2>
@@ -162,18 +211,6 @@ const UserProject = () => {
                         </label>
 
                         <label className={styles.field}>
-                            <span>대상 사용자</span>
-                            <input
-                                type="text"
-                                value={projectPlan.targetUser}
-                                placeholder="예: 캡스톤 프로젝트를 진행하는 학생과 관리자"
-                                onChange={(e) =>
-                                    updateField("targetUser", e.target.value)
-                                }
-                            />
-                        </label>
-
-                        <label className={styles.field}>
                             <span>주요 기능</span>
                             <textarea
                                 value={projectPlan.coreFeatures}
@@ -188,24 +225,18 @@ const UserProject = () => {
                             </small>
                         </label>
 
-                        <label className={styles.field}>
-                            <span>기대 효과</span>
-                            <textarea
-                                value={projectPlan.expectedEffect}
-                                placeholder="예: 팀 구성에 걸리는 시간을 줄이고, 프로젝트 운영 정보를 한곳에서 확인할 수 있습니다."
-                                onChange={(e) =>
-                                    updateField(
-                                        "expectedEffect",
-                                        e.target.value
-                                    )
-                                }
-                            />
-                        </label>
-
                         {error && <p className={styles.errorMessage}>{error}</p>}
 
-                        <button type="submit" className={styles.submitButton}>
-                            {hasSavedPlan ? "수정 저장" : "저장"}
+                        <button
+                            type="submit"
+                            className={styles.submitButton}
+                            disabled={isLoading || isSubmitting}
+                        >
+                            {isSubmitting
+                                ? "저장 중..."
+                                : hasSavedPlan
+                                ? "수정 저장"
+                                : "저장"}
                         </button>
                     </form>
                 </section>

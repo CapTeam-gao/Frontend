@@ -13,24 +13,24 @@
 
 .modal {
     position: relative;
-    width: min(100%, 980px);
+    width: min(100%, 1120px);
     max-height: calc(100vh - 80px);
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    padding: 64px 72px;
+    padding: 54px 64px 58px;
     border-radius: var(--border-radius-md);
     background-color: #ffffff;
 }
 
 .closeButton {
     position: absolute;
-    top: 28px;
+    top: 24px;
     right: 28px;
     border: none;
     background: none;
     color: #000000;
-    font-size: var(--font-size-2xl);
+    font-size: 32px;
     font-weight: var(--font-weight-bold);
 }
 
@@ -38,48 +38,63 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--color-border);
+    gap: 28px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid #d8d8d8;
 }
 
-.modalHeader h2 {
+.teamTitleGroup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.teamTitleGroup h2 {
+    color: #000000;
+    font-size: 52px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+}
+
+.teamTitleGroup span {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-right: 8px;
-    color: #000000;
-    font-size: 42px;
-    font-weight: var(--font-weight-bold);
-    line-height: 1.1;
-}
-
-.modalHeader p {
-    display: inline-flex;
-    padding: 6px 10px;
+    min-height: 38px;
+    padding: 0 16px;
     border-radius: var(--border-radius-sm);
     background-color: var(--color-primary-bg);
     color: var(--color-primary-dark);
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
+    white-space: nowrap;
 }
 
-.modalHeader strong {
+.roleSummary {
     color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    white-space: nowrap;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.5;
+    text-align: right;
+}
+
+.projectTitle {
+    margin: 42px 0 34px;
+    color: #000000;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.35;
+    text-align: center;
 }
 
 .modalContent {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 44px;
-    margin-top: 44px;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 42px;
 }
 
 .projectPanel {
-    padding: 28px 34px;
+    padding: 36px;
     border-radius: var(--border-radius-md);
     background-color: var(--color-primary-bg);
 }
@@ -87,27 +102,33 @@
 .projectGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-    padding: 28px;
+    gap: 0;
+    padding: 30px;
     border-radius: var(--border-radius-sm);
     background-color: #ffffff;
 }
 
-.projectGrid div:first-child {
-    padding-right: 24px;
+.projectGrid > div {
+    min-height: 190px;
+}
+
+.projectGrid > div:first-child {
+    padding-right: 28px;
     border-right: 1px solid var(--color-border);
 }
 
-.projectGrid h3,
-.highlightBox h3 {
-    margin-bottom: 12px;
+.projectGrid > div:last-child {
+    padding-left: 28px;
+}
+
+.projectGrid h3 {
+    margin-bottom: 18px;
     color: #000000;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
 }
 
-.projectGrid p,
-.highlightBox p {
+.projectGrid p {
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
@@ -115,30 +136,45 @@
     white-space: pre-line;
 }
 
-.highlightBox {
-    margin-top: 22px;
-    padding: 18px 22px;
-    border-left: 6px solid #4ea5ff;
+.infoCard {
+    padding: 30px;
     border-radius: var(--border-radius-sm);
     background-color: #ffffff;
 }
 
-.warningBox {
-    border-left-color: var(--color-danger);
+.infoCard + .infoCard {
+    margin-top: 22px;
+}
+
+.infoCard h4 {
+    margin-bottom: 16px;
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.infoCard p {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.65;
+    white-space: pre-line;
 }
 
 .memberPanel {
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-sm);
     background-color: #ffffff;
+    overflow: hidden;
 }
 
 .modalMember {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 72px;
-    padding: 0 18px;
+    gap: 18px;
+    min-height: 92px;
+    padding: 0 26px;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -146,16 +182,25 @@
     border-bottom: none;
 }
 
-.modalMember strong {
+.memberNameArea {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.memberNameArea strong {
     color: #000000;
     font-size: var(--font-size-2xl-sm);
     font-weight: var(--font-weight-bold);
+    white-space: nowrap;
 }
 
 .modalMember p {
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
     text-align: right;
 }
 
@@ -163,13 +208,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-left: 4px;
-    padding: 2px 5px;
-    border-radius: 4px;
+    min-height: 22px;
+    padding: 0 7px;
+    border-radius: 5px;
     background-color: #fff2a8;
     color: #9b7a00;
-    font-size: 9px;
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
+    white-space: nowrap;
 }
 
 .modalStatus,
@@ -190,26 +236,39 @@
     .modalContent {
         grid-template-columns: 1fr;
     }
+
+    .roleSummary {
+        text-align: left;
+    }
 }
 
 @media (max-width: 768px) {
-    .modalHeader {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
     .modal {
         padding: 48px 24px;
+    }
+
+    .modalHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .teamTitleGroup h2 {
+        font-size: 40px;
     }
 
     .projectGrid {
         grid-template-columns: 1fr;
     }
 
-    .projectGrid div:first-child {
+    .projectGrid > div:first-child {
         padding-right: 0;
-        padding-bottom: 18px;
+        padding-bottom: 24px;
         border-right: none;
         border-bottom: 1px solid var(--color-border);
+    }
+
+    .projectGrid > div:last-child {
+        padding-top: 24px;
+        padding-left: 0;
     }
 }
