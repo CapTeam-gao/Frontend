@@ -93,6 +93,7 @@ const AdminStudentManage = () => {
         try {
             setModalError("");
             const detail = await requestAdminStudentDetail(student.userId);
+            console.log(detail);
             setSelectedStudent({
                 ...student,
                 ...detail,

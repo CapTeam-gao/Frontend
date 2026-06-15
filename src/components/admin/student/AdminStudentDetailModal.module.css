@@ -3,7 +3,6 @@
     margin: 24px auto 0;
     padding: 10px 14px;
     border-radius: var(--border-radius-sm);
-    background-color: #fff1f1;
     color: var(--color-danger);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
@@ -23,7 +22,7 @@
 }
 
 .modal {
-    width: min(760px, 100%);
+    width: min(1120px, 100%);
     max-height: calc(100vh - 48px);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -61,6 +60,11 @@
     gap: 18px;
     padding: 30px 34px 0;
 }
+.modalContent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    padding: 18px 34px 34px;
+}
 
 .modalHeader h2 {
     color: #000000;
@@ -86,7 +90,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    padding: 14px 34px 0;
+    padding: 0 14px;
 }
 
 .detailGrid article,
@@ -140,7 +144,7 @@
 }
 
 .detailSection {
-    margin: 8px 34px 0;
+    margin: 8px 14px 0;
     padding: 22px;
 }
 
@@ -204,6 +208,48 @@
     background-color: var(--color-primary);
     content: "";
 }
+.chartBox {
+    width: 100%;
+    height: 260px;
+
+    pointer-events: none;
+}
+
+.chartColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chartGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chartCard {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background-color: #ffffff;
+    padding: 18px;
+}
+
+.chartCard h3 {
+    margin-bottom: 12px;
+    color: #000000;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.emptyChartText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 260px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
 
 @media (max-width: 640px) {
     .modal {
@@ -216,7 +262,7 @@
 
     .detailGrid {
         grid-template-columns: 1fr;
-        padding: 14px 24px 0;
+        padding: 0 24px;
     }
 
     .detailSection,

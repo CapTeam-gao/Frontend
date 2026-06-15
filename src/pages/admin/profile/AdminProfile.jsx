@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import authStore from "../../../store/authStore";
 import CharacterImage from "../../../assets/images/adminMypage.png";
+import PasswordIcon from "../../../assets/icons/password.svg";
 import styles from "./AdminProfile.module.css";
 
 const AdminProfile = () => {
@@ -99,7 +100,11 @@ const AdminProfile = () => {
                             </div>
 
                             <div className={styles.passwordPreview}>
-                                <span className={styles.lockIcon}>●</span>
+                                <img
+                                    className={styles.lockIcon}
+                                    src={PasswordIcon}
+                                    alt=""
+                                />
                                 <div>
                                     <p>비밀번호</p>
                                     <strong>••••••••</strong>
