@@ -85,6 +85,13 @@
     color: #ffffff;
 }
 
+.errorText {
+    margin: 18px 0 0;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
 .criteriaBox {
     width: min(560px, 100%);
     margin-top: 40px;

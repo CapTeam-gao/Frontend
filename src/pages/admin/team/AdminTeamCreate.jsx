@@ -1,14 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import TeamCreateIcon from "../../../assets/icons/teamCreate.svg";
+import { requestAdminDashboard } from "../../../api/dashboardApi";
+import {
+    getAdminTeamCreationStatus,
+    isGradeTeamCreated,
+} from "../../../utils/teamStatus";
 import styles from "./AdminTeamCreate.module.css";
 
 const AdminTeamCreate = () => {
     const navigate = useNavigate();
     const [selectedGrade, setSelectedGrade] = useState("GRADE_2");
+    const [teamStatus, setTeamStatus] = useState({
+        grade2TeamCreated: false,
+        grade3TeamCreated: false,
+        allTeamCreated: false,
+    });
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const getTeamStatus = async () => {
+            try {
+                const dashboard = await requestAdminDashboard();
+                setTeamStatus(getAdminTeamCreationStatus(dashboard));
+            } catch {
+                setError("팀 생성 상태를 불러오지 못했습니다.");
+            }
+        };
+
+        getTeamStatus();
+    }, []);
+
+    const handleGradeChange = (e) => {
+        setSelectedGrade(e.target.value);
+        setError("");
+    };
 
     const handleCreate = () => {
+        if (isGradeTeamCreated(teamStatus, selectedGrade)) {
+            setError("이미 생성이 완료된 학년입니다.");
+            return;
+        }
+
         navigate("/admin/team-create/loading", {
             state: {
                 grade: selectedGrade, // 페이지를 로딩페이지로 넘어갈 때 스테이트 값으로 그레이드까지 같이 넘기는 로직
@@ -35,9 +69,7 @@ const AdminTeamCreate = () => {
                                 name="grade"
                                 value="GRADE_2"
                                 checked={selectedGrade === "GRADE_2"}
-                                onChange={(e) =>
-                                    setSelectedGrade(e.target.value)
-                                }
+                                onChange={handleGradeChange}
                             />
                             <span>2학년</span>
                         </label>
@@ -48,13 +80,13 @@ const AdminTeamCreate = () => {
                                 name="grade"
                                 value="GRADE_3"
                                 checked={selectedGrade === "GRADE_3"}
-                                onChange={(e) =>
-                                    setSelectedGrade(e.target.value)
-                                }
+                                onChange={handleGradeChange}
                             />
                             <span>3학년</span>
                         </label>
                     </div>
+
+                    {error && <p className={styles.errorText}>{error}</p>}
 
                     <section className={styles.criteriaBox}>
                         <h2 className={styles.criteriaTitle}>생성 기준</h2>

@@ -7,12 +7,18 @@ import ChatIcon from "../../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../../assets/icons/notice.svg";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
+import {
+    getAdminTeamCreationStatus,
+    getNextTeamCreateMessage,
+} from "../../../utils/teamStatus";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [dashboard, setDashboard] = useState({
         teamCreated: false,
+        grade2TeamCreated: false,
+        grade3TeamCreated: false,
         totalTeamCount: 0,
         grade2TeamCount: 0,
         grade3TeamCount: 0,
@@ -39,7 +45,9 @@ const AdminDashboard = () => {
         getDashboard();
     }, []);
 
-    const isTeamCreated = dashboard.teamCreated;
+    const teamStatus = getAdminTeamCreationStatus(dashboard);
+    const isTeamCreated = teamStatus.allTeamCreated;
+    const teamStatusMessage = getNextTeamCreateMessage(teamStatus);
 
     return (
         <div className={styles.page}>
@@ -62,11 +70,23 @@ const AdminDashboard = () => {
                         >
                             <div className={styles.mainContent}>
                                 <div className={styles.mainHeader}>
-                                    <h1 className={styles.mainTitle}>
-                                        {isTeamCreated
-                                            ? "팀 관리"
-                                            : "팀을 생성해주세요"}
-                                    </h1>
+                                    <div>
+                                        <h1 className={styles.mainTitle}>
+                                            {isTeamCreated
+                                                ? "팀 관리"
+                                                : "팀을 생성해주세요"}
+                                        </h1>
+                                        {!isTeamCreated &&
+                                            teamStatusMessage && (
+                                                <p
+                                                    className={
+                                                        styles.mainSubText
+                                                    }
+                                                >
+                                                    {teamStatusMessage}
+                                                </p>
+                                            )}
+                                    </div>
                                     <div className={styles.largeIcon}>
                                         <img
                                             src={
@@ -95,7 +115,7 @@ const AdminDashboard = () => {
                                 <p className={styles.description}>
                                     {isTeamCreated
                                         ? "팀 별 정보를 조회할 수 있습니다."
-                                        : "학생 데이터를 분석하여 최적의 팀을 자동으로 생성합니다."}
+                                        : "2학년과 3학년 팀 생성이 모두 완료되면 팀 관리가 가능합니다."}
                                 </p>
                             </div>
                         </Link>
