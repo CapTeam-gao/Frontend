@@ -3,228 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/userApi";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
+import {
+    roles,
+    personalityGroups,
+    developmentGroups,
+    roleToStudentRole,
+} from "../../../constants/survey";
+import {
+    flattenQuestions,
+    calculateAverageScores,
+    getAnswerScores,
+    getSkillsFromText,
+} from "../../../utils/survey";
 
-const roles = [
-    "프론트엔드",
-    "백엔드",
-    "DevOps",
-    "디자인",
-    "AI",
-    "앱 개발",
-    "게임개발",
-    "보안",
-    "풀스택",
-];
-
-const personalityGroups = [
-    {
-        key: "communication",
-        label: "소통 성향",
-        questions: [
-            "나는 작업 중 막히는 부분이 있으면 팀원에게 상황을 공유하는 편이다.",
-            "나는 팀원의 의견이 내 생각과 달라도 먼저 들어보려고 한다.",
-        ],
-    },
-    {
-        key: "responsibility",
-        label: "책임감",
-        questions: [
-            "나는 맡은 일을 정해진 시간 안에 끝내려고 노력하는 편이다.",
-            "나는 내가 맡은 일이 늦어질 것 같으면 미리 팀원에게 알린다.",
-        ],
-    },
-    {
-        key: "collaboration",
-        label: "협업 선호도",
-        questions: [
-            "나는 혼자 작업하는 것보다 팀원과 역할을 나눠 작업하는 것이 편하다.",
-            "나는 팀원이 어려움을 겪고 있으면 내 일이 아니어도 도와주려는 편이다.",
-        ],
-    },
-    {
-        key: "flexibility",
-        label: "유연성",
-        questions: [
-            "나는 프로젝트 도중 역할이나 계획이 바뀌어도 적응하려고 노력한다.",
-            "나는 내 작업물에 대한 피드백을 받으면 수정 방향을 고민해본다.",
-        ],
-    },
-    {
-        key: "emotionalStability",
-        label: "감정 안정성",
-        questions: [
-            "나는 프로젝트 중 의견 충돌이 생겨도 감정적으로 대응하지 않으려고 한다.",
-            "나는 일정이 바빠져도 차분하게 우선순위를 정하려고 한다.",
-        ],
-    },
-];
-
-const developmentGroups = [
-    {
-        key: "leadership",
-        label: "리더십",
-        questions: [
-            "나는 팀 프로젝트에서 필요한 일을 먼저 정리하고 역할을 나누는 편이다.",
-            "나는 팀이 방향을 잃었을 때 먼저 의견을 내고 정리하려고 한다.",
-        ],
-    },
-    {
-        key: "problemSolving",
-        label: "문제 해결력",
-        questions: [
-            "나는 오류가 생기면 바로 포기하기보다 원인을 찾아보는 편이다.",
-            "나는 모르는 기능이 있어도 검색이나 문서를 보며 해결해보려고 한다.",
-        ],
-    },
-    {
-        key: "implementation",
-        label: "구현 실행력",
-        questions: [
-            "나는 정해진 기능을 실제 코드로 구현해보는 과정에 자신이 있다.",
-            "나는 작은 기능이라도 완성해서 화면에 보이게 만드는 것을 중요하게 생각한다.",
-        ],
-    },
-    {
-        key: "learningAbility",
-        label: "학습 성장성",
-        questions: [
-            "나는 프로젝트에 필요한 기술이라면 처음 접해도 배우려고 한다.",
-            "나는 내가 부족한 부분을 알게 되면 따로 공부해서 보완하려고 한다.",
-        ],
-    },
-    {
-        key: "planning",
-        label: "기획 정리력",
-        questions: [
-            "나는 기능을 만들기 전에 필요한 화면 흐름이나 데이터를 먼저 정리하는 편이다.",
-            "나는 프로젝트 내용을 문서나 발표 자료로 정리하는 것에 부담이 적다.",
-        ],
-    },
-];
-
-// 카테고리별로 묶여 있는 설문 질문들을
-// 화면에서 map으로 돌리기 쉬운 "하나의 질문 배열"로 펼쳐주는 함수
-const flattenQuestions = (groups, type) => {
-    return groups.flatMap((group) =>
-        // group.questions는 한 카테고리 안에 들어있는 질문 배열
-        group.questions.map((question, index) => ({
-            // 질문마다 겹치지 않는 고유 id를 만들어줌
-            // 예: personality-communication-1
-            id: `${type}-${group.key}-${index + 1}`,
-
-            // 점수 평균을 낼 때 사용할 카테고리 값
-            // 예: communication, responsibility
-            category: group.key,
-
-            // 화면에 보여줄 카테고리 이름
-            // 예: 소통, 책임감
-            categoryLabel: group.label,
-
-            // 실제 설문 질문 문장
-            question,
-        }))
-    );
-};
+import { RatingRow } from "../../../components/user/survey/UserSurveyForm";
 
 const personalityQuestions = flattenQuestions(personalityGroups, "personality");
 const developmentQuestions = flattenQuestions(developmentGroups, "development");
 const allRatingQuestions = [...personalityQuestions, ...developmentQuestions];
-
-// 설문 답변 점수를 카테고리별 평균 점수로 바꿔주는 함수
-// 예: communication 질문 2개가 4점, 5점이면 communication: 4.5 로 변환
-const calculateAverageScores = (groups, answers, type) => {
-    // groups 배열을 돌면서 최종적으로 평균 점수 객체 하나를 만든다
-    // 처음 시작값은 아래쪽의 빈 객체 {}
-    return groups.reduce((scores, group) => {
-        // 현재 카테고리에 들어있는 질문들의 id를 만든다
-        // 예: personality-communication-1
-        // 예: personality-communication-2
-        const questionIds = group.questions.map(
-            // _는 질문 문장 값이 필요 없다는 뜻
-            // 여기서는 index만 필요해서 첫 번째 값을 _로 둔다
-            (_, index) => `${type}-${group.key}-${index + 1}`
-        );
-
-        // 위에서 만든 질문 id들을 이용해서 answers 객체에서 점수를 꺼내 모두 더한다
-        const total = questionIds.reduce(
-            (sum, questionId) =>
-                // answers[questionId]는 사용자가 선택한 점수
-                // input 값은 문자열일 수 있어서 Number로 숫자 변환
-                sum + Number(answers[questionId]),
-            // sum의 시작값
-            0
-        );
-
-        // 기존 scores 객체를 유지하면서,
-        // 현재 카테고리의 평균 점수를 새로 추가한다
-        return {
-            ...scores,
-
-            // group.key를 객체의 key로 사용한다
-            // 예: communication: 4.5
-            [group.key]: total / questionIds.length,
-        };
-    }, {});
-};
-
-const getAnswerScores = (questions, answers) => {
-    return questions.map((question) => Number(answers[question.id]));
-};
-
-const getSkillsFromText = (stackText) => {
-    return stackText
-        .split(/[,/]+/)
-        .map((skill) => skill.trim())
-        .filter(Boolean);
-};
-
-const roleToStudentRole = {
-    프론트엔드: "FRONTEND",
-    백엔드: "BACKEND",
-    DevOps: "BACKEND",
-    디자인: "DESIGN",
-    AI: "AI",
-    "앱 개발": "APP",
-    게임개발: "APP",
-    보안: "BACKEND",
-    풀스택: "BACKEND",
-};
-
-const RatingRow = ({ number, question, categoryLabel, value, onChange }) => {
-    return (
-        <li className={styles.questionItem}>
-            <p className={styles.questionText}>
-                {number}. {question}
-            </p>
-            <p className={styles.questionCategory}>{categoryLabel}</p>
-
-            <div className={styles.scaleArea}>
-                <div className={styles.scaleLabels}>
-                    <span>전혀 그렇지 않다</span>
-                    <span>매우 그렇다</span>
-                </div>
-
-                <div
-                    className={styles.scaleGroup}
-                    aria-label={`${number}번 점수`}
-                >
-                    {[1, 2, 3, 4, 5].map((score) => (
-                        <label key={score} className={styles.scaleOption}>
-                            <input
-                                type="radio"
-                                name={`question-${number}`}
-                                value={score}
-                                checked={value === score}
-                                onChange={() => onChange(score)}
-                            />
-                            <span>{score}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-        </li>
-    );
-};
 
 const UserSurvey = () => {
     const navigate = useNavigate();

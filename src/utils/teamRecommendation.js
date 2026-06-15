@@ -67,3 +67,20 @@ export const getRoleSummary = (members = []) => {
         .map((role) => `${roleLabels[role] || role} : ${counts[role]}명`)
         .join(" / ");
 };
+
+export const getRoleCount = (roleCount = {}, role) => roleCount[role] || 0;
+
+export const getRoleCountSummary = (roleCount = {}) => {
+    return summaryRoleOrder
+        .filter((role) => getRoleCount(roleCount, role))
+        .map(
+            (role) =>
+                `${roleLabels[role] || role} : ${getRoleCount(
+                    roleCount,
+                    role
+                )}명`
+        )
+        .join(" / ");
+};
+
+export const hasProjectInfo = (team) => Boolean(team?.serviceName);
