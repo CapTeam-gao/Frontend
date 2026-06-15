@@ -69,7 +69,7 @@
 
 .mainCardPending {
     border-color: var(--color-primary);
-    animation: teamBorderBlink 0.8s ease-in-out infinite;
+    animation: teamBorderBlink 1.2s ease-in-out infinite;
 }
 
 @keyframes teamBorderBlink {
@@ -270,7 +270,7 @@
     font-weight: var(--font-weight-bold);
     background-color: white;
     color: var(--color-primary);
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--color-border);
 }
 .quickButton:hover {
     background-color: var(--color-primary);
