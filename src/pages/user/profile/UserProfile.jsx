@@ -10,17 +10,20 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const user = authStore((state) => state.user);
     const logout = authStore((state) => state.logout);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
     const [isEditingPassword, setIsEditingPassword] = useState(false);
 
     const profile = {
         name: user?.name || "허재원",
-        loginId: user?.userId || "stu2313",
-        roleText: "학생",
+        userId: user?.userId || "stu2313",
     };
 
     const studentNumber = profile.loginId.startsWith("stu")
-        ? profile.loginId.replace("stu", "")
-        : profile.loginId;
+        ? profile.userId.replace("stu", "")
+        : profile.userId;
 
     const handleLogout = () => {
         logout();

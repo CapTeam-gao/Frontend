@@ -12,10 +12,16 @@ const makeAuthHeader = (token) => {
 };
 
 export const requestLogin = async (userId, password) => {
-    const response = await api.post("/api/auth/login", {
-        userId,
-        password,
-    });
+    const response = await api.post(
+        "/api/auth/login",
+        {
+            userId,
+            password,
+        },
+        {
+            skipAuthRedirect: true,
+        }
+    );
 
     return response.data;
 };
@@ -29,6 +35,26 @@ export const requestMyInfo = async (token) => {
         // JWT는 요청할 때마다 토큰을 직접 같이 보냄
         headers: makeAuthHeader(token),
     });
+
+    return response.data;
+};
+
+export const requestChangePassword = async ({
+    password,
+    newPassword,
+    checkPassword,
+}) => {
+    const response = await api.put(
+        "/api/auth/password",
+        {
+            password,
+            newPassword,
+            checkPassword,
+        },
+        {
+            skipAuthRedirect: true,
+        }
+    );
 
     return response.data;
 };
