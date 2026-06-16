@@ -1,0 +1,192 @@
+.formCard {
+    width: 100%;
+    max-width: 900px;
+    margin: 24px auto 0;
+    padding: 48px;
+    border: 1px solid #d9e7df;
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+}
+
+.formSectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.formSectionHeader span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.formSectionHeader h2 {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.fieldGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 8px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.field span {
+    color: #000000;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background-color: #ffffff;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.field input {
+    height: 54px;
+    padding: 0 16px;
+}
+
+.field textarea {
+    min-height: 156px;
+    padding: 16px;
+    line-height: 1.7;
+    resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+    border-color: var(--color-primary);
+    outline: none;
+}
+
+.field small {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+}
+
+.featureHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.addFeatureButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: #ffffff;
+    color: var(--color-primary-dark);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.addFeatureButton:hover {
+    background-color: var(--color-primary-bg);
+}
+
+.featureList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #e3efe8;
+    border-radius: var(--border-radius-sm);
+    background-color: #fbfffd;
+}
+
+.errorMessage {
+    width: fit-content;
+    margin: 0 auto 24px;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.loadingText {
+    margin-bottom: 24px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.submitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 52px;
+    margin: 20px auto 0;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.submitButton:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.submitButton:disabled {
+    border-color: var(--color-border);
+    background-color: var(--color-border);
+    cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+    .formCard {
+        padding: 28px 20px;
+    }
+
+    .fieldGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .featureHeader {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .addFeatureButton,
+    .submitButton {
+        width: 100%;
+    }
+}

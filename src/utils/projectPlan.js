@@ -11,18 +11,28 @@ export const emptyProjectPlan = {
     ],
 };
 
-export const normalizeProjectPlan = (data) => {
-    const parseCoreFeatures = (mainFeatures) => {
-        if (!mainFeatures) {
-            return [{ id: 1, value: "" }];
-        }
+export const parseMainFeatures = (mainFeatures) => {
+    if (!mainFeatures) return [];
 
-        return mainFeatures.split("\n").map((feature, index) => ({
-            id: index + 1,
-            value: feature,
-        }));
-    };
+    if (Array.isArray(mainFeatures)) {
+        return mainFeatures
+            .map((feature) =>
+                typeof feature === "string" ? feature.trim() : ""
+            )
+            .filter(Boolean);
+    }
+
+    return mainFeatures
+        .split("\n")
+        .map((feature) => feature.trim())
+        .filter(Boolean);
+};
+
+export const normalizeProjectPlan = (data) => {
     const project = data ?? {};
+    const parsedFeatures = parseMainFeatures(
+        project.coreFeatures ?? project.mainFeatures
+    );
 
     return {
         ...emptyProjectPlan,
@@ -30,9 +40,13 @@ export const normalizeProjectPlan = (data) => {
         teamName: project.teamName ?? "",
         serviceName: project.serviceName ?? "",
         serviceSummary: project.serviceSummary ?? project.serviceIntro ?? "",
-        coreFeatures: parseCoreFeatures(
-            project.coreFeatures ?? project.mainFeatures
-        ),
+        coreFeatures:
+            parsedFeatures.length > 0
+                ? parsedFeatures.map((feature, index) => ({
+                      id: index + 1,
+                      value: feature,
+                  }))
+                : [{ id: 1, value: "" }],
     };
 };
 

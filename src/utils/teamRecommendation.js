@@ -84,3 +84,9 @@ export const getRoleCountSummary = (roleCount = {}) => {
 };
 
 export const hasProjectInfo = (team) => Boolean(team?.serviceName);
+
+export const getTeamDisplayName = (team, projectWritten = false) => {
+    if (!projectWritten) return team?.teamName;
+
+    return team?.projectTeamName || team?.teamName;
+};

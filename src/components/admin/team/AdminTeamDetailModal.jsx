@@ -1,15 +1,30 @@
-import { gradeLabels, roleLabels } from "../../../constants/team";
+import { useNavigate } from "react-router-dom";
+import { gradeLabels } from "../../../constants/team";
+import { parseMainFeatures } from "../../../utils/projectPlan";
 import {
-    getRoleCountSummary,
     hasProjectInfo,
+    getTeamDisplayName,
 } from "../../../utils/teamRecommendation";
+import AdminTeamInsightPanel from "./AdminTeamInsightPanel";
+import AdminTeamMemberPanel from "./AdminTeamMemberPanel";
+import AdminTeamProjectPanel from "./AdminTeamProjectPanel";
 import styles from "./AdminTeamDetailModal.module.css";
 
 const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
+    const navigate = useNavigate();
+
     if (!team && !loading && !error) return null;
 
     const projectWritten = hasProjectInfo(team);
     const members = team?.members || [];
+    const displayTeamName = getTeamDisplayName(team, projectWritten);
+    const mainFeatures = parseMainFeatures(team?.mainFeatures);
+    const teamStrength = team?.strengths;
+    const teamWeakness = team?.weaknesses;
+
+    const moveToStudentDetail = (userId) => {
+        navigate(`/admin/student?userId=${encodeURIComponent(userId)}`);
+    };
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
@@ -33,135 +48,36 @@ const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
                 {team && (
                     <>
                         <header className={styles.modalHeader}>
-                            <div className={styles.teamTitleGroup}>
-                                <h2>{team.teamName}</h2>
-                                <span>
-                                    {gradeLabels[team.grade] || team.grade}
-                                </span>
+                            <div>
+                                <div className={styles.teamTitleGroup}>
+                                    <h2>{displayTeamName}</h2>
+                                    <span>
+                                        {gradeLabels[team.grade] || team.grade}
+                                    </span>
+                                    <p>
+                                        스크롤하여 더 많은 학생과 주요 기능
+                                        확인이 가능하며 학생 클릭 시 상세 조회가
+                                        가능합니다.
+                                    </p>
+                                </div>
                             </div>
-                            <strong className={styles.roleSummary}>
-                                {getRoleCountSummary(team.roleCount)}
-                            </strong>
                         </header>
 
-                        {projectWritten ? (
-                            <>
-                                <h3 className={styles.projectTitle}>
-                                    {team.serviceName}
-                                </h3>
-
-                                <div className={styles.modalContent}>
-                                    <div className={styles.projectPanel}>
-                                        <section className={styles.infoCard}>
-                                            <h4>서비스 소개</h4>
-                                            <p>{team.serviceIntro}</p>
-                                        </section>
-
-                                        <section className={styles.infoCard}>
-                                            <h4>주요 기능 정리</h4>
-                                            <p>{team.mainFeatures}</p>
-                                        </section>
-                                    </div>
-
-                                    <aside className={styles.memberPanel}>
-                                        {members.map((member) => (
-                                            <div
-                                                key={member.userId}
-                                                className={styles.modalMember}
-                                            >
-                                                <div
-                                                    className={
-                                                        styles.memberNameArea
-                                                    }
-                                                >
-                                                    <strong>
-                                                        {member.name}
-                                                    </strong>
-                                                    {member.leaderRole ===
-                                                        "LEADER" && (
-                                                        <span
-                                                            className={
-                                                                styles.leaderBadge
-                                                            }
-                                                        >
-                                                            팀장
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <p>
-                                                    {roleLabels[
-                                                        member.studentRole
-                                                    ] || member.studentRole}
-                                                    {member.skill?.length
-                                                        ? ` | ${member.skill.join(
-                                                              ", "
-                                                          )}`
-                                                        : ""}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </aside>
-                                </div>
-                            </>
-                        ) : (
-                            <div className={styles.modalContent}>
-                                <div className={styles.projectPanel}>
-                                    <section className={styles.projectGrid}>
-                                        <div>
-                                            <h3>프로젝트 기획서</h3>
-                                            <p>
-                                                아직 프로젝트 기획서가 작성되지
-                                                않았습니다.
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <h3>작성 안내</h3>
-                                            <p>
-                                                학생이 프로젝트 기획서를 저장하면
-                                                이곳에서 확인할 수 있습니다.
-                                            </p>
-                                        </div>
-                                    </section>
-                                </div>
-
-                                <aside className={styles.memberPanel}>
-                                    {members.map((member) => (
-                                        <div
-                                            key={member.userId}
-                                            className={styles.modalMember}
-                                        >
-                                            <div
-                                                className={
-                                                    styles.memberNameArea
-                                                }
-                                            >
-                                                <strong>{member.name}</strong>
-                                                {member.leaderRole ===
-                                                    "LEADER" && (
-                                                    <span
-                                                        className={
-                                                            styles.leaderBadge
-                                                        }
-                                                    >
-                                                        팀장
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p>
-                                                {roleLabels[
-                                                    member.studentRole
-                                                ] || member.studentRole}
-                                                {member.skill?.length
-                                                    ? ` | ${member.skill.join(
-                                                          ", "
-                                                      )}`
-                                                    : ""}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </aside>
-                            </div>
-                        )}
+                        <div className={styles.modalContent}>
+                            <AdminTeamProjectPanel
+                                projectWritten={projectWritten}
+                                team={team}
+                                mainFeatures={mainFeatures}
+                            />
+                            <AdminTeamMemberPanel
+                                members={members}
+                                onMemberClick={moveToStudentDetail}
+                            />
+                            <AdminTeamInsightPanel
+                                strength={teamStrength}
+                                weakness={teamWeakness}
+                            />
+                        </div>
                     </>
                 )}
             </section>

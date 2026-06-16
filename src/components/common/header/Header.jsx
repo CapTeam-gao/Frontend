@@ -69,6 +69,7 @@ const Header = () => {
                     </>
                 ) : (
                     <>
+                        <Link to="/user/project">프로젝트</Link>
                         <Link to="/user/chat">팀 채팅</Link>
                         <Link to="/user/log">캡스톤 일지</Link>
                         <Link to="/user/notice">공지</Link>
