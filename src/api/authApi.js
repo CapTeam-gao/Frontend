@@ -20,6 +20,7 @@ export const requestLogin = async (userId, password) => {
         },
         {
             skipAuthRedirect: true,
+            skipAuthHeader: true,
         }
     );
 

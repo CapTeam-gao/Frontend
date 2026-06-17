@@ -4,9 +4,14 @@ import { getStoredAccessToken } from "../utils/authToken";
 // 서버 주소를 한 번만 설정해두는 axios 기본 파일
 const api = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
+    withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
+    if (config.skipAuthHeader) {
+        return config;
+    }
+
     const accessToken = getStoredAccessToken();
 
     if (accessToken) {
@@ -36,14 +41,21 @@ api.interceptors.response.use(
                     {},
                     {
                         skipAuthRedirect: true,
+                        skipAuthHeader: true,
                     }
                 );
 
-                const newAccessToken = response.data.data.accessToken;
+                const newAccessToken =
+                    response.data?.accessToken ?? response.data?.data?.accessToken;
 
-                localStorage.setItem("accessToken", newAccessToken);
+                if (!newAccessToken) {
+                    throw new Error("새 accessToken이 응답에 없습니다.");
+                }
 
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                localStorage.setItem("accessToken", newAccessToken.trim());
+
+                originalRequest.headers = originalRequest.headers ?? {};
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
 
                 return api(originalRequest);
             } catch {

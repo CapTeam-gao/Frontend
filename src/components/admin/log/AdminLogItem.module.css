@@ -1,0 +1,122 @@
+.logItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 118px;
+    padding: 24px 28px 24px 32px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    background-color: #ffffff;
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.logItem::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 7px;
+    content: "";
+}
+
+.submitted::before {
+    background-color: var(--color-primary);
+}
+
+.pending::before {
+    background-color: #c7c7c7;
+}
+
+.submitted:hover {
+    border-color: var(--color-primary);
+    background-color: #fbfffd;
+}
+
+.pending:hover {
+    border-color: #9ca3af;
+    background-color: #fcfcfc;
+}
+
+.mainInfo {
+    min-width: 0;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.titleRow h2 {
+    color: #000000;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.25;
+}
+
+.gradeBadge,
+.submittedBadge,
+.pendingBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 0 9px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.gradeBadge {
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.submittedBadge {
+    background-color: var(--color-primary);
+    color: #ffffff;
+}
+
+.pendingBadge {
+    background-color: #c7c7c7;
+    color: #ffffff;
+}
+
+.mainInfo p {
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.submitText {
+    display: block;
+    margin-top: 12px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.submitted .submitText {
+    color: var(--color-primary-dark);
+}
+
+.dateText {
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 640px) {
+    .logItem {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        padding: 22px 22px 22px 28px;
+    }
+}
