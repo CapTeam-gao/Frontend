@@ -1,14 +1,30 @@
-import { gradeLabels, roleLabels } from "../../../constants/team";
+import { useNavigate } from "react-router-dom";
+import { gradeLabels } from "../../../constants/team";
+import { parseMainFeatures } from "../../../utils/projectPlan";
 import {
-    getRoleCountSummary,
     hasProjectInfo,
+    getTeamDisplayName,
 } from "../../../utils/teamRecommendation";
+import AdminTeamInsightPanel from "./AdminTeamInsightPanel";
+import AdminTeamMemberPanel from "./AdminTeamMemberPanel";
+import AdminTeamProjectPanel from "./AdminTeamProjectPanel";
 import styles from "./AdminTeamDetailModal.module.css";
 
 const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
+    const navigate = useNavigate();
+
     if (!team && !loading && !error) return null;
 
     const projectWritten = hasProjectInfo(team);
+    const members = team?.members || [];
+    const displayTeamName = getTeamDisplayName(team, projectWritten);
+    const mainFeatures = parseMainFeatures(team?.mainFeatures);
+    const teamStrength = team?.strengths;
+    const teamWeakness = team?.weaknesses;
+
+    const moveToStudentDetail = (userId) => {
+        navigate(`/admin/student?userId=${encodeURIComponent(userId)}`);
+    };
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
@@ -33,84 +49,35 @@ const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
                     <>
                         <header className={styles.modalHeader}>
                             <div>
-                                <h2>{team.serviceName || team.teamName}</h2>
-                                <p>{gradeLabels[team.grade] || team.grade}</p>
+                                <div className={styles.teamTitleGroup}>
+                                    <h2>{displayTeamName}</h2>
+                                    <span>
+                                        {gradeLabels[team.grade] || team.grade}
+                                    </span>
+                                    <p>
+                                        스크롤하여 더 많은 학생과 주요 기능
+                                        확인이 가능하며 학생 클릭 시 상세 조회가
+                                        가능합니다.
+                                    </p>
+                                </div>
                             </div>
-                            <strong>{getRoleCountSummary(team.roleCount)}</strong>
                         </header>
 
-                        {projectWritten ? (
-                            <div className={styles.modalContent}>
-                                <div className={styles.projectPanel}>
-                                    <section className={styles.projectGrid}>
-                                        <div>
-                                            <h3>서비스 소개</h3>
-                                            <p>{team.serviceIntro}</p>
-                                        </div>
-                                        <div>
-                                            <h3>주요 기능 정리</h3>
-                                            <p>{team.mainFeatures}</p>
-                                        </div>
-                                    </section>
-
-                                    <section className={styles.highlightBox}>
-                                        <h3>강점</h3>
-                                        <p>
-                                            역할 분배와 프로젝트 정보가 입력되어
-                                            팀 진행 상황을 빠르게 확인할 수
-                                            있습니다.
-                                        </p>
-                                    </section>
-
-                                    <section
-                                        className={`${styles.highlightBox} ${styles.warningBox}`}
-                                    >
-                                        <h3>확인 필요</h3>
-                                        <p>
-                                            기획서 내용과 실제 팀 역할이 맞는지
-                                            발표 전 한 번 더 확인해주세요.
-                                        </p>
-                                    </section>
-                                </div>
-
-                                <aside className={styles.memberPanel}>
-                                    {(team.members || []).map((member) => (
-                                        <div
-                                            key={member.userId}
-                                            className={styles.modalMember}
-                                        >
-                                            <strong>{member.name}</strong>
-                                            <div>
-                                                {member.leaderRole ===
-                                                    "LEADER" && (
-                                                    <span
-                                                        className={
-                                                            styles.leaderBadge
-                                                        }
-                                                    >
-                                                        팀장
-                                                    </span>
-                                                )}
-                                                <p>
-                                                    {roleLabels[
-                                                        member.studentRole
-                                                    ] || member.studentRole}
-                                                    {member.skill?.length
-                                                        ? ` | ${member.skill.join(
-                                                              ", "
-                                                          )}`
-                                                        : ""}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </aside>
-                            </div>
-                        ) : (
-                            <div className={styles.emptyModal}>
-                                정보가 입력되지 않았습니다.
-                            </div>
-                        )}
+                        <div className={styles.modalContent}>
+                            <AdminTeamProjectPanel
+                                projectWritten={projectWritten}
+                                team={team}
+                                mainFeatures={mainFeatures}
+                            />
+                            <AdminTeamMemberPanel
+                                members={members}
+                                onMemberClick={moveToStudentDetail}
+                            />
+                            <AdminTeamInsightPanel
+                                strength={teamStrength}
+                                weakness={teamWeakness}
+                            />
+                        </div>
                     </>
                 )}
             </section>

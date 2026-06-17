@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import AdminStudentCard from "../../../components/admin/student/AdminStudentCard";
 import AdminStudentDetailModal from "../../../components/admin/student/AdminStudentDetailModal";
 import Header from "../../../components/common/header/Header";
@@ -14,6 +15,7 @@ import {
 import styles from "./AdminStudentManage.module.css";
 
 const AdminStudentManage = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [students, setStudents] = useState([]);
     const [summaryCounts, setSummaryCounts] = useState({
         all: 0,
@@ -27,6 +29,8 @@ const AdminStudentManage = () => {
     const [error, setError] = useState("");
     const [modalError, setModalError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const targetUserId = searchParams.get("userId");
+    const openedQueryUserIdRef = useRef(null);
 
     useEffect(() => {
         const getStudents = async () => {
@@ -65,6 +69,26 @@ const AdminStudentManage = () => {
         };
     }, [selectedStudent]);
 
+    useEffect(() => {
+        if (isLoading || !targetUserId || selectedStudent) return;
+        if (openedQueryUserIdRef.current === targetUserId) return;
+
+        const targetStudent = students.find(
+            (student) => student.userId === targetUserId
+        );
+
+        if (!targetStudent) return;
+
+        openedQueryUserIdRef.current = targetUserId;
+        handleOpenStudent(targetStudent);
+    }, [isLoading, selectedStudent, students, targetUserId]);
+
+    useEffect(() => {
+        if (targetUserId) return;
+
+        openedQueryUserIdRef.current = null;
+    }, [targetUserId]);
+
     const filteredStudents = useMemo(() => {
         return students.filter((student) => {
             const keyword = normalizeSearchText(searchKeyword);
@@ -93,7 +117,6 @@ const AdminStudentManage = () => {
         try {
             setModalError("");
             const detail = await requestAdminStudentDetail(student.userId);
-            console.log(detail);
             setSelectedStudent({
                 ...student,
                 ...detail,
@@ -107,6 +130,16 @@ const AdminStudentManage = () => {
                     "학생 상세 정보를 불러오지 못했습니다."
             );
         }
+    };
+
+    const handleCloseStudentModal = () => {
+        if (targetUserId) {
+            const nextSearchParams = new URLSearchParams(searchParams);
+            nextSearchParams.delete("userId");
+            setSearchParams(nextSearchParams, { replace: true });
+        }
+
+        setSelectedStudent(null);
     };
 
     return (
@@ -181,7 +214,7 @@ const AdminStudentManage = () => {
                 <AdminStudentDetailModal
                     student={selectedStudent}
                     modalError={modalError}
-                    onClose={() => setSelectedStudent(null)}
+                    onClose={handleCloseStudentModal}
                 />
             )}
         </div>

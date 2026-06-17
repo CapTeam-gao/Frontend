@@ -51,8 +51,8 @@ const Login = () => {
                 user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro"
             );
         } catch (e) {
-            if (e.response?.status === 401) {
-                setError("아이디 또는 비밀번호가 올바르지 않습니다.");
+            if (e.response) {
+                setError("아이디 또는 비밀번호가 일치하지 않습니다.");
             } else {
                 setError("서버 오류입니다.");
             }

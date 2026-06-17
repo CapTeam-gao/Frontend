@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
+import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 
 const Header = () => {
     const user = authStore((state) => state.user);
@@ -17,9 +18,7 @@ const Header = () => {
             try {
                 const dashboard = await requestAdminDashboard();
                 setTeamCreated(
-                    Boolean(
-                        dashboard?.teamCreated || dashboard?.totalTeamCount > 0
-                    )
+                    getAdminTeamCreationStatus(dashboard).allTeamCreated
                 );
             } catch {
                 setTeamCreated(false);
@@ -70,6 +69,7 @@ const Header = () => {
                     </>
                 ) : (
                     <>
+                        <Link to="/user/project">프로젝트</Link>
                         <Link to="/user/chat">팀 채팅</Link>
                         <Link to="/user/log">캡스톤 일지</Link>
                         <Link to="/user/notice">공지</Link>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import { requestChangePassword } from "../../../api/authApi";
 import authStore from "../../../store/authStore";
 import CharacterImage from "../../../assets/images/adminMypage.png";
 import PasswordIcon from "../../../assets/icons/password.svg";
@@ -10,22 +11,78 @@ const AdminProfile = () => {
     const navigate = useNavigate();
     const user = authStore((state) => state.user);
     const logout = authStore((state) => state.logout);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [isEditingPassword, setIsEditingPassword] = useState(false);
+    const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+    const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const profile = {
-        name: user?.name || "최훈주",
-        loginId: user?.userId || "gbsw25chj",
-        roleText: "관리자",
+        name: user?.name || "이름 불러오는 중",
+        userId: user?.userId || "",
     };
+
+    const canSubmitPassword = Boolean(
+        currentPassword && newPassword && confirmPassword && !isSubmittingPassword
+    );
 
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
 
-    const handlePasswordSubmit = (e) => {
+    const handlePasswordSubmit = async (e) => {
         e.preventDefault();
-        setIsEditingPassword(false);
+
+        if (!currentPassword) {
+            setError("기존 비밀번호를 입력해주세요.");
+            return;
+        }
+
+        if (!newPassword) {
+            setError("새 비밀번호를 입력해주세요.");
+            return;
+        }
+
+        if (currentPassword === newPassword) {
+            setError("기존 비밀번호와 새 비밀번호가 같습니다.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setError("새 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        setError("");
+
+        try {
+            setIsSubmittingPassword(true);
+
+            const data = await requestChangePassword({
+                password: currentPassword,
+                newPassword,
+                checkPassword: confirmPassword,
+            });
+
+            setSuccessMessage(
+                data.message || "비밀번호 변경이 완료되었습니다."
+            );
+            setIsEditingPassword(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } catch (e) {
+            setError(
+                e.response?.data?.message ||
+                    e.response?.data?.error ||
+                    "비밀번호 변경에 실패했습니다."
+            );
+        } finally {
+            setIsSubmittingPassword(false);
+        }
     };
 
     return (
@@ -41,7 +98,7 @@ const AdminProfile = () => {
 
                         <div className={styles.profileText}>
                             <h1>{profile.name}</h1>
-                            <p>{profile.loginId}</p>
+                            <p>{profile.userId}</p>
                         </div>
                     </div>
 
@@ -55,8 +112,9 @@ const AdminProfile = () => {
                                 <button
                                     type="submit"
                                     className={styles.textButton}
+                                    disabled={!canSubmitPassword}
                                 >
-                                    저장
+                                    {isSubmittingPassword ? "저장 중..." : "저장"}
                                 </button>
                             </div>
 
@@ -66,6 +124,10 @@ const AdminProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="기존 비밀번호를 입력해주세요"
+                                        onChange={(e) => {
+                                            setCurrentPassword(e.target.value);
+                                        }}
+                                        value={currentPassword}
                                     />
                                 </label>
 
@@ -74,6 +136,10 @@ const AdminProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="새 비밀번호를 입력해주세요"
+                                        value={newPassword}
+                                        onChange={(e) => {
+                                            setNewPassword(e.target.value);
+                                        }}
                                     />
                                 </label>
 
@@ -82,9 +148,16 @@ const AdminProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="새 비밀번호를 다시 입력해주세요"
+                                        value={confirmPassword}
+                                        onChange={(e) => {
+                                            setConfirmPassword(e.target.value);
+                                        }}
                                     />
                                 </label>
                             </div>
+                            {error && (
+                                <p className={styles.errorText}>{error}</p>
+                            )}
                         </form>
                     ) : (
                         <div className={styles.infoPanel}>
@@ -93,7 +166,11 @@ const AdminProfile = () => {
                                 <button
                                     type="button"
                                     className={styles.textButton}
-                                    onClick={() => setIsEditingPassword(true)}
+                                    onClick={() => {
+                                        setError("");
+                                        setSuccessMessage("");
+                                        setIsEditingPassword(true);
+                                    }}
                                 >
                                     수정
                                 </button>
@@ -110,6 +187,11 @@ const AdminProfile = () => {
                                     <strong>••••••••</strong>
                                 </div>
                             </div>
+                            {successMessage && (
+                                <p className={styles.successText}>
+                                    {successMessage}
+                                </p>
+                            )}
                         </div>
                     )}
 

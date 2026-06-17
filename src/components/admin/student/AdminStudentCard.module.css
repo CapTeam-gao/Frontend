@@ -10,7 +10,7 @@
 
 .studentCard:hover {
     border-color: var(--color-primary);
-    background-color: var(--color-bg-hover);
+    background-color: #ffffff;
 }
 
 .cardHeader {

@@ -11,7 +11,7 @@ import styles from "./AdminTeamManage.module.css";
 
 const AdminTeamManage = () => {
     const [teams, setTeams] = useState([]);
-    const [selectedGrade, setSelectedGrade] = useState("GRADE_2");
+    const [selectedGrade, setSelectedGrade] = useState("all");
     const [searchText, setSearchText] = useState("");
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [isDetailLoading, setIsDetailLoading] = useState(false);
@@ -46,7 +46,8 @@ const AdminTeamManage = () => {
         const keyword = searchText.trim().toLowerCase();
 
         return teams.filter((team) => {
-            const isSameGrade = team.grade === selectedGrade;
+            const isSameGrade =
+                selectedGrade === "all" || team.grade === selectedGrade;
             const memberNames = (team.members || [])
                 .map((member) => member.name)
                 .join(" ")
@@ -88,8 +89,13 @@ const AdminTeamManage = () => {
 
             <main className={styles.body}>
                 <section className={styles.summaryArea}>
-                    <article
-                        className={`${styles.summaryCard} ${styles.active}`}
+                    <button
+                        type="button"
+                        className={`${styles.summaryCard} ${
+                            selectedGrade === "all" ? styles.active : ""
+                        }`}
+                        onClick={() => setSelectedGrade("all")}
+                        aria-pressed={selectedGrade === "all"}
                     >
                         <div>
                             <p>전체 팀</p>
@@ -98,45 +104,34 @@ const AdminTeamManage = () => {
                         <span className={styles.summaryIcon}>
                             <img src={TeamIcon} alt="" />
                         </span>
-                    </article>
+                    </button>
 
-                    <article className={styles.summaryCard}>
+                    <button
+                        type="button"
+                        className={`${styles.summaryCard} ${
+                            selectedGrade === "GRADE_2" ? styles.active : ""
+                        }`}
+                        onClick={() => setSelectedGrade("GRADE_2")}
+                        aria-pressed={selectedGrade === "GRADE_2"}
+                    >
                         <p>2학년 팀</p>
                         <strong>{counts.grade2}</strong>
-                    </article>
+                    </button>
 
-                    <article className={styles.summaryCard}>
+                    <button
+                        type="button"
+                        className={`${styles.summaryCard} ${
+                            selectedGrade === "GRADE_3" ? styles.active : ""
+                        }`}
+                        onClick={() => setSelectedGrade("GRADE_3")}
+                        aria-pressed={selectedGrade === "GRADE_3"}
+                    >
                         <p>3학년 팀</p>
                         <strong>{counts.grade3}</strong>
-                    </article>
+                    </button>
                 </section>
 
                 <section className={styles.controlArea}>
-                    <div className={styles.gradeTabs}>
-                        <button
-                            type="button"
-                            className={
-                                selectedGrade === "GRADE_2"
-                                    ? styles.selected
-                                    : ""
-                            }
-                            onClick={() => setSelectedGrade("GRADE_2")}
-                        >
-                            2학년
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                selectedGrade === "GRADE_3"
-                                    ? styles.selected
-                                    : ""
-                            }
-                            onClick={() => setSelectedGrade("GRADE_3")}
-                        >
-                            3학년
-                        </button>
-                    </div>
-
                     <label className={styles.searchBox}>
                         <input
                             type="text"

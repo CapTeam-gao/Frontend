@@ -5,58 +5,94 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 32px;
-    background-color: rgba(0, 0, 0, 0.18);
+    padding: 28px;
+    background-color: rgba(15, 23, 42, 0.46);
     overflow: hidden;
     overscroll-behavior: contain;
+    -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+    display: none;
 }
 
 .modal {
     position: relative;
-    width: min(100%, 980px);
-    max-height: calc(100vh - 80px);
+    width: min(100%, 1180px);
+    max-height: calc(100vh - 56px);
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    padding: 64px 72px;
+    padding: 46px;
+    border: 1px solid var(--color-border);
     border-radius: var(--border-radius-md);
     background-color: #ffffff;
 }
 
 .closeButton {
     position: absolute;
-    top: 28px;
+    top: 26px;
     right: 28px;
-    border: none;
-    background: none;
-    color: #000000;
-    font-size: var(--font-size-2xl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
+}
+
+.closeButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
 }
 
 .modalHeader {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
-    padding-bottom: 18px;
+    gap: 28px;
+    padding-right: 20px;
+    padding-bottom: 15px;
     border-bottom: 1px solid var(--color-border);
 }
 
-.modalHeader h2 {
-    display: inline-flex;
+.teamTitleGroup {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    margin-right: 8px;
+    gap: 12px;
+    min-width: 0;
+}
+
+.teamTitleGroup h2 {
     color: #000000;
-    font-size: 42px;
+    font-size: 36px;
     font-weight: var(--font-weight-bold);
     line-height: 1.1;
 }
+.teamTitleGroup p {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+}
 
-.modalHeader p {
+.teamTitleGroup span,
+.roleBadgeList span,
+.roleBadge,
+.leaderBadge {
     display: inline-flex;
-    padding: 6px 10px;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.teamTitleGroup span {
+    min-height: 36px;
+    padding: 0 14px;
     border-radius: var(--border-radius-sm);
     background-color: var(--color-primary-bg);
     color: var(--color-primary-dark);
@@ -64,117 +100,303 @@
     font-weight: var(--font-weight-bold);
 }
 
-.modalHeader strong {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    white-space: nowrap;
+.roleBadgeList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 480px;
+}
+
+.roleBadgeList span {
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: var(--border-radius-sm);
+    background-color: #f4f8f6;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
 }
 
 .modalContent {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 44px;
-    margin-top: 44px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 28px;
+    padding-top: 34px;
 }
 
-.projectPanel {
-    padding: 28px 34px;
-    border-radius: var(--border-radius-md);
-    background-color: var(--color-primary-bg);
-}
-
-.projectGrid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-    padding: 28px;
+.projectPanel,
+.insightPanel,
+.memberPanel {
     border-radius: var(--border-radius-sm);
     background-color: #ffffff;
 }
 
-.projectGrid div:first-child {
-    padding-right: 24px;
-    border-right: 1px solid var(--color-border);
+.projectPanel,
+.insightPanel {
+    padding: 0;
+    background-color: #ffffff;
 }
 
-.projectGrid h3,
-.highlightBox h3 {
+.projectPanel,
+.memberPanel {
+    min-height: 420px;
+}
+
+.projectPanel {
+    grid-column: 1 / 3;
+}
+
+.insightPanel {
+    grid-column: 1 / -1;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 36px;
+    margin-bottom: 20px;
+}
+
+.sectionHeader span {
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.sectionHeader strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+}
+
+.projectHero {
+    padding: 20px 22px;
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: #fbfcfc;
+}
+
+.projectHero span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.projectHero h3 {
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.45;
+}
+
+.infoCard {
+    margin-top: 18px;
+    padding: 18px 22px;
+    border-radius: var(--border-radius-sm);
+    background-color: #fbfcfc;
+}
+
+.infoCard h4 {
     margin-bottom: 12px;
     color: #000000;
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
 }
 
-.projectGrid p,
-.highlightBox p {
+.infoCard p,
+.featureList li {
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
     line-height: 1.7;
     white-space: pre-line;
 }
 
-.highlightBox {
-    margin-top: 22px;
-    padding: 18px 22px;
-    border-left: 6px solid #4ea5ff;
-    border-radius: var(--border-radius-sm);
-    background-color: #ffffff;
-}
-
-.warningBox {
-    border-left-color: var(--color-danger);
-}
-
-.memberPanel {
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-sm);
-    background-color: #ffffff;
-}
-
-.modalMember {
+.featureList,
+.memberList {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.featureList li {
+    position: relative;
+    padding-left: 18px;
+}
+
+.featureList li::before {
+    position: absolute;
+    top: 11px;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    content: "";
+}
+
+.featureList {
+    max-height: 160px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.insightGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.insightCard {
+    min-height: 88px;
+    padding: 10px 22px;
+    border-radius: var(--border-radius-sm);
+    background-color: #fbfcfc;
+}
+
+.insightCard strong {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    min-height: 72px;
-    padding: 0 18px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.modalMember:last-child {
-    border-bottom: none;
-}
-
-.modalMember strong {
+    min-height: 26px;
+    margin-bottom: 12px;
     color: #000000;
-    font-size: var(--font-size-2xl-sm);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
 }
 
-.modalMember p {
-    color: var(--color-text-secondary);
+.insightCard:first-child {
+    border-left: 4px solid #58c79b;
+}
+
+.insightCard:last-child {
+    border-left: 4px solid #ff7878;
+}
+
+.insightCard p {
+    color: var(--color-text-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    text-align: right;
+    line-height: 1.7;
+}
+
+.memberPanel {
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border: none;
+    align-self: stretch;
+}
+
+.memberList {
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.modalMember {
+    padding: 0 0 18px;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    background-color: #ffffff;
+}
+
+.modalMember + .modalMember {
+    padding-top: 18px;
+}
+
+.modalMember:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.memberTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.memberNameArea {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.memberNameButton {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-family);
+    line-height: 1.25;
+    text-align: left;
+    cursor: pointer;
+}
+
+.memberNameButton:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }
 
 .leaderBadge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 4px;
-    padding: 2px 5px;
-    border-radius: 4px;
+    min-height: 24px;
+    padding: 0 8px;
+    border-radius: 6px;
     background-color: #fff2a8;
     color: #9b7a00;
-    font-size: 9px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.roleBadge {
+    flex-shrink: 0;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.memberSkills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.memberSkills span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: var(--border-radius-sm);
+    background-color: #f4f6f7;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
 }
 
 .modalStatus,
-.modalError,
-.emptyModal {
+.modalError {
     padding: 80px 0;
     color: var(--color-text-secondary);
     font-size: var(--font-size-xl);
@@ -187,29 +409,67 @@
 }
 
 @media (max-width: 1024px) {
+    .modalHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .roleBadgeList {
+        justify-content: flex-start;
+        max-width: none;
+    }
+
     .modalContent {
         grid-template-columns: 1fr;
+    }
+
+    .insightPanel {
+        grid-column: auto;
+    }
+
+    .projectPanel,
+    .memberPanel {
+        min-height: auto;
+    }
+
+    .memberPanel {
+        align-self: stretch;
     }
 }
 
 @media (max-width: 768px) {
-    .modalHeader {
-        flex-direction: column;
-        align-items: flex-start;
+    .modalOverlay {
+        padding: 16px;
     }
 
     .modal {
-        padding: 48px 24px;
+        padding: 30px 20px;
     }
 
-    .projectGrid {
+    .modalHeader {
+        padding-right: 44px;
+    }
+
+    .teamTitleGroup {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .teamTitleGroup h2 {
+        font-size: 34px;
+    }
+
+    .projectPanel,
+    .insightPanel,
+    .memberPanel {
+        padding: 0;
+    }
+
+    .memberTop {
+        flex-direction: column;
+    }
+
+    .insightGrid {
         grid-template-columns: 1fr;
-    }
-
-    .projectGrid div:first-child {
-        padding-right: 0;
-        padding-bottom: 18px;
-        border-right: none;
-        border-bottom: 1px solid var(--color-border);
     }
 }
