@@ -148,7 +148,132 @@
     gap: 28px;
     margin-top: 34px;
 }
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.35);
+}
 
+.regenerateModal {
+    width: 100%;
+    max-width: 560px;
+    padding: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.modalTitle {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.modalDescription {
+    margin: 10px 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
+.modalCloseButton {
+    border: none;
+    background: none;
+    color: var(--color-text-secondary);
+    font-size: 28px;
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.modalCloseButton:hover {
+    color: #000000;
+}
+
+.promptTextarea {
+    width: 100%;
+    min-height: 150px;
+    margin-top: 24px;
+    padding: 16px;
+    resize: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: #000000;
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
+.promptTextarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.promptTextarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+.promptMeta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.modalActionArea {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.modalCancelButton,
+.modalConfirmButton {
+    height: 40px;
+    padding: 0 18px;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.modalCancelButton {
+    border: 1px solid var(--color-border);
+    background-color: #ffffff;
+    color: var(--color-text-secondary);
+}
+
+.modalCancelButton:hover {
+    border-color: var(--color-text-secondary);
+    color: #000000;
+}
+
+.modalConfirmButton {
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
+    color: #ffffff;
+}
+
+.modalConfirmButton:hover {
+    background-color: var(--color-primary-dark);
+}
 @media (max-width: 1024px) {
     .teamGrid {
         grid-template-columns: 1fr;
@@ -173,5 +298,4 @@
     .actionArea {
         flex-wrap: wrap;
     }
-
 }
