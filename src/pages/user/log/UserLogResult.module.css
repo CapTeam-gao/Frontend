@@ -1,0 +1,128 @@
+.page {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.content {
+    width: min(980px, 100%);
+    margin: 0 auto;
+    padding: 58px 24px 88px;
+}
+
+.headerSection {
+    margin-bottom: 52px;
+    text-align: center;
+}
+
+.eyebrow {
+    margin-bottom: 12px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.headerSection h1 {
+    margin: 0;
+    color: #000000;
+    font-size: 34px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.35;
+}
+
+.headerSection span {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.section {
+    padding: 30px 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.section h2 {
+    margin: 0 0 22px;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.section > p {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.8;
+}
+
+.entryList {
+    display: grid;
+    gap: 18px;
+}
+
+.entryCard {
+    padding: 24px 26px;
+    border: 1px solid var(--color-border);
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+}
+
+.entryCard h3 {
+    margin: 0 0 18px;
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.entryBlock + .entryBlock {
+    margin-top: 18px;
+}
+
+.entryBlock strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.entryBlock p {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.75;
+}
+
+.message,
+.errorText {
+    margin-top: 120px;
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.message {
+    color: var(--color-text-secondary);
+}
+
+.errorText {
+    color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 38px 16px 64px;
+    }
+
+    .headerSection h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .entryCard {
+        padding: 22px 18px;
+    }
+}

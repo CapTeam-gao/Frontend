@@ -1,0 +1,141 @@
+.page {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.content {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    padding: 92px 24px 120px;
+}
+
+.countdownSection {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 520px;
+    text-align: center;
+}
+
+.eyebrow {
+    margin-bottom: 18px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.countdownSection h1 {
+    margin: 0;
+    color: #000000;
+    font-size: 34px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.35;
+}
+
+.timerArea {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 54px;
+}
+
+.timerArea strong {
+    color: var(--color-primary);
+    font-size: 64px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0;
+}
+
+.timerArea span {
+    color: #000000;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.description {
+    max-width: 520px;
+    margin: 30px 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.7;
+}
+
+.actionGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 64px;
+}
+
+.actionButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 260px;
+    height: 54px;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    transition: background-color var(--transition),
+        border-color var(--transition);
+}
+
+.actionButton:hover {
+    border-color: var(--color-primary-dark);
+    background-color: var(--color-primary-dark);
+}
+
+.secondaryButton {
+    border-color: var(--color-border);
+    background-color: #ffffff;
+    color: var(--color-text-primary);
+}
+
+.secondaryButton:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-hover);
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 54px 16px 80px;
+    }
+
+    .countdownSection {
+        min-height: 440px;
+    }
+
+    .countdownSection h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .timerArea {
+        align-items: center;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 42px;
+    }
+
+    .timerArea strong {
+        font-size: 42px;
+    }
+
+    .actionButton {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .actionGroup {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 46px;
+    }
+}

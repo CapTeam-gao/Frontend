@@ -7,6 +7,7 @@ import NoticeIcon from "../../../assets/icons/notice.svg";
 import ProjectIcon from "../../../assets/icons/project.svg";
 import { requestUserDashboard } from "../../../api/dashboardApi";
 import { subscribeNoticeCreated } from "../../../api/noticeSocket";
+import { getCapstoneLogStatusText } from "../../../utils/capstoneLogTime";
 import authStore from "../../../store/authStore";
 import styles from "./UserDashboard.module.css";
 
@@ -19,6 +20,7 @@ const UserDashboard = () => {
         todayJournalSubmitted: false,
         hasUnreadNotice: false,
     });
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -36,6 +38,13 @@ const UserDashboard = () => {
 
         getDashboard();
     }, []);
+    useEffect(() => {
+        const timerId = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000 * 60);
+
+        return () => clearInterval(timerId);
+    }, []);
 
     useEffect(() => {
         if (!accessToken) return undefined;
@@ -51,11 +60,11 @@ const UserDashboard = () => {
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
     const chatStatusText = dashboard.teamCreated ? "" : "팀 생성 전입니다";
-    const logStatusText = !dashboard.teamCreated
-        ? "팀 생성 전입니다"
-        : dashboard.capstoneTime && !dashboard.todayJournalSubmitted
-        ? "오늘 일지 미제출"
-        : "";
+    const logStatusText = getCapstoneLogStatusText({
+        teamCreated: dashboard.teamCreated,
+        todayJournalSubmitted: dashboard.todayJournalSubmitted,
+        baseDate: currentTime,
+    });
 
     return (
         <div className={styles.page}>

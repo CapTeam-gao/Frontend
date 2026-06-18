@@ -20,6 +20,11 @@ export const requestUserLogDetail = async (journalId) => {
     return getResponseData(response);
 };
 
+export const requestUserLogList = async () => {
+    const response = await api.get("/api/journals");
+    return getResponseData(response);
+};
+
 export const requestCreateUserLog = async (logData) => {
     const response = await api.post("/api/journals", {
         activityContent: logData.activityContent,

@@ -5,7 +5,7 @@ import authStore from "../../../store/authStore";
 import CharacterImage from "../../../assets/images/adminMypage.png";
 import PasswordIcon from "../../../assets/icons/password.svg";
 import styles from "./UserProfile.module.css";
-import { requestChangePassword } from "../../../api/authApi";
+import { requestChangePassword, requestLogout } from "../../../api/authApi";
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -35,9 +35,13 @@ const UserProfile = () => {
         ? profile.userId.replace("stu", "")
         : profile.userId;
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
+    const handleLogout = async () => {
+        try {
+            await requestLogout();
+        } finally {
+            logout();
+            navigate("/login");
+        }
     };
 
     const handlePasswordSubmit = async (e) => {

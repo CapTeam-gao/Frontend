@@ -72,3 +72,16 @@ export const requestChangePassword = async ({
 
     return response.data;
 };
+
+export const requestLogout = async () => {
+    const response = await api.post(
+        "/api/auth/logout",
+        {},
+        {
+            skipAuthRedirect: true,
+            skipAuthHeader: true,
+        }
+    );
+
+    return response.data;
+};

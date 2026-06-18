@@ -91,6 +91,12 @@
     text-align: center;
 }
 
+.successText {
+    margin: 0;
+    color: var(--color-primary-dark) !important;
+    text-align: center;
+}
+
 .submitArea button {
     min-width: 220px;
     height: 54px;

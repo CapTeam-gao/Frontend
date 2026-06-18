@@ -29,6 +29,7 @@ import UserProfile from "../pages/user/profile/UserProfile";
 import UserTeamChat from "../pages/user/chat/UserTeamChat";
 import UserSurvey from "../pages/user/survey/UserSurvey";
 import UserSurveyIntro from "../pages/user/survey/UserSurveyIntro";
+import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 
 // router 설정하는 파일
 const Router = () => {
@@ -63,7 +64,8 @@ const Router = () => {
             <Route path="/admin/chat" element={<AdminChatManage />} />
             {/* 유저 페이지들 - user만 접근 가능 */}
             <Route path="/user/dashboard" element={<UserDashboard />} />
-            <Route path="/user/log" element={<UserLogWrite />} />
+            <Route path="/user/log" element={<UserLogCountdown />} />
+            <Route path="/user/log/write" element={<UserLogWrite />} />
             <Route path="/user/log/result" element={<UserLogResult />} />
             <Route path="/user/project" element={<UserProject />} />
             <Route path="/user/notice" element={<UserNoticeList />} />

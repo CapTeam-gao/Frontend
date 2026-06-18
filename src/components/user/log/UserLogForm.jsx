@@ -9,14 +9,13 @@ const leaderFields = [
     {
         name: "todayActivityContent",
         label: "오늘 방과후 프로젝트 진행 상황",
-        placeholder:
-            "오늘 팀 전체가 진행한 내용과 현재 프로젝트 진행 상태를 정리해주세요.",
+        placeholder: "오늘 팀 전체가 진행한 내용을 자세히 작성해주세요.",
     },
     {
         name: "nextPlanContent",
         label: "다음 캡스톤 시간까지 진행할 내용",
         placeholder:
-            "다음 캡스톤 시간 전까지 팀 또는 내가 진행할 작업을 작성해주세요.",
+            "다음 캡스톤 시간 전까지 진행할 작업을 자세히 작성해주세요.",
     },
     {
         name: "reflectionContent",
@@ -34,6 +33,9 @@ const UserLogForm = ({
     formData,
     isLeader,
     isSubmitting = false,
+    isCompleted = false,
+    submitText = "작성 완료",
+    successMessage = "",
     error,
     onFieldChange,
     onSubmit,
@@ -69,9 +71,17 @@ const UserLogForm = ({
             </div>
 
             <div className={styles.submitArea}>
+                {isCompleted && (
+                    <p className={styles.errorText}>
+                        팀원 전체 제출이 완료되어 수정할 수 없습니다.
+                    </p>
+                )}
+                {successMessage && (
+                    <p className={styles.successText}>{successMessage}</p>
+                )}
                 {error && <p className={styles.errorText}>{error}</p>}
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "저장 중..." : "작성 완료"}
+                <button type="submit" disabled={isSubmitting || isCompleted}>
+                    {isSubmitting ? "저장 중..." : submitText}
                 </button>
             </div>
         </form>
