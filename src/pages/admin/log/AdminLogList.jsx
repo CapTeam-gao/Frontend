@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Header from "../../../components/common/header/Header";
 import AdminLogItem from "../../../components/admin/log/AdminLogItem";
 import styles from "./AdminLogList.module.css";
 import logIcon from "../../../assets/icons/capstonLog.svg";
+import { requestAdminLogList } from "../../../api/logApi";
+import { LOG_GRADE_OPTIONS, matchesLogStatus } from "../../../utils/log";
 
 const summaryCards = [
     {
@@ -20,92 +22,57 @@ const summaryCards = [
     },
 ];
 
-const dummyLogs = [
-    {
-        id: 1,
-        teamName: "팀 Gao",
-        grade: "2학년",
-        projectName: "CapTeam - AI 기반 캡스톤 팀 관리 서비스",
-        date: "2026.04.22",
-        status: "submitted",
-        submittedCount: 5,
-        totalCount: 5,
-    },
-    {
-        id: 2,
-        teamName: "팀 Linker",
-        grade: "2학년",
-        projectName: "학생 프로젝트 일정 관리 서비스",
-        date: "2026.04.22",
-        status: "pending",
-        submittedCount: 0,
-        totalCount: 5,
-    },
-    {
-        id: 3,
-        teamName: "팀 Orbit",
-        grade: "2학년",
-        projectName: "교내 공모전 추천 플랫폼",
-        date: "2026.04.22",
-        status: "submitted",
-        submittedCount: 4,
-        totalCount: 4,
-    },
-    {
-        id: 4,
-        teamName: "팀 Bridge",
-        grade: "3학년",
-        projectName: "팀 협업 기록 자동 정리 서비스",
-        date: "2026.04.22",
-        status: "pending",
-        submittedCount: 2,
-        totalCount: 5,
-    },
-    {
-        id: 5,
-        teamName: "팀 Nova",
-        grade: "3학년",
-        projectName: "AI 기반 진로 포트폴리오 서비스",
-        date: "2026.04.22",
-        status: "submitted",
-        submittedCount: 5,
-        totalCount: 5,
-    },
-];
-
 const AdminLogList = () => {
-    const [activeGrade, setActiveGrade] = useState("2학년");
+    const [activeGrade, setActiveGrade] = useState("GRADE_2");
     const [searchKeyword, setSearchKeyword] = useState("");
     const [activeStatus, setActiveStatus] = useState("all");
+    const [logData, setLogData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const summary = useMemo(() => {
-        const total = dummyLogs.length;
-        const submitted = dummyLogs.filter(
-            (log) => log.status === "submitted"
-        ).length;
+    useEffect(() => {
+        const getAdminLogs = async () => {
+            try {
+                setIsLoading(true);
 
-        return {
-            total,
-            submitted,
-            pending: total - submitted,
+                const data = await requestAdminLogList();
+
+                setLogData(data);
+                setError("");
+            } catch {
+                setError("캡스톤 일지 목록을 불러오지 못했습니다.");
+            } finally {
+                setIsLoading(false);
+            }
         };
+
+        getAdminLogs();
     }, []);
+
+    const logs = logData?.journals ?? [];
+    const summary = useMemo(() => {
+        return {
+            all: logData?.totalCount ?? 0,
+            submitted: logData?.submittedCount ?? 0,
+            pending: logData?.notSubmittedCount ?? 0,
+        };
+    }, [logData]);
 
     const filteredLogs = useMemo(() => {
         const keyword = searchKeyword.trim().toLowerCase();
 
-        return dummyLogs.filter((log) => {
+        return logs.filter((log) => {
             const matchesGrade = log.grade === activeGrade;
             const matchesKeyword =
                 !keyword ||
-                `${log.teamName} ${log.projectName} ${log.date}`
+                `${log.teamName} ${log.serviceName} ${log.date}`
                     .toLowerCase()
                     .includes(keyword);
-            const matchesStatus =
-                activeStatus === "all" || log.status === activeStatus;
+            const matchesStatus = matchesLogStatus(log, activeStatus);
+
             return matchesGrade && matchesKeyword && matchesStatus;
         });
-    }, [activeGrade, searchKeyword, activeStatus]);
+    }, [activeGrade, searchKeyword, activeStatus, logs]);
 
     return (
         <div className={styles.page}>
@@ -123,7 +90,7 @@ const AdminLogList = () => {
 
                 <section className={styles.summaryGrid}>
                     {summaryCards.map((card) => {
-                        const count = summary[card.key] ?? summary.total;
+                        const count = summary[card.key] ?? 0;
                         const isActive = activeStatus === card.key;
 
                         return (
@@ -167,16 +134,18 @@ const AdminLogList = () => {
 
                 <section className={styles.controlArea}>
                     <div className={styles.gradeTabs}>
-                        {["2학년", "3학년"].map((grade) => (
+                        {LOG_GRADE_OPTIONS.map((grade) => (
                             <button
-                                key={grade}
+                                key={grade.value}
                                 type="button"
                                 className={
-                                    activeGrade === grade ? styles.selected : ""
+                                    activeGrade === grade.value
+                                        ? styles.selected
+                                        : ""
                                 }
-                                onClick={() => setActiveGrade(grade)}
+                                onClick={() => setActiveGrade(grade.value)}
                             >
-                                {grade}
+                                {grade.label}
                             </button>
                         ))}
                     </div>
@@ -193,9 +162,27 @@ const AdminLogList = () => {
                 </section>
 
                 <section className={styles.logList}>
-                    {filteredLogs.map((log) => (
-                        <AdminLogItem key={log.id} log={log} />
-                    ))}
+                    {isLoading && (
+                        <div className={styles.messageBox}>
+                            캡스톤 일지 목록을 불러오는 중입니다.
+                        </div>
+                    )}
+
+                    {!isLoading && error && (
+                        <div className={styles.messageBox}>{error}</div>
+                    )}
+
+                    {!isLoading &&
+                        !error &&
+                        filteredLogs.map((log) => (
+                            <AdminLogItem key={log.journalId} log={log} />
+                        ))}
+
+                    {!isLoading && !error && filteredLogs.length === 0 && (
+                        <div className={styles.messageBox}>
+                            작성된 일지가 없습니다.
+                        </div>
+                    )}
                 </section>
             </main>
         </div>

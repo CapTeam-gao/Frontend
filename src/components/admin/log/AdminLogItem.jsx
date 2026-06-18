@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import styles from "./AdminLogItem.module.css";
+import {
+    formatLogDate,
+    getLogGradeLabel,
+    isSubmittedLog,
+} from "../../../utils/log";
 
 const AdminLogItem = ({ log }) => {
-    const submitted = log.status === "submitted";
+    const submitted = isSubmittedLog(log);
 
     return (
         <Link
-            to={`/admin/log/${log.id}`}
+            to={`/admin/log/${log.journalId}`}
             className={`${styles.logItem} ${
                 submitted ? styles.submitted : styles.pending
             }`}
@@ -14,7 +19,9 @@ const AdminLogItem = ({ log }) => {
             <div className={styles.mainInfo}>
                 <div className={styles.titleRow}>
                     <h2>{log.teamName}</h2>
-                    <span className={styles.gradeBadge}>{log.grade}</span>
+                    <span className={styles.gradeBadge}>
+                        {getLogGradeLabel(log.grade)}
+                    </span>
                     <span
                         className={
                             submitted
@@ -25,15 +32,15 @@ const AdminLogItem = ({ log }) => {
                         {submitted ? "제출완료" : "미제출"}
                     </span>
                 </div>
-                <p>{log.projectName}</p>
+                <p>{log.serviceName || "프로젝트 정보가 입력되지 않았습니다."}</p>
                 <span className={styles.submitText}>
                     {submitted
-                        ? `${log.submittedCount}/${log.totalCount}명 제출`
-                        : "미제출"}
+                        ? `${log.submittedMemberCount}/${log.totalMemberCount}명 제출`
+                        : `${log.notSubmittedMemberCount}명 미제출`}
                 </span>
             </div>
 
-            <time className={styles.dateText}>{log.date}</time>
+            <time className={styles.dateText}>{formatLogDate(log.date)}</time>
         </Link>
     );
 };
