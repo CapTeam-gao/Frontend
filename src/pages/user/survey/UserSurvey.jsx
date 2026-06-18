@@ -12,7 +12,6 @@ import {
 import {
     flattenQuestions,
     calculateAverageScores,
-    getAnswerScores,
     getSkillsFromText,
     calculateInconsistentAnswers,
     getReliabilityLevel,
@@ -168,14 +167,6 @@ const UserSurvey = () => {
             preferredMembers: cleanPreferredMembers,
             wantsLeader: leaderPreference === "O",
             leaderPreference,
-            personalityScoreAnswers: getAnswerScores(
-                personalityQuestions,
-                answers
-            ),
-            developmentScoreAnswers: getAnswerScores(
-                developmentQuestions,
-                answers
-            ),
             personalityScores: calculateAverageScores(
                 personalityGroups,
                 answers,

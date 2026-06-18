@@ -17,6 +17,10 @@ api.interceptors.request.use((config) => {
         return config;
     }
 
+    if (config.headers?.Authorization) {
+        return config;
+    }
+
     const accessToken = getStoredAccessToken();
 
     if (accessToken) {

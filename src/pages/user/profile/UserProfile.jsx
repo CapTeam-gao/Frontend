@@ -5,6 +5,7 @@ import authStore from "../../../store/authStore";
 import CharacterImage from "../../../assets/images/adminMypage.png";
 import PasswordIcon from "../../../assets/icons/password.svg";
 import styles from "./UserProfile.module.css";
+import { requestChangePassword } from "../../../api/authApi";
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -13,15 +14,24 @@ const UserProfile = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
     const [error, setError] = useState("");
     const [isEditingPassword, setIsEditingPassword] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const profile = {
-        name: user?.name || "허재원",
-        userId: user?.userId || "stu2313",
+        name: user?.name || "이름 불러오는 중",
+        userId: user?.userId || "",
     };
 
-    const studentNumber = profile.loginId.startsWith("stu")
+    const canSubmitPassword = Boolean(
+        currentPassword &&
+            newPassword &&
+            confirmPassword &&
+            !isSubmittingPassword
+    );
+
+    const studentNumber = profile.userId.startsWith("stu")
         ? profile.userId.replace("stu", "")
         : profile.userId;
 
@@ -30,9 +40,53 @@ const UserProfile = () => {
         navigate("/login");
     };
 
-    const handlePasswordSubmit = (e) => {
+    const handlePasswordSubmit = async (e) => {
         e.preventDefault();
-        setIsEditingPassword(false);
+
+        if (!currentPassword) {
+            setError("기존 비밀번호를 입력해주세요.");
+            return;
+        }
+
+        if (!newPassword) {
+            setError("새 비밀번호를 입력해주세요.");
+            return;
+        }
+        if (currentPassword === newPassword) {
+            setError("기존 비밀번호와 새 비밀번호가 같습니다.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setError("새 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        setError("");
+
+        try {
+            setIsSubmittingPassword(true);
+
+            const data = await requestChangePassword({
+                password: currentPassword,
+                newPassword,
+                checkPassword: confirmPassword,
+            });
+            setSuccessMessage(
+                data.message || "비밀번호 변경이 완료되었습니다."
+            );
+            setIsEditingPassword(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } catch (e) {
+            setError(
+                e.response?.data?.message ||
+                    e.response?.data?.error ||
+                    "비밀번호 변경에 실패했습니다."
+            );
+        } finally {
+            setIsSubmittingPassword(false);
+        }
     };
 
     return (
@@ -64,8 +118,9 @@ const UserProfile = () => {
                                 <button
                                     type="submit"
                                     className={styles.textButton}
+                                    disabled={!canSubmitPassword}
                                 >
-                                    저장
+                                    {isSubmittingPassword ? "저장 중..." : "저장"}
                                 </button>
                             </div>
 
@@ -75,6 +130,10 @@ const UserProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="기존 비밀번호를 입력해주세요"
+                                        onChange={(e) => {
+                                            setCurrentPassword(e.target.value);
+                                        }}
+                                        value={currentPassword}
                                     />
                                 </label>
 
@@ -83,6 +142,10 @@ const UserProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="새 비밀번호를 입력해주세요"
+                                        onChange={(e) => {
+                                            setNewPassword(e.target.value);
+                                        }}
+                                        value={newPassword}
                                     />
                                 </label>
 
@@ -91,9 +154,16 @@ const UserProfile = () => {
                                     <input
                                         type="password"
                                         placeholder="새 비밀번호를 다시 입력해주세요"
+                                        onChange={(e) => {
+                                            setConfirmPassword(e.target.value);
+                                        }}
+                                        value={confirmPassword}
                                     />
                                 </label>
                             </div>
+                            {error && (
+                                <p className={styles.errorText}>{error}</p>
+                            )}
                         </form>
                     ) : (
                         <div className={styles.infoPanel}>
@@ -102,7 +172,11 @@ const UserProfile = () => {
                                 <button
                                     type="button"
                                     className={styles.textButton}
-                                    onClick={() => setIsEditingPassword(true)}
+                                    onClick={() => {
+                                        setError("");
+                                        setSuccessMessage("");
+                                        setIsEditingPassword(true);
+                                    }}
                                 >
                                     수정
                                 </button>
@@ -119,6 +193,11 @@ const UserProfile = () => {
                                     <strong>••••••••</strong>
                                 </div>
                             </div>
+                            {successMessage && (
+                                <p className={styles.successText}>
+                                    {successMessage}
+                                </p>
+                            )}
                         </div>
                     )}
 
