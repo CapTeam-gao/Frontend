@@ -27,6 +27,19 @@ export const requestLogin = async (userId, password) => {
     return response.data;
 };
 
+export const requestReissue = async () => {
+    const response = await api.post(
+        "/api/auth/reissue",
+        {},
+        {
+            skipAuthRedirect: true,
+            skipAuthHeader: true,
+        }
+    );
+
+    return response.data?.data ?? response.data;
+};
+
 export const requestMyInfo = async (token) => {
     if (!isValidAccessToken(token)) {
         throw new Error("유효하지 않은 로그인 토큰입니다.");
