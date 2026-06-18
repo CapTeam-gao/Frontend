@@ -10,7 +10,7 @@ export const RatingRow = ({
     return (
         <li className={styles.questionItem}>
             <p className={styles.questionText}>
-                {number}. {question}
+                {number}. {question.text}
             </p>
             <p className={styles.questionCategory}>{categoryLabel}</p>
 

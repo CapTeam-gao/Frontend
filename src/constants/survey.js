@@ -15,40 +15,90 @@ export const personalityGroups = [
         key: "communication",
         label: "소통 성향",
         questions: [
-            "나는 작업 중 막히는 부분이 있으면 팀원에게 상황을 공유하는 편이다.",
-            "나는 팀원의 의견이 내 생각과 달라도 먼저 들어보려고 한다.",
+            {
+                text: "나는 팀원에게 진행 상황을 먼저 공유하는 편이다.",
+                reverse: false,
+            },
+            {
+                text: "나는 의견이 다를 때 직접 말로 풀어내려고 한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 할 말이 있어도 굳이 먼저 꺼내지 않는다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "responsibility",
         label: "책임감",
         questions: [
-            "나는 맡은 일을 정해진 시간 안에 끝내려고 노력하는 편이다.",
-            "나는 내가 맡은 일이 늦어질 것 같으면 미리 팀원에게 알린다.",
+            {
+                text: "나는 맡은 일은 끝까지 마무리한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 내가 맡은 부분에 문제가 생기면 먼저 책임지려 한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 일이 어려워지면 일단 미루는 편이다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "collaboration",
         label: "협업 선호도",
         questions: [
-            "나는 혼자 작업하는 것보다 팀원과 역할을 나눠 작업하는 것이 편하다.",
-            "나는 팀원이 어려움을 겪고 있으면 내 일이 아니어도 도와주려는 편이다.",
+            {
+                text: "나는 혼자 하는 것보다 팀으로 일하는 것을 선호한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 팀원의 의견이 다르면 맞춰서 조율하려고 한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 내 방식대로 진행하는 것을 더 편하게 느낀다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "flexibility",
         label: "유연성",
         questions: [
-            "나는 프로젝트 도중 역할이나 계획이 바뀌어도 적응하려고 노력한다.",
-            "나는 내 작업물에 대한 피드백을 받으면 수정 방향을 고민해본다.",
+            {
+                text: "나는 기존 방식보다 더 나은 방법이 있으면 시도해본다.",
+                reverse: false,
+            },
+            {
+                text: "나는 갑작스러운 일정·요구사항 변경에도 잘 적응한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 정해진 방식이 바뀌면 불편함을 느낀다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "emotionalStability",
         label: "감정 안정성",
         questions: [
-            "나는 프로젝트 중 의견 충돌이 생겨도 감정적으로 대응하지 않으려고 한다.",
-            "나는 일정이 바빠져도 차분하게 우선순위를 정하려고 한다.",
+            {
+                text: "나는 예상치 못한 상황에서도 비교적 차분하게 대응한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 압박감이 큰 상황에서도 평정심을 유지한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 작은 문제에도 쉽게 스트레스를 받는다.",
+                reverse: true,
+            },
         ],
     },
 ];
@@ -58,40 +108,90 @@ export const developmentGroups = [
         key: "leadership",
         label: "리더십",
         questions: [
-            "나는 팀 프로젝트에서 필요한 일을 먼저 정리하고 역할을 나누는 편이다.",
-            "나는 팀이 방향을 잃었을 때 먼저 의견을 내고 정리하려고 한다.",
+            {
+                text: "나는 리더 역할이 주어질 때 부담보다 의욕을 느낀다.",
+                reverse: false,
+            },
+            {
+                text: "나는 팀의 방향이 흔들릴 때 먼저 나서서 정리하려 한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 결정을 내려야 하는 상황을 피하고 싶어한다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "problemSolving",
         label: "문제 해결력",
         questions: [
-            "나는 오류가 생기면 바로 포기하기보다 원인을 찾아보는 편이다.",
-            "나는 모르는 기능이 있어도 검색이나 문서를 보며 해결해보려고 한다.",
+            {
+                text: "나는 문제가 생기면 여러 가지 해결 방법을 떠올려본다.",
+                reverse: false,
+            },
+            {
+                text: "나는 복잡한 문제도 구조를 나눠서 차근차근 접근한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 문제가 생기면 일단 다른 사람이 해결해주길 기다린다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "implementation",
         label: "구현 실행력",
         questions: [
-            "나는 정해진 기능을 실제 코드로 구현해보는 과정에 자신이 있다.",
-            "나는 작은 기능이라도 완성해서 화면에 보이게 만드는 것을 중요하게 생각한다.",
+            {
+                text: "나는 계획이 정해지면 바로 실행에 옮기는 편이다.",
+                reverse: false,
+            },
+            {
+                text: "나는 작업을 시작하면 외부 자극에 쉽게 산만해지지 않는다.",
+                reverse: false,
+            },
+            {
+                text: "나는 아이디어는 많지만 실제로 끝까지 만들어내는 일은 적다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "learningAbility",
         label: "학습 성장성",
         questions: [
-            "나는 프로젝트에 필요한 기술이라면 처음 접해도 배우려고 한다.",
-            "나는 내가 부족한 부분을 알게 되면 따로 공부해서 보완하려고 한다.",
+            {
+                text: "나는 새로운 기술이나 도구를 배우는 것에 거부감이 없다.",
+                reverse: false,
+            },
+            {
+                text: "나는 모르는 분야가 나오면 스스로 찾아서 학습한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 익숙한 방식 외에 새로운 것을 배우는 게 부담스럽다.",
+                reverse: true,
+            },
         ],
     },
     {
         key: "planning",
         label: "기획 정리력",
         questions: [
-            "나는 기능을 만들기 전에 필요한 화면 흐름이나 데이터를 먼저 정리하는 편이다.",
-            "나는 프로젝트 내용을 문서나 발표 자료로 정리하는 것에 부담이 적다.",
+            {
+                text: "나는 일을 시작하기 전에 전체 일정과 순서를 정리한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 질서있고 체계적인 상태를 선호한다.",
+                reverse: false,
+            },
+            {
+                text: "나는 계획 없이 일단 진행하다가 그때그때 정하는 편이다.",
+                reverse: true,
+            },
         ],
     },
 ];

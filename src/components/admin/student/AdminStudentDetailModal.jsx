@@ -26,6 +26,61 @@ const getPersonalityChartData = (student) => [
     { label: "안정성", score: student.emotionalStability },
 ];
 
+const reliabilityLabels = {
+    HIGH: "높음",
+    MEDIUM: "보통",
+    LOW: "낮음",
+};
+
+const reliabilityDescriptions = {
+    HIGH: "문항 간 답변 흐름이 안정적입니다.",
+    MEDIUM: "일부 문항에서 답변 차이가 있어 참고가 필요합니다.",
+    LOW: "문항 간 답변 차이가 커 관리자 확인이 필요합니다.",
+};
+
+const SurveyReliabilityCard = ({ student }) => {
+    const reliability = student.responseReliability;
+    const inconsistentCount = student.inconsistentAnswers;
+    const hasReliabilityData =
+        reliability !== null &&
+        reliability !== undefined &&
+        inconsistentCount !== null &&
+        inconsistentCount !== undefined;
+
+    return (
+        <article className={styles.reliabilityCard}>
+            <div className={styles.reliabilityHeader}>
+                <h3>응답 신뢰도</h3>
+                {hasReliabilityData && (
+                    <span
+                        className={`${styles.reliabilityBadge} ${
+                            styles[`reliability${reliability}`]
+                        }`}
+                    >
+                        {reliabilityLabels[reliability] || reliability}
+                    </span>
+                )}
+            </div>
+
+            {hasReliabilityData ? (
+                <>
+                    <strong className={styles.reliabilityCount}>
+                        일관성 낮은 응답 {inconsistentCount}개
+                    </strong>
+                    <p>
+                        {reliabilityDescriptions[reliability] ||
+                            "응답 신뢰도 값을 확인했습니다."}
+                    </p>
+                </>
+            ) : (
+                <p className={styles.reliabilityEmptyText}>
+                    응답 신뢰도 정보를 아직 조회할 수 없습니다.
+                </p>
+            )}
+        </article>
+    );
+};
+
 const StudentRadarChart = ({ title, data }) => {
     const hasData = data.every(
         (item) => item.score !== null && item.score !== undefined
@@ -215,6 +270,8 @@ const AdminStudentDetailModal = ({ student, modalError, onClose }) => {
                                         data={personalityChartData}
                                     />
                                 </div>
+
+                                <SurveyReliabilityCard student={student} />
                             </aside>
                         </div>
                     </>
