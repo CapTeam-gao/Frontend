@@ -19,6 +19,8 @@ const AdminTeamCreate = () => {
     });
     const [error, setError] = useState("");
 
+    const selectedGradeLabel = selectedGrade === "GRADE_2" ? "2학년" : "3학년";
+
     useEffect(() => {
         const getTeamStatus = async () => {
             try {
@@ -56,11 +58,21 @@ const AdminTeamCreate = () => {
 
             <section className={styles.panel}>
                 <main className={styles.content}>
-                    <div className={styles.iconBox}>
-                        <img src={TeamCreateIcon} alt="" />
-                    </div>
+                    <section className={styles.heroArea}>
+                        <div className={styles.iconBox}>
+                            <img src={TeamCreateIcon} alt="" />
+                        </div>
 
-                    <h1 className={styles.title}>캡스톤 팀 자동 생성</h1>
+                        <div className={styles.titleGroup}>
+                            <h1 className={styles.title}>
+                                캡스톤 팀 자동 생성
+                            </h1>
+                            <p className={styles.description}>
+                                설문 데이터를 기반으로 학년별 팀 추천안을
+                                생성합니다.
+                            </p>
+                        </div>
+                    </section>
 
                     <div className={styles.gradeTabs} aria-label="학년 선택">
                         <label className={styles.gradeOption}>
@@ -92,16 +104,17 @@ const AdminTeamCreate = () => {
                         <h2 className={styles.criteriaTitle}>생성 기준</h2>
                         <ul className={styles.criteriaList}>
                             <li>
-                                학생 희망 직무와 기술 스택을 기준으로 역할을
-                                분배합니다.
+                                희망 직군과 기술 스택을 기준으로 프론트엔드,
+                                백엔드, AI, 앱 등 역할이 한 팀에 몰리지 않도록
+                                구성합니다.
                             </li>
                             <li>
-                                프론트엔드, 백엔드, 디자인, 기획 인원이 한 팀에
-                                고르게 배치되도록 구성합니다.
+                                구현 경험과 기술 점수를 함께 참고해 팀별 실력
+                                차이가 과하게 벌어지지 않도록 조정합니다.
                             </li>
                             <li>
-                                사전 설문 데이터를 기반으로 팀별 역량 차이가
-                                과하게 벌어지지 않도록 조정합니다.
+                                성격·개발 성향 점수, 팀장 희망 여부, 선호 팀원
+                                정보를 함께 반영해 실제 협업 흐름을 고려합니다.
                             </li>
                         </ul>
                     </section>
@@ -111,7 +124,7 @@ const AdminTeamCreate = () => {
                         className={styles.createButton}
                         onClick={handleCreate}
                     >
-                        생성
+                        {selectedGradeLabel} 팀 생성하기
                     </button>
                 </main>
             </section>
