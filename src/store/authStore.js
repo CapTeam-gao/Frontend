@@ -10,6 +10,24 @@ const authStore = create((set) => ({
     user: null,
     accessToken: savedToken,
 
+    setAccessToken: (accessToken) => {
+        if (!isValidAccessToken(accessToken)) {
+            localStorage.removeItem(ACCESS_TOKEN_KEY);
+            set({
+                accessToken: null,
+                isLogin: false,
+            });
+            return;
+        }
+
+        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken.trim());
+
+        set((state) => ({
+            accessToken: accessToken.trim(),
+            isLogin: state.user ? true : state.isLogin,
+        }));
+    },
+
     saveLogin: (user, accessToken) => {
         if (!isValidAccessToken(accessToken)) {
             localStorage.removeItem(ACCESS_TOKEN_KEY);

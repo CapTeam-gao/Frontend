@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
-import { requestChangePassword } from "../../../api/authApi";
+import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import authStore from "../../../store/authStore";
 import CharacterImage from "../../../assets/images/adminMypage.png";
 import PasswordIcon from "../../../assets/icons/password.svg";
@@ -28,9 +28,13 @@ const AdminProfile = () => {
         currentPassword && newPassword && confirmPassword && !isSubmittingPassword
     );
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
+    const handleLogout = async () => {
+        try {
+            await requestLogout();
+        } finally {
+            logout();
+            navigate("/login");
+        }
     };
 
     const handlePasswordSubmit = async (e) => {

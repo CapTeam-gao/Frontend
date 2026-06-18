@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { requestMyInfo } from "../api/authApi";
+import { requestMyInfo, requestReissue } from "../api/authApi";
 import authStore from "../store/authStore";
 
 // 새로고침해도 토큰이 있으면 로그인 상태를 다시 확인함
@@ -10,14 +10,25 @@ const useAuth = () => {
 
     useEffect(() => {
         const checkLogin = async () => {
-            if (!accessToken) {
-                logout();
-                return;
-            }
-
             try {
+                if (!accessToken) {
+                    const reissueData = await requestReissue();
+                    const newAccessToken = reissueData?.accessToken;
+
+                    if (!newAccessToken) {
+                        throw new Error("새 accessToken이 없습니다.");
+                    }
+
+                    const user = await requestMyInfo(newAccessToken);
+                    saveLogin(user, newAccessToken);
+                    return;
+                }
+
                 const user = await requestMyInfo(accessToken);
-                saveLogin(user, accessToken);
+                const latestAccessToken =
+                    authStore.getState().accessToken ?? accessToken;
+
+                saveLogin(user, latestAccessToken);
             } catch {
                 logout();
             }

@@ -20,10 +20,24 @@ export const requestLogin = async (userId, password) => {
         },
         {
             skipAuthRedirect: true,
+            skipAuthHeader: true,
         }
     );
 
     return response.data;
+};
+
+export const requestReissue = async () => {
+    const response = await api.post(
+        "/api/auth/reissue",
+        {},
+        {
+            skipAuthRedirect: true,
+            skipAuthHeader: true,
+        }
+    );
+
+    return response.data?.data ?? response.data;
 };
 
 export const requestMyInfo = async (token) => {
@@ -53,6 +67,19 @@ export const requestChangePassword = async ({
         },
         {
             skipAuthRedirect: true,
+        }
+    );
+
+    return response.data;
+};
+
+export const requestLogout = async () => {
+    const response = await api.post(
+        "/api/auth/logout",
+        {},
+        {
+            skipAuthRedirect: true,
+            skipAuthHeader: true,
         }
     );
 

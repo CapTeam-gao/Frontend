@@ -76,3 +76,9 @@ export const requestAdminTeamDetail = async (teamId) => {
 
     return getResponseData(response);
 };
+
+export const requestMyTeam = async () => {
+    const response = await api.get("/api/teams/my-team");
+
+    return getResponseData(response);
+};

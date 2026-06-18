@@ -1,12 +1,26 @@
 import axios from "axios";
 import { getStoredAccessToken } from "../utils/authToken";
+import authStore from "../store/authStore";
 
 // 서버 주소를 한 번만 설정해두는 axios 기본 파일
 const api = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
+    withCredentials: true,
 });
 
+const getAccessTokenFromResponse = (response) => {
+    return response.data?.accessToken ?? response.data?.data?.accessToken;
+};
+
 api.interceptors.request.use((config) => {
+    if (config.skipAuthHeader) {
+        return config;
+    }
+
+    if (config.headers?.Authorization) {
+        return config;
+    }
+
     const accessToken = getStoredAccessToken();
 
     if (accessToken) {
@@ -25,6 +39,7 @@ api.interceptors.response.use(
 
         if (
             error.response?.status === 401 &&
+            originalRequest &&
             !originalRequest._retry &&
             !originalRequest.skipAuthRedirect
         ) {
@@ -36,18 +51,24 @@ api.interceptors.response.use(
                     {},
                     {
                         skipAuthRedirect: true,
+                        skipAuthHeader: true,
                     }
                 );
 
-                const newAccessToken = response.data.data.accessToken;
+                const newAccessToken = getAccessTokenFromResponse(response);
 
-                localStorage.setItem("accessToken", newAccessToken);
+                if (!newAccessToken) {
+                    throw new Error("새 accessToken이 응답에 없습니다.");
+                }
 
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                authStore.getState().setAccessToken(newAccessToken);
+
+                originalRequest.headers = originalRequest.headers ?? {};
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
 
                 return api(originalRequest);
             } catch {
-                localStorage.removeItem("accessToken");
+                authStore.getState().logout();
                 window.location.href = "/login";
             }
         }

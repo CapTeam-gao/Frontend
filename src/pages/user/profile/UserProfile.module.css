@@ -17,6 +17,21 @@
     margin: 0 auto;
 }
 
+.errorText {
+    margin-top: 16px;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.successText {
+    margin-top: 18px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+}
+
 .profileHeader {
     display: flex;
     flex-direction: column;
@@ -101,6 +116,15 @@
 
 .textButton:hover {
     color: var(--color-primary);
+}
+
+.textButton:disabled {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+.textButton:disabled:hover {
+    color: var(--color-text-muted);
 }
 
 .passwordPreview {

@@ -12,8 +12,9 @@ import {
 import {
     flattenQuestions,
     calculateAverageScores,
-    getAnswerScores,
     getSkillsFromText,
+    calculateInconsistentAnswers,
+    getReliabilityLevel,
 } from "../../../utils/survey";
 
 import { RatingRow } from "../../../components/user/survey/UserSurveyForm";
@@ -137,7 +138,22 @@ const UserSurvey = () => {
         }
 
         setError("");
+        const personalityInconsistentCount = calculateInconsistentAnswers(
+            personalityGroups,
+            answers,
+            "personality"
+        );
 
+        const developmentInconsistentCount = calculateInconsistentAnswers(
+            developmentGroups,
+            answers,
+            "development"
+        );
+
+        const inconsistentAnswers =
+            personalityInconsistentCount + developmentInconsistentCount;
+
+        const responseReliability = getReliabilityLevel(inconsistentAnswers);
         const surveyData = {
             studentRole: roleToStudentRole[selectedRole],
             selectedRoles: [selectedRole],
@@ -151,14 +167,6 @@ const UserSurvey = () => {
             preferredMembers: cleanPreferredMembers,
             wantsLeader: leaderPreference === "O",
             leaderPreference,
-            personalityScoreAnswers: getAnswerScores(
-                personalityQuestions,
-                answers
-            ),
-            developmentScoreAnswers: getAnswerScores(
-                developmentQuestions,
-                answers
-            ),
             personalityScores: calculateAverageScores(
                 personalityGroups,
                 answers,
@@ -169,6 +177,10 @@ const UserSurvey = () => {
                 answers,
                 "development"
             ),
+            personalityInconsistentCount,
+            developmentInconsistentCount,
+            inconsistentAnswers,
+            responseReliability,
         };
 
         try {
@@ -203,8 +215,8 @@ const UserSurvey = () => {
                 <section className={styles.surveyNav}>
                     <strong>설문 구성</strong>
                     <span>1. 기술 정보</span>
-                    <span>2. 성격 성향 10문항</span>
-                    <span>3. 개발 성향 10문항</span>
+                    <span>2. 성격 성향 15문항</span>
+                    <span>3. 개발 성향 15문항</span>
                 </section>
 
                 <section className={styles.layout}>
@@ -436,7 +448,7 @@ const UserSurvey = () => {
                                 {developmentQuestions.map((question, index) => (
                                     <RatingRow
                                         key={question.id}
-                                        number={index + 11}
+                                        number={index + 16}
                                         question={question.question}
                                         categoryLabel={question.categoryLabel}
                                         value={answers[question.id]}
