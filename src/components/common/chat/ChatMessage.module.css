@@ -1,0 +1,50 @@
+.messageItem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.messageItem.mine {
+    align-items: flex-end;
+}
+
+.messageMeta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 18px;
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.mine .messageMeta {
+    justify-content: flex-end;
+}
+
+.senderName {
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.messageBubble {
+    max-width: min(520px, 64%);
+    padding: 8px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px 8px 8px 8px;
+    background-color: #f9fafb;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.mine .messageBubble {
+    border-color: #5fc49b;
+    border-radius: 16px 16px 0px 16px;
+    background-color: #5fc49b;
+    color: #ffffff;
+}

@@ -1,0 +1,77 @@
+.page {
+    height: 100vh;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.panel {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+.chatLayout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    height: calc(100vh - 84px);
+    min-height: 0;
+}
+
+.sidebar {
+    min-height: 0;
+    padding: 42px 36px;
+    border-right: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+.chatContent {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: 26px 48px 70px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.messageArea {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.messageList {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 26px 8px 24px;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.dateDivider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0;
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.dateDivider::before,
+.dateDivider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #e5e7eb;
+}
+
+.dateDivider span {
+    flex-shrink: 0;
+}
