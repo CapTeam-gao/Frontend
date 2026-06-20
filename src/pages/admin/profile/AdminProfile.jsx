@@ -20,7 +20,7 @@ const AdminProfile = () => {
     const [successMessage, setSuccessMessage] = useState("");
 
     const profile = {
-        name: user?.name || "이름 불러오는 중",
+        name: user?.name || "",
         userId: user?.userId || "",
     };
 

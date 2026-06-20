@@ -8,11 +8,15 @@ import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 
 const Header = () => {
     const user = authStore((state) => state.user);
+    const hasUser = Boolean(user);
     const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
-    const [teamCreated, setTeamCreated] = useState(false);
+    const [teamCreated, setTeamCreated] = useState(null);
 
     useEffect(() => {
-        if (!isAdmin) return;
+        if (!isAdmin) {
+            setTeamCreated(null);
+            return;
+        }
 
         const getTeamStatus = async () => {
             try {
@@ -43,43 +47,46 @@ const Header = () => {
     };
 
     const displayName = makeHeaderName(user);
+    const logoPath = isAdmin ? "/admin/dashboard" : "/user/dashboard";
+    const adminTeamPath =
+        teamCreated === null
+            ? "/admin/dashboard"
+            : teamCreated
+            ? "/admin/team-manage"
+            : "/admin/team-create";
+    const adminTeamLabel =
+        teamCreated === null ? "" : teamCreated ? "팀 관리" : "팀 생성";
 
     return (
         <div className={styles.header}>
-            <Link to={isAdmin ? "/admin/dashboard" : "/user/dashboard"}>
+            <Link to={logoPath}>
                 <img className={styles.logo} src={Logo} alt="로고" />
             </Link>
 
             <nav className={styles.nav}>
-                {isAdmin ? (
+                {hasUser && isAdmin ? (
                     <>
-                        <Link
-                            to={
-                                teamCreated
-                                    ? "/admin/team-manage"
-                                    : "/admin/team-create"
-                            }
-                        >
-                            {teamCreated ? "팀 관리" : "팀 생성"}
-                        </Link>
+                        <Link to={adminTeamPath}>{adminTeamLabel}</Link>
                         <Link to="/admin/chat">채팅 관리</Link>
                         <Link to="/admin/log">캡스톤 일지</Link>
                         <Link to="/admin/student">학생 관리</Link>
                         <Link to="/admin/notice">공지</Link>
                     </>
-                ) : (
+                ) : hasUser ? (
                     <>
                         <Link to="/user/project">프로젝트</Link>
                         <Link to="/user/chat">팀 채팅</Link>
                         <Link to="/user/log">캡스톤 일지</Link>
                         <Link to="/user/notice">공지</Link>
                     </>
-                )}
+                ) : null}
             </nav>
 
-            <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
-                <p className={styles.user}>{displayName}</p>
-            </Link>
+            {hasUser && (
+                <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
+                    <p className={styles.user}>{displayName}</p>
+                </Link>
+            )}
         </div>
     );
 };
