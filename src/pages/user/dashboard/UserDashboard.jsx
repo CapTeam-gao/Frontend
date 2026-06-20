@@ -20,6 +20,7 @@ const UserDashboard = () => {
         todayJournalSubmitted: false,
         hasUnreadNotice: false,
     });
+    const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
 
@@ -33,6 +34,8 @@ const UserDashboard = () => {
                 }));
             } catch {
                 setError("대시보드 정보를 불러오지 못했습니다.");
+            } finally {
+                setIsDashboardLoading(false);
             }
         };
 
@@ -59,12 +62,17 @@ const UserDashboard = () => {
 
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
-    const chatStatusText = dashboard.teamCreated ? "" : "팀 생성 전입니다";
-    const logStatusText = getCapstoneLogStatusText({
-        teamCreated: dashboard.teamCreated,
-        todayJournalSubmitted: dashboard.todayJournalSubmitted,
-        baseDate: currentTime,
-    });
+    const chatStatusText =
+        !isDashboardLoading && !dashboard.teamCreated ? "팀 생성 전입니다" : "";
+    const projectStatusText =
+        !isDashboardLoading && !dashboard.teamCreated ? "팀 생성 전입니다" : "";
+    const logStatusText = isDashboardLoading
+        ? ""
+        : getCapstoneLogStatusText({
+              teamCreated: dashboard.teamCreated,
+              todayJournalSubmitted: dashboard.todayJournalSubmitted,
+              baseDate: currentTime,
+          });
 
     return (
         <div className={styles.page}>
@@ -102,9 +110,9 @@ const UserDashboard = () => {
 
                         <div className={styles.cardText}>
                             <h2 className={styles.cardTitle}>프로젝트</h2>
-                            {!dashboard.teamCreated && (
+                            {projectStatusText && (
                                 <p className={styles.statusText}>
-                                    팀 생성 전입니다
+                                    {projectStatusText}
                                 </p>
                             )}
                         </div>

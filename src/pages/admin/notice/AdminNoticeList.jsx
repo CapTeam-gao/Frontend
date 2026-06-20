@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/common/button/Button";
 import { requestNoticeList } from "../../../api/noticeApi";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const NOTICE_PER_PAGE = 6; // 공지 몇 개로 페이지를 나눌지 선정
 
@@ -14,6 +15,7 @@ const AdminNoticeList = () => {
     const [notices, setNotices] = useState([]);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const showLoading = useDelayedLoading(isLoading);
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE); // 공지 수 / 나눠서 보여줄 공지 수
     const startIndex = (currentPage - 1) * NOTICE_PER_PAGE;
 
@@ -40,7 +42,11 @@ const AdminNoticeList = () => {
 
     if (isLoading) {
         content = (
-            <p className={styles.loadingText}>공지를 불러오는 중입니다.</p>
+            showLoading && (
+                <p className={styles.loadingText}>
+                    공지를 불러오는 중입니다.
+                </p>
+            )
         );
     } else if (error) {
         content = <p className={styles.errorText}>{error}</p>;

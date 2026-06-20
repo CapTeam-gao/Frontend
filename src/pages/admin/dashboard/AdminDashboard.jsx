@@ -27,6 +27,7 @@ const AdminDashboard = () => {
         totalStudentCount: 0,
         hasUnreadNotice: false,
     });
+    const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -39,6 +40,8 @@ const AdminDashboard = () => {
                 }));
             } catch {
                 setError("대시보드 정보를 불러오지 못했습니다.");
+            } finally {
+                setIsDashboardLoading(false);
             }
         };
 
@@ -47,7 +50,20 @@ const AdminDashboard = () => {
 
     const teamStatus = getAdminTeamCreationStatus(dashboard);
     const isTeamCreated = teamStatus.allTeamCreated;
-    const teamStatusMessage = getNextTeamCreateMessage(teamStatus);
+    const isDashboardReady = !isDashboardLoading;
+    const teamStatusMessage = isDashboardLoading
+        ? ""
+        : getNextTeamCreateMessage(teamStatus);
+    const chatRoomStatusText = isDashboardLoading
+        ? ""
+        : isTeamCreated
+        ? `${dashboard.activeChatRoomCount}개 진행중`
+        : "팀 생성 후 이용 가능합니다";
+    const logStatusText = isDashboardLoading
+        ? ""
+        : isTeamCreated
+        ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
+        : "팀 생성 후 이용 가능합니다";
 
     return (
         <div className={styles.page}>
@@ -60,19 +76,25 @@ const AdminDashboard = () => {
                     <div className={styles.topGrid}>
                         <Link
                             to={
-                                isTeamCreated
+                                isDashboardLoading
+                                    ? "/admin/dashboard"
+                                    : isTeamCreated
                                     ? "/admin/team-manage"
                                     : "/admin/team-create"
                             }
                             className={`${styles.mainCard} ${
-                                !isTeamCreated ? styles.mainCardPending : ""
+                                isDashboardReady && !isTeamCreated
+                                    ? styles.mainCardPending
+                                    : ""
                             }`}
                         >
                             <div className={styles.mainContent}>
                                 <div className={styles.mainHeader}>
                                     <div>
                                         <h1 className={styles.mainTitle}>
-                                            {isTeamCreated
+                                            {!isDashboardReady
+                                                ? ""
+                                                : isTeamCreated
                                                 ? "팀 관리"
                                                 : "팀을 생성해주세요"}
                                         </h1>
@@ -90,6 +112,7 @@ const AdminDashboard = () => {
                                     <div className={styles.largeIcon}>
                                         <img
                                             src={
+                                                isDashboardReady &&
                                                 isTeamCreated
                                                     ? TeamIcon
                                                     : TeamCreateIcon
@@ -99,7 +122,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                {isTeamCreated && (
+                                {isDashboardReady && isTeamCreated && (
                                     <>
                                         <strong className={styles.teamCount}>
                                             {dashboard.totalTeamCount}팀
@@ -115,7 +138,9 @@ const AdminDashboard = () => {
                                 <p className={styles.description}>
                                     {isTeamCreated
                                         ? "팀 별 정보를 조회할 수 있습니다."
-                                        : "2학년과 3학년 팀 생성이 모두 완료되면 팀 관리가 가능합니다."}
+                                        : isDashboardReady
+                                        ? "2학년과 3학년 팀 생성이 모두 완료되면 팀 관리가 가능합니다."
+                                        : ""}
                                 </p>
                             </div>
                         </Link>
@@ -128,11 +153,11 @@ const AdminDashboard = () => {
                                 <h2 className={styles.cardTitle}>
                                     팀별 채팅방
                                 </h2>
-                                <p className={styles.description}>
-                                    {isTeamCreated
-                                        ? `${dashboard.activeChatRoomCount}개 진행중`
-                                        : "팀 생성 후 이용 가능합니다"}
-                                </p>
+                                {chatRoomStatusText && (
+                                    <p className={styles.description}>
+                                        {chatRoomStatusText}
+                                    </p>
+                                )}
                             </div>
                         </Link>
                     </div>
@@ -143,11 +168,11 @@ const AdminDashboard = () => {
                                 <h2 className={styles.cardTitle}>
                                     캡스톤 일지
                                 </h2>
-                                <p className={styles.statusText}>
-                                    {isTeamCreated
-                                        ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
-                                        : "팀 생성 후 이용 가능합니다"}
-                                </p>
+                                {logStatusText && (
+                                    <p className={styles.statusText}>
+                                        {logStatusText}
+                                    </p>
+                                )}
                             </div>
                             <div className={styles.smallIcon}>
                                 <img src={CapstonLogIcon} alt="" />
@@ -160,9 +185,11 @@ const AdminDashboard = () => {
                         >
                             <div className={styles.smallText}>
                                 <h2 className={styles.cardTitle}>학생</h2>
-                                <span className={styles.countBadge}>
-                                    {dashboard.totalStudentCount}명 등록
-                                </span>
+                                {isDashboardReady && (
+                                    <span className={styles.countBadge}>
+                                        {dashboard.totalStudentCount}명 등록
+                                    </span>
+                                )}
                             </div>
                             <div className={styles.smallIcon}>
                                 <img src={TeamIcon} alt="" />

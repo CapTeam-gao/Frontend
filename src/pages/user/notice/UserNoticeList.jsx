@@ -5,6 +5,7 @@ import Header from "../../../components/common/header/Header";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { requestNoticeList } from "../../../api/noticeApi";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const NOTICE_PER_PAGE = 6;
 
@@ -13,6 +14,7 @@ const UserNoticeList = () => {
     const [notices, setNotices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     const totalPage = Math.ceil(notices.length / NOTICE_PER_PAGE);
 
@@ -41,7 +43,11 @@ const UserNoticeList = () => {
 
     if (isLoading) {
         content = (
-            <p className={styles.loadingText}>공지를 불러오는 중입니다.</p>
+            showLoading && (
+                <p className={styles.loadingText}>
+                    공지를 불러오는 중입니다.
+                </p>
+            )
         );
     } else if (error) {
         content = <p className={styles.errorText}>{error}</p>;

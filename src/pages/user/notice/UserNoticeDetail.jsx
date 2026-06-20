@@ -5,6 +5,7 @@ import Header from "../../../components/common/header/Header";
 import MDEditor from "@uiw/react-md-editor";
 import { requestNoticeDetail } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const UserNoticeDetail = () => {
     const { id } = useParams();
@@ -12,6 +13,7 @@ const UserNoticeDetail = () => {
     const [notice, setNotice] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getNoticeDetail = async () => {
@@ -37,7 +39,7 @@ const UserNoticeDetail = () => {
                         ← 목록
                     </Link>
                     <section className={styles.emptyBox}>
-                        공지를 불러오는 중입니다.
+                        {showLoading && "공지를 불러오는 중입니다."}
                     </section>
                 </main>
             </div>

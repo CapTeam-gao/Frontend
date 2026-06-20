@@ -7,6 +7,7 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import styles from "./AdminNoticeCreate.module.css";
 import { requestNoticeDetail, requestUpdateNotice } from "../../../api/noticeApi";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const AdminNoticeEdit = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const AdminNoticeEdit = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getNoticeDetail = async () => {
@@ -83,7 +85,8 @@ const AdminNoticeEdit = () => {
                     <form className={styles.form} onSubmit={handleSubmit}>
                         {isLoading ? (
                             <p className={styles.error}>
-                                공지 정보를 불러오는 중입니다.
+                                {showLoading &&
+                                    "공지 정보를 불러오는 중입니다."}
                             </p>
                         ) : (
                             <>

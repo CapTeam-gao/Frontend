@@ -12,6 +12,7 @@ import {
     normalizeRecommendations,
     swapMembersInTeams,
 } from "../../../utils/teamRecommendation";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const AdminTeamEdit = () => {
     const navigate = useNavigate();
@@ -23,7 +24,8 @@ const AdminTeamEdit = () => {
     const [flippedTeamIds, setFlippedTeamIds] = useState([]);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const showLoading = useDelayedLoading(isLoading);
     const highlightTimerRef = useRef(null);
     const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
     const [regenerationPrompt, setRegenerationPrompt] = useState("");
@@ -202,7 +204,8 @@ const AdminTeamEdit = () => {
 
                     {isLoading ? (
                         <p className={styles.messageText}>
-                            팀 추천안을 불러오는 중입니다.
+                            {showLoading &&
+                                "팀 추천안을 불러오는 중입니다."}
                         </p>
                     ) : (
                         <div className={styles.teamGrid}>
