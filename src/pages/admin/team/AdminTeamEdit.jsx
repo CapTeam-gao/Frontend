@@ -7,12 +7,15 @@ import {
     requestSwapTeamMembers,
     requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
+import { requestAdminDashboard } from "../../../api/dashboardApi";
 import styles from "./AdminTeamEdit.module.css";
 import {
     normalizeRecommendations,
     swapMembersInTeams,
 } from "../../../utils/teamRecommendation";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
+import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
 
 const AdminTeamEdit = () => {
     const navigate = useNavigate();
@@ -139,6 +142,10 @@ const AdminTeamEdit = () => {
     const handleApprove = async () => {
         try {
             await requestAcceptAllTeamRecommendations(grade);
+            const dashboard = await requestAdminDashboard();
+            setStoredAdminTeamCreated(
+                getAdminTeamCreationStatus(dashboard).allTeamCreated
+            );
             navigate("/admin/team-manage");
         } catch {
             setMessage("팀 구성 승인에 실패했습니다.");

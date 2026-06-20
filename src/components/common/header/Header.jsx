@@ -1,16 +1,20 @@
 import styles from "./Header.module.css";
 import Logo from "../../../assets/images/logo.png";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import authStore from "../../../store/authStore";
-import { requestAdminDashboard } from "../../../api/dashboardApi";
-import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
+import {
+    ADMIN_TEAM_CREATED_CHANGE_EVENT,
+    getStoredAdminTeamCreated,
+} from "../../../utils/adminTeamStatusStorage";
 
 const Header = () => {
+    const location = useLocation();
     const user = authStore((state) => state.user);
     const hasUser = Boolean(user);
     const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
-    const [teamCreated, setTeamCreated] = useState(null);
+    const isAdminPage = location.pathname.startsWith("/admin");
+    const [teamCreated, setTeamCreated] = useState(getStoredAdminTeamCreated);
 
     useEffect(() => {
         if (!isAdmin) {
@@ -18,18 +22,28 @@ const Header = () => {
             return;
         }
 
-        const getTeamStatus = async () => {
-            try {
-                const dashboard = await requestAdminDashboard();
-                setTeamCreated(
-                    getAdminTeamCreationStatus(dashboard).allTeamCreated
-                );
-            } catch {
-                setTeamCreated(false);
-            }
+        const updateStoredTeamStatus = () => {
+            setTeamCreated(getStoredAdminTeamCreated());
         };
 
-        getTeamStatus();
+        const updateChangedTeamStatus = (event) => {
+            setTeamCreated(event.detail);
+        };
+
+        updateStoredTeamStatus();
+        window.addEventListener("storage", updateStoredTeamStatus);
+        window.addEventListener(
+            ADMIN_TEAM_CREATED_CHANGE_EVENT,
+            updateChangedTeamStatus
+        );
+
+        return () => {
+            window.removeEventListener("storage", updateStoredTeamStatus);
+            window.removeEventListener(
+                ADMIN_TEAM_CREATED_CHANGE_EVENT,
+                updateChangedTeamStatus
+            );
+        };
     }, [isAdmin]);
 
     const makeHeaderName = (user) => {
@@ -47,15 +61,16 @@ const Header = () => {
     };
 
     const displayName = makeHeaderName(user);
-    const logoPath = isAdmin ? "/admin/dashboard" : "/user/dashboard";
-    const adminTeamPath =
-        teamCreated === null
+    const logoPath =
+        isAdmin || (!hasUser && isAdminPage)
             ? "/admin/dashboard"
-            : teamCreated
+            : "/user/dashboard";
+    const adminTeamPath =
+        teamCreated
             ? "/admin/team-manage"
             : "/admin/team-create";
     const adminTeamLabel =
-        teamCreated === null ? "" : teamCreated ? "팀 관리" : "팀 생성";
+        teamCreated ? "팀 관리" : "팀 생성";
 
     return (
         <div className={styles.header}>
@@ -66,7 +81,12 @@ const Header = () => {
             <nav className={styles.nav}>
                 {hasUser && isAdmin ? (
                     <>
-                        <Link to={adminTeamPath}>{adminTeamLabel}</Link>
+                        <Link
+                            to={adminTeamPath}
+                            className={styles.teamNavLink}
+                        >
+                            {adminTeamLabel}
+                        </Link>
                         <Link to="/admin/chat">채팅 관리</Link>
                         <Link to="/admin/log">캡스톤 일지</Link>
                         <Link to="/admin/student">학생 관리</Link>
@@ -82,11 +102,13 @@ const Header = () => {
                 ) : null}
             </nav>
 
-            {hasUser && (
-                <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
-                    <p className={styles.user}>{displayName}</p>
-                </Link>
-            )}
+            <div className={styles.userSlot}>
+                {hasUser && (
+                    <Link to={isAdmin ? "/admin/profile" : "/user/profile"}>
+                        <p className={styles.user}>{displayName}</p>
+                    </Link>
+                )}
+            </div>
         </div>
     );
 };
