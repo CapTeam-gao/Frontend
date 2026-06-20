@@ -5,6 +5,8 @@ import ChatMessage from "../../../components/common/chat/ChatMessage";
 import ChatInput from "../../../components/common/chat/ChatInput";
 import {
     requestChatMessages,
+    requestCreateChatChannel,
+    requestChatPresence,
     requestMarkChatAsRead,
     requestMyChatRoom,
 } from "../../../api/chatApi";
@@ -20,7 +22,11 @@ import {
     createChatClient,
     sendChatSocketMessage,
     subscribeChatChannel,
+    subscribeTeamPresence,
 } from "../../../api/chatSocket.js";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
+
+const SELECTED_CHAT_CHANNEL_STORAGE_KEY = "capteam-selected-chat-channel-id";
 
 const UserTeamChat = () => {
     const user = authStore((state) => state.user);
@@ -28,24 +34,56 @@ const UserTeamChat = () => {
 
     const chatClientRef = useRef(null);
     const subscriptionRef = useRef(null);
+    const presenceSubscriptionRef = useRef(null);
 
     const [room, setRoom] = useState(null);
     const [selectedChannel, setSelectedChannel] = useState(null);
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMessageLoading, setIsMessageLoading] = useState(false);
+    const [isPresenceLoading, setIsPresenceLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [error, setError] = useState("");
     const [socketConnected, setSocketConnected] = useState(false);
+    const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+    const [members, setMembers] = useState([]);
+    const [presenceTeamId, setPresenceTeamId] = useState(null);
+    const [newChannelName, setNewChannelName] = useState("");
+    const [channelCreateError, setChannelCreateError] = useState("");
+    const [isCreatingChannel, setIsCreatingChannel] = useState(false);
     const messagesEndRef = useRef(null);
+    const showLoading = useDelayedLoading(isLoading);
+    const showMessageLoading = useDelayedLoading(isMessageLoading);
+    const memberStatusList = isPresenceLoading ? [] : members;
+    const onlineMembers = memberStatusList.filter((member) => member.online);
+    const offlineMembers = memberStatusList.filter((member) => !member.online);
+
+    const updateSelectedChannel = (channel) => {
+        setSelectedChannel(channel);
+
+        if (channel?.id) {
+            localStorage.setItem(
+                SELECTED_CHAT_CHANNEL_STORAGE_KEY,
+                String(channel.id)
+            );
+        }
+    };
 
     useEffect(() => {
         const getChatRoom = async () => {
             try {
                 const roomData = await requestMyChatRoom();
-                const firstChannel = roomData.channels?.[0] ?? null;
+                const channels = roomData.channels ?? [];
+                const storedChannelId = localStorage.getItem(
+                    SELECTED_CHAT_CHANNEL_STORAGE_KEY
+                );
+                const storedChannel = channels.find(
+                    (channel) => String(channel.id) === storedChannelId
+                );
+                const firstChannel = channels[0] ?? null;
 
                 setRoom(roomData);
-                setSelectedChannel(firstChannel);
+                setSelectedChannel(storedChannel ?? firstChannel);
             } catch {
                 setError("채팅방 정보를 불러오지 못했습니다.");
             } finally {
@@ -71,7 +109,10 @@ const UserTeamChat = () => {
 
         return () => {
             subscriptionRef.current?.unsubscribe();
-            client.deactivate();
+            presenceSubscriptionRef.current?.unsubscribe();
+
+            client.reconnectDelay = 0;
+            client.deactivate({ force: true });
             setSocketConnected(false);
         };
     }, []);
@@ -81,6 +122,7 @@ const UserTeamChat = () => {
 
         const getMessages = async () => {
             try {
+                setIsMessageLoading(true);
                 const data = await requestChatMessages(selectedChannel.id);
                 const messageList = data.content ?? [];
 
@@ -88,6 +130,8 @@ const UserTeamChat = () => {
                 await requestMarkChatAsRead(selectedChannel.id);
             } catch {
                 setError("메시지를 불러오지 못했습니다.");
+            } finally {
+                setIsMessageLoading(false);
             }
         };
 
@@ -128,6 +172,60 @@ const UserTeamChat = () => {
         };
     }, [selectedChannel, socketConnected]);
 
+    useEffect(() => {
+        if (!selectedChannel?.id) return;
+
+        const getPresence = async () => {
+            try {
+                setIsPresenceLoading(true);
+                const data = await requestChatPresence(selectedChannel.id);
+
+                setPresenceTeamId(data.teamId);
+                setMembers(data.members ?? []);
+            } catch {
+                setError("팀원 접속 상태를 불러오지 못했습니다.");
+            } finally {
+                setIsPresenceLoading(false);
+            }
+        };
+
+        getPresence();
+    }, [selectedChannel?.id, socketConnected]);
+    useEffect(() => {
+        if (!presenceTeamId || !socketConnected) return;
+
+        presenceSubscriptionRef.current?.unsubscribe();
+
+        presenceSubscriptionRef.current = subscribeTeamPresence(
+            chatClientRef.current,
+            presenceTeamId,
+            (presenceEvent) => {
+                setMembers((prevMembers) => {
+                    const alreadyExists = prevMembers.some(
+                        (member) => member.userId === presenceEvent.userId
+                    );
+
+                    if (!alreadyExists) {
+                        return [...prevMembers, presenceEvent];
+                    }
+
+                    return prevMembers.map((member) =>
+                        member.userId === presenceEvent.userId
+                            ? {
+                                  ...member,
+                                  ...presenceEvent,
+                              }
+                            : member
+                    );
+                });
+            }
+        );
+
+        return () => {
+            presenceSubscriptionRef.current?.unsubscribe();
+        };
+    }, [presenceTeamId, socketConnected]);
+
     const handleSendMessage = async (message) => {
         if (!selectedChannel?.id) return;
 
@@ -148,6 +246,43 @@ const UserTeamChat = () => {
             setIsSending(false);
         }
     };
+    const handleCreateChannel = async () => {
+        const trimmedChannelName = newChannelName.trim();
+
+        if (!trimmedChannelName) {
+            setChannelCreateError("채널 이름을 입력해주세요.");
+            return;
+        }
+
+        if (!room?.id) {
+            setChannelCreateError("채팅방 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        try {
+            setIsCreatingChannel(true);
+            setChannelCreateError("");
+
+            const createdChannel = await requestCreateChatChannel(
+                room.id,
+                trimmedChannelName
+            );
+
+            setRoom((prevRoom) => ({
+                ...prevRoom,
+                channels: [...(prevRoom.channels ?? []), createdChannel],
+            }));
+
+            updateSelectedChannel(createdChannel);
+            setMessages([]);
+            setNewChannelName("");
+            setIsChannelModalOpen(false);
+        } catch {
+            setChannelCreateError("채널 생성에 실패했습니다.");
+        } finally {
+            setIsCreatingChannel(false);
+        }
+    };
     return (
         <div className={styles.page}>
             <Header />
@@ -163,6 +298,14 @@ const UserTeamChat = () => {
                         <div className={styles.channelArea}>
                             <div className={styles.sectionTitle}>
                                 <span>채널</span>
+                                <button
+                                    type="button"
+                                    className={styles.addChannelButton}
+                                    aria-label="채널 추가"
+                                    onClick={() => setIsChannelModalOpen(true)}
+                                >
+                                    +
+                                </button>
                             </div>
 
                             <div className={styles.channelList}>
@@ -174,7 +317,7 @@ const UserTeamChat = () => {
                                             selectedChannel?.id === channel.id
                                         }
                                         onClick={() =>
-                                            setSelectedChannel(channel)
+                                            updateSelectedChannel(channel)
                                         }
                                     />
                                 ))}
@@ -188,7 +331,13 @@ const UserTeamChat = () => {
                         <div className={styles.messageArea}>
                             {isLoading ? (
                                 <p className={styles.emptyText}>
-                                    채팅방을 불러오는 중입니다.
+                                    {showLoading &&
+                                        "채팅방을 불러오는 중입니다."}
+                                </p>
+                            ) : isMessageLoading ? (
+                                <p className={styles.emptyText}>
+                                    {showMessageLoading &&
+                                        "메시지를 불러오는 중입니다."}
                                 </p>
                             ) : !selectedChannel ? (
                                 <p className={styles.emptyText}>
@@ -225,8 +374,12 @@ const UserTeamChat = () => {
                                         const showDateDivider =
                                             currentDateKey !== prevDateKey;
 
+                                        const messageKey =
+                                            message.id ??
+                                            `${message.senderId}-${message.createdAt}-${index}`;
+
                                         return (
-                                            <Fragment key={message.id}>
+                                            <Fragment key={messageKey}>
                                                 {showDateDivider && (
                                                     <li
                                                         className={
@@ -267,6 +420,113 @@ const UserTeamChat = () => {
                             isSending={isSending}
                         />
                     </section>
+
+                    <aside className={styles.memberSidebar}>
+                        <div className={styles.memberSidebarHeader}>
+                            <strong>팀원</strong>
+                            <span>{memberStatusList.length}명</span>
+                        </div>
+
+                        <div className={styles.memberGroup}>
+                            <p className={styles.memberGroupTitle}>
+                                온라인 - {onlineMembers.length}
+                            </p>
+
+                            <ul className={styles.memberList}>
+                                {onlineMembers.map((member) => (
+                                    <li
+                                        key={member.userId}
+                                        className={styles.memberItem}
+                                    >
+                                        <span className={styles.memberName}>
+                                            {member.name}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className={styles.memberGroup}>
+                            <p className={styles.memberGroupTitle}>
+                                오프라인 - {offlineMembers.length}
+                            </p>
+
+                            {offlineMembers.length === 0 ? (
+                                <p className={styles.memberEmptyText}>
+                                    오프라인 팀원이 없습니다.
+                                </p>
+                            ) : (
+                                <ul className={styles.memberList}>
+                                    {offlineMembers.map((member) => (
+                                        <li
+                                            key={member.userId}
+                                            className={styles.memberItem}
+                                        >
+                                            <span className={styles.memberName}>
+                                                {member.name}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </aside>
+
+                    {isChannelModalOpen && (
+                        <div
+                            className={styles.modalOverlay}
+                            onClick={() => setIsChannelModalOpen(false)}
+                        >
+                            <section
+                                className={styles.channelModal}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className={styles.channelModalHeader}>
+                                    <div>
+                                        <h2>채널 추가</h2>
+                                    </div>
+                                </div>
+
+                                <label className={styles.channelModalField}>
+                                    <span>채널 이름</span>
+                                    <input
+                                        type="text"
+                                        placeholder="예: 프론트엔드, 백엔드, 진행상황"
+                                        value={newChannelName}
+                                        onChange={(e) => {
+                                            setNewChannelName(e.target.value);
+                                            setChannelCreateError("");
+                                        }}
+                                    />
+                                    {channelCreateError && (
+                                        <p className={styles.channelModalError}>
+                                            {channelCreateError}
+                                        </p>
+                                    )}
+                                </label>
+
+                                <div className={styles.channelModalActions}>
+                                    <button
+                                        type="button"
+                                        className={styles.cancelButton}
+                                        onClick={() =>
+                                            setIsChannelModalOpen(false)
+                                        }
+                                    >
+                                        취소
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={styles.createButton}
+                                        disabled={isCreatingChannel}
+                                        onClick={handleCreateChannel}
+                                    >
+                                        {isCreatingChannel ? "추가 중" : "추가"}
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+                    )}
                 </section>
             </main>
         </div>

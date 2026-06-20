@@ -3,30 +3,33 @@
     align-items: center;
     width: 100%;
     gap: 10px;
-    min-height: 42px;
+    min-height: 38px;
     padding: 0 10px;
     border: 0;
-    border-radius: var(--border-radius-sm);
+    border-radius: 4px;
     background-color: transparent;
-    color: var(--color-text-secondary);
+    color: #667085;
     font-family: var(--font-family);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
+    font-size: 15px;
+    font-weight: 700;
     text-align: left;
     cursor: pointer;
 }
 
 .channelButton:hover {
-    color: #000000;
+    background-color: #eef2f0;
+    color: #111827;
 }
 
 .channelButton.selected {
-    color: var(--color-primary-dark);
+    background-color: #e8f5ef;
+    color: #2f946f;
 }
 
 .channelMark {
     color: inherit;
-    font-weight: var(--font-weight-bold);
+    font-size: 18px;
+    font-weight: 900;
 }
 
 .channelName {

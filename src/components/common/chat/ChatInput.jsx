@@ -19,6 +19,14 @@ const ChatInput = ({ onSend, disabled = false, isSending = false }) => {
 
     return (
         <form className={styles.inputForm} onSubmit={handleSubmit}>
+            <button
+                type="button"
+                className={styles.fileButton}
+                aria-label="파일 업로드"
+            >
+                +
+            </button>
+
             <input
                 ref={inputRef}
                 value={message}

@@ -2,7 +2,21 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    width: 100%;
+    padding: 3px 8px;
+    border-radius: 8px;
+}
+
+.messageItem.timeSeparated {
+    margin-top: 18px;
+}
+
+.messageItem:first-child {
+    margin-top: 0;
+}
+
+.messageItem:hover {
+    background-color: #f8faf9;
 }
 
 .messageItem.mine {
@@ -14,9 +28,10 @@
     align-items: center;
     gap: 8px;
     min-height: 18px;
-    color: #9ca3af;
-    font-size: 13px;
-    font-weight: 700;
+    margin-bottom: 4px;
+    color: #98a2b3;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 .mine .messageMeta {
@@ -24,27 +39,176 @@
 }
 
 .senderName {
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 800;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.messageBody {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: min(640px, 68%);
+}
+
+.mine .messageBody {
+    flex-direction: row-reverse;
 }
 
 .messageBubble {
-    max-width: min(520px, 64%);
-    padding: 8px 10px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px 8px 8px 8px;
-    background-color: #f9fafb;
-    color: #111827;
+    padding: 8px 11px;
+    border: 1px solid #eaecf0;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #1f2937;
     font-size: 14px;
-    font-weight: 650;
+    font-weight: 750;
     line-height: 1.55;
     word-break: break-word;
 }
 
 .mine .messageBubble {
-    border-color: #5fc49b;
-    border-radius: 16px 16px 0px 16px;
-    background-color: #5fc49b;
+    border-color: #52b98f;
+    background-color: #52b98f;
+    color: #ffffff;
+}
+
+.messageActions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.messageItem:hover .messageActions {
+    visibility: visible;
+    opacity: 1;
+}
+
+.messageActions button {
+    padding: 4px 5px;
+    border: 0;
+    background-color: transparent;
+    color: #98a2b3;
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.messageActions button:hover {
+    color: #111827;
+}
+
+.editPanel,
+.deletePanel {
+    width: min(420px, 70%);
+    margin-top: 8px;
+    padding: 10px;
+    border: 1px solid #d9dee5;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.mine .editPanel,
+.mine .deletePanel {
+    align-self: flex-end;
+}
+
+.editPanel textarea {
+    width: 100%;
+    min-height: 76px;
+    padding: 10px 11px;
+    resize: none;
+    border: 1px solid #d9dee5;
+    border-radius: 10px;
+    color: #111827;
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.editPanel textarea:focus {
+    border-color: #52b98f;
+    outline: none;
+}
+
+.deletePanel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.deletePanel strong {
+    display: block;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.deletePanel p {
+    margin: 4px 0 0;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.panelActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.deletePanel .panelActions {
+    flex-shrink: 0;
+    margin-top: 0;
+}
+
+.panelActions button {
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #d9dee5;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #667085;
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.panelActions button:hover {
+    border-color: #b9c0ca;
+    color: #111827;
+}
+
+.panelActions .primaryButton {
+    border-color: #52b98f;
+    background-color: #52b98f;
+    color: #ffffff;
+}
+
+.panelActions .primaryButton:hover {
+    border-color: #43aa82;
+    background-color: #43aa82;
+    color: #ffffff;
+}
+
+.panelActions .dangerButton {
+    border-color: #ff4d4f;
+    background-color: #ff4d4f;
+    color: #ffffff;
+}
+
+.panelActions .dangerButton:hover {
+    border-color: #e03131;
+    background-color: #e03131;
     color: #ffffff;
 }
