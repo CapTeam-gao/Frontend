@@ -3,6 +3,7 @@ import Logo from "../../../assets/images/logo.png";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import authStore from "../../../store/authStore";
+import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,
     getStoredAdminTeamCreated,
@@ -15,6 +16,9 @@ const Header = () => {
     const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
     const isAdminPage = location.pathname.startsWith("/admin");
     const [teamCreated, setTeamCreated] = useState(getStoredAdminTeamCreated);
+    const { hasUnreadChat } = useUnreadChatCount({
+        enabled: hasUser && !isAdmin,
+    });
 
     useEffect(() => {
         if (!isAdmin) {
@@ -95,7 +99,18 @@ const Header = () => {
                 ) : hasUser ? (
                     <>
                         <Link to="/user/project">프로젝트</Link>
-                        <Link to="/user/chat">팀 채팅</Link>
+                        <Link
+                            to="/user/chat"
+                            className={styles.navLinkWithBadge}
+                        >
+                            팀 채팅
+                            {hasUnreadChat && (
+                                <span
+                                    className={styles.chatUnreadDot}
+                                    aria-label="읽지 않은 채팅"
+                                />
+                            )}
+                        </Link>
                         <Link to="/user/log">캡스톤 일지</Link>
                         <Link to="/user/notice">공지</Link>
                     </>

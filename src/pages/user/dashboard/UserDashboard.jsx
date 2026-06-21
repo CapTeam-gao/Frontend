@@ -9,6 +9,7 @@ import { requestUserDashboard } from "../../../api/dashboardApi";
 import { subscribeNoticeCreated } from "../../../api/noticeSocket";
 import { getCapstoneLogStatusText } from "../../../utils/capstoneLogTime";
 import authStore from "../../../store/authStore";
+import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import styles from "./UserDashboard.module.css";
 
 const UserDashboard = () => {
@@ -23,6 +24,9 @@ const UserDashboard = () => {
     const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
+    const { hasUnreadChat } = useUnreadChatCount({
+        enabled: dashboard.teamCreated,
+    });
 
     useEffect(() => {
         const getDashboard = async () => {
@@ -63,7 +67,11 @@ const UserDashboard = () => {
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
     const chatStatusText =
-        !isDashboardLoading && !dashboard.teamCreated ? "팀 생성 전입니다" : "";
+        !isDashboardLoading && !dashboard.teamCreated
+            ? "팀 생성 전입니다"
+            : hasUnreadChat
+            ? "읽지 않은 채팅이 있습니다"
+            : "";
     const projectStatusText =
         !isDashboardLoading && !dashboard.teamCreated ? "팀 생성 전입니다" : "";
     const logStatusText = isDashboardLoading
@@ -86,6 +94,13 @@ const UserDashboard = () => {
                         to={featurePath("/user/chat")}
                         className={styles.card}
                     >
+                        {dashboard.teamCreated && hasUnreadChat && (
+                            <span
+                                className={styles.chatUnreadDot}
+                                aria-label="읽지 않은 채팅"
+                            />
+                        )}
+
                         <div className={styles.iconBox}>
                             <img src={ChatIcon} alt="" />
                         </div>

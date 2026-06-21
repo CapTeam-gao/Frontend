@@ -72,12 +72,33 @@ export const subscribeChatChannel = (client, channelId, onMessage) => {
     });
 };
 
-export const sendChatSocketMessage = (client, channelId, message) => {
+export const subscribeChatChannelEvents = (client, channelId, onEvent) => {
+    return client.subscribe(`/sub/chat/${channelId}/events`, (message) => {
+        const receivedEvent = JSON.parse(message.body);
+
+        onEvent?.(receivedEvent);
+    });
+};
+
+export const subscribeChatRoomChannelEvents = (client, roomId, onEvent) => {
+    return client.subscribe(`/sub/chat/rooms/${roomId}/channels`, (message) => {
+        const receivedEvent = JSON.parse(message.body);
+
+        onEvent?.(receivedEvent);
+    });
+};
+
+export const sendChatSocketMessage = (client, channelId, messagePayload) => {
+    const payload =
+        typeof messagePayload === "string"
+            ? {
+                  message: messagePayload,
+              }
+            : messagePayload;
+
     client.publish({
         destination: `/pub/chat/${channelId}/send`,
-        body: JSON.stringify({
-            message,
-        }),
+        body: JSON.stringify(payload),
     });
 };
 
@@ -89,4 +110,38 @@ export const subscribeTeamPresence = (client, teamId, onPresenceChange) => {
 
         onPresenceChange(presenceEvent);
     });
+};
+
+const waitForUnsubscribeReceipt = (client, subscription) => {
+    if (!client?.connected || !subscription) {
+        return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+        const receiptId = `unsubscribe-${Date.now()}-${Math.random()}`;
+        const timeoutId = window.setTimeout(resolve, 300);
+
+        client.watchForReceipt(receiptId, () => {
+            window.clearTimeout(timeoutId);
+            resolve();
+        });
+
+        subscription.unsubscribe({
+            receipt: receiptId,
+        });
+    });
+};
+
+export const disconnectChatClient = async (client, subscriptions = []) => {
+    if (!client) return;
+
+    client.reconnectDelay = 0;
+
+    await Promise.all(
+        subscriptions.map((subscription) =>
+            waitForUnsubscribeReceipt(client, subscription)
+        )
+    );
+
+    await client.deactivate();
 };

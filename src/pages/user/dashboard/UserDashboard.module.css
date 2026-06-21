@@ -128,6 +128,16 @@
     line-height: 1;
 }
 
+.chatUnreadDot {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
 @media (max-width: 768px) {
     .body {
         padding: 32px 16px 56px;

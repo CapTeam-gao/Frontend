@@ -1,11 +1,11 @@
 .inputForm {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     flex-shrink: 0;
     gap: 10px;
-    min-height: 54px;
     margin: 0 28px 50px;
-    padding: 7px;
+    padding: 8px;
     border: 1px solid #d9dee5;
     border-radius: 13px;
     background-color: #ffffff;
@@ -17,6 +17,104 @@
 .inputForm ::placeholder {
     font-weight: 600;
     font-size: 14px;
+}
+
+.inputRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+}
+
+.filePreview {
+    position: relative;
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid #dce9e2;
+    border-radius: 12px;
+    background-color: #fbfdfc;
+}
+
+.imagePreview,
+.documentPreview {
+    width: 86px;
+    height: 64px;
+    border-radius: 8px;
+}
+
+.imagePreview {
+    object-fit: cover;
+    border: 1px solid #e4e7ec;
+    background-color: #ffffff;
+}
+
+.documentPreview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4fbf8;
+}
+
+.documentIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background-color: #eaf7f1;
+}
+
+.documentIcon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.previewInfo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.previewInfo strong {
+    overflow: hidden;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.previewInfo span {
+    color: #667085;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.removeFileButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 50%;
+    background-color: #e4e7ec;
+    color: #667085;
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.removeFileButton:hover {
+    background-color: #d0d5dd;
+    color: #111827;
 }
 
 .fileButton {
@@ -40,6 +138,15 @@
     color: #111827;
 }
 
+.fileButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.fileInput {
+    display: none;
+}
+
 .messageInput {
     flex: 1;
     height: 38px;
@@ -48,7 +155,7 @@
     color: #111827;
     font-family: var(--font-family);
     font-size: 15px;
-    font-weight: 750;
+    font-weight: 550;
 }
 
 .messageInput:focus {
