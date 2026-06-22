@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import fileIcon from "../../../assets/icons/file.svg";
 import styles from "./ChatInput.module.css";
 
@@ -33,22 +33,17 @@ const ChatInput = ({
     const inputRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        if (!selectedFile || !isImageFile(selectedFile)) {
-            setPreviewUrl("");
-            return undefined;
+    const clearSelectedFile = () => {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
         }
 
-        const nextPreviewUrl = URL.createObjectURL(selectedFile);
-        setPreviewUrl(nextPreviewUrl);
+        setSelectedFile(null);
+        setPreviewUrl("");
+    };
 
-        return () => {
-            URL.revokeObjectURL(nextPreviewUrl);
-        };
-    }, [selectedFile]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
         const trimmedMessage = message.trim();
 
@@ -63,7 +58,7 @@ const ChatInput = ({
 
         if (selectedFile) {
             await onFileSend?.(selectedFile, trimmedMessage);
-            setSelectedFile(null);
+            clearSelectedFile();
             setMessage("");
             inputRef.current?.focus();
             return;
@@ -74,18 +69,22 @@ const ChatInput = ({
         inputRef.current?.focus();
     };
 
-    const handleFileChange = async (e) => {
-        const selectedFile = e.target.files?.[0];
+    const handleFileChange = (event) => {
+        const nextFile = event.target.files?.[0];
 
-        if (!selectedFile || disabled || isFileSending) return;
+        if (!nextFile || disabled || isFileSending) return;
 
-        setSelectedFile(selectedFile);
-        e.target.value = "";
+        clearSelectedFile();
+        setSelectedFile(nextFile);
+        setPreviewUrl(
+            isImageFile(nextFile) ? URL.createObjectURL(nextFile) : ""
+        );
+        event.target.value = "";
         inputRef.current?.focus();
     };
 
     const removeSelectedFile = () => {
-        setSelectedFile(null);
+        clearSelectedFile();
         inputRef.current?.focus();
     };
 
@@ -138,6 +137,7 @@ const ChatInput = ({
                 >
                     +
                 </button>
+
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -147,28 +147,25 @@ const ChatInput = ({
 
                 <input
                     ref={inputRef}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    disabled={disabled || isFileSending}
-                    placeholder={
-                        isFileSending
-                            ? "파일을 업로드하는 중입니다"
-                            : "메시지를 입력하세요"
-                    }
+                    type="text"
                     className={styles.messageInput}
+                    placeholder="메시지를 입력하세요"
+                    value={message}
+                    disabled={disabled || isSending || isFileSending}
+                    onChange={(event) => setMessage(event.target.value)}
                 />
 
                 <button
                     type="submit"
+                    className={styles.sendButton}
                     disabled={
                         disabled ||
                         isSending ||
                         isFileSending ||
                         (!message.trim() && !selectedFile)
                     }
-                    className={styles.sendButton}
                 >
-                    전송
+                    {isSending || isFileSending ? "전송 중" : "전송"}
                 </button>
             </div>
         </form>

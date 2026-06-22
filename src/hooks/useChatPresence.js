@@ -1,51 +1,61 @@
 import { useCallback, useEffect, useState } from "react";
-import { requestChatPresence } from "../../../../api/chatApi";
-import { subscribeTeamPresence } from "../../../../api/chatSocket";
+import { requestChatPresence } from "../api/chatApi";
+import { subscribeTeamPresence } from "../api/chatSocket";
 
-const useChatPresence = ({ selectedChannel, socketConnected, chatClientRef, setError }) => {
+const useChatPresence = ({
+    selectedChannel,
+    socketConnected,
+    chatClientRef,
+    setError,
+}) => {
     const [members, setMembers] = useState([]);
     const [presenceTeamId, setPresenceTeamId] = useState(null);
     const [hasPresenceLoaded, setHasPresenceLoaded] = useState(false);
 
+    const selectedChannelId = selectedChannel?.id;
+
     const refreshPresence = useCallback(async () => {
-        if (!selectedChannel?.id) return;
+        if (!selectedChannelId) {
+            setMembers([]);
+            setPresenceTeamId(null);
+            setHasPresenceLoaded(false);
+            return;
+        }
 
         try {
-            setHasPresenceLoaded((prevLoaded) =>
-                members.length > 0 ? prevLoaded : false
-            );
+            setHasPresenceLoaded(false);
 
-            const data = await requestChatPresence(selectedChannel.id);
+            const data = await requestChatPresence(selectedChannelId);
 
-            setPresenceTeamId(data.teamId);
-            setMembers(data.members ?? []);
+            setPresenceTeamId(data?.teamId ?? null);
+            setMembers(Array.isArray(data?.members) ? data.members : []);
         } catch {
+            setMembers([]);
+            setPresenceTeamId(null);
             setError("팀원 접속 상태를 불러오지 못했습니다.");
         } finally {
             setHasPresenceLoaded(true);
         }
-    }, [members.length, selectedChannel?.id, setError]);
+    }, [selectedChannelId, setError]);
 
     useEffect(() => {
         refreshPresence();
     }, [refreshPresence]);
 
     useEffect(() => {
-        if (!selectedChannel?.id || !socketConnected) return undefined;
+        if (!selectedChannelId || !socketConnected) return undefined;
 
         refreshPresence();
 
-        const retryTimerId = window.setTimeout(refreshPresence, 500);
-        const intervalId = window.setInterval(refreshPresence, 3000);
+        const retryTimerId = window.setTimeout(refreshPresence, 700);
 
         return () => {
             window.clearTimeout(retryTimerId);
-            window.clearInterval(intervalId);
         };
-    }, [refreshPresence, selectedChannel?.id, socketConnected]);
+    }, [refreshPresence, selectedChannelId, socketConnected]);
 
     useEffect(() => {
-        if (!presenceTeamId || !socketConnected) return;
+        if (!presenceTeamId || !socketConnected) return undefined;
 
         const presenceSubscription = subscribeTeamPresence(
             chatClientRef.current,
@@ -75,7 +85,7 @@ const useChatPresence = ({ selectedChannel, socketConnected, chatClientRef, setE
         return () => {
             presenceSubscription?.unsubscribe();
         };
-    }, [presenceTeamId, socketConnected]);
+    }, [presenceTeamId, socketConnected, chatClientRef]);
 
     const onlineMembers = members.filter((member) => member.online);
     const offlineMembers = members.filter((member) => !member.online);

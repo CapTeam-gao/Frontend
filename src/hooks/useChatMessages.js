@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
     requestChatMessages,
     requestDeleteChatMessage,
     requestMarkChatAsRead,
     requestUpdateChatMessage,
-} from "../../../../api/chatApi";
+} from "../api/chatApi";
 
 const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError }) => {
     const isLoadingOlderMessagesRef = useRef(false);
@@ -15,21 +15,22 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
     const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
     const [messagePage, setMessagePage] = useState(0);
     const [hasMoreMessages, setHasMoreMessages] = useState(false);
+    const selectedChannelId = selectedChannel?.id;
 
     useEffect(() => {
-        if (!selectedChannel?.id) return;
+        if (!selectedChannelId) return;
 
         const getMessages = async () => {
             try {
                 setIsMessageLoading(true);
-                const data = await requestChatMessages(selectedChannel.id);
+                const data = await requestChatMessages(selectedChannelId);
                 const messageList = data.content ?? [];
 
                 setMessages([...messageList].reverse());
                 setMessagePage(0);
                 setHasMoreMessages(data.last === false);
-                await requestMarkChatAsRead(selectedChannel.id);
-                clearChannelUnreadCount(selectedChannel.id);
+                await requestMarkChatAsRead(selectedChannelId);
+                clearChannelUnreadCount(selectedChannelId);
             } catch {
                 setError("메시지를 불러오지 못했습니다.");
             } finally {
@@ -38,9 +39,9 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
         };
 
         getMessages();
-    }, [selectedChannel]);
+    }, [selectedChannelId, clearChannelUnreadCount, setError]);
 
-    const scrollToBottom = ({ isPageLoading }) => {
+    const scrollToBottom = useCallback(({ isPageLoading }) => {
         if (isLoadingOlderMessagesRef.current) return;
         if (isPageLoading || isMessageLoading || messages.length === 0) return;
 
@@ -55,7 +56,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
         return () => {
             cancelAnimationFrame(frameId);
         };
-    };
+    }, [isMessageLoading, messages.length]);
 
     const handleEditMessage = async (messageId, nextMessage) => {
         const trimmedMessage = nextMessage.trim();
@@ -101,7 +102,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
         }
     };
 
-    const handleMessageEvent = (event) => {
+    const handleMessageEvent = useCallback((event) => {
         if (!event?.type) return;
 
         if (event.type === "MESSAGE_UPDATED" && event.message) {
@@ -124,7 +125,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
                 )
             );
         }
-    };
+    }, []);
 
     const handleMessageScroll = async (event) => {
         const messageList = event.currentTarget;

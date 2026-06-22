@@ -81,7 +81,13 @@ const useUserTeamChat = () => {
         return scrollToBottom({
             isPageLoading: isLoading,
         });
-    }, [isLoading, isMessageLoading, messages, selectedChannel?.id]);
+    }, [
+        isLoading,
+        isMessageLoading,
+        messages,
+        selectedChannel?.id,
+        scrollToBottom,
+    ]);
 
     return {
         room,

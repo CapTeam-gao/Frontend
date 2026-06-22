@@ -37,13 +37,17 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     }, [shouldFetchUnreadCount]);
 
     useEffect(() => {
-        refreshUnreadChatCount();
+        const timeoutId = window.setTimeout(refreshUnreadChatCount, 0);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
     }, [refreshUnreadChatCount]);
 
     useEffect(() => {
         if (!shouldFetchUnreadCount) return undefined;
 
-        const intervalId = setInterval(
+        const intervalId = window.setInterval(
             refreshUnreadChatCount,
             CHAT_UNREAD_REFRESH_INTERVAL
         );
@@ -55,7 +59,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         window.addEventListener("focus", refreshUnreadChatCount);
 
         return () => {
-            clearInterval(intervalId);
+            window.clearInterval(intervalId);
             window.removeEventListener(
                 CHAT_UNREAD_CHANGE_EVENT,
                 refreshUnreadChatCount

@@ -1,11 +1,11 @@
 import { Fragment } from "react";
-import ChatMessage from "../../../../components/common/chat/ChatMessage";
+import ChatMessage from "./ChatMessage";
 import {
     formatDateDivider,
     getMessageDateKey,
     getMessageMinuteKey,
-} from "../../../../utils/chat";
-import styles from "../UserTeamChat.module.css";
+} from "../../../utils/chat";
+import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const ChatMessageList = ({
     messageListRef,
@@ -30,9 +30,7 @@ const ChatMessageList = ({
 
             {messages.map((message, index) => {
                 const prevMessage = messages[index - 1];
-                const currentMinuteKey = getMessageMinuteKey(
-                    message.createdAt
-                );
+                const currentMinuteKey = getMessageMinuteKey(message.createdAt);
                 const prevMinuteKey = getMessageMinuteKey(
                     prevMessage?.createdAt
                 );

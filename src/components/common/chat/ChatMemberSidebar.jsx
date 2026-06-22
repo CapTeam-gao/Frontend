@@ -1,4 +1,4 @@
-import styles from "../UserTeamChat.module.css";
+import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const MemberItem = ({ member, online }) => {
     return (

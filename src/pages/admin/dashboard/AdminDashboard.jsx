@@ -12,6 +12,7 @@ import {
     getNextTeamCreateMessage,
 } from "../../../utils/teamStatus";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
+import { isCapstoneLogTime } from "../../../utils/capstoneLogTime";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
@@ -61,13 +62,15 @@ const AdminDashboard = () => {
     const chatRoomStatusText = isDashboardLoading
         ? ""
         : isTeamCreated
-        ? `${dashboard.activeChatRoomCount}개 진행중`
+        ? `${dashboard.activeChatRoomCount}개 채팅방`
         : "팀 생성 후 이용 가능합니다";
     const logStatusText = isDashboardLoading
         ? ""
-        : isTeamCreated
+        : !isTeamCreated
+        ? "팀 생성 후 이용 가능합니다"
+        : isCapstoneLogTime()
         ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
-        : "팀 생성 후 이용 가능합니다";
+        : "제출 시간 전입니다";
 
     return (
         <div className={styles.page}>

@@ -1,11 +1,11 @@
 import Header from "../../../components/common/header/Header";
 import ChatInput from "../../../components/common/chat/ChatInput";
 import authStore from "../../../store/authStore";
-import ChatChannelModal from "./components/ChatChannelModal";
-import ChatMemberSidebar from "./components/ChatMemberSidebar";
-import ChatMessageList from "./components/ChatMessageList";
-import ChatSidebar from "./components/ChatSidebar";
-import useUserTeamChat from "./hooks/useUserTeamChat";
+import ChatChannelModal from "../../../components/common/chat/ChatChannelModal";
+import ChatMemberSidebar from "../../../components/common/chat/ChatMemberSidebar";
+import ChatMessageList from "../../../components/common/chat/ChatMessageList";
+import ChatSidebar from "../../../components/common/chat/ChatSidebar";
+import useUserTeamChat from "../../../hooks/useUserTeamChat";
 import styles from "./UserTeamChat.module.css";
 
 const UserTeamChat = () => {
@@ -46,8 +46,23 @@ const UserTeamChat = () => {
         openDeleteChannelModal,
         closeChannelModal,
     } = useUserTeamChat();
+    const roomMembers = room?.members ?? room?.teamMembers ?? [];
 
-    const showEmptyChannel = !isLoading && !isMessageLoading && !selectedChannel;
+    const currentMember =
+        room?.myMember ??
+        roomMembers.find(
+            (member) => String(member.userId) === String(currentUserId)
+        ) ??
+        members.find(
+            (member) => String(member.userId) === String(currentUserId)
+        );
+
+    const canManageChannel =
+        currentMember?.leaderRole === "LEADER" ||
+        currentMember?.role === "LEADER" ||
+        currentMember?.isLeader === true;
+    const showEmptyChannel =
+        !isLoading && !isMessageLoading && !selectedChannel;
     const showEmptyMessage =
         !isLoading &&
         !isMessageLoading &&
@@ -70,6 +85,7 @@ const UserTeamChat = () => {
                         channels={room?.channels ?? []}
                         selectedChannelId={selectedChannel?.id}
                         getChannelUnreadCount={getChannelUnreadCount}
+                        canManageChannel={canManageChannel}
                         onSelectChannel={updateSelectedChannel}
                         onOpenChannelModal={openCreateChannelModal}
                         onEditChannel={openEditChannelModal}

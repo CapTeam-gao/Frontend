@@ -157,10 +157,16 @@
 
 .errorText {
     flex-shrink: 0;
+    align-self: center;
+    max-width: calc(100% - 56px);
     margin: 12px 28px 0;
+    padding: 0;
     color: var(--color-danger);
     font-size: 14px;
     font-weight: 800;
+    line-height: 1.5;
+    text-align: center;
+    word-break: keep-all;
 }
 
 .messageArea {
@@ -467,7 +473,7 @@
     background-color: #fff8f7;
     color: #344054;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.6;
 }
 

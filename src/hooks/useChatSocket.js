@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { requestMarkChatAsRead, requestUploadChatFile } from "../../../../api/chatApi";
+import { requestMarkChatAsRead, requestUploadChatFile } from "../api/chatApi";
 import {
     createChatClient,
     disconnectChatClient,
@@ -7,7 +7,7 @@ import {
     subscribeChatChannel,
     subscribeChatChannelEvents,
     subscribeChatRoomChannelEvents,
-} from "../../../../api/chatSocket";
+} from "../api/chatSocket";
 
 const useChatSocket = ({
     roomId,
@@ -76,16 +76,26 @@ const useChatSocket = ({
     }, [setError]);
 
     useEffect(() => {
-        if (!roomId || !socketConnected || !onChannelEvent) return;
+        const client = chatClientRef.current;
+
+        if (
+            !client?.connected ||
+            !roomId ||
+            !socketConnected ||
+            !onChannelEvent
+        ) {
+            return undefined;
+        }
 
         roomChannelEventSubscriptionRef.current?.unsubscribe();
 
-        roomChannelEventSubscriptionRef.current =
-            subscribeChatRoomChannelEvents(
-                chatClientRef.current,
-                roomId,
-                onChannelEvent
-            );
+        try {
+            roomChannelEventSubscriptionRef.current =
+                subscribeChatRoomChannelEvents(client, roomId, onChannelEvent);
+        } catch {
+            roomChannelEventSubscriptionRef.current = null;
+            return undefined;
+        }
 
         return () => {
             roomChannelEventSubscriptionRef.current?.unsubscribe();
@@ -94,34 +104,45 @@ const useChatSocket = ({
     }, [roomId, socketConnected, onChannelEvent]);
 
     useEffect(() => {
-        if (!selectedChannel?.id || !socketConnected) return;
+        const client = chatClientRef.current;
+
+        if (!client?.connected || !selectedChannel?.id || !socketConnected) {
+            return undefined;
+        }
 
         subscriptionRef.current?.unsubscribe();
         messageEventSubscriptionRef.current?.unsubscribe();
 
-        subscriptionRef.current = subscribeChatChannel(
-            chatClientRef.current,
-            selectedChannel.id,
-            (receivedMessage) => {
-                setMessages((prevMessages) => {
-                    const alreadyExists = prevMessages.some(
-                        (message) => message.id === receivedMessage.id
-                    );
+        try {
+            subscriptionRef.current = subscribeChatChannel(
+                client,
+                selectedChannel.id,
+                (receivedMessage) => {
+                    setMessages((prevMessages) => {
+                        const alreadyExists = prevMessages.some(
+                            (message) => message.id === receivedMessage.id
+                        );
 
-                    if (alreadyExists) return prevMessages;
+                        if (alreadyExists) return prevMessages;
 
-                    return [...prevMessages, receivedMessage];
-                });
+                        return [...prevMessages, receivedMessage];
+                    });
 
-                requestMarkChatAsRead(selectedChannel.id);
-                clearChannelUnreadCount(selectedChannel.id);
-            }
-        );
-        messageEventSubscriptionRef.current = subscribeChatChannelEvents(
-            chatClientRef.current,
-            selectedChannel.id,
-            onMessageEvent
-        );
+                    requestMarkChatAsRead(selectedChannel.id);
+                    clearChannelUnreadCount(selectedChannel.id);
+                }
+            );
+
+            messageEventSubscriptionRef.current = subscribeChatChannelEvents(
+                client,
+                selectedChannel.id,
+                onMessageEvent
+            );
+        } catch {
+            subscriptionRef.current = null;
+            messageEventSubscriptionRef.current = null;
+            return undefined;
+        }
 
         return () => {
             subscriptionRef.current?.unsubscribe();
@@ -129,37 +150,58 @@ const useChatSocket = ({
             messageEventSubscriptionRef.current?.unsubscribe();
             messageEventSubscriptionRef.current = null;
         };
-    }, [selectedChannel, socketConnected, onMessageEvent]);
+    }, [
+        selectedChannel?.id,
+        socketConnected,
+        setMessages,
+        clearChannelUnreadCount,
+        onMessageEvent,
+    ]);
 
     useEffect(() => {
-        if (!socketConnected || !channels.length) return;
+        const client = chatClientRef.current;
+
+        if (!client?.connected || !socketConnected || !channels.length) {
+            return undefined;
+        }
 
         notificationSubscriptionsRef.current.forEach((subscription) =>
             subscription?.unsubscribe()
         );
 
-        const notificationSubscriptions = channels
-            .filter(
-                (channel) =>
-                    String(channel.id) !== String(selectedChannelRef.current?.id)
-            )
-            .map((channel) =>
-                subscribeChatChannel(
-                    chatClientRef.current,
-                    channel.id,
-                    (receivedMessage) => {
-                        const currentChannel = selectedChannelRef.current;
+        let notificationSubscriptions = [];
 
-                        if (
-                            String(currentChannel?.id) === String(channel.id)
-                        ) {
-                            return;
-                        }
-
-                        increaseChannelUnreadCount(channel.id, receivedMessage);
-                    }
+        try {
+            notificationSubscriptions = channels
+                .filter(
+                    (channel) =>
+                        String(channel.id) !==
+                        String(selectedChannelRef.current?.id)
                 )
-            );
+                .map((channel) =>
+                    subscribeChatChannel(
+                        client,
+                        channel.id,
+                        (receivedMessage) => {
+                            const currentChannel = selectedChannelRef.current;
+
+                            if (
+                                String(currentChannel?.id) === String(channel.id)
+                            ) {
+                                return;
+                            }
+
+                            increaseChannelUnreadCount(
+                                channel.id,
+                                receivedMessage
+                            );
+                        }
+                    )
+                );
+        } catch {
+            notificationSubscriptionsRef.current = [];
+            return undefined;
+        }
 
         notificationSubscriptionsRef.current = notificationSubscriptions;
 
@@ -169,7 +211,12 @@ const useChatSocket = ({
             );
             notificationSubscriptionsRef.current = [];
         };
-    }, [socketConnected, channels, selectedChannel?.id]);
+    }, [
+        socketConnected,
+        channels,
+        selectedChannel?.id,
+        increaseChannelUnreadCount,
+    ]);
 
     const handleSendMessage = async (message) => {
         if (!selectedChannel?.id) return;
@@ -183,7 +230,6 @@ const useChatSocket = ({
 
         try {
             setIsSending(true);
-
             sendChatSocketMessage(client, selectedChannel.id, message);
         } catch {
             setError("메시지 전송에 실패했습니다.");
@@ -218,8 +264,12 @@ const useChatSocket = ({
                     uploadedFile.originalFileName ??
                     uploadedFile.fileName ??
                     file.name,
-                fileType: uploadedFile.contentType ?? file.type,
-                fileSize: uploadedFile.size ?? file.size,
+                fileType:
+                    uploadedFile.contentType ??
+                    uploadedFile.fileType ??
+                    file.type,
+                fileSize:
+                    uploadedFile.size ?? uploadedFile.fileSize ?? file.size,
             });
         } catch {
             setError("파일 전송에 실패했습니다.");

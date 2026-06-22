@@ -1,4 +1,4 @@
-import styles from "../UserTeamChat.module.css";
+import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const ChatChannelModal = ({
     mode = "create",
@@ -18,17 +18,9 @@ const ChatChannelModal = ({
             ? "채널 삭제"
             : "채널 추가";
     const submitLabel =
-        mode === "edit"
-            ? "수정"
-            : isDeleteMode
-            ? "삭제"
-            : "추가";
+        mode === "edit" ? "수정" : isDeleteMode ? "삭제" : "추가";
     const loadingLabel =
-        mode === "edit"
-            ? "수정 중"
-            : isDeleteMode
-            ? "삭제 중"
-            : "추가 중";
+        mode === "edit" ? "수정 중" : isDeleteMode ? "삭제 중" : "추가 중";
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>

@@ -334,10 +334,13 @@
 
 .actionError {
     margin: 8px 0 0;
-    margin-left: 2px;
+    padding: 0;
     color: var(--color-danger);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+    text-align: center;
+    word-break: keep-all;
 }
 
 .imagePreviewOverlay {

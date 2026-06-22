@@ -12,29 +12,30 @@ import {
 const Header = () => {
     const location = useLocation();
     const user = authStore((state) => state.user);
+
     const hasUser = Boolean(user);
-    const isAdmin = user?.accountRole === "ADMIN"; //role - > accountRole로 변경
+    const isAdmin = user?.accountRole === "ADMIN";
     const isAdminPage = location.pathname.startsWith("/admin");
-    const [teamCreated, setTeamCreated] = useState(getStoredAdminTeamCreated);
+
+    const [storedTeamCreated, setStoredTeamCreated] = useState(
+        getStoredAdminTeamCreated
+    );
+
     const { hasUnreadChat } = useUnreadChatCount({
         enabled: hasUser && !isAdmin,
     });
 
     useEffect(() => {
-        if (!isAdmin) {
-            setTeamCreated(null);
-            return;
-        }
+        if (!isAdmin) return undefined;
 
         const updateStoredTeamStatus = () => {
-            setTeamCreated(getStoredAdminTeamCreated());
+            setStoredTeamCreated(getStoredAdminTeamCreated());
         };
 
         const updateChangedTeamStatus = (event) => {
-            setTeamCreated(event.detail);
+            setStoredTeamCreated(event.detail);
         };
 
-        updateStoredTeamStatus();
         window.addEventListener("storage", updateStoredTeamStatus);
         window.addEventListener(
             ADMIN_TEAM_CREATED_CHANGE_EVENT,
@@ -65,16 +66,19 @@ const Header = () => {
     };
 
     const displayName = makeHeaderName(user);
+
     const logoPath =
         isAdmin || (!hasUser && isAdminPage)
             ? "/admin/dashboard"
             : "/user/dashboard";
-    const adminTeamPath =
-        teamCreated
-            ? "/admin/team-manage"
-            : "/admin/team-create";
-    const adminTeamLabel =
-        teamCreated ? "팀 관리" : "팀 생성";
+
+    const teamCreated = isAdmin ? storedTeamCreated : null;
+
+    const adminTeamPath = teamCreated
+        ? "/admin/team-manage"
+        : "/admin/team-create";
+
+    const adminTeamLabel = teamCreated ? "팀 관리" : "팀 생성";
 
     return (
         <div className={styles.header}>
@@ -85,10 +89,7 @@ const Header = () => {
             <nav className={styles.nav}>
                 {hasUser && isAdmin ? (
                     <>
-                        <Link
-                            to={adminTeamPath}
-                            className={styles.teamNavLink}
-                        >
+                        <Link to={adminTeamPath} className={styles.teamNavLink}>
                             {adminTeamLabel}
                         </Link>
                         <Link to="/admin/chat">채팅 관리</Link>

@@ -4,14 +4,12 @@ const useDelayedLoading = (isLoading, delay = 300) => {
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
-        if (!isLoading) {
-            setShowLoading(false);
-            return undefined;
-        }
-
-        const timerId = setTimeout(() => {
-            setShowLoading(true);
-        }, delay);
+        const timerId = setTimeout(
+            () => {
+                setShowLoading(isLoading);
+            },
+            isLoading ? delay : 0
+        );
 
         return () => {
             clearTimeout(timerId);

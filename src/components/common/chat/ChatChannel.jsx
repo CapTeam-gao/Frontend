@@ -4,11 +4,13 @@ const ChatChannel = ({
     channel,
     selected,
     unreadCount = 0,
+    canManageChannel,
     onClick,
     onEdit,
     onDelete,
 }) => {
-    const canManageChannel = channel.channelName !== "공통";
+    const showChannelActions =
+        canManageChannel && channel.channelName !== "공통";
 
     const handleActionClick = (event, action) => {
         event.stopPropagation();
@@ -37,7 +39,7 @@ const ChatChannel = ({
                 )}
             </button>
 
-            {canManageChannel && (
+            {showChannelActions && (
                 <div className={styles.channelActions}>
                     <button
                         type="button"
