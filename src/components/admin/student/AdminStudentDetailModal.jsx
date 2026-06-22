@@ -131,6 +131,8 @@ const StudentRadarChart = ({ title, data }) => {
 const AdminStudentDetailModal = ({ student, modalError, onClose }) => {
     const developmentChartData = getDevelopmentChartData(student);
     const personalityChartData = getPersonalityChartData(student);
+    const teamDisplayName = student.projectTeamName || student.teamName || "미배정";
+
     return (
         <div
             className={styles.modalOverlay}
@@ -198,9 +200,7 @@ const AdminStudentDetailModal = ({ student, modalError, onClose }) => {
 
                                     <article>
                                         <span>소속 팀</span>
-                                        <strong>
-                                            {student.teamName || "미배정"}
-                                        </strong>
+                                        <strong>{teamDisplayName}</strong>
                                     </article>
                                     <article>
                                         <span>팀장 선호</span>

@@ -9,6 +9,12 @@ import useAdminChatMessages from "../../../hooks/useAdminChatMessages";
 import useAdminChatSocket from "../../../hooks/useAdminChatSocket";
 import useAdminChatPresence from "../../../hooks/useAdminChatPresence";
 import styles from "./AdminChatManage.module.css";
+import { useCallback, useEffect, useState } from "react";
+import {
+    requestAdminChannelSummaries,
+    requestMarkAdminChatAsRead,
+} from "../../../api/adminChatApi";
+import { CHAT_UNREAD_CHANGE_EVENT } from "../../../utils/chat";
 
 const AdminChatManage = () => {
     const user = authStore((state) => state.user);
@@ -39,6 +45,85 @@ const AdminChatManage = () => {
         handleMessageScroll,
     } = useAdminChatMessages(selectedChannel);
 
+    const [channelSummaries, setChannelSummaries] = useState([]);
+    const selectedRoomId = selectedRoom?.id;
+
+    useEffect(() => {
+        let ignore = false;
+
+        if (!selectedRoomId) {
+            const timeoutId = window.setTimeout(() => {
+                setChannelSummaries([]);
+            }, 0);
+
+            return () => {
+                window.clearTimeout(timeoutId);
+            };
+        }
+
+        const getChannelSummaries = async () => {
+            try {
+                const summaries = await requestAdminChannelSummaries(
+                    selectedRoomId
+                );
+
+                if (!ignore) {
+                    setChannelSummaries(summaries ?? []);
+                }
+            } catch {
+                if (!ignore) {
+                    setChannelSummaries([]);
+                }
+            }
+        };
+
+        getChannelSummaries();
+
+        return () => {
+            ignore = true;
+        };
+    }, [selectedRoomId]);
+
+    const getChannelUnreadCount = useCallback(
+        (channelId) => {
+            const channelSummary = channelSummaries.find(
+                (summary) => String(summary.channel?.id) === String(channelId)
+            );
+
+            return Number(channelSummary?.unreadCount ?? 0);
+        },
+        [channelSummaries]
+    );
+
+    const handleUnreadEvent = useCallback(
+        (event) => {
+            if (!event?.channelId) return;
+
+            const isCurrentChannel =
+                String(selectedChannel?.id) === String(event.channelId);
+
+            if (isCurrentChannel) {
+                requestMarkAdminChatAsRead(event.channelId).catch(() => {});
+                window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+                return;
+            }
+
+            setChannelSummaries((prevSummaries) =>
+                prevSummaries.map((summary) =>
+                    String(summary.channel?.id) === String(event.channelId)
+                        ? {
+                              ...summary,
+                              unreadCount: Number(event.unreadCount ?? 0),
+                          }
+                        : summary
+                )
+            );
+
+            window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+        },
+        [selectedChannel?.id]
+    );
+
     const {
         chatClientRef,
         isSocketConnected,
@@ -53,6 +138,7 @@ const AdminChatManage = () => {
         onReceiveMessage: addMessage,
         onMessageEvent: handleMessageEvent,
         onChannelEvent: handleChannelEvent,
+        onUnreadEvent: handleUnreadEvent,
     });
 
     const { members, onlineMembers, offlineMembers, hasPresenceLoaded } =
@@ -63,7 +149,32 @@ const AdminChatManage = () => {
             selectedChannel,
         });
 
-    const getChannelUnreadCount = () => 0;
+    const handleSelectChannel = async (channel) => {
+        if (String(selectedChannel?.id) === String(channel?.id)) {
+            return;
+        }
+
+        clearMessages();
+        updateSelectedChannel(channel);
+
+        try {
+            await requestMarkAdminChatAsRead(channel.id);
+            setChannelSummaries((prevSummaries) =>
+                prevSummaries.map((summary) =>
+                    String(summary.channel?.id) === String(channel.id)
+                        ? {
+                              ...summary,
+                              unreadCount: 0,
+                          }
+                        : summary
+                )
+            );
+
+            window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+        } catch {
+            // 읽음 처리 실패해도 채팅 조회 자체는 막지 않음
+        }
+    };
 
     const handleSelectRoom = (room) => {
         if (String(selectedRoom?.id) === String(room?.id)) {
@@ -72,15 +183,6 @@ const AdminChatManage = () => {
 
         clearMessages();
         updateSelectedRoom(room);
-    };
-
-    const handleSelectChannel = (channel) => {
-        if (String(selectedChannel?.id) === String(channel?.id)) {
-            return;
-        }
-
-        clearMessages();
-        updateSelectedChannel(channel);
     };
 
     const finalError = error || messageError || socketError;

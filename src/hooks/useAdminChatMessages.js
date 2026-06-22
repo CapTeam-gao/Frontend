@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { requestAdminChatMessages } from "../api/adminChatApi";
+import {
+    requestAdminChatMessages,
+    requestMarkAdminChatAsRead,
+} from "../api/adminChatApi";
 import {
     requestDeleteChatMessage,
-    requestMarkChatAsRead,
     requestUpdateChatMessage,
 } from "../api/chatApi";
 
@@ -62,7 +64,7 @@ const useAdminChatMessages = (selectedChannel) => {
                 setMessagePage(0);
                 setHasMoreMessages(data.last === false);
 
-                await requestMarkChatAsRead(selectedChannelId);
+                await requestMarkAdminChatAsRead(selectedChannelId);
             } catch {
                 setMessageError("메시지를 불러오지 못했습니다.");
             } finally {

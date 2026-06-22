@@ -7,6 +7,7 @@ import {
     subscribeChatChannel,
     subscribeChatChannelEvents,
     subscribeChatRoomChannelEvents,
+    subscribeAdminChatUnreadEvents,
 } from "../api/chatSocket";
 
 const useAdminChatSocket = ({
@@ -15,6 +16,7 @@ const useAdminChatSocket = ({
     onReceiveMessage,
     onMessageEvent,
     onChannelEvent,
+    onUnreadEvent,
 }) => {
     const [isSocketConnected, setIsSocketConnected] = useState(false);
     const [isSending, setIsSending] = useState(false);
@@ -25,6 +27,7 @@ const useAdminChatSocket = ({
     const channelSubscriptionRef = useRef(null);
     const messageEventSubscriptionRef = useRef(null);
     const roomChannelEventSubscriptionRef = useRef(null);
+    const unreadEventSubscriptionRef = useRef(null);
 
     const selectedChannelId = selectedChannel?.id;
 
@@ -49,15 +52,18 @@ const useAdminChatSocket = ({
                 messageEventSubscriptionRef.current;
             const roomChannelEventSubscription =
                 roomChannelEventSubscriptionRef.current;
+            const unreadEventSubscription = unreadEventSubscriptionRef.current;
 
             channelSubscriptionRef.current = null;
             messageEventSubscriptionRef.current = null;
             roomChannelEventSubscriptionRef.current = null;
+            unreadEventSubscriptionRef.current = null;
 
             disconnectChatClient(client, [
                 channelSubscription,
                 messageEventSubscription,
                 roomChannelEventSubscription,
+                unreadEventSubscription,
             ]).catch(() => {
                 client.deactivate();
             });
@@ -144,7 +150,32 @@ const useAdminChatSocket = ({
         onReceiveMessage,
         onMessageEvent,
     ]);
+    useEffect(() => {
+        const client = chatClientRef.current;
 
+        if (!client?.connected || !isSocketConnected || !onUnreadEvent) {
+            return undefined;
+        }
+
+        unreadEventSubscriptionRef.current?.unsubscribe?.();
+
+        try {
+            unreadEventSubscriptionRef.current = subscribeAdminChatUnreadEvents(
+                client,
+                onUnreadEvent
+            );
+        } catch (error) {
+            console.error("관리자 unread 이벤트 구독 실패:", error);
+            unreadEventSubscriptionRef.current = null;
+
+            return undefined;
+        }
+
+        return () => {
+            unreadEventSubscriptionRef.current?.unsubscribe?.();
+            unreadEventSubscriptionRef.current = null;
+        };
+    }, [isSocketConnected, onUnreadEvent]);
     const sendMessage = async (message) => {
         if (!selectedChannelId) return;
 

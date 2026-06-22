@@ -22,7 +22,7 @@ const Header = () => {
     );
 
     const { hasUnreadChat } = useUnreadChatCount({
-        enabled: hasUser && !isAdmin,
+        enabled: hasUser,
     });
 
     useEffect(() => {
@@ -92,7 +92,18 @@ const Header = () => {
                         <Link to={adminTeamPath} className={styles.teamNavLink}>
                             {adminTeamLabel}
                         </Link>
-                        <Link to="/admin/chat">채팅 관리</Link>
+                        <Link
+                            to="/admin/chat"
+                            className={styles.navLinkWithBadge}
+                        >
+                            채팅 관리
+                            {hasUnreadChat && (
+                                <span
+                                    className={styles.chatUnreadDot}
+                                    aria-label="읽지 않은 채팅"
+                                />
+                            )}
+                        </Link>{" "}
                         <Link to="/admin/log">캡스톤 일지</Link>
                         <Link to="/admin/student">학생 관리</Link>
                         <Link to="/admin/notice">공지</Link>

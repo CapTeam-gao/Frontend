@@ -145,3 +145,9 @@ export const disconnectChatClient = async (client, subscriptions = []) => {
 
     await client.deactivate();
 };
+export const subscribeAdminChatUnreadEvents = (client, onEvent) => {
+    return client.subscribe("/sub/admin/chat/unread", (message) => {
+        const event = JSON.parse(message.body);
+        onEvent(event);
+    });
+};

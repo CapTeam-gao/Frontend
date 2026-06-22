@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { requestMyChannelSummaries } from "../api/chatApi";
+import { requestAdminChatUnreadSummary } from "../api/adminChatApi";
 import authStore from "../store/authStore";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../utils/chat";
 
@@ -19,7 +20,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     const [unreadChatCount, setUnreadChatCount] = useState(0);
 
     const shouldFetchUnreadCount =
-        enabled && Boolean(accessToken) && user?.accountRole === "STUDENT";
+        enabled && Boolean(accessToken) && Boolean(user);
 
     const refreshUnreadChatCount = useCallback(async () => {
         if (!shouldFetchUnreadCount) {
@@ -28,13 +29,18 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         }
 
         try {
-            const channelSummaries = await requestMyChannelSummaries();
+            if (user.accountRole === "ADMIN") {
+                const summary = await requestAdminChatUnreadSummary();
+                setUnreadChatCount(Number(summary?.totalUnreadCount ?? 0));
+                return;
+            }
 
+            const channelSummaries = await requestMyChannelSummaries();
             setUnreadChatCount(getTotalUnreadCount(channelSummaries));
         } catch {
             setUnreadChatCount(0);
         }
-    }, [shouldFetchUnreadCount]);
+    }, [shouldFetchUnreadCount, user?.accountRole]);
 
     useEffect(() => {
         const timeoutId = window.setTimeout(refreshUnreadChatCount, 0);

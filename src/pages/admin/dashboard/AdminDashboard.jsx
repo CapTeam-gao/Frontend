@@ -7,6 +7,7 @@ import ChatIcon from "../../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../../assets/icons/notice.svg";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
+import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import {
     getAdminTeamCreationStatus,
     getNextTeamCreateMessage,
@@ -55,6 +56,9 @@ const AdminDashboard = () => {
 
     const teamStatus = getAdminTeamCreationStatus(dashboard);
     const isTeamCreated = teamStatus.allTeamCreated;
+    const { hasUnreadChat } = useUnreadChatCount({
+        enabled: isTeamCreated,
+    });
     const isDashboardReady = !isDashboardLoading;
     const teamStatusMessage = isDashboardLoading
         ? ""
@@ -89,9 +93,7 @@ const AdminDashboard = () => {
                                         : "/admin/team-create"
                                 }
                                 className={`${styles.mainCard} ${
-                                    !isTeamCreated
-                                        ? styles.mainCardPending
-                                        : ""
+                                    !isTeamCreated ? styles.mainCardPending : ""
                                 }`}
                             >
                                 <div className={styles.mainContent}>
@@ -150,9 +152,17 @@ const AdminDashboard = () => {
                             </Link>
 
                             <Link to="/admin/chat" className={styles.sideCard}>
+                                {hasUnreadChat && (
+                                    <span
+                                        className={styles.chatUnreadDot}
+                                        aria-label="읽지 않은 채팅"
+                                    />
+                                )}
+
                                 <div className={styles.mediumIcon}>
                                     <img src={ChatIcon} alt="" />
                                 </div>
+
                                 <div className={styles.sideText}>
                                     <h2 className={styles.cardTitle}>
                                         팀별 채팅방

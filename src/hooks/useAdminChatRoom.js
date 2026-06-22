@@ -1,6 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
 import { requestAdminChatRooms } from "../api/adminChatApi";
 
+const ADMIN_SELECTED_CHAT_ROOM_STORAGE_KEY =
+    "capteam-admin-selected-chat-room-id";
+const ADMIN_SELECTED_CHAT_CHANNEL_STORAGE_KEY =
+    "capteam-admin-selected-chat-channel-id";
+
+const findRoomById = (rooms, roomId) => {
+    return rooms.find((room) => String(room.id) === String(roomId));
+};
+
+const findChannelById = (room, channelId) => {
+    return room?.channels?.find(
+        (channel) => String(channel.id) === String(channelId)
+    );
+};
+
+const saveSelectedRoomId = (roomId) => {
+    if (!roomId) {
+        localStorage.removeItem(ADMIN_SELECTED_CHAT_ROOM_STORAGE_KEY);
+        return;
+    }
+
+    localStorage.setItem(ADMIN_SELECTED_CHAT_ROOM_STORAGE_KEY, String(roomId));
+};
+
+const saveSelectedChannelId = (channelId) => {
+    if (!channelId) {
+        localStorage.removeItem(ADMIN_SELECTED_CHAT_CHANNEL_STORAGE_KEY);
+        return;
+    }
+
+    localStorage.setItem(
+        ADMIN_SELECTED_CHAT_CHANNEL_STORAGE_KEY,
+        String(channelId)
+    );
+};
+
 const useAdminChatRoom = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
@@ -17,12 +53,27 @@ const useAdminChatRoom = () => {
                 const roomList = await requestAdminChatRooms();
                 const normalizedRooms = Array.isArray(roomList) ? roomList : [];
 
-                const firstRoom = normalizedRooms[0] ?? null;
-                const firstChannel = firstRoom?.channels?.[0] ?? null;
+                const storedRoomId = localStorage.getItem(
+                    ADMIN_SELECTED_CHAT_ROOM_STORAGE_KEY
+                );
+                const storedChannelId = localStorage.getItem(
+                    ADMIN_SELECTED_CHAT_CHANNEL_STORAGE_KEY
+                );
+
+                const nextRoom =
+                    findRoomById(normalizedRooms, storedRoomId) ??
+                    normalizedRooms[0] ??
+                    null;
+                const nextChannel =
+                    findChannelById(nextRoom, storedChannelId) ??
+                    nextRoom?.channels?.[0] ??
+                    null;
 
                 setRooms(normalizedRooms);
-                setSelectedRoom(firstRoom);
-                setSelectedChannel(firstChannel);
+                setSelectedRoom(nextRoom);
+                setSelectedChannel(nextChannel);
+                saveSelectedRoomId(nextRoom?.id);
+                saveSelectedChannelId(nextChannel?.id);
             } catch {
                 setError("채팅방 목록을 불러오지 못했습니다.");
             } finally {
@@ -38,10 +89,13 @@ const useAdminChatRoom = () => {
 
         setSelectedRoom(room);
         setSelectedChannel(firstChannel);
+        saveSelectedRoomId(room?.id);
+        saveSelectedChannelId(firstChannel?.id);
     };
 
     const updateSelectedChannel = (channel) => {
         setSelectedChannel(channel);
+        saveSelectedChannelId(channel?.id);
     };
     const handleChannelEvent = useCallback((event) => {
         if (!event?.type) return;
@@ -150,7 +204,10 @@ const useAdminChatRoom = () => {
                         return prevChannel;
                     }
 
-                    return nextChannels[0] ?? null;
+                    const nextChannel = nextChannels[0] ?? null;
+                    saveSelectedChannelId(nextChannel?.id);
+
+                    return nextChannel;
                 });
 
                 return {
