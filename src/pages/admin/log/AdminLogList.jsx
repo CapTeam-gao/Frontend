@@ -4,7 +4,12 @@ import AdminLogItem from "../../../components/admin/log/AdminLogItem";
 import styles from "./AdminLogList.module.css";
 import logIcon from "../../../assets/icons/capstonLog.svg";
 import { requestAdminLogList } from "../../../api/logApi";
-import { LOG_GRADE_OPTIONS, matchesLogStatus } from "../../../utils/log";
+import {
+    getLogTeamName,
+    LOG_GRADE_OPTIONS,
+    matchesLogStatus,
+} from "../../../utils/log";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const summaryCards = [
     {
@@ -27,8 +32,9 @@ const AdminLogList = () => {
     const [searchKeyword, setSearchKeyword] = useState("");
     const [activeStatus, setActiveStatus] = useState("all");
     const [logData, setLogData] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getAdminLogs = async () => {
@@ -65,7 +71,7 @@ const AdminLogList = () => {
             const matchesGrade = log.grade === activeGrade;
             const matchesKeyword =
                 !keyword ||
-                `${log.teamName} ${log.serviceName} ${log.date}`
+                `${getLogTeamName(log)} ${log.serviceName} ${log.date}`
                     .toLowerCase()
                     .includes(keyword);
             const matchesStatus = matchesLogStatus(log, activeStatus);
@@ -162,7 +168,7 @@ const AdminLogList = () => {
                 </section>
 
                 <section className={styles.logList}>
-                    {isLoading && (
+                    {isLoading && showLoading && (
                         <div className={styles.messageBox}>
                             캡스톤 일지 목록을 불러오는 중입니다.
                         </div>

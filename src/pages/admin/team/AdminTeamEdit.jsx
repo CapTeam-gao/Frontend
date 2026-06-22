@@ -7,11 +7,15 @@ import {
     requestSwapTeamMembers,
     requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
+import { requestAdminDashboard } from "../../../api/dashboardApi";
 import styles from "./AdminTeamEdit.module.css";
 import {
     normalizeRecommendations,
     swapMembersInTeams,
 } from "../../../utils/teamRecommendation";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
+import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
 
 const AdminTeamEdit = () => {
     const navigate = useNavigate();
@@ -23,9 +27,11 @@ const AdminTeamEdit = () => {
     const [flippedTeamIds, setFlippedTeamIds] = useState([]);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const showLoading = useDelayedLoading(isLoading);
     const highlightTimerRef = useRef(null);
-
+    const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
+    const [regenerationPrompt, setRegenerationPrompt] = useState("");
     const selectedMemberName = useMemo(() => {
         if (!selectedMember) return "";
 
@@ -123,16 +129,23 @@ const AdminTeamEdit = () => {
     };
 
     const handleRegenerate = () => {
+        setIsRegenerateModalOpen(true);
+    };
+    const handleRegenerateConfirm = () => {
         navigate("/admin/team-create/loading", {
             state: {
                 grade,
+                regenerationPrompt,
             },
         });
     };
-
     const handleApprove = async () => {
         try {
             await requestAcceptAllTeamRecommendations(grade);
+            const dashboard = await requestAdminDashboard();
+            setStoredAdminTeamCreated(
+                getAdminTeamCreationStatus(dashboard).allTeamCreated
+            );
             navigate("/admin/team-manage");
         } catch {
             setMessage("팀 구성 승인에 실패했습니다.");
@@ -198,7 +211,8 @@ const AdminTeamEdit = () => {
 
                     {isLoading ? (
                         <p className={styles.messageText}>
-                            팀 추천안을 불러오는 중입니다.
+                            {showLoading &&
+                                "팀 추천안을 불러오는 중입니다."}
                         </p>
                     ) : (
                         <div className={styles.teamGrid}>
@@ -220,6 +234,63 @@ const AdminTeamEdit = () => {
                     )}
                 </main>
             </section>
+            {isRegenerateModalOpen && (
+                <div className={styles.modalOverlay}>
+                    <section className={styles.regenerateModal}>
+                        <div className={styles.modalHeader}>
+                            <div>
+                                <h2 className={styles.modalTitle}>
+                                    팀 재생성 조건 입력
+                                </h2>
+                                <p className={styles.modalDescription}>
+                                    원하는 팀 구성 방향을 입력하면 기존 추천안을
+                                    참고해 다시 팀을 생성합니다.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                className={styles.modalCloseButton}
+                                onClick={() => setIsRegenerateModalOpen(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <textarea
+                            className={styles.promptTextarea}
+                            value={regenerationPrompt}
+                            onChange={(event) =>
+                                setRegenerationPrompt(event.target.value)
+                            }
+                            placeholder="예: 프론트엔드 역할이 한 팀에 몰리지 않게 해주세요. 팀장 희망 학생이 각 팀에 최소 1명씩 들어가면 좋겠습니다."
+                            maxLength={1000}
+                        />
+
+                        <div className={styles.promptMeta}>
+                            <span>최대 1000자</span>
+                            <span>{regenerationPrompt.length}/1000</span>
+                        </div>
+
+                        <div className={styles.modalActionArea}>
+                            <button
+                                type="button"
+                                className={styles.modalCancelButton}
+                                onClick={() => setIsRegenerateModalOpen(false)}
+                            >
+                                취소
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.modalConfirmButton}
+                                onClick={handleRegenerateConfirm}
+                            >
+                                재생성 시작
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
         </div>
     );
 };

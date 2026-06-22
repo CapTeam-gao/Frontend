@@ -20,7 +20,7 @@ const UserProfile = () => {
     const [successMessage, setSuccessMessage] = useState("");
 
     const profile = {
-        name: user?.name || "이름 불러오는 중",
+        name: user?.name || "",
         userId: user?.userId || "",
     };
 
@@ -106,9 +106,7 @@ const UserProfile = () => {
 
                         <div className={styles.profileText}>
                             <h1>{profile.name}</h1>
-                            <p>
-                                {studentNumber} {profile.name}
-                            </p>
+                            <p>{studentNumber}</p>
                         </div>
                     </div>
 

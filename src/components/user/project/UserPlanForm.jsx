@@ -1,4 +1,5 @@
 import styles from "./UserPlanForm.module.css";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const UserPlanForm = ({
     projectPlan,
@@ -11,9 +12,11 @@ const UserPlanForm = ({
     onAddFeature,
     onFeatureChange,
 }) => {
+    const showLoading = useDelayedLoading(isLoading);
+
     return (
         <form className={styles.formCard} onSubmit={onSubmit}>
-            {isLoading && (
+            {showLoading && (
                 <p className={styles.loadingText}>
                     기획서를 불러오는 중입니다...
                 </p>

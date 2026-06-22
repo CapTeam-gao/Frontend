@@ -1,0 +1,134 @@
+.page {
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.panel {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    height: calc(100vh - var(--header-height));
+    min-height: 0;
+    overflow: hidden;
+    border-top: 1px solid #e5e7eb;
+}
+
+.roomSidebar {
+    min-height: 0;
+    border-right: 1px solid #e5e7eb;
+    padding: 32px 24px;
+    overflow-y: auto;
+}
+
+.roomHeader h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.roomHeader p {
+    margin: 8px 0 28px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #8b95a1;
+    line-height: 1.5;
+}
+
+.roomList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.roomButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #667085;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.roomButton strong {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.roomButton span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.roomButton:hover {
+    border-color: #d9dee7;
+    background: #fafafa;
+    color: #111827;
+}
+
+.selectedRoom {
+    border-color: #5fc59b;
+    background: #f1fbf6;
+    color: #2f9f78;
+}
+
+.chatLayout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) 240px;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chatContent {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    border-right: 1px solid #e5e7eb;
+}
+
+.messageArea {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.messageArea > ul {
+    flex: 1;
+    min-height: 0;
+}
+
+.emptyText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0 auto;
+    font-size: 15px;
+    font-weight: 700;
+    color: #98a2b3;
+}
+
+.errorText {
+    flex-shrink: 0;
+    align-self: center;
+    max-width: calc(100% - 40px);
+    margin: 14px 20px 0;
+    padding: 0;
+    color: var(--color-danger);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.5;
+    text-align: center;
+    word-break: keep-all;
+}

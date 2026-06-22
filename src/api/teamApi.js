@@ -2,9 +2,13 @@ import api from "./api";
 
 const getResponseData = (response) => response.data?.data ?? response.data;
 
-export const requestCreateTeamRecommendation = async (grade) => {
+export const requestCreateTeamRecommendation = async (
+    grade,
+    regenerationPrompt = ""
+) => {
     const response = await api.post("/api/admin/team-recommendations", {
         grade,
+        regenerationPrompt: regenerationPrompt.trim() || null,
     });
 
     return getResponseData(response);
@@ -17,7 +21,9 @@ export const requestTeamRecommendationList = async () => {
 };
 
 export const requestTeamRecommendationsByGrade = async (grade) => {
-    const response = await api.get(`/api/admin/team-recommendations/grade/${grade}`);
+    const response = await api.get(
+        `/api/admin/team-recommendations/grade/${grade}`
+    );
 
     return getResponseData(response);
 };
@@ -36,15 +42,12 @@ export const requestSwapTeamMembers = async (
     toRecommendationId,
     toUserId
 ) => {
-    const response = await api.post(
-        "/api/admin/team-recommendations/swap",
-        {
-            fromRecommendationId,
-            fromUserId,
-            toRecommendationId,
-            toUserId,
-        }
-    );
+    const response = await api.post("/api/admin/team-recommendations/swap", {
+        fromRecommendationId,
+        fromUserId,
+        toRecommendationId,
+        toUserId,
+    });
 
     return getResponseData(response);
 };

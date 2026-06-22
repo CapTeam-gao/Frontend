@@ -12,6 +12,7 @@ import {
     getStudentSearchText,
     normalizeSearchText,
 } from "../../../utils/student";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import styles from "./AdminStudentManage.module.css";
 
 const AdminStudentManage = () => {
@@ -29,6 +30,7 @@ const AdminStudentManage = () => {
     const [error, setError] = useState("");
     const [modalError, setModalError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const showLoading = useDelayedLoading(isLoading);
     const targetUserId = searchParams.get("userId");
     const openedQueryUserIdRef = useRef(null);
 
@@ -152,7 +154,7 @@ const AdminStudentManage = () => {
                         <h1>학생 관리</h1>
                     </div>
                     <span className={styles.resultCount}>
-                        {filteredStudents.length}명 표시 중
+                        {!isLoading && `${filteredStudents.length}명 표시 중`}
                     </span>
                 </section>
 
@@ -169,7 +171,9 @@ const AdminStudentManage = () => {
                             onClick={() => setActiveSummaryFilter(filter.key)}
                         >
                             <span>{filter.label}</span>
-                            <strong>{summaryCounts[filter.key]}</strong>
+                            <strong>
+                                {!isLoading && summaryCounts[filter.key]}
+                            </strong>
                         </button>
                     ))}
                 </section>
@@ -190,7 +194,7 @@ const AdminStudentManage = () => {
 
                 {isLoading ? (
                     <p className={styles.emptyText}>
-                        학생 정보를 불러오는 중입니다.
+                        {showLoading && "학생 정보를 불러오는 중입니다."}
                     </p>
                 ) : filteredStudents.length === 0 ? (
                     <p className={styles.emptyText}>

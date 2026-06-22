@@ -85,3 +85,29 @@ export const requestLogout = async () => {
 
     return response.data;
 };
+
+export const getAccessTokenPayload = (token) => {
+    if (!isValidAccessToken(token)) return null;
+
+    try {
+        const payload = token.split(".")[1];
+        const decodedPayload = atob(
+            payload.replace(/-/g, "+").replace(/_/g, "/")
+        );
+
+        return JSON.parse(decodedPayload);
+    } catch {
+        return null;
+    }
+};
+
+export const isAccessTokenExpiringSoon = (token, bufferSeconds = 30) => {
+    const payload = getAccessTokenPayload(token);
+
+    if (!payload?.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    const expireTime = payload.exp;
+
+    return expireTime - currentTime <= bufferSeconds;
+};

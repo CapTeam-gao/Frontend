@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import { requestAdminLogDetail } from "../../../api/logApi";
-import { formatLogDate, isSubmittedLog } from "../../../utils/log";
+import { formatLogDate, getLogTeamName, isSubmittedLog } from "../../../utils/log";
 import styles from "./AdminLogDetail.module.css";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const getEntryContent = (content) => {
     return content || "작성된 내용이 없습니다.";
@@ -12,8 +13,9 @@ const getEntryContent = (content) => {
 const AdminLogDetail = () => {
     const { id } = useParams();
     const [log, setLog] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getAdminLogDetail = async () => {
@@ -37,6 +39,7 @@ const AdminLogDetail = () => {
     const memberNames = log?.teamMemberNames ?? [];
     const entries = log?.entries ?? [];
     const submitted = isSubmittedLog(log);
+    const teamName = getLogTeamName(log);
 
     if (isLoading) {
         return (
@@ -49,7 +52,7 @@ const AdminLogDetail = () => {
                     </Link>
 
                     <section className={styles.emptyBox}>
-                        <h1>일지를 불러오는 중입니다.</h1>
+                        {showLoading && <h1>일지를 불러오는 중입니다.</h1>}
                     </section>
                 </main>
             </div>
@@ -105,7 +108,7 @@ const AdminLogDetail = () => {
                     </Link>
 
                     <section className={styles.emptyBox}>
-                        <h1>{log.teamName}</h1>
+                        <h1>{teamName}</h1>
                         <p>일지 작성이 완료되지 않았습니다.</p>
                     </section>
                 </main>
@@ -126,7 +129,7 @@ const AdminLogDetail = () => {
                     <header className={styles.detailHeader}>
                         <div className={styles.headerMain}>
                             <div className={styles.titleGroup}>
-                                <h1>{log.teamName}</h1>
+                                <h1>{teamName}</h1>
                                 <span className={styles.statusBadge}>
                                     제출완료
                                 </span>

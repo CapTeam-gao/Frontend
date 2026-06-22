@@ -7,6 +7,7 @@ const AdminTeamCreateLoading = () => {
     const navigate = useNavigate();
     const location = useLocation(); // navigate 안에 state값을 확인할 수 있는 함수
     const grade = location.state?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 언디파인드
+    const regenerationPrompt = location.state?.regenerationPrompt || "";
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -17,7 +18,10 @@ const AdminTeamCreateLoading = () => {
 
         const createTeamRecommendation = async () => {
             try {
-                await requestCreateTeamRecommendation(grade);
+                await requestCreateTeamRecommendation(
+                    grade,
+                    regenerationPrompt
+                );
                 navigate("/admin/team-edit", {
                     replace: true,
                     state: {

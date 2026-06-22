@@ -3,11 +3,13 @@ import styles from "./AdminLogItem.module.css";
 import {
     formatLogDate,
     getLogGradeLabel,
+    getLogTeamName,
     isSubmittedLog,
 } from "../../../utils/log";
 
 const AdminLogItem = ({ log }) => {
     const submitted = isSubmittedLog(log);
+    const teamName = getLogTeamName(log);
 
     return (
         <Link
@@ -18,7 +20,7 @@ const AdminLogItem = ({ log }) => {
         >
             <div className={styles.mainInfo}>
                 <div className={styles.titleRow}>
-                    <h2>{log.teamName}</h2>
+                    <h2>{teamName}</h2>
                     <span className={styles.gradeBadge}>
                         {getLogGradeLabel(log.grade)}
                     </span>

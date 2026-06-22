@@ -247,6 +247,9 @@
     border-radius: var(--border-radius-sm);
     background-color: #ffffff;
 }
+.reliabilityCard > p {
+    margin: 0 auto;
+}
 
 .reliabilityHeader {
     display: flex;

@@ -3,6 +3,7 @@ import styles from "./AdminStudentCard.module.css";
 
 const AdminStudentCard = ({ student, onClick }) => {
     const numberInfo = getStudentNumberInfo(student.userId);
+    const teamDisplayName = student.projectTeamName || student.teamName || "미배정";
     const visibleSkills = Array.isArray(student.skill)
         ? student.skill.slice(0, 4)
         : [];
@@ -27,7 +28,7 @@ const AdminStudentCard = ({ student, onClick }) => {
 
             <div className={styles.cardMeta}>
                 <span>소속 팀</span>
-                <strong>{student.teamName || "미배정"}</strong>
+                <strong>{teamDisplayName}</strong>
             </div>
 
             <div className={styles.cardSkillList}>

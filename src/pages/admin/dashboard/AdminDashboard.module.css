@@ -15,6 +15,15 @@
     flex-direction: column;
     gap: 16px;
 }
+.chatUnreadDot {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
 
 .errorText {
     width: fit-content;

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import Header from "../../../components/common/header/Header";
 import { requestUserLogDetail, requestUserLogList } from "../../../api/logApi";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import { getLogTeamName } from "../../../utils/log";
 import styles from "./UserLogResult.module.css";
 
 const UserLogResult = () => {
     const [journalDetail, setJournalDetail] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getCompletedJournal = async () => {
@@ -49,7 +52,7 @@ const UserLogResult = () => {
                 <Header />
                 <main className={styles.content}>
                     <p className={styles.message}>
-                        캡스톤 일지를 불러오는 중입니다.
+                        {showLoading && "캡스톤 일지를 불러오는 중입니다."}
                     </p>
                 </main>
             </div>
@@ -74,7 +77,7 @@ const UserLogResult = () => {
             <main className={styles.content}>
                 <section className={styles.headerSection}>
                     <p className={styles.eyebrow}>캡스톤 일지 결과</p>
-                    <h1>{journalDetail.teamName} 캡스톤 일지</h1>
+                    <h1>{getLogTeamName(journalDetail)} 캡스톤 일지</h1>
                     <span>{journalDetail.date}</span>
                 </section>
 

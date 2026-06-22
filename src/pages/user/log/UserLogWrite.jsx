@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import UserLogForm from "../../../components/user/log/UserLogForm";
 import { requestMyTeam } from "../../../api/teamApi";
@@ -35,6 +36,7 @@ const getTodayApiDate = () => {
 };
 
 const UserLogWrite = () => {
+    const navigate = useNavigate();
     const [myTeam, setMyTeam] = useState(null);
     const [journalId, setJournalId] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -133,17 +135,14 @@ const UserLogWrite = () => {
 
             if (isEditMode && journalId) {
                 await requestUpdateUserLog(journalId, formData);
-                setSuccessMessage("일지 수정이 완료되었습니다.");
             } else {
                 const savedLog = await requestCreateUserLog(formData);
                 setJournalId(savedLog.journalId);
                 setIsEditMode(true);
-                setSuccessMessage(
-                    "일지가 저장되었습니다. 팀원 전체 제출 후 결과를 확인할 수 있습니다."
-                );
             }
 
             setIsEditMode(true);
+            navigate("/user/dashboard");
         } catch (e) {
             setError(
                 e.response?.data?.message ||

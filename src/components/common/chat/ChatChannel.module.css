@@ -1,0 +1,101 @@
+.channelRow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    color: #667085;
+}
+
+.channelRow:hover {
+    background-color: #eef2f0;
+    color: #111827;
+}
+
+.channelRow.selected {
+    background-color: #e8f5ef;
+    color: #2f946f;
+}
+
+.channelButton {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    min-height: 38px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: inherit;
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+.channelMark {
+    color: inherit;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.channelName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.unreadBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #52b98f;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.channelActions {
+    position: absolute;
+    right: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.12s ease;
+}
+
+.channelRow:hover .channelActions {
+    opacity: 1;
+    visibility: visible;
+}
+
+.channelActions button {
+    height: 24px;
+    padding: 0 6px;
+    border: 0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #667085;
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.channelActions button:hover {
+    color: #111827;
+}
+
+.channelActions button:last-child:hover {
+    color: #e5484d;
+}

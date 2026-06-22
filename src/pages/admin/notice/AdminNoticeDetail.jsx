@@ -6,6 +6,7 @@ import Button from "../../../components/common/button/Button";
 import { requestDeleteNotice, requestNoticeDetail } from "../../../api/noticeApi";
 import MDEditor from "@uiw/react-md-editor";
 import { formatCreatedAt } from "../../../utils/format";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
@@ -16,6 +17,7 @@ const AdminNoticeDetail = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState("");
+    const showLoading = useDelayedLoading(isLoading);
 
     useEffect(() => {
         const getNoticeDetail = async () => {
@@ -58,7 +60,7 @@ const AdminNoticeDetail = () => {
                         ← 목록
                     </Link>
                     <section className={styles.emptyBox}>
-                        공지를 불러오는 중입니다.
+                        {showLoading && "공지를 불러오는 중입니다."}
                     </section>
                 </main>
             </div>

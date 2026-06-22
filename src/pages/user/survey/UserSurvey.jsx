@@ -349,7 +349,7 @@ const UserSurvey = () => {
                                             <input
                                                 type="text"
                                                 value={member}
-                                                placeholder="예: 2313 허재원"
+                                                placeholder="예: stu2313 허재원"
                                                 onChange={(e) =>
                                                     updatePreferredMember(
                                                         index,

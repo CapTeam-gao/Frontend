@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-// 개발 중에는 각 페이지를 바로 확인하기 위해 ProtectedRoute를 잠시 비활성화함
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/auth/Login";
 
@@ -33,48 +32,113 @@ import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 
 // router 설정하는 파일
 const Router = () => {
+    const adminRoute = (page) => (
+        <ProtectedRoute requiredRole="ADMIN">{page}</ProtectedRoute>
+    );
+
+    const userRoute = (page) => (
+        <ProtectedRoute requiredRole="STUDENT">{page}</ProtectedRoute>
+    );
+
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
 
             {/* / 경로로 들어가면 로그인 페이지 반환 */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/team-create" element={<AdminTeamCreate />} />
+            <Route
+                path="/admin/dashboard"
+                element={adminRoute(<AdminDashboard />)}
+            />
+            <Route
+                path="/admin/team-create"
+                element={adminRoute(<AdminTeamCreate />)}
+            />
             <Route
                 path="/admin/team-create/loading"
-                element={<AdminTeamCreateLoading />}
+                element={adminRoute(<AdminTeamCreateLoading />)}
             />
-            <Route path="/admin/team-edit" element={<AdminTeamEdit />} />
-            <Route path="/admin/team-manage" element={<AdminTeamManage />} />
-            <Route path="/admin/log" element={<AdminLogList />} />
-            <Route path="/admin/log/:id" element={<AdminLogDetail />} />
-            <Route path="/admin/student" element={<AdminStudentManage />} />
-            <Route path="/admin/notice" element={<AdminNoticeList />} />
+            <Route
+                path="/admin/team-edit"
+                element={adminRoute(<AdminTeamEdit />)}
+            />
+            <Route
+                path="/admin/team-manage"
+                element={adminRoute(<AdminTeamManage />)}
+            />
+            <Route path="/admin/log" element={adminRoute(<AdminLogList />)} />
+            <Route
+                path="/admin/log/:id"
+                element={adminRoute(<AdminLogDetail />)}
+            />
+            <Route
+                path="/admin/student"
+                element={adminRoute(<AdminStudentManage />)}
+            />
+            <Route
+                path="/admin/notice"
+                element={adminRoute(<AdminNoticeList />)}
+            />
             <Route
                 path="/admin/notice/create"
-                element={<AdminNoticeCreate />}
+                element={adminRoute(<AdminNoticeCreate />)}
             />
             <Route
                 path="/admin/notice/:id/edit"
-                element={<AdminNoticeEdit />}
+                element={adminRoute(<AdminNoticeEdit />)}
             />
-            <Route path="/admin/notice/:id" element={<AdminNoticeDetail />} />
-            <Route path="/admin/profile" element={<AdminProfile />} />
-            <Route path="/admin/chat" element={<AdminChatManage />} />
+            <Route
+                path="/admin/notice/:id"
+                element={adminRoute(<AdminNoticeDetail />)}
+            />
+            <Route
+                path="/admin/profile"
+                element={adminRoute(<AdminProfile />)}
+            />
+            <Route
+                path="/admin/chat"
+                element={adminRoute(<AdminChatManage />)}
+            />
             {/* 유저 페이지들 - user만 접근 가능 */}
-            <Route path="/user/dashboard" element={<UserDashboard />} />
-            <Route path="/user/log" element={<UserLogCountdown />} />
-            <Route path="/user/log/write" element={<UserLogWrite />} />
-            <Route path="/user/log/result" element={<UserLogResult />} />
-            <Route path="/user/project" element={<UserProject />} />
-            <Route path="/user/notice" element={<UserNoticeList />} />
-            <Route path="/user/notice/:id" element={<UserNoticeDetail />} />
-            <Route path="/user/profile" element={<UserProfile />} />
-            <Route path="/user/survey/intro" element={<UserSurveyIntro />} />
-            <Route path="/user/survey" element={<UserSurvey />} />
+            <Route
+                path="/user/dashboard"
+                element={userRoute(<UserDashboard />)}
+            />
+            <Route
+                path="/user/log"
+                element={userRoute(<UserLogCountdown />)}
+            />
+            <Route
+                path="/user/log/write"
+                element={userRoute(<UserLogWrite />)}
+            />
+            <Route
+                path="/user/log/result"
+                element={userRoute(<UserLogResult />)}
+            />
+            <Route
+                path="/user/project"
+                element={userRoute(<UserProject />)}
+            />
+            <Route
+                path="/user/notice"
+                element={userRoute(<UserNoticeList />)}
+            />
+            <Route
+                path="/user/notice/:id"
+                element={userRoute(<UserNoticeDetail />)}
+            />
+            <Route
+                path="/user/profile"
+                element={userRoute(<UserProfile />)}
+            />
+            <Route
+                path="/user/survey/intro"
+                element={userRoute(<UserSurveyIntro />)}
+            />
+            <Route path="/user/survey" element={userRoute(<UserSurvey />)} />
 
-            <Route path="/user/chat" element={<UserTeamChat />} />
+            <Route path="/user/chat" element={userRoute(<UserTeamChat />)} />
             {/* 없는 주소 접근 시 로그인으로 */}
             <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
