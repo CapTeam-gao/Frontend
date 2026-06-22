@@ -10,14 +10,10 @@ import {
 const AdminLogItem = ({ log }) => {
     const submitted = isSubmittedLog(log);
     const teamName = getLogTeamName(log);
+    const canOpenDetail = Boolean(log.journalId);
 
-    return (
-        <Link
-            to={`/admin/log/${log.journalId}`}
-            className={`${styles.logItem} ${
-                submitted ? styles.submitted : styles.pending
-            }`}
-        >
+    const content = (
+        <>
             <div className={styles.mainInfo}>
                 <div className={styles.titleRow}>
                     <h2>{teamName}</h2>
@@ -43,6 +39,24 @@ const AdminLogItem = ({ log }) => {
             </div>
 
             <time className={styles.dateText}>{formatLogDate(log.date)}</time>
+        </>
+    );
+
+    const itemClassName = `${styles.logItem} ${
+        submitted ? styles.submitted : styles.pending
+    } ${!canOpenDetail ? styles.disabled : ""}`;
+
+    if (!canOpenDetail) {
+        return (
+            <div className={itemClassName} aria-disabled="true">
+                {content}
+            </div>
+        );
+    }
+
+    return (
+        <Link to={`/admin/log/${log.journalId}`} className={itemClassName}>
+            {content}
         </Link>
     );
 };

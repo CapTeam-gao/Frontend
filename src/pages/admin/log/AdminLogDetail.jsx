@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import { requestAdminLogDetail } from "../../../api/logApi";
-import { formatLogDate, getLogTeamName, isSubmittedLog } from "../../../utils/log";
+import {
+    formatLogDate,
+    getLogTeamName,
+    isSubmittedLog,
+} from "../../../utils/log";
 import styles from "./AdminLogDetail.module.css";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
@@ -134,10 +138,6 @@ const AdminLogDetail = () => {
                                     제출완료
                                 </span>
                             </div>
-                            <p>
-                                팀별 캡스톤 진행 상황과 다음 작업 계획을 확인하는
-                                상세 일지입니다.
-                            </p>
                         </div>
 
                         <div className={styles.headerMeta}>
@@ -179,9 +179,7 @@ const AdminLogDetail = () => {
                                 >
                                     <strong>{entry.writerName}</strong>
                                     <p>
-                                        {getEntryContent(
-                                            entry.activityContent
-                                        )}
+                                        {getEntryContent(entry.activityContent)}
                                     </p>
                                 </div>
                             ))}
@@ -211,9 +209,7 @@ const AdminLogDetail = () => {
                                 >
                                     <strong>{entry.writerName}</strong>
                                     <p>
-                                        {getEntryContent(
-                                            entry.nextPlanContent
-                                        )}
+                                        {getEntryContent(entry.nextPlanContent)}
                                     </p>
                                 </div>
                             ))}

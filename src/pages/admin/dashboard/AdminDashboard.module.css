@@ -316,4 +316,8 @@
         min-height: 150px;
         padding: 28px;
     }
+    .mediumIcon {
+        width: 80px;
+        height: 80px;
+    }
 }

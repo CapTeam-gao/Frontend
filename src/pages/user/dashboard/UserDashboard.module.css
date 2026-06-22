@@ -152,3 +152,77 @@
         padding: 28px;
     }
 }
+
+@media (max-width: 640px) {
+    .card {
+        align-items: center;
+        min-height: 148px;
+        padding: 22px 20px;
+    }
+
+    .iconBox {
+        top: 50%;
+        right: 20px;
+        width: 68px;
+        height: 68px;
+        border-radius: var(--border-radius-md);
+        transform: translateY(-50%);
+    }
+
+    .iconBox img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cardText {
+        align-self: center;
+        min-height: 0;
+        max-width: calc(100% - 90px);
+        margin-bottom: 0;
+    }
+
+    .cardTitle {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+@media (max-width: 520px) {
+    .body {
+        padding: 24px 12px 48px;
+    }
+
+    .dashboard {
+        gap: 12px;
+    }
+
+    .card {
+        min-height: 136px;
+        padding: 24px 22px;
+    }
+
+    .iconBox {
+        right: 18px;
+        width: 60px;
+        height: 60px;
+        border-radius: var(--border-radius-md);
+    }
+
+    .iconBox img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .cardText {
+        max-width: calc(100% - 78px);
+    }
+
+    .cardTitle {
+        font-size: var(--font-size-2xl);
+        line-height: 1.25;
+    }
+
+    .statusText {
+        margin-top: 14px;
+        font-size: var(--font-size-xs);
+    }
+}

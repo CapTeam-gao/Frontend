@@ -29,8 +29,6 @@ const UserLogCountdown = () => {
 
             <main className={styles.content}>
                 <section className={styles.countdownSection}>
-                    <p className={styles.eyebrow}>캡스톤 일지</p>
-
                     <h1>
                         {canWriteLog
                             ? "오늘 일지 작성까지"

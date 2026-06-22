@@ -219,6 +219,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
 }
 
 .chartGrid {
@@ -323,23 +324,68 @@
     font-weight: var(--font-weight-semibold);
 }
 
+@media (max-width: 900px) {
+    .modalContent {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .chartColumn {
+        padding: 0 14px 24px;
+    }
+}
+
 @media (max-width: 640px) {
+    .modalOverlay {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
     .modal {
         width: 100%;
+        max-height: calc(100vh - 24px);
     }
 
     .modalHeader {
-        padding: 24px 24px 0;
+        align-items: flex-start;
+        padding: 22px 18px 0;
+    }
+
+    .modalHeader h2 {
+        font-size: var(--font-size-2xl);
+        line-height: 1.25;
+        word-break: keep-all;
+    }
+
+    .modalContent {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px 18px 24px;
+    }
+
+    .chartColumn {
+        padding: 0;
     }
 
     .detailGrid {
         grid-template-columns: 1fr;
-        padding: 0 24px;
+        padding: 0;
     }
 
     .detailSection,
     .emptySurveyMessage {
-        margin-right: 24px;
-        margin-left: 24px;
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .chartBox {
+        height: 230px;
+        overflow: hidden;
+    }
+
+    .chartCard,
+    .reliabilityCard,
+    .detailSection {
+        padding: 18px;
     }
 }

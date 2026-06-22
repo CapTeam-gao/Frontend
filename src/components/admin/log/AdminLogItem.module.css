@@ -40,6 +40,15 @@
     background-color: #fcfcfc;
 }
 
+.disabled {
+    cursor: default;
+}
+
+.disabled:hover {
+    border-color: var(--color-border);
+    background-color: #ffffff;
+}
+
 .mainInfo {
     min-width: 0;
 }

@@ -2,6 +2,29 @@ export const CHAT_UNREAD_CHANGE_EVENT = "capteam-chat-unread-change";
 
 const MESSAGE_LINK_REGEX = /(https?:\/\/[^\s]+)/g;
 const TRAILING_PUNCTUATION_REGEX = /[.,!?)]$/;
+const TIMEZONE_PATTERN = /(Z|[+-]\d{2}:\d{2})$/;
+
+export const parseChatDate = (createdAt) => {
+    if (!createdAt) return null;
+
+    const timestamp = String(createdAt);
+    const date = new Date(
+        TIMEZONE_PATTERN.test(timestamp) ? timestamp : `${timestamp}Z`
+    );
+
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
+export const formatChatTime = (createdAt) => {
+    const date = parseChatDate(createdAt);
+
+    if (!date) return "";
+
+    return new Intl.DateTimeFormat("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+    }).format(date);
+};
 
 export const parseMessageTextWithLinks = (messageText = "") => {
     const parts = [];
@@ -58,28 +81,30 @@ export const parseMessageTextWithLinks = (messageText = "") => {
 };
 
 export const getMessageMinuteKey = (createdAt) => {
-    if (!createdAt) return "";
+    const date = parseChatDate(createdAt);
 
-    const date = new Date(createdAt);
+    if (!date) return "";
 
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}`;
 };
 
 export const getMessageDateKey = (createdAt) => {
-    if (!createdAt) return "";
+    const date = parseChatDate(createdAt);
 
-    const date = new Date(createdAt);
+    if (!date) return "";
 
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 };
 
 export const formatDateDivider = (createdAt) => {
-    if (!createdAt) return "";
+    const date = parseChatDate(createdAt);
+
+    if (!date) return "";
 
     return new Intl.DateTimeFormat("ko-KR", {
         year: "numeric",
         month: "long",
         day: "numeric",
         weekday: "long",
-    }).format(new Date(createdAt));
+    }).format(date);
 };

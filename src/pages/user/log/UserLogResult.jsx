@@ -76,7 +76,6 @@ const UserLogResult = () => {
 
             <main className={styles.content}>
                 <section className={styles.headerSection}>
-                    <p className={styles.eyebrow}>캡스톤 일지 결과</p>
                     <h1>{getLogTeamName(journalDetail)} 캡스톤 일지</h1>
                     <span>{journalDetail.date}</span>
                 </section>

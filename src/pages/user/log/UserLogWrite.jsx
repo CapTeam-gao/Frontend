@@ -53,8 +53,13 @@ const UserLogWrite = () => {
             try {
                 const data = await requestMyTeam();
                 setMyTeam(data);
+
+                if (!data?.myMember?.userId) {
+                    setIsLoadingJournal(false);
+                }
             } catch {
                 setError("팀 정보를 불러오지 못했습니다.");
+                setIsLoadingJournal(false);
             } finally {
                 setIsLoadingTeam(false);
             }
@@ -63,8 +68,9 @@ const UserLogWrite = () => {
         getMyTeam();
     }, []);
 
-    const teamName =
-        myTeam?.project?.teamName || myTeam?.teamName || "팀 정보 확인 중";
+    const isInitialLoading = isLoadingTeam || isLoadingJournal;
+    const teamName = myTeam?.project?.teamName || myTeam?.teamName || "";
+    const pageTitle = teamName ? `${teamName} 캡스톤 일지` : "캡스톤 일지";
     const isLeader = myTeam?.myMember?.leaderRole === "LEADER";
 
     const handleFieldChange = (fieldName, value) => {
@@ -160,24 +166,25 @@ const UserLogWrite = () => {
 
             <main className={styles.content}>
                 <section className={styles.hero}>
-                    <p className={styles.eyebrow}>캡스톤 일지</p>
-                    <h1>{teamName} 캡스톤 일지</h1>
+                    <h1 className={isInitialLoading ? styles.hiddenTitle : ""}>
+                        {pageTitle}
+                    </h1>
                     <span>{getTodayText()}</span>
                 </section>
 
-                <UserLogForm
-                    formData={formData}
-                    isLeader={isLeader}
-                    isSubmitting={
-                        isSubmitting || isLoadingTeam || isLoadingJournal
-                    }
-                    isCompleted={isCompleted}
-                    submitText={isEditMode ? "수정 완료" : "작성 완료"}
-                    successMessage={successMessage}
-                    error={error}
-                    onFieldChange={handleFieldChange}
-                    onSubmit={handleSubmit}
-                />
+                {!isInitialLoading && (
+                    <UserLogForm
+                        formData={formData}
+                        isLeader={isLeader}
+                        isSubmitting={isSubmitting}
+                        isCompleted={isCompleted}
+                        submitText={isEditMode ? "수정 완료" : "작성 완료"}
+                        successMessage={successMessage}
+                        error={error}
+                        onFieldChange={handleFieldChange}
+                        onSubmit={handleSubmit}
+                    />
+                )}
             </main>
         </div>
     );

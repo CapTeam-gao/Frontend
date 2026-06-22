@@ -7,6 +7,7 @@ import {
     requestDeleteChatMessage,
     requestUpdateChatMessage,
 } from "../api/chatApi";
+import { parseChatDate } from "../utils/chat";
 
 const getPageContent = (data) => {
     if (Array.isArray(data)) return data;
@@ -92,7 +93,8 @@ const useAdminChatMessages = (selectedChannel) => {
                 if (alreadyExists) return prevMessages;
 
                 return [...prevMessages, message].sort(
-                    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+                    (a, b) =>
+                        parseChatDate(a.createdAt) - parseChatDate(b.createdAt)
                 );
             });
 
