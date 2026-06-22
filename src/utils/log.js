@@ -29,6 +29,10 @@ export const matchesLogStatus = (log, status) => {
     return true;
 };
 
+export const getLogTeamName = (log) => {
+    return log?.projectTeamName || log?.teamName || "";
+};
+
 export const formatLogDate = (date) => {
     if (!date) return "";
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../../components/common/header/Header";
 import { requestUserLogDetail, requestUserLogList } from "../../../api/logApi";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import { getLogTeamName } from "../../../utils/log";
 import styles from "./UserLogResult.module.css";
 
 const UserLogResult = () => {
@@ -76,7 +77,7 @@ const UserLogResult = () => {
             <main className={styles.content}>
                 <section className={styles.headerSection}>
                     <p className={styles.eyebrow}>캡스톤 일지 결과</p>
-                    <h1>{journalDetail.teamName} 캡스톤 일지</h1>
+                    <h1>{getLogTeamName(journalDetail)} 캡스톤 일지</h1>
                     <span>{journalDetail.date}</span>
                 </section>
 

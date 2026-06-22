@@ -4,7 +4,11 @@ import AdminLogItem from "../../../components/admin/log/AdminLogItem";
 import styles from "./AdminLogList.module.css";
 import logIcon from "../../../assets/icons/capstonLog.svg";
 import { requestAdminLogList } from "../../../api/logApi";
-import { LOG_GRADE_OPTIONS, matchesLogStatus } from "../../../utils/log";
+import {
+    getLogTeamName,
+    LOG_GRADE_OPTIONS,
+    matchesLogStatus,
+} from "../../../utils/log";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const summaryCards = [
@@ -67,7 +71,7 @@ const AdminLogList = () => {
             const matchesGrade = log.grade === activeGrade;
             const matchesKeyword =
                 !keyword ||
-                `${log.teamName} ${log.serviceName} ${log.date}`
+                `${getLogTeamName(log)} ${log.serviceName} ${log.date}`
                     .toLowerCase()
                     .includes(keyword);
             const matchesStatus = matchesLogStatus(log, activeStatus);
