@@ -55,7 +55,6 @@ const AdminLogList = () => {
         getAdminLogs();
     }, []);
 
-    const logs = logData?.journals ?? [];
     const summary = useMemo(() => {
         return {
             all: logData?.totalCount ?? 0,
@@ -65,6 +64,7 @@ const AdminLogList = () => {
     }, [logData]);
 
     const filteredLogs = useMemo(() => {
+        const logs = logData?.journals ?? [];
         const keyword = searchKeyword.trim().toLowerCase();
 
         return logs.filter((log) => {
@@ -78,7 +78,7 @@ const AdminLogList = () => {
 
             return matchesGrade && matchesKeyword && matchesStatus;
         });
-    }, [activeGrade, searchKeyword, activeStatus, logs]);
+    }, [activeGrade, searchKeyword, activeStatus, logData]);
 
     return (
         <div className={styles.page}>

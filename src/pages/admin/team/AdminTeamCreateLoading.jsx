@@ -38,7 +38,7 @@ const AdminTeamCreateLoading = () => {
         };
 
         createTeamRecommendation();
-    }, [grade, navigate]);
+    }, [grade, navigate, regenerationPrompt]);
 
     return (
         <div className={styles.page}>

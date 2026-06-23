@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import TeamEditCard from "../../../components/admin/team/TeamEditCard";
@@ -41,23 +41,28 @@ const AdminTeamEdit = () => {
             ?.name;
     }, [selectedMember, teams]);
 
-    const getRecommendations = async (targetGrade = grade) => {
-        try {
-            setIsLoading(true);
-            setError("");
+    const getRecommendations = useCallback(
+        async (targetGrade = grade) => {
+            try {
+                setIsLoading(true);
+                setError("");
 
-            const data = await requestTeamRecommendationsByGrade(targetGrade);
-            setTeams(Array.isArray(data) ? normalizeRecommendations(data) : []);
-        } catch {
-            setError("팀 추천안을 불러오지 못했습니다.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                const data = await requestTeamRecommendationsByGrade(targetGrade);
+                setTeams(
+                    Array.isArray(data) ? normalizeRecommendations(data) : []
+                );
+            } catch {
+                setError("팀 추천안을 불러오지 못했습니다.");
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [grade]
+    );
 
     useEffect(() => {
         getRecommendations(grade);
-    }, []);
+    }, [getRecommendations, grade]);
 
     useEffect(() => {
         return () => {
@@ -211,8 +216,7 @@ const AdminTeamEdit = () => {
 
                     {isLoading ? (
                         <p className={styles.messageText}>
-                            {showLoading &&
-                                "팀 추천안을 불러오는 중입니다."}
+                            {showLoading && "팀 추천안을 불러오는 중입니다."}
                         </p>
                     ) : (
                         <div className={styles.teamGrid}>
