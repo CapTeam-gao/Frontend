@@ -66,9 +66,9 @@
 }
 
 .roomButton:hover {
-    border-color: #d9dee7;
-    background: #fafafa;
-    color: #111827;
+    border-color: #4ea57f;
+    background: #4ea57f;
+    color: #ffffff;
 }
 
 .selectedRoom {
@@ -114,9 +114,12 @@
     justify-content: center;
     height: 100%;
     margin: 0 auto;
+    padding: 0 24px;
     font-size: 15px;
     font-weight: 700;
     color: #98a2b3;
+    text-align: center;
+    word-break: keep-all;
 }
 
 .errorText {
@@ -131,4 +134,96 @@
     line-height: 1.5;
     text-align: center;
     word-break: keep-all;
+}
+
+@media (max-width: 1180px) {
+    .panel {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .chatLayout {
+        grid-template-columns: 200px minmax(0, 1fr) 210px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .page {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .panel {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: calc(100vh - var(--header-height));
+        overflow: visible;
+    }
+
+    .roomSidebar {
+        border-right: 0;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 24px 18px 18px;
+        overflow: visible;
+    }
+
+    .roomHeader h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .roomHeader p {
+        margin-bottom: 18px;
+    }
+
+    .roomList {
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .roomList::-webkit-scrollbar {
+        display: none;
+    }
+
+    .roomButton {
+        flex: 0 0 auto;
+        min-width: 160px;
+        padding: 12px 14px;
+    }
+
+    .chatLayout {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 640px;
+    }
+}
+
+@media (max-width: 640px) {
+    .roomSidebar {
+        padding: 20px 14px 14px;
+    }
+
+    .roomHeader h1 {
+        font-size: var(--font-size-2xl-sm);
+        line-height: 1.3;
+    }
+
+    .roomHeader p {
+        font-size: var(--font-size-sm);
+    }
+
+    .roomButton {
+        min-width: 132px;
+    }
+
+    .chatLayout {
+        min-height: 560px;
+    }
+
+    .emptyText {
+        font-size: 14px;
+    }
 }

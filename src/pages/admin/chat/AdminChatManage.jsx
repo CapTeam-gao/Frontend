@@ -9,6 +9,7 @@ import useAdminChatMessages from "../../../hooks/useAdminChatMessages";
 import useAdminChatSocket from "../../../hooks/useAdminChatSocket";
 import useAdminChatPresence from "../../../hooks/useAdminChatPresence";
 import styles from "./AdminChatManage.module.css";
+import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { useCallback, useEffect, useState } from "react";
 import {
     requestAdminChannelSummaries,
@@ -47,6 +48,9 @@ const AdminChatManage = () => {
 
     const [channelSummaries, setChannelSummaries] = useState([]);
     const selectedRoomId = selectedRoom?.id;
+    const selectedChannelId = selectedChannel?.id;
+    const showRoomLoading = useDelayedLoading(isLoading);
+    const showMessageLoading = useDelayedLoading(isMessageLoading);
 
     useEffect(() => {
         let ignore = false;
@@ -95,15 +99,44 @@ const AdminChatManage = () => {
         [channelSummaries]
     );
 
+    const clearChannelUnreadCount = useCallback((channelId) => {
+        setChannelSummaries((prevSummaries) =>
+            prevSummaries.map((summary) =>
+                String(summary.channel?.id) === String(channelId)
+                    ? {
+                          ...summary,
+                          unreadCount: 0,
+                      }
+                    : summary
+            )
+        );
+    }, []);
+
+    const handleReceiveMessage = useCallback(
+        (receivedMessage) => {
+            addMessage(receivedMessage);
+
+            if (!selectedChannelId) return;
+
+            clearChannelUnreadCount(selectedChannelId);
+            requestMarkAdminChatAsRead(selectedChannelId)
+                .then(() => {
+                    window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+                })
+                .catch(() => {});
+        },
+        [addMessage, clearChannelUnreadCount, selectedChannelId]
+    );
+
     const handleUnreadEvent = useCallback(
         (event) => {
             if (!event?.channelId) return;
 
             const isCurrentChannel =
-                String(selectedChannel?.id) === String(event.channelId);
+                String(selectedChannelId) === String(event.channelId);
 
             if (isCurrentChannel) {
-                requestMarkAdminChatAsRead(event.channelId).catch(() => {});
+                clearChannelUnreadCount(event.channelId);
                 window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
                 return;
             }
@@ -121,7 +154,7 @@ const AdminChatManage = () => {
 
             window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
         },
-        [selectedChannel?.id]
+        [clearChannelUnreadCount, selectedChannelId]
     );
 
     const {
@@ -135,7 +168,7 @@ const AdminChatManage = () => {
     } = useAdminChatSocket({
         roomId: selectedRoom?.id,
         selectedChannel,
-        onReceiveMessage: addMessage,
+        onReceiveMessage: handleReceiveMessage,
         onMessageEvent: handleMessageEvent,
         onChannelEvent: handleChannelEvent,
         onUnreadEvent: handleUnreadEvent,
@@ -251,11 +284,19 @@ const AdminChatManage = () => {
                         )}
 
                         <div className={styles.messageArea}>
-                            {isLoading && (
+                            {isLoading && showRoomLoading && (
                                 <p className={styles.emptyText}>
                                     채팅방을 불러오는 중입니다.
                                 </p>
                             )}
+
+                            {!isLoading &&
+                                isMessageLoading &&
+                                showMessageLoading && (
+                                    <p className={styles.emptyText}>
+                                        메시지를 불러오는 중입니다.
+                                    </p>
+                                )}
 
                             {showEmptyChannel && (
                                 <p className={styles.emptyText}>

@@ -100,6 +100,7 @@ const useUserTeamChat = () => {
         isMessageLoading,
         isLoadingMoreMessages,
         hasPresenceLoaded,
+        socketConnected,
         isSending,
         isFileSending,
         error,

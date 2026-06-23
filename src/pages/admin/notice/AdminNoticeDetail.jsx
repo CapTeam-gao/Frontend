@@ -3,10 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./AdminNoticeDetail.module.css";
 import Header from "../../../components/common/header/Header";
 import Button from "../../../components/common/button/Button";
-import { requestDeleteNotice, requestNoticeDetail } from "../../../api/noticeApi";
+import {
+    requestDeleteNotice,
+    requestNoticeDetail,
+} from "../../../api/noticeApi";
 import MDEditor from "@uiw/react-md-editor";
 import { formatCreatedAt } from "../../../utils/format";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
@@ -23,7 +27,6 @@ const AdminNoticeDetail = () => {
         const getNoticeDetail = async () => {
             try {
                 const data = await requestNoticeDetail(id);
-
                 setNotice(data);
             } catch {
                 setError("공지 상세 정보를 불러오지 못했습니다.");
@@ -97,6 +100,9 @@ const AdminNoticeDetail = () => {
         );
     }
 
+    const isTeamResultNotice =
+        notice.noticeType === "TEAM_RESULT" && notice.teamResult;
+
     return (
         <div className={styles.page}>
             <Header />
@@ -154,15 +160,21 @@ const AdminNoticeDetail = () => {
                     </div>
 
                     <div className={styles.contentArea}>
-                        <MDEditor.Markdown
-                            className={styles.content}
-                            source={notice.content}
-                        />
-                        {notice.important === "IMPORTANT" && (
-                            <p className={styles.important}>
-                                중요한 공지이므로 내용을 확인한 뒤 팀원들과
-                                공유해주세요.
-                            </p>
+                        {isTeamResultNotice ? (
+                            <TeamResultNoticeDetail notice={notice} />
+                        ) : (
+                            <>
+                                <MDEditor.Markdown
+                                    className={styles.content}
+                                    source={notice.content}
+                                />
+                                {notice.important === "IMPORTANT" && (
+                                    <p className={styles.important}>
+                                        중요한 공지이므로 내용을 확인한 뒤
+                                        팀원들과 공유해주세요.
+                                    </p>
+                                )}
+                            </>
                         )}
                     </div>
                 </section>

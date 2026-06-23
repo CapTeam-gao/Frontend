@@ -1,0 +1,215 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.hero {
+    padding: 28px 30px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.title {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.3;
+}
+
+.description {
+    margin: 14px 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.7;
+}
+
+.guideBox {
+    padding: 24px 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg-hover);
+}
+
+.guideTitle {
+    margin: 0 0 12px;
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.guideList {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--color-text-primary);
+}
+
+.guideList li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.guideList li:last-child {
+    margin-bottom: 0;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sectionTitle {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.gradeBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.teamList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.teamCard {
+    padding: 24px 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+}
+
+.teamTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.teamName {
+    margin: 0 0 8px;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.roleSummary {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+}
+
+.memberRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+}
+
+.memberChip {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.memberName {
+    font-weight: var(--font-weight-bold);
+}
+
+.leaderBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background-color: #fff1a8;
+    color: #9a7600;
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+}
+
+.dot {
+    color: var(--color-text-secondary);
+}
+
+.memberRole {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.emptyBox {
+    padding: 32px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-weight: var(--font-weight-semibold);
+}
+
+.footerNote {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .hero,
+    .guideBox,
+    .teamCard {
+        padding: 20px;
+    }
+
+    .sectionHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .title {
+        font-size: var(--font-size-xl);
+    }
+
+    .teamName {
+        font-size: var(--font-size-lg);
+    }
+
+    .memberRow {
+        gap: 8px;
+    }
+
+    .memberChip {
+        width: 100%;
+    }
+}

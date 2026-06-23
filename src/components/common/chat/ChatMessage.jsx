@@ -1,17 +1,8 @@
 import { useState } from "react";
 import { getStoredAccessToken } from "../../../utils/authToken";
-import { parseMessageTextWithLinks } from "../../../utils/chat";
+import { formatChatTime, parseMessageTextWithLinks } from "../../../utils/chat";
 import fileIcon from "../../../assets/icons/file.svg";
 import styles from "./ChatMessage.module.css";
-
-const formatMessageTime = (createdAt) => {
-    if (!createdAt) return "";
-
-    return new Intl.DateTimeFormat("ko-KR", {
-        hour: "2-digit",
-        minute: "2-digit",
-    }).format(new Date(createdAt));
-};
 
 const formatFileSize = (size) => {
     if (!size) return "";
@@ -178,7 +169,7 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
                             {message.senderName}
                         </strong>
                     )}
-                    <span>{formatMessageTime(message.createdAt)}</span>
+                    <span>{formatChatTime(message.createdAt)}</span>
                 </div>
             )}
 

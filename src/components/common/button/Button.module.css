@@ -27,7 +27,9 @@
 }
 
 .secondary:hover:not(:disabled) {
-    background-color: var(--color-primary-bg);
+    border-color: var(--color-primary-dark);
+    background-color: var(--color-primary-dark);
+    color: #ffffff;
 }
 
 .ghost {
@@ -37,8 +39,9 @@
 }
 
 .ghost:hover:not(:disabled) {
-    border-color: var(--color-primary);
-    color: var(--color-primary-dark);
+    border-color: var(--color-text-secondary);
+    background-color: var(--color-text-secondary);
+    color: #ffffff;
 }
 
 .danger {
@@ -48,7 +51,9 @@
 }
 
 .danger:hover:not(:disabled) {
-    background-color: #fff1f1;
+    border-color: #dc2626;
+    background-color: #dc2626;
+    color: #ffffff;
 }
 
 .large {

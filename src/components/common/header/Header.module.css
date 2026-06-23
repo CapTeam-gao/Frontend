@@ -60,3 +60,120 @@
     text-align: right;
     white-space: nowrap;
 }
+
+@media (max-width: 1024px) {
+    .nav {
+        gap: 42px;
+        font-size: var(--font-size-md);
+    }
+
+    .logo {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: var(--header-height);
+        padding: 14px 16px 10px;
+        row-gap: 10px;
+    }
+
+    .logo {
+        width: 52px;
+        height: 52px;
+    }
+
+    .nav {
+        position: static;
+        order: 3;
+        width: 100%;
+        gap: 18px;
+        overflow-x: auto;
+        padding: 8px 0 2px;
+        transform: none;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav a {
+        flex: 0 0 auto;
+    }
+
+    .userSlot {
+        max-width: calc(100% - 72px);
+    }
+
+    .user {
+        margin-right: 0;
+        overflow: hidden;
+        font-size: var(--font-size-md);
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav {
+        gap: 40px;
+        font-size: var(--font-size-md);
+    }
+
+    .logo {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        align-items: center;
+        height: auto;
+        min-height: var(--header-height);
+        padding: 14px 16px 10px;
+        row-gap: 10px;
+    }
+
+    .logo {
+        width: 52px;
+        height: 52px;
+    }
+
+    .nav {
+        position: static;
+        order: 3;
+        width: 100%;
+        gap: 18px;
+        overflow-x: auto;
+        padding: 8px 0 2px;
+        transform: none;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav a {
+        flex: 0 0 auto;
+    }
+
+    .userSlot {
+        max-width: calc(100% - 72px);
+    }
+
+    .user {
+        margin-right: 0;
+        overflow: hidden;
+        font-size: var(--font-size-md);
+        text-overflow: ellipsis;
+    }
+}

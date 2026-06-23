@@ -180,9 +180,13 @@ const AdminLogList = () => {
 
                     {!isLoading &&
                         !error &&
-                        filteredLogs.map((log) => (
-                            <AdminLogItem key={log.journalId} log={log} />
-                        ))}
+                        filteredLogs.map((log) => {
+                            const logKey =
+                                log.journalId ??
+                                `${log.teamId}-${log.date}-${log.grade}`;
+
+                            return <AdminLogItem key={logKey} log={log} />;
+                        })}
 
                     {!isLoading && !error && filteredLogs.length === 0 && (
                         <div className={styles.messageBox}>

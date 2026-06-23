@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
 import authStore from "../../../store/authStore";
@@ -28,6 +28,12 @@ const UserSurvey = () => {
     const user = authStore((state) => state.user);
     const accessToken = authStore((state) => state.accessToken);
     const saveLogin = authStore((state) => state.saveLogin);
+    const roleSectionRef = useRef(null);
+    const stackSectionRef = useRef(null);
+    const experienceSectionRef = useRef(null);
+    const leaderSectionRef = useRef(null);
+    const personalitySectionRef = useRef(null);
+    const developmentSectionRef = useRef(null);
     const [selectedRole, setSelectedRole] = useState("");
     const [stackText, setStackText] = useState("");
     const [experiences, setExperiences] = useState([
@@ -41,6 +47,40 @@ const UserSurvey = () => {
     const [answers, setAnswers] = useState({});
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const cleanSkills = useMemo(() => getSkillsFromText(stackText), [
+        stackText,
+    ]);
+    const completedExperienceCount = experiences.filter((experience) =>
+        experience.value.trim()
+    ).length;
+    const personalityAnswerCount = personalityQuestions.filter(
+        (question) => answers[question.id]
+    ).length;
+    const developmentAnswerCount = developmentQuestions.filter(
+        (question) => answers[question.id]
+    ).length;
+    const completedRequiredCount =
+        Number(Boolean(selectedRole)) +
+        Number(cleanSkills.length > 0) +
+        Number(completedExperienceCount > 0) +
+        Number(Boolean(leaderPreference)) +
+        personalityAnswerCount +
+        developmentAnswerCount;
+    const totalRequiredCount = 4 + allRatingQuestions.length;
+    const progressPercent = Math.round(
+        (completedRequiredCount / totalRequiredCount) * 100
+    );
+    const isSurveyReady = completedRequiredCount === totalRequiredCount;
+
+    const scrollToSection = (sectionRef) => {
+        requestAnimationFrame(() => {
+            sectionRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        });
+    };
 
     const selectRole = (role) => {
         setSelectedRole(role);
@@ -106,25 +146,28 @@ const UserSurvey = () => {
         const cleanPreferredMembers = preferredMembers
             .map((member) => member.trim())
             .filter(Boolean);
-        const cleanSkills = getSkillsFromText(stackText);
 
         if (!selectedRole) {
             setError("희망 직군을 선택해주세요.");
+            scrollToSection(roleSectionRef);
             return;
         }
 
         if (cleanSkills.length === 0) {
             setError("사용 가능한 기술 스택을 입력해주세요.");
+            scrollToSection(stackSectionRef);
             return;
         }
 
         if (cleanExperiences.length === 0) {
             setError("구현 경험을 1개 이상 입력해주세요.");
+            scrollToSection(experienceSectionRef);
             return;
         }
 
         if (!leaderPreference) {
             setError("팀장 선호 여부를 선택해주세요.");
+            scrollToSection(leaderSectionRef);
             return;
         }
 
@@ -134,6 +177,14 @@ const UserSurvey = () => {
 
         if (hasEmptyRating) {
             setError("성격 성향과 개발 성향 문항을 모두 선택해주세요.");
+            const hasEmptyPersonality = personalityQuestions.some(
+                (question) => !answers[question.id]
+            );
+            scrollToSection(
+                hasEmptyPersonality
+                    ? personalitySectionRef
+                    : developmentSectionRef
+            );
             return;
         }
 
@@ -213,10 +264,55 @@ const UserSurvey = () => {
         <div className={styles.page}>
             <main className={styles.body}>
                 <section className={styles.surveyNav}>
-                    <strong>설문 구성</strong>
-                    <span>1. 기술 정보</span>
-                    <span>2. 성격 성향 15문항</span>
-                    <span>3. 개발 성향 15문항</span>
+                    <div className={styles.progressSummary}>
+                        <strong>설문 진행률 {progressPercent}%</strong>
+                        <span>
+                            필수 항목 {completedRequiredCount}/
+                            {totalRequiredCount}개 완료
+                        </span>
+                    </div>
+                    <div
+                        className={styles.progressBar}
+                        aria-label={`설문 진행률 ${progressPercent}%`}
+                    >
+                        <span style={{ width: `${progressPercent}%` }} />
+                    </div>
+                    <div className={styles.stepStatusList}>
+                        <span
+                            className={
+                                selectedRole &&
+                                cleanSkills.length > 0 &&
+                                completedExperienceCount > 0 &&
+                                leaderPreference
+                                    ? styles.completedStep
+                                    : ""
+                            }
+                        >
+                            기술 정보
+                        </span>
+                        <span
+                            className={
+                                personalityAnswerCount ===
+                                personalityQuestions.length
+                                    ? styles.completedStep
+                                    : ""
+                            }
+                        >
+                            성격 {personalityAnswerCount}/
+                            {personalityQuestions.length}
+                        </span>
+                        <span
+                            className={
+                                developmentAnswerCount ===
+                                developmentQuestions.length
+                                    ? styles.completedStep
+                                    : ""
+                            }
+                        >
+                            개발 {developmentAnswerCount}/
+                            {developmentQuestions.length}
+                        </span>
+                    </div>
                 </section>
 
                 <section className={styles.layout}>
@@ -231,7 +327,10 @@ const UserSurvey = () => {
                                 </p>
                             </div>
 
-                            <div className={styles.formSection}>
+                            <div
+                                ref={roleSectionRef}
+                                className={styles.formSection}
+                            >
                                 <div className={styles.sectionTitleArea}>
                                     <h3>희망 직군</h3>
                                     <p>희망하는 직군을 선택해주세요.</p>
@@ -257,7 +356,10 @@ const UserSurvey = () => {
                                 </div>
                             </div>
 
-                            <div className={styles.formSection}>
+                            <div
+                                ref={stackSectionRef}
+                                className={styles.formSection}
+                            >
                                 <div className={styles.sectionTitleArea}>
                                     <h3>사용 가능한 기술 스택</h3>
                                     <p>
@@ -276,7 +378,10 @@ const UserSurvey = () => {
                                 />
                             </div>
 
-                            <div className={styles.formSection}>
+                            <div
+                                ref={experienceSectionRef}
+                                className={styles.formSection}
+                            >
                                 <div className={styles.sectionTitleArea}>
                                     <h3>구현 경험</h3>
                                     <p>
@@ -383,7 +488,10 @@ const UserSurvey = () => {
                                 </button>
                             </div>
 
-                            <div className={styles.formSection}>
+                            <div
+                                ref={leaderSectionRef}
+                                className={styles.formSection}
+                            >
                                 <div className={styles.sectionTitleArea}>
                                     <h3>팀장 선호 여부</h3>
                                     <p>팀장 역할을 맡고 싶은지 선택해주세요.</p>
@@ -412,7 +520,10 @@ const UserSurvey = () => {
                             </div>
                         </section>
 
-                        <section className={styles.card}>
+                        <section
+                            ref={personalitySectionRef}
+                            className={styles.card}
+                        >
                             <div className={styles.cardHeader}>
                                 <span>STEP 2</span>
                                 <h2>성격 성향</h2>
@@ -434,7 +545,10 @@ const UserSurvey = () => {
                             </ul>
                         </section>
 
-                        <section className={styles.card}>
+                        <section
+                            ref={developmentSectionRef}
+                            className={styles.card}
+                        >
                             <div className={styles.cardHeader}>
                                 <span>STEP 3</span>
                                 <h2>개발 성향</h2>
@@ -463,7 +577,9 @@ const UserSurvey = () => {
                         <div className={styles.submitArea}>
                             <p className={error ? styles.errorText : ""}>
                                 {error ||
-                                    "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다."}
+                                    (isSurveyReady
+                                        ? "필수 항목이 모두 입력되었습니다. 제출 전 내용을 한 번만 확인해주세요."
+                                        : "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다.")}
                             </p>
                             <button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? "제출 중..." : "설문 제출"}

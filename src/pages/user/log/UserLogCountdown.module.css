@@ -100,8 +100,9 @@
 }
 
 .secondaryButton:hover {
-    border-color: var(--color-primary);
-    background-color: var(--color-bg-hover);
+    border-color: var(--color-text-secondary);
+    background-color: var(--color-text-secondary);
+    color: #ffffff;
 }
 
 @media (max-width: 768px) {

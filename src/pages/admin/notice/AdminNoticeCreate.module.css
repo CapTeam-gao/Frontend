@@ -138,8 +138,8 @@
 }
 
 .markdownEditor :global(.w-md-editor-toolbar li > button:hover) {
-    background-color: var(--color-bg-hover) !important;
-    color: var(--color-primary-dark) !important;
+    background-color: #344054 !important;
+    color: #ffffff !important;
 }
 
 .markdownEditor :global(.w-md-editor-toolbar li > button svg) {
@@ -189,8 +189,8 @@
 
 .markdownEditor
     :global(.w-md-editor-toolbar-child .w-md-editor-toolbar ul > li button:hover) {
-    background-color: var(--color-bg-hover) !important;
-    color: var(--color-primary-dark) !important;
+    background-color: #344054 !important;
+    color: #ffffff !important;
 }
 
 .markdownEditor :global(.w-md-editor-bar) {

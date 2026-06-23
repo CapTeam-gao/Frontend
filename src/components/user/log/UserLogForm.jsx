@@ -44,17 +44,6 @@ const UserLogForm = ({
 
     return (
         <form className={styles.form} onSubmit={onSubmit}>
-            <div className={styles.roleNotice}>
-                <strong>
-                    {isLeader ? "팀장 작성 항목" : "팀원 작성 항목"}
-                </strong>
-                <span>
-                    {isLeader
-                        ? "팀 전체 진행 상황까지 함께 정리해주세요."
-                        : "개인 활동 내용과 다음 계획, 회고를 작성해주세요."}
-                </span>
-            </div>
-
             <div className={styles.fieldList}>
                 {fields.map((field) => (
                     <label key={field.name} className={styles.field}>

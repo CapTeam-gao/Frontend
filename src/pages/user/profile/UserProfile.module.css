@@ -115,7 +115,7 @@
 }
 
 .textButton:hover {
-    color: var(--color-primary);
+    color: #3f8f70;
 }
 
 .textButton:disabled {
