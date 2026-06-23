@@ -26,6 +26,7 @@ const ChatInput = ({
     disabled = false,
     isSending = false,
     isFileSending = false,
+    placeholder = "메시지를 입력하세요",
 }) => {
     const [message, setMessage] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
@@ -149,7 +150,7 @@ const ChatInput = ({
                     ref={inputRef}
                     type="text"
                     className={styles.messageInput}
-                    placeholder="메시지를 입력하세요"
+                    placeholder={placeholder}
                     value={message}
                     disabled={disabled || isSending || isFileSending}
                     onChange={(event) => setMessage(event.target.value)}

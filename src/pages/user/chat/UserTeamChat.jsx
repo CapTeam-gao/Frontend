@@ -22,6 +22,7 @@ const UserTeamChat = () => {
         isMessageLoading,
         isLoadingMoreMessages,
         hasPresenceLoaded,
+        socketConnected,
         isSending,
         isFileSending,
         error,
@@ -73,6 +74,8 @@ const UserTeamChat = () => {
         !isMessageLoading &&
         selectedChannel &&
         messages.length > 0;
+    const channelCount = room?.channels?.length ?? 0;
+    const memberCount = members.length || roomMembers.length;
 
     return (
         <div className={styles.page}>
@@ -95,16 +98,54 @@ const UserTeamChat = () => {
                     <section className={styles.chatContent}>
                         {error && <p className={styles.errorText}>{error}</p>}
 
+                        <header className={styles.chatHeader}>
+                            <div>
+                                <span className={styles.chatHeaderLabel}>
+                                    현재 채널
+                                </span>
+                                <h2>
+                                    {selectedChannel
+                                        ? `# ${selectedChannel.channelName}`
+                                        : "채널을 선택해주세요"}
+                                </h2>
+                                <p className={styles.chatHeaderMeta}>
+                                    {channelCount}개 채널 · {memberCount}명 팀원
+                                </p>
+                            </div>
+
+                            <span
+                                className={`${styles.connectionBadge} ${
+                                    socketConnected
+                                        ? styles.connected
+                                        : styles.disconnected
+                                }`}
+                            >
+                                {socketConnected ? "실시간 연결" : "연결 대기"}
+                            </span>
+                        </header>
+
                         <div className={styles.messageArea}>
+                            {isLoading && (
+                                <p className={styles.emptyText}>
+                                    팀 채팅방을 불러오는 중입니다.
+                                </p>
+                            )}
+
+                            {!isLoading && isMessageLoading && (
+                                <p className={styles.emptyText}>
+                                    메시지를 불러오는 중입니다.
+                                </p>
+                            )}
+
                             {showEmptyChannel && (
                                 <p className={styles.emptyText}>
-                                    생성된 채팅 채널이 없습니다.
+                                    아직 생성된 채팅 채널이 없습니다.
                                 </p>
                             )}
 
                             {showEmptyMessage && (
                                 <p className={styles.emptyText}>
-                                    아직 작성된 메시지가 없습니다.
+                                    첫 메시지를 보내 팀 대화를 시작해보세요.
                                 </p>
                             )}
 
@@ -129,6 +170,11 @@ const UserTeamChat = () => {
                             disabled={!selectedChannel}
                             isSending={isSending}
                             isFileSending={isFileSending}
+                            placeholder={
+                                selectedChannel
+                                    ? `${selectedChannel.channelName}에 메시지 입력`
+                                    : "채널을 선택하면 메시지를 보낼 수 있습니다"
+                            }
                         />
                     </section>
 
