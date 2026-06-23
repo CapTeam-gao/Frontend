@@ -305,19 +305,250 @@
     }
 
     .mainCard {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        padding: 36px 28px;
+        min-height: 220px;
+        padding: 28px 24px;
     }
 
     .sideCard,
     .smallCard {
-        min-height: 150px;
-        padding: 28px;
+        min-height: 160px;
+        padding: 24px;
     }
+
+    .sideCard {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .mainHeader {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .mainTitle,
+    .cardTitle {
+        word-break: keep-all;
+    }
+
+    .mainTitle {
+        font-size: 44px;
+        line-height: 1.16;
+    }
+
+    .mainSubText {
+        margin-top: 14px;
+        font-size: var(--font-size-lg);
+        line-height: 1.35;
+    }
+
+    .description {
+        margin-top: 18px;
+        line-height: 1.45;
+    }
+
+    .teamCount {
+        margin-top: 18px;
+        font-size: 44px;
+    }
+
+    .teamMeta {
+        margin-top: 10px;
+    }
+
+    .divider {
+        margin: 28px 0 18px;
+    }
+
+    .largeIcon {
+        width: 96px;
+        height: 96px;
+    }
+
+    .largeIcon img {
+        width: 56px;
+        height: 56px;
+    }
+
+    .sideText,
+    .logText,
+    .smallText {
+        flex: 1;
+        max-width: none;
+        transform: none;
+    }
+
+    .sideText {
+        text-align: left;
+    }
+
     .mediumIcon {
-        width: 80px;
-        height: 80px;
+        position: static;
+        width: 78px;
+        height: 78px;
+    }
+
+    .mediumIcon img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .smallIcon {
+        width: 72px;
+        height: 72px;
+    }
+
+    .smallIcon img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .studentCard,
+    .noticeCard {
+        padding-top: 24px;
+    }
+
+    .studentCard .smallIcon,
+    .noticeCard .smallIcon {
+        transform: none;
+    }
+
+    .countBadge {
+        margin-top: 16px;
+    }
+
+    .quickButton {
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .body {
+        padding: 24px 12px 48px;
+    }
+
+    .mainCard {
+        min-height: 190px;
+        padding: 22px 20px;
+    }
+
+    .sideCard,
+    .smallCard {
+        min-height: 136px;
+        padding: 20px;
+    }
+
+    .sideCard {
+        gap: 14px;
+    }
+
+    .mainTitle {
+        font-size: 30px;
+    }
+
+    .cardTitle {
+        font-size: 22px;
+        line-height: 1.24;
+        margin-bottom: 8px;
+    }
+
+    .mainSubText,
+    .description {
+        font-size: 15px;
+    }
+
+    .teamCount {
+        font-size: 34px;
+    }
+
+    .largeIcon {
+        width: 84px;
+        height: 84px;
+    }
+
+    .largeIcon img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mediumIcon,
+    .smallIcon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .mediumIcon img,
+    .smallIcon img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .chatUnreadDot {
+        top: 18px;
+        right: 18px;
+    }
+}
+
+@media (max-width: 520px) {
+    .mainCard {
+        min-height: 180px;
+        padding: 20px 18px;
+    }
+
+    .sideCard,
+    .smallCard {
+        min-height: 126px;
+        padding: 18px;
+    }
+
+    .sideCard {
+        gap: 12px;
+    }
+
+    .mainHeader {
+        gap: 12px;
+    }
+
+    .mainTitle {
+        font-size: 26px;
+    }
+
+    .cardTitle {
+        font-size: 20px;
+    }
+
+    .mainSubText,
+    .description,
+    .statusText,
+    .teamMeta {
+        font-size: 14px;
+    }
+
+    .teamCount {
+        font-size: 30px;
+    }
+
+    .largeIcon,
+    .mediumIcon,
+    .smallIcon {
+        width: 58px;
+        height: 58px;
+    }
+
+    .largeIcon img,
+    .mediumIcon img,
+    .smallIcon img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .statusText {
+        margin-top: 14px;
+    }
+
+    .countBadge,
+    .quickButton {
+        margin-top: 12px;
     }
 }

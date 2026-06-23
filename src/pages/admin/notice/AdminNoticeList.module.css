@@ -7,6 +7,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
     margin-bottom: 40px;
 }
 
@@ -14,6 +15,7 @@
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     margin: 0;
+    word-break: keep-all;
 }
 
 .list {
@@ -40,6 +42,7 @@
     align-items: center;
     font-size: var(--font-size-3xl);
 }
+
 .loadingText {
     color: var(--color-primary);
     display: flex;
@@ -60,21 +63,27 @@
     }
 
     .topBar {
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: stretch;
         gap: 14px;
         margin-bottom: 28px;
     }
 
     .title {
-        flex: 1;
+        flex: none;
         min-width: 0;
         font-size: var(--font-size-2xl);
         line-height: 1.3;
         word-break: keep-all;
     }
 
+    .writeLink {
+        width: 100%;
+    }
+
     .writeButton {
-        min-width: 86px;
+        width: 100%;
+        min-width: 0;
         white-space: nowrap;
     }
 

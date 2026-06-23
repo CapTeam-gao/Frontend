@@ -17,18 +17,12 @@
     margin-bottom: 24px;
 }
 
-.eyebrow {
-    margin-bottom: 8px;
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-}
-
 .pageHeader h1 {
     color: #000000;
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     line-height: 1.25;
+    word-break: keep-all;
 }
 
 .resultCount {
@@ -61,12 +55,14 @@
     color: var(--color-text-secondary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
+    line-height: 1.6;
     text-align: center;
+    word-break: keep-all;
 }
 
 .summaryGrid {
     display: grid;
-    grid-template-columns: 1.2fr repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 18px;
 }
@@ -91,6 +87,7 @@
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
+    word-break: keep-all;
 }
 
 .summaryCard strong {
@@ -99,12 +96,11 @@
     color: #000000;
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
+    line-height: 1;
 }
 
 .summaryCard.active {
-    border: 2px solid;
-
-    border-color: var(--color-primary);
+    border: 2px solid var(--color-primary);
     background-color: #ffffff;
 }
 
@@ -155,25 +151,60 @@
     gap: 16px;
 }
 
-@media (max-width: 960px) {
-    .summaryGrid,
+@media (max-width: 1024px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .studentGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .body {
         padding: 32px 16px 56px;
     }
 
     .pageHeader {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
     }
 
-    .summaryGrid,
+    .pageHeader h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .resultCount {
+        width: fit-content;
+    }
+}
+
+@media (max-width: 640px) {
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
     .studentGrid {
         grid-template-columns: 1fr;
+    }
+
+    .summaryCard {
+        min-height: 100px;
+        padding: 18px 20px;
+    }
+
+    .summaryCard strong {
+        font-size: var(--font-size-2xl-lg);
+    }
+
+    .controlPanel {
+        padding: 16px;
+    }
+
+    .emptyText {
+        padding: 44px 18px;
+        font-size: var(--font-size-md);
     }
 }

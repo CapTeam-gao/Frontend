@@ -79,8 +79,8 @@
 }
 
 .addChannelButton:hover {
-    background-color: #eef1f3;
-    color: #111827;
+    background-color: #344054;
+    color: #ffffff;
 }
 
 .channelList {
@@ -508,7 +508,8 @@
 
 .cancelButton:hover {
     border-color: #b9c0ca;
-    color: #111827;
+    background-color: #344054;
+    color: #ffffff;
 }
 
 .createButton {

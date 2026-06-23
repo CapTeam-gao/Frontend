@@ -49,8 +49,9 @@
 }
 
 .closeButton:hover {
-    border-color: #ffffff;
-    background-color: #ffffff;
+    border-color: #344054;
+    background-color: #344054;
+    color: #ffffff;
 }
 
 .modalHeader {

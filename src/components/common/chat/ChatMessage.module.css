@@ -215,7 +215,8 @@
 }
 
 .messageActions button:hover {
-    color: #111827;
+    background-color: #344054;
+    color: #ffffff;
 }
 
 .inlineEditBox {
@@ -304,7 +305,8 @@
 
 .panelActions button:hover {
     border-color: #b9c0ca;
-    color: #111827;
+    background-color: #344054;
+    color: #ffffff;
 }
 
 .panelActions .primaryButton {

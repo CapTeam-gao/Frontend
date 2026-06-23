@@ -7,15 +7,15 @@
 }
 
 .intro {
-    width: min(980px, 100%);
+    width: min(1080px, 100%);
     text-align: center;
 }
 
 .logo {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
 }
 
 .eyebrow {
@@ -38,7 +38,11 @@
     color: var(--color-text-secondary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
-    line-height: 1.7;
+    line-height: 1.75;
+}
+
+.description span {
+    display: block;
 }
 
 .infoGrid {
@@ -49,8 +53,8 @@
 }
 
 .infoCard {
-    min-height: 178px;
-    padding: 32px 28px;
+    min-height: 230px;
+    padding: 32px 30px;
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-md);
     background-color: #ffffff;
@@ -68,53 +72,68 @@
     color: #000000;
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
+    line-height: 1.35;
 }
 
 .infoCard p {
-    margin-top: 12px;
+    margin-top: 14px;
     color: var(--color-text-secondary);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .noticeBox {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1px minmax(0, 1fr);
     align-items: center;
-    justify-content: center;
-    gap: 18px;
-    width: fit-content;
-    max-width: 100%;
-    margin: 40px auto 0;
-    padding: 18px 26px;
+    gap: 22px;
+    max-width: 760px;
+    margin: 42px auto 0;
+    padding: 18px 24px;
+    border: 1px solid #d7f0e6;
     border-radius: var(--border-radius-md);
-    background-color: var(--color-primary-bg);
+    background-color: #f7fcfa;
+    text-align: left;
 }
 
-.noticeBox strong {
+.timeInfo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    white-space: nowrap;
+}
+
+.timeInfo strong {
     color: var(--color-primary-dark);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
 }
 
-.noticeBox span {
-    color: #000000;
+.timeInfo span {
+    color: var(--color-warning);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-warning);
+}
+
+.noticeDivider {
+    width: 1px;
+    height: 28px;
+    background-color: #d7f0e6;
 }
 
 .noticeBox p {
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
 }
 
 .startButton {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 220px;
+    min-width: 240px;
     height: 58px;
     margin-top: 42px;
     border: 1px solid var(--color-primary);
@@ -123,24 +142,33 @@
     color: #ffffff;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
-    transition: background-color var(--transition), border-color var(--transition);
+    transition: background-color var(--transition),
+        border-color var(--transition), transform var(--transition);
 }
 
 .startButton:hover {
     border-color: var(--color-primary-dark);
     background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
     .infoGrid {
         grid-template-columns: 1fr;
     }
 
+    .infoCard {
+        min-height: auto;
+    }
+
     .noticeBox {
-        align-items: flex-start;
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .noticeDivider {
         width: 100%;
-        text-align: left;
+        height: 1px;
     }
 }
 
@@ -149,12 +177,40 @@
         padding: 40px 16px;
     }
 
+    .logo {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 22px;
+    }
+
     .title {
         font-size: var(--font-size-3xl);
     }
 
     .description {
         font-size: var(--font-size-md);
+    }
+
+    .description span {
+        display: inline;
+    }
+
+    .infoGrid {
+        margin-top: 40px;
+    }
+
+    .infoCard {
+        padding: 26px 22px;
+    }
+
+    .noticeBox {
+        margin-top: 32px;
+        padding: 18px 20px;
+    }
+
+    .timeInfo {
+        justify-content: space-between;
+        width: 100%;
     }
 
     .startButton {

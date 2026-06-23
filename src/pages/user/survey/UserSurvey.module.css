@@ -217,7 +217,8 @@
 .optionButton:hover,
 .binaryButton:hover {
     border-color: var(--color-primary);
-    color: var(--color-primary-dark);
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
 .optionButton {
@@ -288,7 +289,9 @@
 .addButton:hover,
 .memberRow button:hover,
 .dynamicItem button:hover {
-    background-color: var(--color-primary-bg);
+    border-color: var(--color-primary-dark);
+    background-color: var(--color-primary-dark);
+    color: #ffffff;
 }
 
 .addButton {

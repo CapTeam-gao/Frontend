@@ -66,9 +66,9 @@
 }
 
 .roomButton:hover {
-    border-color: #d9dee7;
-    background: #fafafa;
-    color: #111827;
+    border-color: #4ea57f;
+    background: #4ea57f;
+    color: #ffffff;
 }
 
 .selectedRoom {
@@ -114,9 +114,12 @@
     justify-content: center;
     height: 100%;
     margin: 0 auto;
+    padding: 0 24px;
     font-size: 15px;
     font-weight: 700;
     color: #98a2b3;
+    text-align: center;
+    word-break: keep-all;
 }
 
 .errorText {
@@ -139,11 +142,11 @@
     }
 
     .chatLayout {
-        grid-template-columns: 210px minmax(0, 1fr);
+        grid-template-columns: 200px minmax(0, 1fr) 210px;
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .page {
         height: auto;
         min-height: 100vh;
@@ -187,18 +190,18 @@
 
     .roomButton {
         flex: 0 0 auto;
-        min-width: 150px;
+        min-width: 160px;
         padding: 12px 14px;
     }
 
     .chatLayout {
         grid-template-columns: 1fr;
-        height: calc(100vh - 250px);
-        min-height: 560px;
+        height: auto;
+        min-height: 640px;
     }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 640px) {
     .roomSidebar {
         padding: 20px 14px 14px;
     }
@@ -217,7 +220,10 @@
     }
 
     .chatLayout {
-        height: calc(100vh - 236px);
-        min-height: 520px;
+        min-height: 560px;
+    }
+
+    .emptyText {
+        font-size: 14px;
     }
 }

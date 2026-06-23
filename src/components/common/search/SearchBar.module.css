@@ -40,7 +40,7 @@
 }
 
 .searchButton:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-dark);
 }
 
 .searchButton:focus-visible {
@@ -59,7 +59,7 @@
         no-repeat;
 }
 .searchIcon:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-dark);
 }
 
 [type="search"]::-webkit-search-cancel-button,
