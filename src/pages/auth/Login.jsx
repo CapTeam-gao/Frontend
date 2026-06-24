@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import Button from "../../components/common/button/Button";
-import Logo from "../../assets/images/logo.png";
 import { requestLogin, requestMyInfo } from "../../api/authApi";
 import authStore from "../../store/authStore";
 
@@ -62,9 +61,16 @@ const Login = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <main className={styles.container}>
             <div className={styles.header}>
-                <img className={styles.logo} src={Logo} alt="로고" />
+                <img
+                    className={styles.logo}
+                    src="/logo-login.webp"
+                    alt="CapTeam 로고"
+                    width="150"
+                    height="150"
+                    fetchPriority="high"
+                />{" "}
                 <p className={styles.title}>로그인</p>
                 <p className={styles.subtitle}>
                     서비스를 이용하려면 로그인하세요
@@ -101,7 +107,7 @@ const Login = () => {
                     {isLoading ? "로그인 중..." : "로그인"}
                 </Button>
             </form>
-        </div>
+        </main>
     );
 };
 
