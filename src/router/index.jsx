@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
+// import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/auth/Login";
 
@@ -32,13 +32,17 @@ import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 
 // router 설정하는 파일
 const Router = () => {
-    const adminRoute = (page) => (
-        <ProtectedRoute requiredRole="ADMIN">{page}</ProtectedRoute>
-    );
+    // 임시 테스트용: ProtectedRoute 비활성화
+    // const adminRoute = (page) => (
+    //     <ProtectedRoute requiredRole="ADMIN">{page}</ProtectedRoute>
+    // );
+    const adminRoute = (page) => page;
 
-    const userRoute = (page) => (
-        <ProtectedRoute requiredRole="STUDENT">{page}</ProtectedRoute>
-    );
+    // 임시 테스트용: ProtectedRoute 비활성화
+    // const userRoute = (page) => (
+    //     <ProtectedRoute requiredRole="STUDENT">{page}</ProtectedRoute>
+    // );
+    const userRoute = (page) => page;
 
     return (
         <Routes>
