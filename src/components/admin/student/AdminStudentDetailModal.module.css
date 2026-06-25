@@ -226,6 +226,7 @@
 
 .reliabilityHIGH {
     background-color: var(--color-primary-bg);
+    display: flex;
     color: var(--color-primary-dark);
     justify-content: center;
     align-items: center;
