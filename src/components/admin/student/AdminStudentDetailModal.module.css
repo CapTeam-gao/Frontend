@@ -227,6 +227,8 @@
 .reliabilityHIGH {
     background-color: var(--color-primary-bg);
     color: var(--color-primary-dark);
+    justify-content: center;
+    align-items: center;
 }
 
 .reliabilityMEDIUM {
