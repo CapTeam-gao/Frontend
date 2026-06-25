@@ -307,6 +307,7 @@
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
+    resize: none;
 }
 
 .stackTextarea {
@@ -541,5 +542,4 @@
     .binaryGroup {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
 }
