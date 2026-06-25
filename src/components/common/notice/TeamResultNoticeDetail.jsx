@@ -31,29 +31,36 @@ const TeamResultNoticeDetail = ({ notice }) => {
         <section className={styles.wrapper}>
             <div className={styles.hero}>
                 <p className={styles.eyebrow}>팀 배정 결과</p>
-                <h2 className={styles.title}>캡스톤 팀 배정이 완료되었어</h2>
+                <h2 className={styles.title}>
+                    캡스톤 팀 배정이 완료되었습니다
+                </h2>
                 <p className={styles.description}>
-                    배정된 팀을 확인한 뒤 팀 채팅방에서 주제를 논의하고,
-                    프로젝트 기획서 작성을 진행하면 돼.
+                    아래 팀 목록에서 본인이 배정된 팀과 역할을 반드시
+                    확인하세요. 확인 후 팀 채팅방에서 프로젝트 주제와 역할
+                    분담을 논의하면 됩니다.
                 </p>
             </div>
 
             <div className={styles.guideBox}>
                 <p className={styles.guideTitle}>확인 사항</p>
                 <ul className={styles.guideList}>
-                    <li>배정된 팀과 역할을 먼저 확인해줘.</li>
-                    <li>팀 채팅방에서 팀원들과 주제를 논의해줘.</li>
-                    <li>프로젝트 기획서는 팀원 협의 후 작성해줘.</li>
+                    <li>본인의 팀, 역할, 팀장 여부를 먼저 확인하세요.</li>
+                    <li>팀 채팅방에서 팀원들과 프로젝트 주제를 정리하세요.</li>
+                    <li>
+                        프로젝트 기획서는 팀원 협의 후 CapTeam에서 작성하세요.
+                    </li>
+                    <li>
+                        캡스톤 일지는 안내된 양식에 맞춰 CapTeam에 작성하세요.
+                    </li>
+                    <li>
+                        공지 미확인으로 생기는 불이익은 본인 및 각 팀
+                        책임입니다.
+                    </li>
                 </ul>
             </div>
 
             <div className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>팀 목록</h3>
-                {teamResult?.grade && (
-                    <span className={styles.gradeBadge}>
-                        {teamResult.grade === "GRADE_2" ? "2학년" : "3학년"}
-                    </span>
-                )}
             </div>
 
             {teams.length === 0 ? (
@@ -119,7 +126,7 @@ const TeamResultNoticeDetail = ({ notice }) => {
             )}
 
             <div className={styles.footerNote}>
-                팀 배정과 관련된 문의가 있다면 담당 선생님께 문의해줘.
+                팀 배정과 관련된 문의가 있다면 담당 선생님께 문의하세요.
             </div>
         </section>
     );

@@ -144,6 +144,7 @@ const AdminStudentDetailModal = ({
     student,
     students = [],
     modalError,
+    onOpenStudent,
     onClose,
 }) => {
     const navigate = useNavigate();
@@ -155,7 +156,23 @@ const AdminStudentDetailModal = ({
         student.projectTeamName || student.teamName || "미배정";
     const isAssignedTeam = teamDisplayName && teamDisplayName !== "미배정";
     const isLeader = student.leaderRole === "LEADER";
+    const teamMembers = isAssignedTeam
+        ? students.filter((member) => {
+              const memberTeamName =
+                  member.projectTeamName || member.teamName || "미배정";
 
+              return (
+                  member.userId !== student.userId &&
+                  memberTeamName === teamDisplayName
+              );
+          })
+        : [];
+
+    const handleMemberClick = (member) => {
+        if (!onOpenStudent) return;
+
+        onOpenStudent(member);
+    };
     const handleTeamClick = () => {
         if (!isAssignedTeam) return;
 
@@ -288,9 +305,58 @@ const AdminStudentDetailModal = ({
                                 </ul>
                             </section>
 
-                            {!isAssignedTeam && (
-                                <section className={styles.compactSection}>
-                                    <h3>선호 팀원</h3>
+                            <section className={styles.compactSection}>
+                                <h3>
+                                    {isAssignedTeam ? "팀원 명단" : "선호 팀원"}
+                                </h3>
+
+                                {isAssignedTeam ? (
+                                    <div className={styles.memberList}>
+                                        {teamMembers.length > 0 ? (
+                                            teamMembers.map((member) => {
+                                                const memberNumber =
+                                                    getStudentNumberInfo(
+                                                        member.userId
+                                                    ).number;
+
+                                                return (
+                                                    <button
+                                                        key={member.userId}
+                                                        type="button"
+                                                        className={
+                                                            styles.memberButton
+                                                        }
+                                                        onClick={() =>
+                                                            handleMemberClick(
+                                                                member
+                                                            )
+                                                        }
+                                                    >
+                                                        <strong>
+                                                            {member.name}
+                                                        </strong>
+                                                        <span>
+                                                            {memberNumber}
+                                                        </span>
+                                                        {member.leaderRole ===
+                                                            "LEADER" && (
+                                                            <em>팀장</em>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })
+                                        ) : (
+                                            <p
+                                                className={
+                                                    styles.emptyInlineText
+                                                }
+                                            >
+                                                함께 배정된 팀원 정보를 아직
+                                                불러오지 못했습니다.
+                                            </p>
+                                        )}
+                                    </div>
+                                ) : (
                                     <div className={styles.stackList}>
                                         {(student.preferredTeammates || [])
                                             .length > 0 ? (
@@ -308,15 +374,16 @@ const AdminStudentDetailModal = ({
                                             <span>없음</span>
                                         )}
                                     </div>
-                                </section>
-                            )}
+                                )}
+                            </section>
 
-                            {student.analysisResult && (
-                                <section className={styles.analysisSection}>
-                                    <h3>학생 분석 결과</h3>
-                                    <p>{student.analysisResult}</p>
-                                </section>
-                            )}
+                            <section className={styles.analysisSection}>
+                                <h3>학생 분석 결과</h3>
+                                <p>
+                                    {student.analysisResult ||
+                                        "분석 설명을 아직 조회할 수 없습니다. 학생의 성향 점수와 기술 스택을 함께 참고해주세요."}
+                                </p>
+                            </section>
                         </div>
 
                         <aside className={styles.chartColumn}>

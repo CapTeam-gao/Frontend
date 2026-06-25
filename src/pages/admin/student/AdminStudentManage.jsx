@@ -219,6 +219,7 @@ const AdminStudentManage = () => {
                     student={selectedStudent}
                     students={students}
                     modalError={modalError}
+                    onOpenStudent={handleOpenStudent}
                     onClose={handleCloseStudentModal}
                 />
             )}

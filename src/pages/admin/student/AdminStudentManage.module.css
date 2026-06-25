@@ -26,11 +26,6 @@
 }
 
 .resultCount {
-    flex-shrink: 0;
-    padding: 8px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-sm);
-    background-color: #ffffff;
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
@@ -112,9 +107,6 @@
 .controlPanel {
     margin-bottom: 20px;
     padding: 18px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    background-color: #ffffff;
 }
 
 .searchBox {
