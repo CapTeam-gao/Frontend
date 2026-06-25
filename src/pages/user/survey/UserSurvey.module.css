@@ -314,7 +314,6 @@
     min-height: 92px;
     padding: 16px;
     line-height: 1.6;
-    resize: vertical;
 }
 
 .addRow input,
@@ -397,7 +396,6 @@
     min-height: 92px;
     padding: 14px;
     line-height: 1.6;
-    resize: vertical;
 }
 
 .dynamicItem button,
