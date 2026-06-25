@@ -217,6 +217,7 @@ const AdminStudentManage = () => {
             {selectedStudent && (
                 <AdminStudentDetailModal
                     student={selectedStudent}
+                    students={students}
                     modalError={modalError}
                     onClose={handleCloseStudentModal}
                 />

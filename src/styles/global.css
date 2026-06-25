@@ -79,3 +79,7 @@ textarea {
     font-family: var(--font-family);
     outline: none;
 }
+
+textarea {
+    resize: none !important;
+}

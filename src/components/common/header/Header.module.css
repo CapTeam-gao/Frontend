@@ -1,29 +1,50 @@
 .header {
-    position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     width: 100%;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 20px;
+    column-gap: clamp(16px, 3vw, 40px);
+    padding: 0 clamp(20px, 3vw, 40px);
     height: var(--header-height);
     border-bottom: 1px solid var(--color-border);
 }
 
+.header > a {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
 .logo {
-    width: 80px;
-    height: 80px;
+    width: clamp(56px, 6vw, 80px);
+    height: clamp(56px, 6vw, 80px);
+    object-fit: contain;
 }
 
 .nav {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    min-width: 0;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 100px;
-    font-size: var(--font-size-lg);
+    gap: clamp(20px, 5vw, 92px);
+    overflow: hidden;
+    font-size: clamp(14px, 1.05vw, 16px);
     font-weight: var(--font-weight-semibold);
-    transform: translate(-50%, -50%);
+    white-space: nowrap;
+}
+
+.nav a {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--color-text-primary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color var(--transition);
+}
+
+.nav a:hover {
+    color: var(--color-primary);
 }
 
 .teamNavLink {
@@ -37,9 +58,12 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
+    overflow: visible;
 }
 
 .chatUnreadDot {
+    flex: 0 0 auto;
     display: inline-flex;
     width: 8px;
     height: 8px;
@@ -48,34 +72,61 @@
 }
 
 .userSlot {
+    display: flex;
+    justify-content: flex-end;
     min-width: 0;
-    margin-left: auto;
+}
+
+.userSlot a {
+    min-width: 0;
+    max-width: clamp(96px, 14vw, 180px);
 }
 
 .user {
     color: var(--color-primary);
-    margin-right: 20px;
-    font-size: var(--font-size-lg);
+    overflow: hidden;
+    font-size: clamp(14px, 1.05vw, 16px);
     font-weight: var(--font-weight-semibold);
     text-align: right;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-@media (max-width: 1024px) {
-    .nav {
-        gap: 42px;
-        font-size: var(--font-size-md);
+@media (max-width: 1180px) {
+    .header {
+        column-gap: 18px;
+        padding: 0 24px;
     }
 
-    .logo {
-        width: 64px;
-        height: 64px;
+    .nav {
+        justify-content: flex-start;
+        gap: 28px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav a {
+        flex: 0 0 auto;
+    }
+
+    .userSlot a {
+        max-width: 140px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav {
+        gap: 24px;
     }
 }
 
 @media (max-width: 768px) {
     .header {
-        flex-wrap: wrap;
+        grid-template-columns: auto minmax(0, 1fr);
         height: auto;
         min-height: var(--header-height);
         padding: 14px 16px 10px;
@@ -88,92 +139,23 @@
     }
 
     .nav {
-        position: static;
+        grid-column: 1 / -1;
         order: 3;
         width: 100%;
         gap: 18px;
         overflow-x: auto;
         padding: 8px 0 2px;
-        transform: none;
-        white-space: nowrap;
-        scrollbar-width: none;
-    }
-
-    .nav::-webkit-scrollbar {
-        display: none;
-    }
-
-    .nav a {
-        flex: 0 0 auto;
     }
 
     .userSlot {
-        max-width: calc(100% - 72px);
+        min-width: 0;
+    }
+
+    .userSlot a {
+        max-width: calc(100vw - 96px);
     }
 
     .user {
-        margin-right: 0;
-        overflow: hidden;
         font-size: var(--font-size-md);
-        text-overflow: ellipsis;
-    }
-}
-
-@media (max-width: 1024px) {
-    .nav {
-        gap: 40px;
-        font-size: var(--font-size-md);
-    }
-
-    .logo {
-        width: 64px;
-        height: 64px;
-    }
-}
-
-@media (max-width: 768px) {
-    .header {
-        flex-wrap: wrap;
-        align-items: center;
-        height: auto;
-        min-height: var(--header-height);
-        padding: 14px 16px 10px;
-        row-gap: 10px;
-    }
-
-    .logo {
-        width: 52px;
-        height: 52px;
-    }
-
-    .nav {
-        position: static;
-        order: 3;
-        width: 100%;
-        gap: 18px;
-        overflow-x: auto;
-        padding: 8px 0 2px;
-        transform: none;
-        white-space: nowrap;
-        scrollbar-width: none;
-    }
-
-    .nav::-webkit-scrollbar {
-        display: none;
-    }
-
-    .nav a {
-        flex: 0 0 auto;
-    }
-
-    .userSlot {
-        max-width: calc(100% - 72px);
-    }
-
-    .user {
-        margin-right: 0;
-        overflow: hidden;
-        font-size: var(--font-size-md);
-        text-overflow: ellipsis;
     }
 }

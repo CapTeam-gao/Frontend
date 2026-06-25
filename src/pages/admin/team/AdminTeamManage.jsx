@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import AdminTeamCard from "../../../components/admin/team/AdminTeamCard";
 import AdminTeamDetailModal from "../../../components/admin/team/AdminTeamDetailModal";
@@ -21,7 +22,9 @@ const AdminTeamManage = () => {
     const [modalError, setModalError] = useState("");
     const showLoading = useDelayedLoading(isLoading);
     const showDetailLoading = useDelayedLoading(isDetailLoading);
-
+    const [searchParams] = useSearchParams();
+    const targetTeamName = searchParams.get("teamName");
+    const openedQueryTeamNameRef = useRef(null);
     useEffect(() => {
         const getTeams = async () => {
             try {
@@ -83,6 +86,21 @@ const AdminTeamManage = () => {
             setIsDetailLoading(false);
         }
     };
+    useEffect(() => {
+        if (isLoading || !targetTeamName) return;
+        if (openedQueryTeamNameRef.current === targetTeamName) return;
+
+        const targetTeam = teams.find(
+            (team) =>
+                (team.projectTeamName || team.teamName) === targetTeamName ||
+                team.teamName === targetTeamName
+        );
+
+        if (!targetTeam) return;
+
+        openedQueryTeamNameRef.current = targetTeamName;
+        handleOpenTeam(targetTeam.teamId);
+    }, [isLoading, targetTeamName, teams]);
 
     const handleCloseModal = () => {
         setSelectedTeam(null);

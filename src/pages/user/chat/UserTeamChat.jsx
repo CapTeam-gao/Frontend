@@ -98,32 +98,6 @@ const UserTeamChat = () => {
                     <section className={styles.chatContent}>
                         {error && <p className={styles.errorText}>{error}</p>}
 
-                        <header className={styles.chatHeader}>
-                            <div>
-                                <span className={styles.chatHeaderLabel}>
-                                    현재 채널
-                                </span>
-                                <h2>
-                                    {selectedChannel
-                                        ? `# ${selectedChannel.channelName}`
-                                        : "채널을 선택해주세요"}
-                                </h2>
-                                <p className={styles.chatHeaderMeta}>
-                                    {channelCount}개 채널 · {memberCount}명 팀원
-                                </p>
-                            </div>
-
-                            <span
-                                className={`${styles.connectionBadge} ${
-                                    socketConnected
-                                        ? styles.connected
-                                        : styles.disconnected
-                                }`}
-                            >
-                                {socketConnected ? "실시간 연결" : "연결 대기"}
-                            </span>
-                        </header>
-
                         <div className={styles.messageArea}>
                             {isLoading && (
                                 <p className={styles.emptyText}>
