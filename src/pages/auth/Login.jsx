@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import Button from "../../components/common/button/Button";
@@ -13,7 +13,21 @@ const Login = () => {
     const isDisabled = !userId.trim() || !password || isLoading;
     const navigate = useNavigate();
     const saveLogin = authStore((state) => state.saveLogin);
+    const user = authStore((state) => state.user);
 
+    useEffect(() => {
+        if (!user?.accountRole) return;
+
+        if (user.accountRole === "ADMIN") {
+            navigate("/admin/dashboard", { replace: true });
+            return;
+        }
+
+        navigate(
+            user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro",
+            { replace: true }
+        );
+    }, [navigate, user]);
     const handleLogin = async (e) => {
         e.preventDefault();
 
