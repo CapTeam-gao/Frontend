@@ -12,7 +12,9 @@ export const roleLabels = {
 
 export const levelLabels = {
     UPPER: "상",
+    UPPER_MIDDLE: "중상",
     MIDDLE: "중",
+    LOWER_MIDDLE: "중하",
     LOWER: "하",
 };
 

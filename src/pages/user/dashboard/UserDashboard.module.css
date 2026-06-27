@@ -5,9 +5,7 @@
 
 .body {
     width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 64px 20px 72px;
+    padding: 50px 150px 72px;
 }
 
 .dashboard {

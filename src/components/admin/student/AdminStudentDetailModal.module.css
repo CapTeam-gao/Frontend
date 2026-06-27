@@ -234,12 +234,19 @@
 
 .reliabilityMEDIUM {
     background-color: #fff4cc;
+    display: flex;
     color: #9a6a00;
+    justify-content: center;
+    align-items: center;
 }
 
 .reliabilityLOW {
     background-color: #ffe5e5;
+    display: flex;
+
     color: var(--color-danger);
+    justify-content: center;
+    align-items: center;
 }
 
 .reliabilityCount {
@@ -331,8 +338,7 @@
 .chartCard,
 .reliabilityCard {
     padding: 16px;
-    border: 1px solid #e4e7ec;
-    border-radius: var(--border-radius-sm);
+    padding-top: 0;
     background-color: #ffffff;
 }
 
