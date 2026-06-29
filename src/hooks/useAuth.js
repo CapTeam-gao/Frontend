@@ -6,9 +6,11 @@ import authStore from "../store/authStore";
 const useAuth = () => {
     const accessToken = authStore((state) => state.accessToken);
     const saveLogin = authStore((state) => state.saveLogin);
-    const logout = authStore((state) => state.logout);
+    const setUnauthenticated = authStore((state) => state.setUnauthenticated);
 
     useEffect(() => {
+        let ignore = false;
+
         const checkLogin = async () => {
             try {
                 if (!accessToken) {
@@ -20,22 +22,32 @@ const useAuth = () => {
                     }
 
                     const user = await requestMyInfo(newAccessToken);
+                    if (ignore) return;
+
                     saveLogin(user, newAccessToken);
                     return;
                 }
 
                 const user = await requestMyInfo(accessToken);
+                if (ignore) return;
+
                 const latestAccessToken =
                     authStore.getState().accessToken ?? accessToken;
 
                 saveLogin(user, latestAccessToken);
             } catch {
-                logout();
+                if (!ignore) {
+                    setUnauthenticated();
+                }
             }
         };
 
         checkLogin();
-    }, [logout, saveLogin, accessToken]);
+
+        return () => {
+            ignore = true;
+        };
+    }, [setUnauthenticated, saveLogin, accessToken]);
 };
 
 export default useAuth;

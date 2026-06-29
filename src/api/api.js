@@ -12,6 +12,27 @@ const getAccessTokenFromResponse = (response) => {
     return response.data?.accessToken ?? response.data?.data?.accessToken;
 };
 
+let refreshPromise = null;
+
+const requestRefreshToken = () => {
+    if (!refreshPromise) {
+        refreshPromise = api
+            .post(
+                "/api/auth/reissue",
+                {},
+                {
+                    skipAuthRedirect: true,
+                    skipAuthHeader: true,
+                }
+            )
+            .finally(() => {
+                refreshPromise = null;
+            });
+    }
+
+    return refreshPromise;
+};
+
 api.interceptors.request.use((config) => {
     if (config.skipAuthHeader) {
         return config;
@@ -46,15 +67,7 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const response = await api.post(
-                    "/api/auth/reissue",
-                    {},
-                    {
-                        skipAuthRedirect: true,
-                        skipAuthHeader: true,
-                    }
-                );
-
+                const response = await requestRefreshToken();
                 const newAccessToken = getAccessTokenFromResponse(response);
 
                 if (!newAccessToken) {
@@ -67,9 +80,9 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
 
                 return api(originalRequest);
-            } catch {
-                authStore.getState().logout();
-                window.location.href = "/login";
+            } catch (refreshError) {
+                authStore.getState().setUnauthenticated();
+                return Promise.reject(refreshError);
             }
         }
 

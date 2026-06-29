@@ -197,10 +197,7 @@ const AdminStudentManage = () => {
                         {showLoading && "학생 정보를 불러오는 중입니다."}
                     </p>
                 ) : filteredStudents.length === 0 ? (
-                    <p className={styles.emptyText}>
-                        표시할 학생이 없습니다. 팀 생성 승인 후 학생 목록이
-                        표시됩니다.
-                    </p>
+                    <p className={styles.emptyText}>표시할 학생이 없습니다.</p>
                 ) : (
                     <section className={styles.studentGrid}>
                         {filteredStudents.map((student) => (

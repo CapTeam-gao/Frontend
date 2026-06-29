@@ -21,15 +21,29 @@ const getStoredUser = () => {
 const savedUser = getStoredUser();
 
 const authStore = create((set) => ({
+    authStatus: "checking",
     isLogin: savedToken ? (savedUser ? true : null) : false,
     user: savedUser,
     accessToken: savedToken,
+
+    setUnauthenticated: () => {
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+        localStorage.removeItem(USER_STORAGE_KEY);
+
+        set({
+            authStatus: "unauthenticated",
+            user: null,
+            accessToken: null,
+            isLogin: false,
+        });
+    },
 
     setAccessToken: (accessToken) => {
         if (!isValidAccessToken(accessToken)) {
             localStorage.removeItem(ACCESS_TOKEN_KEY);
             localStorage.removeItem(USER_STORAGE_KEY);
             set({
+                authStatus: "unauthenticated",
                 user: null,
                 accessToken: null,
                 isLogin: false,
@@ -41,6 +55,7 @@ const authStore = create((set) => ({
 
         set((state) => ({
             accessToken: accessToken.trim(),
+            authStatus: state.user ? "authenticated" : state.authStatus,
             isLogin: state.user ? true : state.isLogin,
         }));
     },
@@ -50,6 +65,7 @@ const authStore = create((set) => ({
             localStorage.removeItem(ACCESS_TOKEN_KEY);
             localStorage.removeItem(USER_STORAGE_KEY);
             set({
+                authStatus: "unauthenticated",
                 user: null,
                 accessToken: null,
                 isLogin: false,
@@ -61,6 +77,7 @@ const authStore = create((set) => ({
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
 
         set({
+            authStatus: "authenticated",
             user,
             accessToken: accessToken.trim(),
             isLogin: true,
@@ -72,6 +89,7 @@ const authStore = create((set) => ({
         localStorage.removeItem(USER_STORAGE_KEY);
 
         set({
+            authStatus: "unauthenticated",
             user: null,
             accessToken: null,
             isLogin: false,
