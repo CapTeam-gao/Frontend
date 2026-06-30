@@ -80,9 +80,10 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
 
                 return api(originalRequest);
-            } catch (refreshError) {
+            } catch {
                 authStore.getState().setUnauthenticated();
-                return Promise.reject(refreshError);
+                error.isAuthExpired = true;
+                return Promise.reject(error);
             }
         }
 

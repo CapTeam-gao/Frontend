@@ -147,7 +147,7 @@
     }
 
     .card {
-        min-height: 190px;
+        min-height: 168px;
         padding: 28px;
     }
 }
@@ -155,7 +155,7 @@
 @media (max-width: 640px) {
     .card {
         align-items: center;
-        min-height: 148px;
+        min-height: 124px;
         padding: 22px 20px;
     }
 
@@ -195,8 +195,8 @@
     }
 
     .card {
-        min-height: 136px;
-        padding: 24px 22px;
+        min-height: 116px;
+        padding: 20px 18px;
     }
 
     .iconBox {
@@ -221,7 +221,7 @@
     }
 
     .statusText {
-        margin-top: 14px;
+        margin-top: 12px;
         font-size: var(--font-size-xs);
     }
 }

@@ -43,6 +43,102 @@
     line-height: 1.3;
 }
 
+.errorCard {
+    width: min(760px, calc(100vw - 40px));
+    margin-top: 38px;
+    padding: 30px;
+    border: 1px solid #e8efe9;
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    text-align: center;
+}
+
+.errorLabel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background-color: #fff3e1;
+    color: #b45309;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.errorCard h1 {
+    margin: 14px 0 0;
+    color: #000000;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.25;
+}
+
+.errorCard p {
+    margin: 12px auto 0;
+    max-width: 520px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
+.pendingGroupList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+    text-align: left;
+}
+
+.pendingGroup {
+    padding: 16px;
+    border: 1px solid #edf0f2;
+    border-radius: var(--border-radius-sm);
+    background-color: #f8faf9;
+}
+
+.pendingGroupHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e4e9e6;
+}
+
+.pendingGroupHeader strong {
+    color: #111827;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.pendingGroupHeader span {
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.pendingGroup ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pendingGroup li {
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: #ffffff;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
 .retryButton {
     display: inline-flex;
     align-items: center;
@@ -107,5 +203,19 @@
     .loadingText {
         font-size: var(--font-size-3xl);
         text-align: center;
+    }
+
+    .errorCard {
+        width: 100%;
+        margin-top: 28px;
+        padding: 24px 18px;
+    }
+
+    .pendingGroupList {
+        grid-template-columns: 1fr;
+    }
+
+    .errorCard h1 {
+        font-size: var(--font-size-2xl);
     }
 }

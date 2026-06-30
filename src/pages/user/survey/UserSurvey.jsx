@@ -27,6 +27,10 @@ const getSurveySubmitErrorMessage = (error) => {
     const serverMessage =
         error.response?.data?.message || error.response?.data?.error || "";
 
+    if (error.isAuthExpired || error.response?.status === 401) {
+        return "로그인이 만료되었습니다. 다시 로그인한 뒤 설문을 제출해주세요.";
+    }
+
     if (!error.response) {
         return "서버와 연결하지 못했습니다. 네트워크 상태를 확인한 뒤 다시 제출해주세요.";
     }
@@ -43,7 +47,10 @@ const getSurveySubmitErrorMessage = (error) => {
         return "서버에서 설문을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
     }
 
-    return serverMessage || "설문 저장 중 오류가 발생했습니다. 입력 내용을 확인한 뒤 다시 제출해주세요.";
+    return (
+        serverMessage ||
+        "설문 저장 중 오류가 발생했습니다. 입력 내용을 확인한 뒤 다시 제출해주세요."
+    );
 };
 
 const UserSurvey = () => {
@@ -71,9 +78,10 @@ const UserSurvey = () => {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const cleanSkills = useMemo(() => getSkillsFromText(stackText), [
-        stackText,
-    ]);
+    const cleanSkills = useMemo(
+        () => getSkillsFromText(stackText),
+        [stackText]
+    );
     const completedExperienceCount = experiences.filter((experience) =>
         experience.value.trim()
     ).length;
@@ -594,15 +602,41 @@ const UserSurvey = () => {
                             </ul>
                         </section>
 
-                        <div className={styles.submitArea}>
-                            <p className={error ? styles.errorText : ""}>
-                                {error ||
-                                    (isSurveyReady
-                                        ? "필수 항목이 모두 입력되었습니다. 제출 전 내용을 한 번만 확인해주세요."
-                                        : "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다.")}
-                            </p>
+                        <div
+                            className={`${styles.submitArea} ${
+                                isSubmitting ? styles.submittingArea : ""
+                            }`}
+                        >
+                            {isSubmitting ? (
+                                <div
+                                    className={styles.analysisStatus}
+                                    aria-live="polite"
+                                >
+                                    <div className={styles.analysisHeader}>
+                                        <strong>설문을 분석하고 있어요</strong>
+                                        <p>
+                                            개발 역량과 성향을 정리해 팀 추천
+                                            데이터를 준비하는 중이에요.
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        className={styles.analysisProgress}
+                                        aria-hidden="true"
+                                    >
+                                        <span />
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className={error ? styles.errorText : ""}>
+                                    {error ||
+                                        (isSurveyReady
+                                            ? "필수 항목이 모두 입력되었습니다. 제출 전 내용을 한 번만 확인해주세요."
+                                            : "제출 후에는 마이페이지에서 일부 정보를 수정할 수 있습니다.")}
+                                </p>
+                            )}
                             <button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "제출 중..." : "설문 제출"}
+                                {isSubmitting ? "분석 중입니다" : "설문 제출"}
                             </button>
                         </div>
                     </form>

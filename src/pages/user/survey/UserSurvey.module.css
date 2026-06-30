@@ -460,6 +460,60 @@
     color: var(--color-danger);
 }
 
+.submittingArea {
+    align-items: center;
+    background-color: #f8fbf9;
+}
+
+.analysisStatus {
+    flex: 1;
+    min-width: 0;
+}
+
+.analysisHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.analysisHeader strong {
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.35;
+}
+
+.analysisHeader p {
+    flex: initial;
+    max-width: 520px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+    text-align: right;
+}
+
+.analysisProgress {
+    position: relative;
+    height: 8px;
+    margin-top: 14px;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #e8f0ec;
+}
+
+.analysisProgress span {
+    position: absolute;
+    top: 0;
+    left: -38%;
+    width: 38%;
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--color-primary);
+    animation: analysisProgress 1.4s ease-in-out infinite;
+}
+
 .submitArea button {
     flex-shrink: 0;
     height: 48px;
@@ -487,6 +541,20 @@
     opacity: 0.65;
 }
 
+@keyframes analysisProgress {
+    0% {
+        left: -38%;
+    }
+
+    55% {
+        left: 50%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
 @media (max-width: 960px) {
     .hero,
     .submitArea {
@@ -501,6 +569,10 @@
     }
 
     .submitArea button {
+        width: 100%;
+    }
+
+    .analysisStatus {
         width: 100%;
     }
 
@@ -557,5 +629,16 @@
 
     .binaryGroup {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analysisHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .analysisHeader p {
+        max-width: none;
+        text-align: left;
     }
 }
