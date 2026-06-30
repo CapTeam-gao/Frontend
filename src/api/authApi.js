@@ -1,4 +1,4 @@
-import api from "./api";
+import api, { reissueAccessToken } from "./api";
 import { isValidAccessToken } from "../utils/authToken";
 
 const makeAuthHeader = (token) => {
@@ -28,16 +28,7 @@ export const requestLogin = async (userId, password) => {
 };
 
 export const requestReissue = async () => {
-    const response = await api.post(
-        "/api/auth/reissue",
-        {},
-        {
-            skipAuthRedirect: true,
-            skipAuthHeader: true,
-        }
-    );
-
-    return response.data?.data ?? response.data;
+    return reissueAccessToken();
 };
 
 export const requestMyInfo = async (token) => {

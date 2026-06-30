@@ -33,6 +33,19 @@ const requestRefreshToken = () => {
     return refreshPromise;
 };
 
+export const reissueAccessToken = async () => {
+    const response = await requestRefreshToken();
+    const newAccessToken = getAccessTokenFromResponse(response);
+
+    if (!newAccessToken) {
+        throw new Error("새 accessToken이 응답에 없습니다.");
+    }
+
+    authStore.getState().setAccessToken(newAccessToken);
+
+    return response.data?.data ?? response.data;
+};
+
 api.interceptors.request.use((config) => {
     if (config.skipAuthHeader) {
         return config;
@@ -67,14 +80,8 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const response = await requestRefreshToken();
-                const newAccessToken = getAccessTokenFromResponse(response);
-
-                if (!newAccessToken) {
-                    throw new Error("새 accessToken이 응답에 없습니다.");
-                }
-
-                authStore.getState().setAccessToken(newAccessToken);
+                const reissueData = await reissueAccessToken();
+                const newAccessToken = reissueData.accessToken;
 
                 originalRequest.headers = originalRequest.headers ?? {};
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
