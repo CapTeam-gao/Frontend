@@ -199,11 +199,11 @@ export const developmentGroups = [
 export const roleToStudentRole = {
     프론트엔드: "FRONTEND",
     백엔드: "BACKEND",
-    DevOps: "BACKEND",
+    DevOps: "DEVOPS",
     디자인: "DESIGN",
     AI: "AI",
     "앱 개발": "APP",
-    게임개발: "APP",
-    보안: "BACKEND",
-    풀스택: "BACKEND",
+    게임개발: "GAME",
+    보안: "SECURITY",
+    풀스택: "FULLSTACK",
 };
