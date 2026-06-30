@@ -56,12 +56,13 @@ const Login = () => {
             saveLogin(user, token);
 
             if (user.accountRole === "ADMIN") {
-                navigate("/admin/dashboard");
+                navigate("/admin/dashboard", { replace: true });
                 return;
             }
 
             navigate(
-                user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro"
+                user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro",
+                { replace: true }
             );
         } catch (e) {
             if (e.response) {

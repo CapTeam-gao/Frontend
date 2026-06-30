@@ -40,7 +40,7 @@ const UserProfile = () => {
             await requestLogout();
         } finally {
             logout();
-            navigate("/login");
+            navigate("/login", { replace: true });
         }
     };
 
