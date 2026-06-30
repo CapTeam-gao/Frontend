@@ -23,6 +23,29 @@ const personalityQuestions = flattenQuestions(personalityGroups, "personality");
 const developmentQuestions = flattenQuestions(developmentGroups, "development");
 const allRatingQuestions = [...personalityQuestions, ...developmentQuestions];
 
+const getSurveySubmitErrorMessage = (error) => {
+    const serverMessage =
+        error.response?.data?.message || error.response?.data?.error || "";
+
+    if (!error.response) {
+        return "서버와 연결하지 못했습니다. 네트워크 상태를 확인한 뒤 다시 제출해주세요.";
+    }
+
+    if (
+        serverMessage.includes("student_level") ||
+        serverMessage.includes("Data truncated") ||
+        serverMessage.includes("could not execute statement")
+    ) {
+        return "설문 분석 결과를 저장하는 중 문제가 발생했습니다. 잠시 후 다시 제출해주세요.";
+    }
+
+    if (error.response.status >= 500) {
+        return "서버에서 설문을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
+    }
+
+    return serverMessage || "설문 저장 중 오류가 발생했습니다. 입력 내용을 확인한 뒤 다시 제출해주세요.";
+};
+
 const UserSurvey = () => {
     const navigate = useNavigate();
     const user = authStore((state) => state.user);
@@ -250,11 +273,8 @@ const UserSurvey = () => {
 
             navigate("/user/dashboard");
         } catch (e) {
-            setError(
-                e.response?.data?.message ||
-                    e.response?.data?.error ||
-                    "설문 저장 중 오류가 발생했습니다."
-            );
+            console.error("설문 제출 실패:", e);
+            setError(getSurveySubmitErrorMessage(e));
         } finally {
             setIsSubmitting(false);
         }
