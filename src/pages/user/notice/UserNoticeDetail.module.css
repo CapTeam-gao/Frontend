@@ -94,7 +94,7 @@
 .content :global(h1),
 .content :global(h2),
 .content :global(h3) {
-    margin: 20px 0 12px;
+    margin: 18px 0 10px;
     color: #111827 !important;
     font-weight: 800;
     line-height: 1.35;
@@ -113,7 +113,20 @@
 }
 
 .content :global(p) {
-    margin: 12px 0;
+    margin: 8px 0;
+}
+
+.content :global(p:first-child),
+.content :global(h1:first-child),
+.content :global(h2:first-child),
+.content :global(h3:first-child) {
+    margin-top: 0;
+}
+
+.content :global(p:last-child),
+.content :global(ul:last-child),
+.content :global(ol:last-child) {
+    margin-bottom: 0;
 }
 
 .content :global(strong),
@@ -133,7 +146,7 @@
 
 .content :global(ul),
 .content :global(ol) {
-    margin: 14px 0;
+    margin: 10px 0;
     padding-left: 26px;
 }
 

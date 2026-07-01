@@ -1,7 +1,7 @@
 import styles from "./Header.module.css";
 import Logo from "../../../assets/images/logo.png";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import TeamRequiredModal from "../TeamRequiredModal";
@@ -13,6 +13,7 @@ import {
 
 const Header = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const user = authStore((state) => state.user);
 
     const hasUser = Boolean(user);
@@ -24,6 +25,7 @@ const Header = () => {
     );
     const [studentTeamCreated, setStudentTeamCreated] = useState(null);
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
+    const [showPasswordNotice, setShowPasswordNotice] = useState(false);
 
     const { hasUnreadChat } = useUnreadChatCount({
         enabled: hasUser,
@@ -80,6 +82,21 @@ const Header = () => {
             ignore = true;
         };
     }, [hasUser, isAdmin]);
+
+    useEffect(() => {
+        if (!hasUser) return;
+
+        const shouldShowNotice =
+            sessionStorage.getItem("capteam-show-password-change-notice") ===
+            "true";
+
+        if (shouldShowNotice) {
+            sessionStorage.removeItem("capteam-show-password-change-notice");
+            window.setTimeout(() => {
+                setShowPasswordNotice(true);
+            }, 0);
+        }
+    }, [hasUser]);
 
     const makeHeaderName = (user) => {
         if (!user) return "";
@@ -228,8 +245,22 @@ const Header = () => {
 
             {teamRequiredModal && (
                 <TeamRequiredModal
+                    title="팀 생성 후 이용 가능합니다"
                     message={teamRequiredModal.message}
                     onClose={() => setTeamRequiredModal(null)}
+                />
+            )}
+
+            {showPasswordNotice && (
+                <TeamRequiredModal
+                    label="보안 안내"
+                    title="비밀번호를 변경해주세요"
+                    message="처음 발급받은 비밀번호를 계속 사용 중이라면 내 정보에서 새 비밀번호로 변경해주세요."
+                    actionText="변경하러 가기"
+                    onAction={() =>
+                        navigate(isAdmin ? "/admin/profile" : "/user/profile")
+                    }
+                    onClose={() => setShowPasswordNotice(false)}
                 />
             )}
         </div>

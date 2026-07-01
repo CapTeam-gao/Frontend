@@ -5,6 +5,8 @@ import Button from "../../components/common/button/Button";
 import { requestLogin, requestMyInfo } from "../../api/authApi";
 import authStore from "../../store/authStore";
 
+const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
+
 const Login = () => {
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
@@ -54,6 +56,7 @@ const Login = () => {
             }
 
             saveLogin(user, token);
+            sessionStorage.setItem(PASSWORD_CHANGE_NOTICE_KEY, "true");
 
             if (user.accountRole === "ADMIN") {
                 navigate("/admin/dashboard", { replace: true });
