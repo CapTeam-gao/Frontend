@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 const getAccessTokenFromResponse = (response) => {
-    return response.data?.accessToken ?? response.data?.data?.accessToken;
+    return response.data.accessToken;
 };
 
 let refreshPromise = null;
@@ -53,7 +53,7 @@ export const reissueAccessToken = async () => {
 
     authStore.getState().setAccessToken(newAccessToken);
 
-    return response.data?.data ?? response.data;
+    return response.data;
 };
 
 api.interceptors.request.use((config) => {

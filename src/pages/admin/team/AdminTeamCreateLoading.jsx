@@ -82,8 +82,7 @@ const AdminTeamCreateLoading = () => {
                 });
             } catch (e) {
                 setError(
-                    e.response?.data?.message ||
-                        e.response?.data?.error ||
+                    e.response?.data?.error ||
                         "팀 추천안 생성 중 오류가 발생했습니다."
                 );
             }

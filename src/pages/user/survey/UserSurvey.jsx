@@ -24,8 +24,7 @@ const developmentQuestions = flattenQuestions(developmentGroups, "development");
 const allRatingQuestions = [...personalityQuestions, ...developmentQuestions];
 
 const getSurveySubmitErrorMessage = (error) => {
-    const serverMessage =
-        error.response?.data?.message || error.response?.data?.error || "";
+    const serverMessage = error.response?.data?.error || "";
 
     if (error.isAuthExpired || error.response?.status === 401) {
         return "로그인이 만료되었습니다. 다시 로그인한 뒤 설문을 제출해주세요.";

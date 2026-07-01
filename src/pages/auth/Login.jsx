@@ -46,7 +46,7 @@ const Login = () => {
                 return;
             }
 
-            const user = loginData.user || (await requestMyInfo(token));
+            const user = await requestMyInfo(token);
 
             if (!user || !user.accountRole) {
                 setError("사용자 권한 정보를 받지 못했습니다.");

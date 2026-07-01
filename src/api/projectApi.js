@@ -1,6 +1,6 @@
 import api from "./api";
 
-const getResponseData = (response) => response.data?.data ?? response.data;
+const getResponseData = (response) => response.data.data;
 
 export const requestUserProjectPlan = async () => {
     const response = await api.get("/api/teams/project");

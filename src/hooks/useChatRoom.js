@@ -115,8 +115,8 @@ const useChatRoom = ({ setError }) => {
             const nextSelectedChannel = channels.find(
                 (channel) => String(channel.id) === String(selectedChannelId)
             );
-            const fallbackChannel = channels[0] ?? null;
-            const nextChannel = nextSelectedChannel ?? fallbackChannel;
+            const firstAvailableChannel = channels[0] ?? null;
+            const nextChannel = nextSelectedChannel ?? firstAvailableChannel;
 
             if (nextChannel?.id) {
                 localStorage.setItem(
@@ -337,12 +337,12 @@ const useChatRoom = ({ setError }) => {
                         return prevSelectedChannel;
                     }
 
-                    const fallbackChannel = nextChannels[0] ?? null;
+                    const firstAvailableChannel = nextChannels[0] ?? null;
 
-                    if (fallbackChannel?.id) {
+                    if (firstAvailableChannel?.id) {
                         localStorage.setItem(
                             SELECTED_CHAT_CHANNEL_STORAGE_KEY,
-                            String(fallbackChannel.id)
+                            String(firstAvailableChannel.id)
                         );
                     } else {
                         localStorage.removeItem(
@@ -350,7 +350,7 @@ const useChatRoom = ({ setError }) => {
                         );
                     }
 
-                    return fallbackChannel;
+                    return firstAvailableChannel;
                 });
 
                 return {

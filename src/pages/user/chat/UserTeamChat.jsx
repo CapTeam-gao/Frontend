@@ -47,21 +47,9 @@ const UserTeamChat = () => {
         openDeleteChannelModal,
         closeChannelModal,
     } = useUserTeamChat();
-    const roomMembers = room?.members ?? room?.teamMembers ?? [];
+    const currentMember = room?.myMember;
 
-    const currentMember =
-        room?.myMember ??
-        roomMembers.find(
-            (member) => String(member.userId) === String(currentUserId)
-        ) ??
-        members.find(
-            (member) => String(member.userId) === String(currentUserId)
-        );
-
-    const canManageChannel =
-        currentMember?.leaderRole === "LEADER" ||
-        currentMember?.role === "LEADER" ||
-        currentMember?.isLeader === true;
+    const canManageChannel = currentMember?.leaderRole === "LEADER";
     const showEmptyChannel =
         !isLoading && !isMessageLoading && !selectedChannel;
     const showEmptyMessage =
@@ -75,7 +63,7 @@ const UserTeamChat = () => {
         selectedChannel &&
         messages.length > 0;
     const channelCount = room?.channels?.length ?? 0;
-    const memberCount = members.length || roomMembers.length;
+    const memberCount = members.length;
 
     return (
         <div className={styles.page}>

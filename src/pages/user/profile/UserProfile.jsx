@@ -70,22 +70,19 @@ const UserProfile = () => {
         try {
             setIsSubmittingPassword(true);
 
-            const data = await requestChangePassword({
+            await requestChangePassword({
                 password: currentPassword,
                 newPassword,
                 checkPassword: confirmPassword,
             });
-            setSuccessMessage(
-                data.message || "비밀번호 변경이 완료되었습니다."
-            );
+            setSuccessMessage("비밀번호 변경이 완료되었습니다.");
             setIsEditingPassword(false);
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
         } catch (e) {
             setError(
-                e.response?.data?.message ||
-                    e.response?.data?.error ||
+                e.response?.data?.error ||
                     "비밀번호 변경에 실패했습니다."
             );
         } finally {

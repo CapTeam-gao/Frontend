@@ -30,16 +30,14 @@ export const parseMainFeatures = (mainFeatures) => {
 
 export const normalizeProjectPlan = (data) => {
     const project = data ?? {};
-    const parsedFeatures = parseMainFeatures(
-        project.coreFeatures ?? project.mainFeatures
-    );
+    const parsedFeatures = parseMainFeatures(project.mainFeatures);
 
     return {
         ...emptyProjectPlan,
         projectId: project.projectId ?? null,
         teamName: project.teamName ?? "",
         serviceName: project.serviceName ?? "",
-        serviceSummary: project.serviceSummary ?? project.serviceIntro ?? "",
+        serviceSummary: project.serviceIntro ?? "",
         coreFeatures:
             parsedFeatures.length > 0
                 ? parsedFeatures.map((feature, index) => ({

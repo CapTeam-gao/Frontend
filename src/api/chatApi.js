@@ -1,6 +1,6 @@
 import api from "./api";
 
-const getResponseData = (response) => response.data?.data ?? response.data;
+const getResponseData = (response) => response.data.data;
 
 export const requestMyChatRoom = async () => {
     const response = await api.get("/api/chat/rooms/my");
@@ -73,15 +73,17 @@ export const requestUploadChatFile = async (channelId, file) => {
 
     const response = await api.post(
         `/api/chat/channels/${channelId}/files`,
-        formData,
-        {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        }
+        formData
     );
 
-    return getResponseData(response);
+    const uploadedFile = getResponseData(response);
+
+    return {
+        fileUrl: uploadedFile.fileUrl,
+        fileName: uploadedFile.originalFileName ?? uploadedFile.fileName,
+        contentType: uploadedFile.contentType ?? uploadedFile.fileType,
+        size: uploadedFile.size ?? uploadedFile.fileSize,
+    };
 };
 
 export const requestChatPresence = async (channelId) => {

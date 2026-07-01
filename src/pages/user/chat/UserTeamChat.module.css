@@ -12,7 +12,7 @@
 
 .chatLayout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 260px;
+    grid-template-columns: 264px minmax(0, 1fr) 244px;
     height: calc(100vh - 84px);
     min-height: 0;
     background-color: #ffffff;
@@ -22,21 +22,20 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    padding: 24px 18px;
-    border-right: 1px solid #e5e7eb;
-    background-color: #f8faf9;
+    padding: 18px 14px;
+    border-right: 1px solid #eef1f4;
+    background-color: #fbfcfc;
 }
 
 .sidebarHeader {
-    padding: 6px 10px 24px;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 4px 8px 18px;
 }
 
 .sidebarHeader h1 {
     margin: 0;
     color: #111827;
-    font-size: 25px;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: 750;
     line-height: 1.15;
     word-break: keep-all;
 }
@@ -44,13 +43,14 @@
 .sidebarHeader p {
     margin: 8px 0 0;
     color: #667085;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.45;
 }
 
 .channelArea {
     min-height: 0;
-    padding-top: 18px;
+    padding-top: 14px;
 }
 
 .sectionTitle {
@@ -59,8 +59,8 @@
     justify-content: space-between;
     margin: 0 8px 10px;
     color: #98a2b3;
-    font-size: 13px;
-    font-weight: 900;
+    font-size: 12px;
+    font-weight: 750;
 }
 
 .addChannelButton {
@@ -70,17 +70,17 @@
     width: 28px;
     height: 28px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: transparent;
     color: #667085;
     font-size: 21px;
-    font-weight: 900;
+    font-weight: 800;
     cursor: pointer;
 }
 
 .addChannelButton:hover {
-    background-color: #344054;
-    color: #ffffff;
+    background-color: #eef7f2;
+    color: #2f9f78;
 }
 
 .channelList {
@@ -107,7 +107,7 @@
     flex-shrink: 0;
     min-height: 82px;
     padding: 16px 28px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #eef1f4;
     background-color: #ffffff;
 }
 
@@ -116,14 +116,14 @@
     margin-bottom: 5px;
     color: #98a2b3;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 750;
 }
 
 .chatHeader h2 {
     margin: 0;
     color: #111827;
     font-size: 22px;
-    font-weight: 900;
+    font-weight: 750;
     line-height: 1.25;
     word-break: keep-all;
 }
@@ -132,7 +132,7 @@
     margin: 7px 0 0;
     color: #667085;
     font-size: 13px;
-    font-weight: 750;
+    font-weight: 550;
 }
 
 .connectionBadge {
@@ -144,7 +144,7 @@
     background-color: #f3f4f6;
     color: #667085;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
 }
 
 .connectionBadge::before {
@@ -187,7 +187,7 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: #fcfdfc;
 }
 
 .messageList {
@@ -198,7 +198,7 @@
     height: 100%;
     min-height: 0;
     margin: 0;
-    padding: 22px 34px 30px;
+    padding: 18px 28px 22px;
     overflow-y: auto;
     list-style: none;
 }
@@ -217,7 +217,7 @@
 }
 
 .messageList::-webkit-scrollbar-thumb {
-    border: 3px solid #ffffff;
+    border: 3px solid #fcfdfc;
     border-radius: 999px;
     background-color: #cfd6dd;
 }
@@ -231,10 +231,10 @@
     align-items: center;
     gap: 12px;
     width: 100%;
-    margin: 20px 0;
+    margin: 18px 0;
     color: #98a2b3;
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 650;
 }
 
 .dateDivider::before,
@@ -242,7 +242,7 @@
     content: "";
     flex: 1;
     height: 1px;
-    background-color: #eaecf0;
+    background-color: #eef1f4;
 }
 
 .dateDivider span {
@@ -260,7 +260,7 @@
     padding: 24px;
     color: #98a2b3;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 650;
     line-height: 1.6;
     text-align: center;
     word-break: keep-all;
@@ -271,8 +271,8 @@
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    padding: 24px 18px;
-    border-left: 1px solid #e5e7eb;
+    padding: 18px 14px;
+    border-left: 1px solid #eef1f4;
     background-color: #fbfcfc;
 }
 
@@ -280,7 +280,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 4px 18px;
+    padding: 4px 4px 14px;
     color: #111827;
 }
 
@@ -290,24 +290,24 @@
 
 .memberSidebarHeader strong {
     font-size: 16px;
-    font-weight: 900;
+    font-weight: 750;
 }
 
 .memberSidebarHeader span {
     color: #98a2b3;
     font-size: 13px;
-    font-weight: 900;
+    font-weight: 700;
 }
 
 .memberGroup {
-    margin-bottom: 24px;
+    margin-bottom: 18px;
 }
 
 .memberGroupTitle {
     margin: 0 8px 10px;
     color: #98a2b3;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 750;
 }
 
 .memberList {
@@ -323,12 +323,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 44px;
-    padding: 0 10px;
-    border-radius: 8px;
+    min-height: 38px;
+    padding: 0 8px;
+    border-radius: 6px;
     color: #4b5563;
-    font-size: 14px;
-    font-weight: 850;
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .onlineMember {
@@ -355,13 +355,13 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background-color: #edf8f3;
     color: #3f9f7a;
     font-size: 13px;
-    font-weight: 900;
+    font-weight: 750;
 }
 
 .offlineMember .memberAvatar {
@@ -395,7 +395,7 @@
     margin: 0 8px;
     color: #98a2b3;
     font-size: 13px;
-    font-weight: 750;
+    font-weight: 550;
     line-height: 1.5;
 }
 
@@ -528,8 +528,8 @@
 
 .cancelButton:hover {
     border-color: #b9c0ca;
-    background-color: #344054;
-    color: #ffffff;
+    background-color: #f8fafc;
+    color: #111827;
 }
 
 .createButton {

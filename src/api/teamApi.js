@@ -1,6 +1,6 @@
 import api from "./api";
 
-const getResponseData = (response) => response.data?.data ?? response.data;
+const getResponseData = (response) => response.data.data;
 
 export const requestCreateTeamRecommendation = async (
     grade,
@@ -71,7 +71,7 @@ export const requestAcceptAllTeamRecommendations = async (grade) => {
 export const requestAdminTeamList = async () => {
     const response = await api.get("/api/admin/teams");
 
-    return getResponseData(response);
+    return response.data;
 };
 
 export const requestAdminTeamDetail = async (teamId) => {

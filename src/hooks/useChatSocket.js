@@ -260,19 +260,13 @@ const useChatSocket = ({
             sendChatSocketMessage(client, selectedChannel.id, {
                 message,
                 fileUrl: uploadedFile.fileUrl,
-                fileName:
-                    uploadedFile.originalFileName ??
-                    uploadedFile.fileName ??
-                    file.name,
-                fileType:
-                    uploadedFile.contentType ??
-                    uploadedFile.fileType ??
-                    file.type,
-                fileSize:
-                    uploadedFile.size ?? uploadedFile.fileSize ?? file.size,
+                fileName: uploadedFile.fileName,
+                fileType: uploadedFile.contentType,
+                fileSize: uploadedFile.size,
             });
-        } catch {
+        } catch (error) {
             setError("파일 전송에 실패했습니다.");
+            throw error;
         } finally {
             setIsFileSending(false);
         }

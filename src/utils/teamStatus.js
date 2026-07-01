@@ -1,53 +1,11 @@
-const hasValue = (value) => value !== null && value !== undefined;
-
-const getStatusValue = (dashboard, keys) => {
-    for (const key of keys) {
-        if (hasValue(dashboard?.[key])) {
-            return dashboard[key];
-        }
-    }
-
-    return undefined;
-};
-
 export const getAdminTeamCreationStatus = (dashboard = {}) => {
-    const grade2Source =
-        getStatusValue(dashboard, ["grade2TeamCreated", "grade2Created"]) ??
-        dashboard.teamCreationStatus?.GRADE_2 ??
-        dashboard.teamCreationStatus?.grade2 ??
-        (hasValue(dashboard.grade2TeamCount)
-            ? dashboard.grade2TeamCount > 0
-            : undefined);
-
-    const grade3Source =
-        getStatusValue(dashboard, ["grade3TeamCreated", "grade3Created"]) ??
-        dashboard.teamCreationStatus?.GRADE_3 ??
-        dashboard.teamCreationStatus?.grade3 ??
-        (hasValue(dashboard.grade3TeamCount)
-            ? dashboard.grade3TeamCount > 0
-            : undefined);
-
-    const hasGradeStatus = hasValue(grade2Source) || hasValue(grade3Source);
-
-    if (hasGradeStatus) {
-        const grade2TeamCreated = Boolean(grade2Source);
-        const grade3TeamCreated = Boolean(grade3Source);
-
-        return {
-            grade2TeamCreated,
-            grade3TeamCreated,
-            allTeamCreated: grade2TeamCreated && grade3TeamCreated,
-        };
-    }
-
-    const legacyTeamCreated = Boolean(
-        dashboard.teamCreated || dashboard.totalTeamCount > 0
-    );
+    const grade2TeamCreated = Boolean(dashboard.grade2TeamCreated);
+    const grade3TeamCreated = Boolean(dashboard.grade3TeamCreated);
 
     return {
-        grade2TeamCreated: legacyTeamCreated,
-        grade3TeamCreated: legacyTeamCreated,
-        allTeamCreated: legacyTeamCreated,
+        grade2TeamCreated,
+        grade3TeamCreated,
+        allTeamCreated: grade2TeamCreated && grade3TeamCreated,
     };
 };
 

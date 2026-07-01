@@ -151,9 +151,7 @@ const UserLogWrite = () => {
             navigate("/user/dashboard");
         } catch (e) {
             setError(
-                e.response?.data?.message ||
-                    e.response?.data?.error ||
-                    "일지 저장에 실패했습니다."
+                e.response?.data?.error || "일지 저장에 실패했습니다."
             );
         } finally {
             setIsSubmitting(false);

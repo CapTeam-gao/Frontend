@@ -48,8 +48,7 @@ const AdminStudentManage = () => {
                 });
             } catch (e) {
                 setError(
-                    e.response?.data?.message ||
-                        e.response?.data?.error ||
+                    e.response?.data?.error ||
                         "학생 정보를 불러오지 못했습니다."
                 );
             } finally {
@@ -127,8 +126,7 @@ const AdminStudentManage = () => {
         } catch (e) {
             setSelectedStudent(student);
             setModalError(
-                e.response?.data?.message ||
-                    e.response?.data?.error ||
+                e.response?.data?.error ||
                     "학생 상세 정보를 불러오지 못했습니다."
             );
         }

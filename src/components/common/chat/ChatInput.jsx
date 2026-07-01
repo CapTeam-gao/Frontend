@@ -58,9 +58,14 @@ const ChatInput = ({
         }
 
         if (selectedFile) {
-            await onFileSend?.(selectedFile, trimmedMessage);
-            clearSelectedFile();
-            setMessage("");
+            try {
+                await onFileSend?.(selectedFile, trimmedMessage);
+                clearSelectedFile();
+                setMessage("");
+            } catch {
+                inputRef.current?.focus();
+            }
+
             inputRef.current?.focus();
             return;
         }

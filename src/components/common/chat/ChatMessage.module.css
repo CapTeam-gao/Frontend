@@ -3,12 +3,12 @@
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
-    padding: 4px 6px;
-    border-radius: 8px;
+    padding: 3px 4px;
+    border-radius: 6px;
 }
 
 .messageItem.timeSeparated {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .messageItem:first-child {
@@ -22,12 +22,12 @@
 .messageMeta {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-height: 18px;
     margin-bottom: 4px;
     color: #98a2b3;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 650;
 }
 
 .mine .messageMeta {
@@ -37,14 +37,14 @@
 .senderName {
     color: #344054;
     font-size: 13px;
-    font-weight: 900;
+    font-weight: 750;
 }
 
 .messageBody {
     display: flex;
     align-items: center;
     gap: 8px;
-    max-width: min(620px, 72%);
+    max-width: min(620px, 76%);
 }
 
 .mine .messageBody {
@@ -59,13 +59,13 @@
 }
 
 .messageBubble {
-    padding: 10px 14px;
-    border: 1px solid #eaecf0;
-    border-radius: 10px;
+    padding: 9px 12px;
+    border: 1px solid #eef1f4;
+    border-radius: 8px;
     background-color: #ffffff;
     color: #1f2937;
     font-size: 15px;
-    font-weight: 550;
+    font-weight: 500;
     line-height: 1.55;
     word-break: break-word;
 }
@@ -83,8 +83,8 @@
 }
 
 .mine .messageBubble {
-    border-color: #52b98f;
-    background-color: #52b98f;
+    border-color: #55b98f;
+    background-color: #55b98f;
     color: #ffffff;
 }
 
@@ -103,9 +103,9 @@
     gap: 12px;
     min-width: 280px;
     max-width: 430px;
-    padding: 13px 14px;
+    padding: 11px 12px;
     border: 1px solid #d9e7df;
-    border-radius: 12px;
+    border-radius: 8px;
     background-color: #fbfdfc;
     color: #344054;
     font-family: var(--font-family);
@@ -120,8 +120,8 @@
 }
 
 .fileMessage:hover {
-    border-color: #8fcfb5;
-    background-color: #f4fbf8;
+    border-color: #b7decf;
+    background-color: #f7fcfa;
 }
 
 .fileIcon {
@@ -129,9 +129,9 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
     background-color: #eaf7f1;
 }
 
@@ -156,7 +156,7 @@
     overflow: hidden;
     color: #1f2937;
     font-size: 14px;
-    font-weight: 850;
+    font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -164,7 +164,7 @@
 .fileInfo small {
     color: #7b8794;
     font-size: 12px;
-    font-weight: 750;
+    font-weight: 550;
 }
 
 .imageMessage {
@@ -173,7 +173,7 @@
     max-width: min(360px, 100%);
     padding: 0;
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 8px;
     background-color: #f9fafb;
     cursor: pointer;
 }
@@ -210,13 +210,13 @@
     color: #98a2b3;
     font-family: var(--font-family);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 650;
     cursor: pointer;
 }
 
 .messageActions button:hover {
-    background-color: #344054;
-    color: #ffffff;
+    background-color: #f2f4f7;
+    color: #111827;
 }
 
 .inlineEditBox {
@@ -305,8 +305,8 @@
 
 .panelActions button:hover {
     border-color: #b9c0ca;
-    background-color: #344054;
-    color: #ffffff;
+    background-color: #f8fafc;
+    color: #111827;
 }
 
 .panelActions .primaryButton {
@@ -316,8 +316,8 @@
 }
 
 .panelActions .primaryButton:hover {
-    border-color: #43aa82;
-    background-color: #43aa82;
+    border-color: #55b98f;
+    background-color: #55b98f;
     color: #ffffff;
 }
 

@@ -37,9 +37,7 @@ const NoticeItem = ({ notice }) => {
                 </p>
             )}
             <div className={styles.meta}>
-                <p className={styles.writer}>
-                    {notice.writer || notice.authorName}
-                </p>
+                <p className={styles.writer}>{notice.writer}</p>
                 <p className={styles.date}>
                     {formatCreatedAt(notice.createdAt)}
                 </p>
