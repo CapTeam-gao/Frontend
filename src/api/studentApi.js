@@ -9,9 +9,7 @@ export const requestAdminStudentList = async () => {
 };
 
 export const requestAdminStudentDetail = async (userId) => {
-    const response = await api.get(`/api/admin/students/${userId}`, {
-        skipAuthRedirect: true,
-    });
+    const response = await api.get(`/api/admin/students/${userId}`);
 
     return getResponseData(response);
 };

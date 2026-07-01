@@ -55,9 +55,6 @@ export const requestChangePassword = async ({
             password,
             newPassword,
             checkPassword,
-        },
-        {
-            skipAuthRedirect: true,
         }
     );
 
