@@ -5,6 +5,10 @@
             "destination": "https://api.capteam.n-e.kr/api/:path*"
         },
         {
+            "source": "/ws/:path*",
+            "destination": "https://api.capteam.n-e.kr/ws/:path*"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

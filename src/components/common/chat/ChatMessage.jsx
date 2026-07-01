@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getAssetUrl } from "../../../api/baseUrl";
 import { getStoredAccessToken } from "../../../utils/authToken";
 import { formatChatTime, parseMessageTextWithLinks } from "../../../utils/chat";
 import fileIcon from "../../../assets/icons/file.svg";
@@ -17,9 +18,7 @@ const formatFileSize = (size) => {
 const getFileUrl = (fileUrl) => {
     if (!fileUrl) return "";
 
-    if (fileUrl.startsWith("http")) return fileUrl;
-
-    return `${import.meta.env.VITE_BASE_URL}${fileUrl}`;
+    return getAssetUrl(fileUrl);
 };
 
 const isImageMessage = (message) => message.fileType?.startsWith("image/");

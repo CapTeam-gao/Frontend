@@ -1,5 +1,7 @@
+import { getSocketBaseUrl } from "./baseUrl";
+
 const makeNoticeSocketUrl = () => {
-    const baseUrl = import.meta.env.VITE_BASE_URL || window.location.origin;
+    const baseUrl = getSocketBaseUrl();
     const url = new URL(baseUrl);
 
     url.protocol = url.protocol === "https:" ? "wss:" : "ws:";

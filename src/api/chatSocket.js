@@ -6,9 +6,10 @@ import {
     getStoredAccessToken,
     isAccessTokenExpiringSoon,
 } from "../utils/authToken";
+import { getSocketBaseUrl } from "./baseUrl";
 
 const getSocketUrl = () => {
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = getSocketBaseUrl();
 
     return `${baseUrl}/ws`;
 };
