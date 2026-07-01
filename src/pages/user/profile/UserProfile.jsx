@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import authStore from "../../../store/authStore";
-import CharacterImage from "../../../assets/images/adminMypage.png";
-import PasswordIcon from "../../../assets/icons/password.svg";
 import styles from "./UserProfile.module.css";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 
@@ -97,11 +95,8 @@ const UserProfile = () => {
             <main className={styles.body}>
                 <section className={styles.profileCard}>
                     <div className={styles.profileHeader}>
-                        <div className={styles.avatar} aria-hidden="true">
-                            <span />
-                        </div>
-
                         <div className={styles.profileText}>
+                            <span className={styles.roleBadge}>학생 계정</span>
                             <h1>{profile.name}</h1>
                             <p>{studentNumber}</p>
                         </div>
@@ -182,11 +177,6 @@ const UserProfile = () => {
                             </div>
 
                             <div className={styles.passwordPreview}>
-                                <img
-                                    className={styles.lockIcon}
-                                    src={PasswordIcon}
-                                    alt=""
-                                />
                                 <div>
                                     <p>비밀번호</p>
                                     <strong>••••••••</strong>
@@ -199,12 +189,6 @@ const UserProfile = () => {
                             )}
                         </div>
                     )}
-
-                    <img
-                        className={styles.characterImage}
-                        src={CharacterImage}
-                        alt=""
-                    />
 
                     <button
                         type="button"

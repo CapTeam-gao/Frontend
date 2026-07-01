@@ -77,8 +77,8 @@
 }
 
 .contentArea {
-    min-height: 460px;
-    padding: 48px 42px 56px;
+    min-height: 240px;
+    padding: 36px 42px 44px;
     background-color: #ffffff;
     color: #111827;
     color-scheme: light;
@@ -96,6 +96,30 @@
 .content :global(*) {
     background-color: transparent !important;
     color: inherit !important;
+}
+
+.content :global(table) {
+    width: auto;
+    max-width: 100%;
+    margin: 14px 0;
+    border-collapse: collapse;
+    white-space: normal;
+}
+
+.content :global(th),
+.content :global(td) {
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    color: #111827 !important;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.45;
+    text-align: left;
+    vertical-align: top;
+}
+
+.content :global(th) {
+    font-weight: var(--font-weight-semibold);
 }
 
 .content :global(h1),
@@ -352,8 +376,8 @@
     }
 
     .contentArea {
-        min-height: 320px;
-        padding: 28px 18px 36px;
+        min-height: 180px;
+        padding: 24px 18px 32px;
     }
 
     .content {
@@ -377,6 +401,19 @@
     .content :global(ul),
     .content :global(ol) {
         padding-left: 22px;
+    }
+
+    .content :global(table) {
+        display: block;
+        overflow-x: auto;
+        margin: 12px 0;
+    }
+
+    .content :global(th),
+    .content :global(td) {
+        padding: 9px 12px;
+        font-size: var(--font-size-sm);
+        white-space: nowrap;
     }
 
     .important {
