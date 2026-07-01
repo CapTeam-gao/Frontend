@@ -14,6 +14,34 @@ export const requestCreateTeamRecommendation = async (
     return getResponseData(response);
 };
 
+export const requestStartTeamMatchingJob = async (
+    grade,
+    regenerationPrompt = ""
+) => {
+    const response = await api.post("/api/admin/team-recommendations/matching/run", {
+        grade,
+        regenerationPrompt: regenerationPrompt.trim() || null,
+    });
+
+    return getResponseData(response);
+};
+
+export const requestTeamMatchingJob = async (jobId) => {
+    const response = await api.get(
+        `/api/admin/team-recommendations/matching/jobs/${jobId}`
+    );
+
+    return getResponseData(response);
+};
+
+export const requestCancelTeamMatchingJob = async (jobId) => {
+    const response = await api.delete(
+        `/api/admin/team-recommendations/matching/jobs/${jobId}`
+    );
+
+    return getResponseData(response);
+};
+
 export const requestTeamRecommendationList = async () => {
     const response = await api.get("/api/admin/team-recommendations");
 

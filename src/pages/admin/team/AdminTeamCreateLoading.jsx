@@ -1,10 +1,43 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { requestCreateTeamRecommendation } from "../../../api/teamApi";
+import {
+    requestStartTeamMatchingJob,
+    requestTeamMatchingJob,
+} from "../../../api/teamApi";
 import styles from "./AdminTeamCreateLoading.module.css";
 
+const MATCHING_POLL_INTERVAL = 2000;
+const WAITING_JOB_STATUSES = ["QUEUED", "RUNNING", "COMPLETING"];
+
+const getErrorMessage = (error) => {
+    const responseData = error.response?.data;
+
+    if (typeof responseData === "string") {
+        return responseData;
+    }
+
+    if (typeof responseData?.error === "string") {
+        return responseData.error;
+    }
+
+    if (typeof responseData?.message === "string") {
+        return responseData.message;
+    }
+
+    if (error.response?.status === 502) {
+        return "AI 서버 또는 백엔드 연결이 불안정해 팀 추천안을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.";
+    }
+
+    return "팀 추천안 생성 중 오류가 발생했습니다.";
+};
+
+const wait = (ms) =>
+    new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+
 const parsePendingSurveyStudents = (message) => {
-    if (!message?.includes("설문 미완료 학생")) {
+    if (typeof message !== "string" || !message.includes("설문 미완료 학생")) {
         return null;
     }
 
@@ -61,6 +94,29 @@ const AdminTeamCreateLoading = () => {
     const regenerationPrompt = location.state?.regenerationPrompt || "";
     const [error, setError] = useState("");
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
+    const isMatchingInProgress = Boolean(grade) && !error;
+
+    useEffect(() => {
+        if (!isMatchingInProgress) return;
+
+        const preventUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = "";
+        };
+
+        const preventBack = () => {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("beforeunload", preventUnload);
+        window.addEventListener("popstate", preventBack);
+
+        return () => {
+            window.removeEventListener("beforeunload", preventUnload);
+            window.removeEventListener("popstate", preventBack);
+        };
+    }, [isMatchingInProgress]);
 
     useEffect(() => {
         if (!grade) {
@@ -68,27 +124,56 @@ const AdminTeamCreateLoading = () => {
             return;
         } // 하지만 팀 로딩 페이지 이동시 api 호출되는 불상사 막기 위해 학생 선택을 안 했다면 다시 팀 생성 페이지로 이동
 
+        let ignore = false;
+
         const createTeamRecommendation = async () => {
             try {
-                await requestCreateTeamRecommendation(
+                const startedJob = await requestStartTeamMatchingJob(
                     grade,
                     regenerationPrompt
                 );
-                navigate("/admin/team-edit", {
-                    replace: true,
-                    state: {
-                        grade,
-                    },
-                });
-            } catch (e) {
+
+                let currentJob = startedJob;
+
+                while (
+                    !ignore &&
+                    WAITING_JOB_STATUSES.includes(currentJob?.status)
+                ) {
+                    await wait(MATCHING_POLL_INTERVAL);
+                    if (ignore) return;
+
+                    currentJob = await requestTeamMatchingJob(currentJob.jobId);
+                }
+
+                if (ignore) return;
+
+                if (currentJob?.status === "SUCCEEDED") {
+                    navigate("/admin/team-edit", {
+                        replace: true,
+                        state: {
+                            grade,
+                        },
+                    });
+                    return;
+                }
+
                 setError(
-                    e.response?.data?.error ||
+                    currentJob?.errorMessage ||
                         "팀 추천안 생성 중 오류가 발생했습니다."
                 );
+            } catch (e) {
+                if (ignore) return;
+
+                console.error("팀 추천안 생성 실패:", e);
+                setError(getErrorMessage(e));
             }
         };
 
         createTeamRecommendation();
+
+        return () => {
+            ignore = true;
+        };
     }, [grade, navigate, regenerationPrompt]);
 
     return (
