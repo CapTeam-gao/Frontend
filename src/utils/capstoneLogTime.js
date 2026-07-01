@@ -3,7 +3,7 @@ const CAPSTONE_LOG_START_HOUR = 15;
 const CAPSTONE_LOG_START_MINUTE = 40;
 const CAPSTONE_LOG_END_HOUR = 18;
 const CAPSTONE_LOG_END_MINUTE = 10;
-const TEST_LOG_ALWAYS_OPEN = false;
+const TEST_LOG_ALWAYS_OPEN = true;
 
 const createDateWithTime = (baseDate, hour, minute) => {
     const date = new Date(baseDate);
