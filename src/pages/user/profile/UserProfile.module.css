@@ -5,18 +5,54 @@
 
 .body {
     min-height: calc(100vh - var(--header-height));
-    padding: 36px 20px 56px;
+    padding: 28px 20px 44px;
     background-color: #ffffff;
 }
 
 .profileCard {
-    width: min(100%, 760px);
+    width: min(100%, 920px);
     margin: 0 auto;
 }
 
 .profileHeader {
-    padding-bottom: 22px;
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 150px;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
     border-bottom: 1px solid var(--color-border);
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
+.avatar span {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    transform: translateY(-12px);
+}
+
+.avatar span::after {
+    position: absolute;
+    content: "";
+    left: 50%;
+    bottom: -34px;
+    width: 40px;
+    height: 22px;
+    border-radius: 50% 50% 42% 42%;
+    background-color: #ffffff;
+    transform: translateX(-50%);
 }
 
 .profileText {
@@ -53,8 +89,8 @@
 
 .infoPanel {
     width: 100%;
-    margin-top: 28px;
-    padding-bottom: 26px;
+    margin-top: 20px;
+    padding-bottom: 22px;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -172,7 +208,7 @@
 }
 
 .logoutButton {
-    margin-top: 24px;
+    margin-top: 20px;
     border: none;
     background: none;
     color: var(--color-danger);
@@ -184,6 +220,157 @@
     color: #dc2626;
 }
 
+.characterImage {
+    display: block;
+    width: 150px;
+    max-width: 100%;
+    justify-self: end;
+}
+
+.profileSummary {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 28px;
+    margin-top: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.userInfoPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.infoRows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.infoRows div {
+    min-width: 0;
+}
+
+.infoRows span,
+.panelTop span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.infoRows strong {
+    color: #111827;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    word-break: keep-all;
+}
+
+.panelTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.panelTop h2 {
+    margin: 0;
+    color: #111827;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.chartPanel {
+    min-width: 0;
+    padding-left: 28px;
+    border-left: 1px solid var(--color-border);
+}
+
+.chartGroups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.chartGroup h3 {
+    margin: 0 0 10px;
+    color: #111827;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.stackList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.stackList span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid #71cba6;
+    border-radius: 4px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.stackList p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.traitList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.traitRow {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) 30px;
+    align-items: center;
+    gap: 10px;
+}
+
+.traitRow span,
+.traitRow strong {
+    color: #111827;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.traitRow strong {
+    text-align: right;
+}
+
+.traitTrack {
+    height: 8px;
+    border-radius: 999px;
+    background-color: #eef1f3;
+    overflow: hidden;
+}
+
+.traitBar {
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--color-primary);
+}
+
+.profileError {
+    margin: 12px 0 0;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
 @media (max-width: 768px) {
     .body {
         padding: 28px 16px 48px;
@@ -192,5 +379,54 @@
     .passwordForm {
         grid-template-columns: 1fr;
         gap: 14px;
+    }
+
+    .profileHeader {
+        grid-template-columns: 58px minmax(0, 1fr);
+        gap: 14px;
+        padding-bottom: 20px;
+    }
+
+    .avatar {
+        width: 58px;
+        height: 58px;
+    }
+
+    .avatar span {
+        width: 15px;
+        height: 15px;
+        transform: translateY(-9px);
+    }
+
+    .avatar span::after {
+        bottom: -28px;
+        width: 32px;
+        height: 18px;
+    }
+
+    .characterImage {
+        display: none;
+    }
+
+    .profileSummary {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 20px;
+        padding-bottom: 22px;
+    }
+
+    .chartPanel {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .chartGroups,
+    .infoRows {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .infoRows strong {
+        font-size: var(--font-size-md);
     }
 }

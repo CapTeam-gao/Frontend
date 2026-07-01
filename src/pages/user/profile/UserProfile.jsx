@@ -1,9 +1,37 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import authStore from "../../../store/authStore";
+import CharacterImage from "../../../assets/images/adminMypage.png";
+import { requestMySurvey } from "../../../api/surveyApi";
+import { requestMyTeam } from "../../../api/teamApi";
+import { roleLabels } from "../../../constants/student";
 import styles from "./UserProfile.module.css";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
+
+const personalityFields = [
+    { key: "communication", label: "소통" },
+    { key: "responsibility", label: "책임감" },
+    { key: "collaboration", label: "협업" },
+    { key: "flexibility", label: "유연성" },
+    { key: "emotionalStability", label: "안정성" },
+];
+
+const developmentFields = [
+    { key: "leadership", label: "리더십" },
+    { key: "problemSolving", label: "문제 해결" },
+    { key: "implementation", label: "구현력" },
+    { key: "learningAbility", label: "학습력" },
+    { key: "planning", label: "기획력" },
+];
+
+const getSurveyScore = (survey, groupKey, fieldKey) => {
+    const directScore = survey?.[fieldKey];
+    const groupedScore = survey?.[groupKey]?.[fieldKey];
+    const score = Number(directScore ?? groupedScore ?? 0);
+
+    return Number.isFinite(score) ? score : 0;
+};
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -16,6 +44,9 @@ const UserProfile = () => {
     const [error, setError] = useState("");
     const [isEditingPassword, setIsEditingPassword] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [survey, setSurvey] = useState(null);
+    const [myTeam, setMyTeam] = useState(null);
+    const [profileError, setProfileError] = useState("");
 
     const profile = {
         name: user?.name || "",
@@ -32,6 +63,59 @@ const UserProfile = () => {
     const studentNumber = profile.userId.startsWith("stu")
         ? profile.userId.replace("stu", "")
         : profile.userId;
+
+    const skillList = useMemo(() => {
+        if (Array.isArray(survey?.skill)) return survey.skill;
+        if (Array.isArray(survey?.skills)) return survey.skills;
+        return [];
+    }, [survey]);
+
+    const teamDisplayName =
+        myTeam?.projectTeamName ||
+        myTeam?.project?.teamName ||
+        myTeam?.teamName ||
+        "미배정";
+
+    const personalityChart = personalityFields.map((field) => ({
+        ...field,
+        score: getSurveyScore(survey, "personalityScores", field.key),
+    }));
+    const developmentChart = developmentFields.map((field) => ({
+        ...field,
+        score: getSurveyScore(survey, "developmentScores", field.key),
+    }));
+
+    useEffect(() => {
+        const getProfileSummary = async () => {
+            try {
+                const [surveyData, teamData] = await Promise.allSettled([
+                    requestMySurvey(),
+                    requestMyTeam(),
+                ]);
+
+                if (surveyData.status === "fulfilled") {
+                    setSurvey(surveyData.value);
+                }
+
+                if (teamData.status === "fulfilled") {
+                    setMyTeam(teamData.value);
+                }
+
+                if (
+                    surveyData.status === "rejected" &&
+                    teamData.status === "rejected"
+                ) {
+                    setProfileError(
+                        "설문과 팀 정보를 불러오지 못했습니다."
+                    );
+                }
+            } catch {
+                setProfileError("프로필 요약 정보를 불러오지 못했습니다.");
+            }
+        };
+
+        getProfileSummary();
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -95,12 +179,146 @@ const UserProfile = () => {
             <main className={styles.body}>
                 <section className={styles.profileCard}>
                     <div className={styles.profileHeader}>
+                        <div className={styles.avatar} aria-hidden="true">
+                            <span />
+                        </div>
+
                         <div className={styles.profileText}>
                             <span className={styles.roleBadge}>학생 계정</span>
                             <h1>{profile.name}</h1>
                             <p>{studentNumber}</p>
                         </div>
+
+                        <img
+                            className={styles.characterImage}
+                            src={CharacterImage}
+                            alt=""
+                        />
                     </div>
+
+                    <section className={styles.profileSummary}>
+                        <article className={styles.userInfoPanel}>
+                            <div className={styles.infoRows}>
+                                <div>
+                                    <span>희망 직군</span>
+                                    <strong>
+                                        {roleLabels[survey?.studentRole] ||
+                                            survey?.studentRole ||
+                                            "설문 미입력"}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>배정된 팀</span>
+                                    <strong>{teamDisplayName}</strong>
+                                </div>
+                            </div>
+
+                            <div className={styles.stackBlock}>
+                                <div className={styles.panelTop}>
+                                    <h2>기술 스택</h2>
+                                    <span>{skillList.length}개</span>
+                                </div>
+
+                                <div className={styles.stackList}>
+                                    {skillList.length > 0 ? (
+                                        skillList.map((skill) => (
+                                            <span key={skill}>{skill}</span>
+                                        ))
+                                    ) : (
+                                        <p>입력된 기술 스택이 없습니다.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </article>
+
+                        <article className={styles.chartPanel}>
+                            <div className={styles.panelTop}>
+                                <h2>성향 차트</h2>
+                                <span>5점 기준</span>
+                            </div>
+
+                            <div className={styles.chartGroups}>
+                                <div className={styles.chartGroup}>
+                                    <h3>성격 성향</h3>
+                                    <div className={styles.traitList}>
+                                        {personalityChart.map((trait) => (
+                                            <div
+                                                className={styles.traitRow}
+                                                key={trait.key}
+                                            >
+                                                <span>{trait.label}</span>
+                                                <div
+                                                    className={
+                                                        styles.traitTrack
+                                                    }
+                                                >
+                                                    <div
+                                                        className={
+                                                            styles.traitBar
+                                                        }
+                                                        style={{
+                                                            width: `${Math.min(
+                                                                trait.score *
+                                                                    20,
+                                                                100
+                                                            )}%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <strong>
+                                                    {trait.score
+                                                        ? trait.score.toFixed(1)
+                                                        : "-"}
+                                                </strong>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className={styles.chartGroup}>
+                                    <h3>개발 성향</h3>
+                                    <div className={styles.traitList}>
+                                        {developmentChart.map((trait) => (
+                                            <div
+                                                className={styles.traitRow}
+                                                key={trait.key}
+                                            >
+                                                <span>{trait.label}</span>
+                                                <div
+                                                    className={
+                                                        styles.traitTrack
+                                                    }
+                                                >
+                                                    <div
+                                                        className={
+                                                            styles.traitBar
+                                                        }
+                                                        style={{
+                                                            width: `${Math.min(
+                                                                trait.score *
+                                                                    20,
+                                                                100
+                                                            )}%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <strong>
+                                                    {trait.score
+                                                        ? trait.score.toFixed(1)
+                                                        : "-"}
+                                                </strong>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+
+                    {profileError && (
+                        <p className={styles.profileError}>{profileError}</p>
+                    )}
 
                     {isEditingPassword ? (
                         <form

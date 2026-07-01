@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import authStore from "../../../store/authStore";
+import CharacterImage from "../../../assets/images/adminMypage.png";
 import styles from "./AdminProfile.module.css";
 
 const AdminProfile = () => {
@@ -91,11 +92,21 @@ const AdminProfile = () => {
             <main className={styles.body}>
                 <section className={styles.profileCard}>
                     <div className={styles.profileHeader}>
+                        <div className={styles.avatar} aria-hidden="true">
+                            <span />
+                        </div>
+
                         <div className={styles.profileText}>
                             <span className={styles.roleBadge}>관리자 계정</span>
                             <h1>{profile.name}</h1>
                             <p>{profile.userId}</p>
                         </div>
+
+                        <img
+                            className={styles.characterImage}
+                            src={CharacterImage}
+                            alt=""
+                        />
                     </div>
 
                     {isEditingPassword ? (
