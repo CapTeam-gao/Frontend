@@ -64,7 +64,12 @@ const UserSurveyIntro = () => {
                     </p>
                 </div>
 
-                <Link className={styles.startButton} to="/user/survey">
+                <Link
+                    className={styles.startButton}
+                    to="/user/survey"
+                    replace
+                    state={{ fromSurveyIntro: true }}
+                >
                     설문 시작하기
                 </Link>
             </section>

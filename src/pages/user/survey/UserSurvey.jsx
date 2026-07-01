@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
@@ -22,6 +22,27 @@ import { RatingRow } from "../../../components/user/survey/UserSurveyForm";
 const personalityQuestions = flattenQuestions(personalityGroups, "personality");
 const developmentQuestions = flattenQuestions(developmentGroups, "development");
 const allRatingQuestions = [...personalityQuestions, ...developmentQuestions];
+const SURVEY_DRAFT_STORAGE_KEY = "capteam-survey-draft";
+
+const defaultExperiences = [
+    {
+        id: 1,
+        value: "",
+    },
+];
+
+const getSurveyDraftKey = (userId) =>
+    userId ? `${SURVEY_DRAFT_STORAGE_KEY}-${userId}` : SURVEY_DRAFT_STORAGE_KEY;
+
+const getStoredSurveyDraft = (userId) => {
+    try {
+        const storedDraft = localStorage.getItem(getSurveyDraftKey(userId));
+
+        return storedDraft ? JSON.parse(storedDraft) : null;
+    } catch {
+        return null;
+    }
+};
 
 const getSurveySubmitErrorMessage = (error) => {
     const serverMessage = error.response?.data?.error || "";
@@ -54,6 +75,7 @@ const getSurveySubmitErrorMessage = (error) => {
 
 const UserSurvey = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = authStore((state) => state.user);
     const accessToken = authStore((state) => state.accessToken);
     const saveLogin = authStore((state) => state.saveLogin);
@@ -65,17 +87,32 @@ const UserSurvey = () => {
     const developmentSectionRef = useRef(null);
     const submitAreaRef = useRef(null);
     const questionRefs = useRef({});
-    const [selectedRole, setSelectedRole] = useState("");
-    const [stackText, setStackText] = useState("");
-    const [experiences, setExperiences] = useState([
-        {
-            id: 1,
-            value: "",
-        },
-    ]);
-    const [preferredMembers, setPreferredMembers] = useState([""]);
-    const [leaderPreference, setLeaderPreference] = useState("");
-    const [answers, setAnswers] = useState({});
+    const storedDraft = useMemo(
+        () => getStoredSurveyDraft(user?.userId),
+        [user?.userId]
+    );
+    const [selectedRole, setSelectedRole] = useState(
+        () => storedDraft?.selectedRole ?? ""
+    );
+    const [stackText, setStackText] = useState(
+        () => storedDraft?.stackText ?? ""
+    );
+    const [experiences, setExperiences] = useState(
+        () =>
+            storedDraft?.experiences?.length
+                ? storedDraft.experiences
+                : defaultExperiences
+    );
+    const [preferredMembers, setPreferredMembers] = useState(
+        () =>
+            storedDraft?.preferredMembers?.length
+                ? storedDraft.preferredMembers
+                : [""]
+    );
+    const [leaderPreference, setLeaderPreference] = useState(
+        () => storedDraft?.leaderPreference ?? ""
+    );
+    const [answers, setAnswers] = useState(() => storedDraft?.answers ?? {});
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -104,6 +141,46 @@ const UserSurvey = () => {
         (completedRequiredCount / totalRequiredCount) * 100
     );
     const isSurveyReady = completedRequiredCount === totalRequiredCount;
+
+    useEffect(() => {
+        const surveyDraft = {
+            selectedRole,
+            stackText,
+            experiences,
+            preferredMembers,
+            leaderPreference,
+            answers,
+        };
+
+        localStorage.setItem(
+            getSurveyDraftKey(user?.userId),
+            JSON.stringify(surveyDraft)
+        );
+    }, [
+        selectedRole,
+        stackText,
+        experiences,
+        preferredMembers,
+        leaderPreference,
+        answers,
+        user?.userId,
+    ]);
+
+    useEffect(() => {
+        if (!location.state?.fromSurveyIntro) return undefined;
+
+        window.history.pushState(null, "", window.location.href);
+
+        const blockBackToIntro = () => {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.addEventListener("popstate", blockBackToIntro);
+
+        return () => {
+            window.removeEventListener("popstate", blockBackToIntro);
+        };
+    }, [location.state]);
 
     const scrollToSection = (sectionRef) => {
         requestAnimationFrame(() => {
@@ -323,6 +400,7 @@ const UserSurvey = () => {
         try {
             setIsSubmitting(true);
             await requestSubmitSurvey(surveyData);
+            localStorage.removeItem(getSurveyDraftKey(user?.userId));
 
             if (user && accessToken) {
                 saveLogin(

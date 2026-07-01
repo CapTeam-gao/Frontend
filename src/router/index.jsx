@@ -154,7 +154,7 @@ const Router = () => {
             />
             <Route
                 path="/user/profile"
-                element={userRoute(<UserProfile />, { requiresTeam: true })}
+                element={userRoute(<UserProfile />)}
             />
             <Route
                 path="/user/survey/intro"

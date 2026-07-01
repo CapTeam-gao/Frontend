@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import TeamRequiredModal from "../TeamRequiredModal";
+import { requestUserDashboard } from "../../../api/dashboardApi";
 import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,
     getStoredAdminTeamCreated,
@@ -21,6 +22,7 @@ const Header = () => {
     const [storedTeamCreated, setStoredTeamCreated] = useState(
         getStoredAdminTeamCreated
     );
+    const [studentTeamCreated, setStudentTeamCreated] = useState(null);
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
 
     const { hasUnreadChat } = useUnreadChatCount({
@@ -53,6 +55,32 @@ const Header = () => {
         };
     }, [isAdmin]);
 
+    useEffect(() => {
+        if (!hasUser || isAdmin) return undefined;
+
+        let ignore = false;
+
+        const loadStudentTeamStatus = async () => {
+            try {
+                const dashboard = await requestUserDashboard();
+
+                if (!ignore) {
+                    setStudentTeamCreated(Boolean(dashboard.teamCreated));
+                }
+            } catch {
+                if (!ignore) {
+                    setStudentTeamCreated(false);
+                }
+            }
+        };
+
+        loadStudentTeamStatus();
+
+        return () => {
+            ignore = true;
+        };
+    }, [hasUser, isAdmin]);
+
     const makeHeaderName = (user) => {
         if (!user) return "";
 
@@ -74,7 +102,7 @@ const Header = () => {
             ? "/admin/dashboard"
             : "/user/dashboard";
 
-    const teamCreated = isAdmin ? storedTeamCreated : null;
+    const teamCreated = isAdmin ? storedTeamCreated : studentTeamCreated;
 
     const adminTeamPath = teamCreated
         ? "/admin/team-manage"
@@ -139,10 +167,30 @@ const Header = () => {
                     </>
                 ) : hasUser ? (
                     <>
-                        <Link to="/user/project">프로젝트</Link>
+                        <Link
+                            to="/user/project"
+                            onClick={(event) => {
+                                if (teamCreated === false) {
+                                    showTeamRequiredModal(
+                                        event,
+                                        "팀 생성이 완료되면 프로젝트 정보를 작성할 수 있습니다."
+                                    );
+                                }
+                            }}
+                        >
+                            프로젝트
+                        </Link>
                         <Link
                             to="/user/chat"
                             className={styles.navLinkWithBadge}
+                            onClick={(event) => {
+                                if (teamCreated === false) {
+                                    showTeamRequiredModal(
+                                        event,
+                                        "팀 생성이 완료되면 팀 채팅을 사용할 수 있습니다."
+                                    );
+                                }
+                            }}
                         >
                             팀 채팅
                             {hasUnreadChat && (
@@ -152,7 +200,19 @@ const Header = () => {
                                 />
                             )}
                         </Link>
-                        <Link to="/user/log">캡스톤 일지</Link>
+                        <Link
+                            to="/user/log"
+                            onClick={(event) => {
+                                if (teamCreated === false) {
+                                    showTeamRequiredModal(
+                                        event,
+                                        "팀 생성이 완료되면 캡스톤 일지를 작성할 수 있습니다."
+                                    );
+                                }
+                            }}
+                        >
+                            캡스톤 일지
+                        </Link>
                         <Link to="/user/notice">공지</Link>
                     </>
                 ) : null}
