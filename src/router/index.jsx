@@ -34,14 +34,14 @@ import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 const Router = () => {
     const adminRoute = (
         page,
-        { requiresTeam = false, teamRequirement = "all" } = {}
+        { requiresTeam = false, allowPartialAccess = false } = {}
     ) => (
         <ProtectedRoute requiredRole="ADMIN">
             {requiresTeam ? (
                 <TeamCreatedRoute
                     role="ADMIN"
                     fallbackPath="/admin/dashboard"
-                    requirement={teamRequirement}
+                    allowPartialAccess={allowPartialAccess}
                 >
                     {page}
                 </TeamCreatedRoute>
@@ -84,16 +84,24 @@ const Router = () => {
                 element={adminRoute(<AdminTeamCreateLoading />)}
             />
 
+            {/*
+             * 팀 편집 화면은 아직 실제 팀이 생성되기 전 사용하는
+             * 화면이므로 팀 생성 가드를 적용하면 안 됩니다.
+             */}
             <Route
                 path="/admin/team-edit"
                 element={adminRoute(<AdminTeamEdit />)}
             />
 
+            {/*
+             * 평소에는 두 학년 팀이 모두 생성되어야 접근 가능합니다.
+             * 단, 팀 승인 직후 전달받은 임시 접근권한은 허용합니다.
+             */}
             <Route
                 path="/admin/team-manage"
                 element={adminRoute(<AdminTeamManage />, {
                     requiresTeam: true,
-                    teamRequirement: "any",
+                    allowPartialAccess: true,
                 })}
             />
 

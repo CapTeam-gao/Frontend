@@ -47,7 +47,9 @@ const AdminTeamEdit = () => {
                 setIsLoading(true);
                 setError("");
 
-                const data = await requestTeamRecommendationsByGrade(targetGrade);
+                const data = await requestTeamRecommendationsByGrade(
+                    targetGrade
+                );
                 setTeams(
                     Array.isArray(data) ? normalizeRecommendations(data) : []
                 );
@@ -147,11 +149,26 @@ const AdminTeamEdit = () => {
     const handleApprove = async () => {
         try {
             await requestAcceptAllTeamRecommendations(grade);
-            const dashboard = await requestAdminDashboard();
-            setStoredAdminTeamCreated(
-                getAdminTeamCreationStatus(dashboard).allTeamCreated
-            );
-            navigate("/admin/team-manage");
+
+            let allTeamCreated = false;
+
+            try {
+                const dashboard = await requestAdminDashboard();
+
+                allTeamCreated =
+                    getAdminTeamCreationStatus(dashboard).allTeamCreated;
+            } catch {
+                allTeamCreated = false;
+            }
+
+            setStoredAdminTeamCreated(allTeamCreated);
+
+            navigate("/admin/team-manage", {
+                replace: true,
+                state: {
+                    allowPartialTeamAccess: true,
+                },
+            });
         } catch {
             setMessage("팀 구성 승인에 실패했습니다.");
         }
