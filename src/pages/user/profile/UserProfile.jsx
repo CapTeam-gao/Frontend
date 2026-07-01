@@ -105,9 +105,7 @@ const UserProfile = () => {
                     surveyData.status === "rejected" &&
                     teamData.status === "rejected"
                 ) {
-                    setProfileError(
-                        "설문과 팀 정보를 불러오지 못했습니다."
-                    );
+                    setProfileError("설문과 팀 정보를 불러오지 못했습니다.");
                 }
             } catch {
                 setProfileError("프로필 요약 정보를 불러오지 못했습니다.");
@@ -164,8 +162,7 @@ const UserProfile = () => {
             setConfirmPassword("");
         } catch (e) {
             setError(
-                e.response?.data?.error ||
-                    "비밀번호 변경에 실패했습니다."
+                e.response?.data?.error || "비밀번호 변경에 실패했습니다."
             );
         } finally {
             setIsSubmittingPassword(false);
@@ -215,9 +212,8 @@ const UserProfile = () => {
                             </div>
 
                             <div className={styles.stackBlock}>
-                                <div className={styles.panelTop}>
+                                <div className={styles.skilPanelTop}>
                                     <h2>기술 스택</h2>
-                                    <span>{skillList.length}개</span>
                                 </div>
 
                                 <div className={styles.stackList}>
@@ -332,7 +328,9 @@ const UserProfile = () => {
                                     className={styles.textButton}
                                     disabled={!canSubmitPassword}
                                 >
-                                    {isSubmittingPassword ? "저장 중..." : "저장"}
+                                    {isSubmittingPassword
+                                        ? "저장 중..."
+                                        : "저장"}
                                 </button>
                             </div>
 

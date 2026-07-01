@@ -119,7 +119,9 @@ const Router = () => {
             />
             <Route
                 path="/admin/chat"
-                element={adminRoute(<AdminChatManage />, { requiresTeam: true })}
+                element={adminRoute(<AdminChatManage />, {
+                    requiresTeam: true,
+                })}
             />
             {/* 유저 페이지들 - user만 접근 가능 */}
             <Route
@@ -152,10 +154,7 @@ const Router = () => {
                 path="/user/notice/:id"
                 element={userRoute(<UserNoticeDetail />)}
             />
-            <Route
-                path="/user/profile"
-                element={userRoute(<UserProfile />)}
-            />
+            <Route path="/user/profile" element={userRoute(<UserProfile />)} />
             <Route
                 path="/user/survey/intro"
                 element={userRoute(<UserSurveyIntro />)}
