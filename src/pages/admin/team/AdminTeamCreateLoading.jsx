@@ -4,6 +4,10 @@ import {
     requestStartTeamMatchingJob,
     requestTeamMatchingJob,
 } from "../../../api/teamApi";
+import {
+    clearMatchingJobLock,
+    setMatchingJobLock,
+} from "../../../utils/matchingJobLock";
 import styles from "./AdminTeamCreateLoading.module.css";
 
 const MATCHING_POLL_INTERVAL = 2000;
@@ -134,6 +138,11 @@ const AdminTeamCreateLoading = () => {
                 );
 
                 let currentJob = startedJob;
+                setMatchingJobLock({
+                    jobId: currentJob?.jobId,
+                    grade,
+                    status: currentJob?.status,
+                });
 
                 while (
                     !ignore &&
@@ -143,11 +152,17 @@ const AdminTeamCreateLoading = () => {
                     if (ignore) return;
 
                     currentJob = await requestTeamMatchingJob(currentJob.jobId);
+                    setMatchingJobLock({
+                        jobId: currentJob?.jobId,
+                        grade,
+                        status: currentJob?.status,
+                    });
                 }
 
                 if (ignore) return;
 
                 if (currentJob?.status === "SUCCEEDED") {
+                    clearMatchingJobLock();
                     navigate("/admin/team-edit", {
                         replace: true,
                         state: {
@@ -157,6 +172,7 @@ const AdminTeamCreateLoading = () => {
                     return;
                 }
 
+                clearMatchingJobLock();
                 setError(
                     currentJob?.errorMessage ||
                         "팀 추천안 생성 중 오류가 발생했습니다."
@@ -165,6 +181,7 @@ const AdminTeamCreateLoading = () => {
                 if (ignore) return;
 
                 console.error("팀 추천안 생성 실패:", e);
+                clearMatchingJobLock();
                 setError(getErrorMessage(e));
             }
         };

@@ -7,6 +7,10 @@ import {
     getAdminTeamCreationStatus,
     isGradeTeamCreated,
 } from "../../../utils/teamStatus";
+import {
+    getActiveMatchingJobLock,
+    gradeLabels,
+} from "../../../utils/matchingJobLock";
 import styles from "./AdminTeamCreate.module.css";
 
 const AdminTeamCreate = () => {
@@ -19,7 +23,7 @@ const AdminTeamCreate = () => {
     });
     const [error, setError] = useState("");
 
-    const selectedGradeLabel = selectedGrade === "GRADE_2" ? "2학년" : "3학년";
+    const selectedGradeLabel = gradeLabels[selectedGrade];
 
     useEffect(() => {
         const getTeamStatus = async () => {
@@ -40,6 +44,18 @@ const AdminTeamCreate = () => {
     };
 
     const handleCreate = () => {
+        const activeLock = getActiveMatchingJobLock();
+
+        if (activeLock) {
+            const activeGradeLabel =
+                gradeLabels[activeLock.grade] || "선택한 학년";
+
+            setError(
+                `${activeGradeLabel} 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
+            );
+            return;
+        }
+
         if (isGradeTeamCreated(teamStatus, selectedGrade)) {
             setError("이미 생성이 완료된 학년입니다.");
             return;
