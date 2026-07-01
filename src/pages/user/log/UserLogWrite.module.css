@@ -31,6 +31,14 @@
     visibility: hidden;
 }
 
+.errorText {
+    margin: 0 0 20px;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
 .hero span {
     display: inline-block;
     margin-top: 10px;

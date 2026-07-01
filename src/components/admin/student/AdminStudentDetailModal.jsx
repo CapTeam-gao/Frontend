@@ -50,6 +50,21 @@ const formatPreferredMember = (memberId, students = []) => {
         : numberInfo.number || memberId;
 };
 
+const getStudentTeamKey = (student) => {
+    const teamId = student?.projectTeamId ?? student?.teamId;
+
+    if (teamId !== null && teamId !== undefined) {
+        return `id:${teamId}`;
+    }
+
+    const teamName = student?.projectTeamName || student?.teamName;
+    const grade = String(student?.userId || "")
+        .replace("stu", "")
+        .charAt(0);
+
+    return teamName ? `name:${grade}:${teamName}` : "";
+};
+
 const SurveyReliabilityCard = ({ student }) => {
     const reliability = student.responseReliability;
     const inconsistentCount = student.inconsistentAnswers;
@@ -152,18 +167,16 @@ const AdminStudentDetailModal = ({
     const developmentChartData = getDevelopmentChartData(student);
     const personalityChartData = getPersonalityChartData(student);
     const numberInfo = getStudentNumberInfo(student.userId);
+    const studentTeamKey = getStudentTeamKey(student);
     const teamDisplayName =
         student.projectTeamName || student.teamName || "미배정";
     const isAssignedTeam = teamDisplayName && teamDisplayName !== "미배정";
     const isLeader = student.leaderRole === "LEADER";
-    const teamMembers = isAssignedTeam
+    const teamMembers = isAssignedTeam && studentTeamKey
         ? students.filter((member) => {
-              const memberTeamName =
-                  member.projectTeamName || member.teamName || "미배정";
-
               return (
                   member.userId !== student.userId &&
-                  memberTeamName === teamDisplayName
+                  getStudentTeamKey(member) === studentTeamKey
               );
           })
         : [];
@@ -306,9 +319,7 @@ const AdminStudentDetailModal = ({
                             </section>
 
                             <section className={styles.compactSection}>
-                                <h3>
-                                    {isAssignedTeam ? "팀원 명단" : "선호 팀원"}
-                                </h3>
+                                <h3>팀원 명단</h3>
 
                                 {isAssignedTeam ? (
                                     <div className={styles.memberList}>
@@ -357,24 +368,32 @@ const AdminStudentDetailModal = ({
                                         )}
                                     </div>
                                 ) : (
-                                    <div className={styles.stackList}>
-                                        {(student.preferredTeammates || [])
-                                            .length > 0 ? (
-                                            student.preferredTeammates.map(
-                                                (member) => (
-                                                    <span key={member}>
-                                                        {formatPreferredMember(
-                                                            member,
-                                                            students
-                                                        )}
-                                                    </span>
-                                                )
-                                            )
-                                        ) : (
-                                            <span>없음</span>
-                                        )}
-                                    </div>
+                                    <p className={styles.emptyInlineText}>
+                                        아직 배정된 팀이 없습니다.
+                                    </p>
                                 )}
+                            </section>
+
+                            <section className={styles.compactSection}>
+                                <h3>선호 팀원</h3>
+
+                                <div className={styles.stackList}>
+                                    {(student.preferredTeammates || []).length >
+                                    0 ? (
+                                        student.preferredTeammates.map(
+                                            (member) => (
+                                                <span key={member}>
+                                                    {formatPreferredMember(
+                                                        member,
+                                                        students
+                                                    )}
+                                                </span>
+                                            )
+                                        )
+                                    ) : (
+                                        <span>없음</span>
+                                    )}
+                                </div>
                             </section>
 
                             <section className={styles.analysisSection}>

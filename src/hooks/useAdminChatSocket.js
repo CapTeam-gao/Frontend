@@ -227,7 +227,11 @@ const useAdminChatSocket = ({
                 fileSize: uploadedFile.size,
             });
         } catch (error) {
-            setSocketError("파일 전송에 실패했습니다.");
+            setSocketError(
+                error?.response?.status === 413
+                    ? "20MB 이하 파일만 업로드할 수 있습니다."
+                    : "파일 전송에 실패했습니다."
+            );
             throw error;
         } finally {
             setIsFileSending(false);

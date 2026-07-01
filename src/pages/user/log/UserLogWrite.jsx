@@ -9,6 +9,7 @@ import {
     requestUserLogDetail,
     requestUserLogList,
 } from "../../../api/logApi";
+import { isCapstoneLogTime } from "../../../utils/capstoneLogTime";
 import styles from "./UserLogWrite.module.css";
 
 const initialFormData = {
@@ -72,6 +73,7 @@ const UserLogWrite = () => {
     const teamName = myTeam?.project?.teamName || myTeam?.teamName || "";
     const pageTitle = teamName ? `${teamName} 캡스톤 일지` : "캡스톤 일지";
     const isLeader = myTeam?.myMember?.leaderRole === "LEADER";
+    const canWriteLog = isCapstoneLogTime();
 
     const handleFieldChange = (fieldName, value) => {
         setSuccessMessage("");
@@ -129,6 +131,13 @@ const UserLogWrite = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!canWriteLog) {
+            setError(
+                "현재는 일지 작성 시간이 아닙니다. 수요일 15:40부터 18:10까지 작성할 수 있습니다."
+            );
+            return;
+        }
+
         if (isCompleted) {
             setError("팀원 전체 제출이 완료된 일지는 수정할 수 없습니다.");
             return;
@@ -170,7 +179,14 @@ const UserLogWrite = () => {
                     <span>{getTodayText()}</span>
                 </section>
 
-                {!isInitialLoading && (
+                {!canWriteLog && (
+                    <p className={styles.errorText}>
+                        현재는 일지 작성 시간이 아닙니다. 수요일 15:40부터
+                        18:10까지 작성할 수 있습니다.
+                    </p>
+                )}
+
+                {!isInitialLoading && canWriteLog && (
                     <UserLogForm
                         formData={formData}
                         isLeader={isLeader}

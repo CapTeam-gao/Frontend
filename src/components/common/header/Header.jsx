@@ -11,6 +11,9 @@ import {
     getStoredAdminTeamCreated,
 } from "../../../utils/adminTeamStatusStorage";
 
+const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
+const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
+
 const Header = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -86,12 +89,21 @@ const Header = () => {
     useEffect(() => {
         if (!hasUser) return;
 
+        const pendingNoticeId = sessionStorage.getItem(
+            PASSWORD_CHANGE_NOTICE_KEY
+        );
+        const shownNoticeId = sessionStorage.getItem(
+            PASSWORD_CHANGE_NOTICE_SEEN_KEY
+        );
         const shouldShowNotice =
-            sessionStorage.getItem("capteam-show-password-change-notice") ===
-            "true";
+            Boolean(pendingNoticeId) && pendingNoticeId !== shownNoticeId;
 
         if (shouldShowNotice) {
-            sessionStorage.removeItem("capteam-show-password-change-notice");
+            sessionStorage.setItem(
+                PASSWORD_CHANGE_NOTICE_SEEN_KEY,
+                pendingNoticeId
+            );
+            sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_KEY);
             window.setTimeout(() => {
                 setShowPasswordNotice(true);
             }, 0);

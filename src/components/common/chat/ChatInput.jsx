@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import fileIcon from "../../../assets/icons/file.svg";
 import styles from "./ChatInput.module.css";
 
+const MAX_CHAT_FILE_SIZE = 20 * 1024 * 1024;
+
 const formatFileSize = (size) => {
     if (!size) return "";
 
@@ -20,6 +22,18 @@ const getFileTypeLabel = (file) => {
     return "첨부 파일";
 };
 
+const getFileUploadErrorMessage = (error) => {
+    if (error?.response?.status === 413) {
+        return "20MB 이하 파일만 업로드할 수 있습니다.";
+    }
+
+    if (error?.response?.data?.error) {
+        return error.response.data.error;
+    }
+
+    return "파일 전송에 실패했습니다.";
+};
+
 const ChatInput = ({
     onSend,
     onFileSend,
@@ -31,6 +45,7 @@ const ChatInput = ({
     const [message, setMessage] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("");
+    const [fileError, setFileError] = useState("");
     const inputRef = useRef(null);
     const fileInputRef = useRef(null);
 
@@ -41,6 +56,7 @@ const ChatInput = ({
 
         setSelectedFile(null);
         setPreviewUrl("");
+        setFileError("");
     };
 
     const handleSubmit = async (event) => {
@@ -62,7 +78,8 @@ const ChatInput = ({
                 await onFileSend?.(selectedFile, trimmedMessage);
                 clearSelectedFile();
                 setMessage("");
-            } catch {
+            } catch (error) {
+                setFileError(getFileUploadErrorMessage(error));
                 inputRef.current?.focus();
             }
 
@@ -79,6 +96,14 @@ const ChatInput = ({
         const nextFile = event.target.files?.[0];
 
         if (!nextFile || disabled || isFileSending) return;
+
+        if (nextFile.size > MAX_CHAT_FILE_SIZE) {
+            clearSelectedFile();
+            setFileError("20MB 이하 파일만 업로드할 수 있습니다.");
+            event.target.value = "";
+            inputRef.current?.focus();
+            return;
+        }
 
         clearSelectedFile();
         setSelectedFile(nextFile);
@@ -174,6 +199,8 @@ const ChatInput = ({
                     {isSending || isFileSending ? "전송 중" : "전송"}
                 </button>
             </div>
+
+            {fileError && <p className={styles.errorText}>{fileError}</p>}
         </form>
     );
 };

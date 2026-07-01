@@ -26,8 +26,15 @@ export const getTodayCapstoneLogWindow = (baseDate = new Date()) => {
     };
 };
 
-export const isCapstoneLogTime = () => {
-    return true;
+export const isCapstoneLogTime = (baseDate = new Date()) => {
+    const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
+    const isCapstoneDay = baseDate.getDay() === CAPSTONE_LOG_DAY;
+
+    return (
+        isCapstoneDay &&
+        baseDate.getTime() >= startAt.getTime() &&
+        baseDate.getTime() <= endAt.getTime()
+    );
 };
 
 export const getCapstoneLogRemainingMs = (baseDate = new Date()) => {

@@ -194,3 +194,10 @@
     color: #ffffff;
     cursor: not-allowed;
 }
+
+.errorText {
+    margin: 0;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+}

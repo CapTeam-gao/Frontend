@@ -10,6 +10,16 @@ import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const NOTICE_PER_PAGE = 6; // 공지 몇 개로 페이지를 나눌지 선정
 
+const sortNoticesByLatest = (notices) =>
+    [...notices].sort((a, b) => {
+        const timeA = new Date(a.createdAt ?? 0).getTime();
+        const timeB = new Date(b.createdAt ?? 0).getTime();
+
+        if (timeA !== timeB) return timeB - timeA;
+
+        return Number(b.id ?? 0) - Number(a.id ?? 0);
+    });
+
 const AdminNoticeList = () => {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 설정
     const [notices, setNotices] = useState([]);
@@ -28,7 +38,9 @@ const AdminNoticeList = () => {
         const getNoticeList = async () => {
             try {
                 const data = await requestNoticeList();
-                setNotices(Array.isArray(data) ? data : []);
+                setNotices(
+                    Array.isArray(data) ? sortNoticesByLatest(data) : []
+                );
             } catch {
                 setError("공지를 불러오지 못했습니다.");
             } finally {
