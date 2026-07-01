@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { requestAdminDashboard, requestUserDashboard } from "../api/dashboardApi";
+import {
+    requestAdminDashboard,
+    requestUserDashboard,
+} from "../api/dashboardApi";
 import { getAdminTeamCreationStatus } from "../utils/teamStatus";
 
-const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
+const TeamCreatedRoute = ({
+    children,
+    role,
+    fallbackPath,
+    requirement = "all",
+}) => {
     const [isTeamCreated, setIsTeamCreated] = useState(null);
 
     useEffect(() => {
@@ -15,10 +23,19 @@ const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
                     role === "ADMIN"
                         ? await requestAdminDashboard()
                         : await requestUserDashboard();
-                const nextIsTeamCreated =
-                    role === "ADMIN"
-                        ? getAdminTeamCreationStatus(dashboard).allTeamCreated
-                        : Boolean(dashboard.teamCreated);
+
+                let nextIsTeamCreated;
+
+                if (role === "ADMIN") {
+                    const teamStatus = getAdminTeamCreationStatus(dashboard);
+
+                    nextIsTeamCreated =
+                        requirement === "any"
+                            ? teamStatus.anyTeamCreated
+                            : teamStatus.allTeamCreated;
+                } else {
+                    nextIsTeamCreated = Boolean(dashboard.teamCreated);
+                }
 
                 if (!ignore) {
                     setIsTeamCreated(nextIsTeamCreated);
@@ -35,9 +52,11 @@ const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
         return () => {
             ignore = true;
         };
-    }, [role]);
+    }, [role, requirement]);
 
-    if (isTeamCreated === null) return null;
+    if (isTeamCreated === null) {
+        return null;
+    }
 
     if (!isTeamCreated) {
         return <Navigate to={fallbackPath} replace />;

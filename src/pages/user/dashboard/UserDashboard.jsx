@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
-import TeamRequiredModal from "../../../components/common/TeamRequiredModal";
+import TeamRequiredModal from "../../../components/common/modal/TeamRequiredModal";
 import ChatIcon from "../../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../../assets/icons/notice.svg";

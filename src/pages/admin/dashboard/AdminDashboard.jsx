@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
-import TeamRequiredModal from "../../../components/common/TeamRequiredModal";
+import TeamRequiredModal from "../../../components/common/modal/TeamRequiredModal";
 import TeamCreateIcon from "../../../assets/icons/teamCreate.svg";
 import TeamIcon from "../../../assets/icons/team.svg";
 import ChatIcon from "../../../assets/icons/chat.svg";

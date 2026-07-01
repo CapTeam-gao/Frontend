@@ -2,7 +2,7 @@ import styles from "./TeamRequiredModal.module.css";
 
 const TeamRequiredModal = ({
     label = "이용 안내",
-    title = "아직 이용할 수 없는 메뉴입니다",
+    title = "팀 생성 후 이용 가능합니다.",
     message = "팀 생성이 완료되면 이 기능을 사용할 수 있습니다.",
     actionText = "확인",
     onClose,

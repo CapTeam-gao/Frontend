@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
-import TeamRequiredModal from "../TeamRequiredModal";
+import TeamRequiredModal from "../modal/TeamRequiredModal";
 import { requestUserDashboard } from "../../../api/dashboardApi";
 import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,

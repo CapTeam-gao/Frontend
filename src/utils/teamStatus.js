@@ -5,6 +5,7 @@ export const getAdminTeamCreationStatus = (dashboard = {}) => {
     return {
         grade2TeamCreated,
         grade3TeamCreated,
+        anyTeamCreated: grade2TeamCreated || grade3TeamCreated,
         allTeamCreated: grade2TeamCreated && grade3TeamCreated,
     };
 };
