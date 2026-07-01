@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
+import TeamRequiredModal from "../TeamRequiredModal";
 import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,
     getStoredAdminTeamCreated,
@@ -20,6 +21,7 @@ const Header = () => {
     const [storedTeamCreated, setStoredTeamCreated] = useState(
         getStoredAdminTeamCreated
     );
+    const [teamRequiredModal, setTeamRequiredModal] = useState(null);
 
     const { hasUnreadChat } = useUnreadChatCount({
         enabled: hasUser,
@@ -80,6 +82,13 @@ const Header = () => {
 
     const adminTeamLabel = teamCreated ? "팀 관리" : "팀 생성";
 
+    const showTeamRequiredModal = (event, message) => {
+        event.preventDefault();
+        setTeamRequiredModal({
+            message,
+        });
+    };
+
     return (
         <div className={styles.header}>
             <Link to={logoPath}>
@@ -95,6 +104,14 @@ const Header = () => {
                         <Link
                             to="/admin/chat"
                             className={styles.navLinkWithBadge}
+                            onClick={(event) => {
+                                if (teamCreated === false) {
+                                    showTeamRequiredModal(
+                                        event,
+                                        "팀 생성이 완료되면 팀별 채팅방을 확인할 수 있습니다."
+                                    );
+                                }
+                            }}
                         >
                             채팅 관리
                             {hasUnreadChat && (
@@ -104,7 +121,19 @@ const Header = () => {
                                 />
                             )}
                         </Link>{" "}
-                        <Link to="/admin/log">캡스톤 일지</Link>
+                        <Link
+                            to="/admin/log"
+                            onClick={(event) => {
+                                if (teamCreated === false) {
+                                    showTeamRequiredModal(
+                                        event,
+                                        "팀 생성이 완료되면 팀별 캡스톤 일지를 확인할 수 있습니다."
+                                    );
+                                }
+                            }}
+                        >
+                            캡스톤 일지
+                        </Link>
                         <Link to="/admin/student">학생 관리</Link>
                         <Link to="/admin/notice">공지</Link>
                     </>
@@ -136,6 +165,13 @@ const Header = () => {
                     </Link>
                 )}
             </div>
+
+            {teamRequiredModal && (
+                <TeamRequiredModal
+                    message={teamRequiredModal.message}
+                    onClose={() => setTeamRequiredModal(null)}
+                />
+            )}
         </div>
     );
 };

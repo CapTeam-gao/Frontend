@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import TeamRequiredModal from "../../../components/common/TeamRequiredModal";
 import ChatIcon from "../../../assets/icons/chat.svg";
 import CapstonLogIcon from "../../../assets/icons/capstonLog.svg";
 import NoticeIcon from "../../../assets/icons/notice.svg";
@@ -24,6 +25,7 @@ const UserDashboard = () => {
     const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
+    const [teamRequiredModal, setTeamRequiredModal] = useState(null);
     const { hasUnreadChat } = useUnreadChatCount({
         enabled: dashboard.teamCreated,
     });
@@ -66,6 +68,14 @@ const UserDashboard = () => {
 
     const featurePath = (path) =>
         dashboard.teamCreated ? path : "/user/dashboard";
+    const blockTeamRequiredCard = (event, message) => {
+        if (dashboard.teamCreated) return;
+
+        event.preventDefault();
+        setTeamRequiredModal({
+            message,
+        });
+    };
     const chatStatusText =
         !isDashboardLoading && !dashboard.teamCreated
             ? "팀 생성 전입니다"
@@ -93,6 +103,12 @@ const UserDashboard = () => {
                     <Link
                         to={featurePath("/user/chat")}
                         className={styles.card}
+                        onClick={(event) =>
+                            blockTeamRequiredCard(
+                                event,
+                                "팀 생성이 완료되면 팀 채팅을 사용할 수 있습니다."
+                            )
+                        }
                     >
                         {dashboard.teamCreated && hasUnreadChat && (
                             <span
@@ -118,6 +134,12 @@ const UserDashboard = () => {
                     <Link
                         to={featurePath("/user/project")}
                         className={styles.card}
+                        onClick={(event) =>
+                            blockTeamRequiredCard(
+                                event,
+                                "팀 생성이 완료되면 프로젝트 정보를 작성할 수 있습니다."
+                            )
+                        }
                     >
                         <div className={styles.iconBox}>
                             <img src={ProjectIcon} alt="" />
@@ -133,7 +155,16 @@ const UserDashboard = () => {
                         </div>
                     </Link>
 
-                    <Link to={featurePath("/user/log")} className={styles.card}>
+                    <Link
+                        to={featurePath("/user/log")}
+                        className={styles.card}
+                        onClick={(event) =>
+                            blockTeamRequiredCard(
+                                event,
+                                "팀 생성이 완료되면 캡스톤 일지를 작성할 수 있습니다."
+                            )
+                        }
+                    >
                         <div className={styles.iconBox}>
                             <img src={CapstonLogIcon} alt="" />
                         </div>
@@ -169,6 +200,13 @@ const UserDashboard = () => {
                     </Link>
                 </section>
             </main>
+
+            {teamRequiredModal && (
+                <TeamRequiredModal
+                    message={teamRequiredModal.message}
+                    onClose={() => setTeamRequiredModal(null)}
+                />
+            )}
         </div>
     );
 };
