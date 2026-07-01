@@ -77,7 +77,7 @@ const Router = () => {
             />
             <Route
                 path="/admin/team-edit"
-                element={adminRoute(<AdminTeamEdit />, { requiresTeam: true })}
+                element={adminRoute(<AdminTeamEdit />)}
             />
             <Route
                 path="/admin/team-manage"
