@@ -3,6 +3,11 @@ import { requestMyChannelSummaries } from "../api/chatApi";
 import { requestAdminChatUnreadSummary } from "../api/adminChatApi";
 import authStore from "../store/authStore";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../utils/chat";
+import {
+    createChatClient,
+    disconnectChatClient,
+    subscribeUserChatUnreadEvents,
+} from "../api/chatSocket";
 
 const CHAT_UNREAD_REFRESH_INTERVAL = 1000 * 10;
 
@@ -73,6 +78,39 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
             window.removeEventListener("focus", refreshUnreadChatCount);
         };
     }, [refreshUnreadChatCount, shouldFetchUnreadCount]);
+
+    useEffect(() => {
+        if (!shouldFetchUnreadCount || user?.accountRole === "ADMIN") {
+            return undefined;
+        }
+
+        let unreadSubscription = null;
+
+        const client = createChatClient({
+            onConnect: (connectedClient) => {
+                try {
+                    unreadSubscription = subscribeUserChatUnreadEvents(
+                        connectedClient,
+                        (event) => {
+                            setUnreadChatCount(
+                                Number(event?.totalUnreadCount ?? 0)
+                            );
+                        }
+                    );
+                } catch {
+                    unreadSubscription = null;
+                }
+            },
+        });
+
+        client.activate();
+
+        return () => {
+            disconnectChatClient(client, [unreadSubscription]).catch(() => {
+                client.deactivate();
+            });
+        };
+    }, [shouldFetchUnreadCount, user?.accountRole]);
 
     return {
         unreadChatCount,

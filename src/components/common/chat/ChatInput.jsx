@@ -121,6 +121,8 @@ const ChatInput = ({
 
     return (
         <form className={styles.inputForm} onSubmit={handleSubmit}>
+            {fileError && <p className={styles.errorText}>{fileError}</p>}
+
             {selectedFile && (
                 <div className={styles.filePreview}>
                     {previewUrl ? (
@@ -199,8 +201,6 @@ const ChatInput = ({
                     {isSending || isFileSending ? "전송 중" : "전송"}
                 </button>
             </div>
-
-            {fileError && <p className={styles.errorText}>{fileError}</p>}
         </form>
     );
 };

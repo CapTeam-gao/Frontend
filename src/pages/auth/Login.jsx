@@ -7,6 +7,8 @@ import authStore from "../../store/authStore";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
+const getPasswordNoticeShownKey = (userId) =>
+    `capteam-password-change-notice-shown:${userId}`;
 
 const Login = () => {
     const [userId, setUserId] = useState("");
@@ -57,12 +59,17 @@ const Login = () => {
             }
 
             saveLogin(user, token);
-            const noticeSessionId = `${trimmedUserId}-${Date.now()}`;
-            sessionStorage.setItem(
-                PASSWORD_CHANGE_NOTICE_KEY,
-                noticeSessionId
-            );
-            sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_SEEN_KEY);
+            const passwordNoticeShownKey =
+                getPasswordNoticeShownKey(trimmedUserId);
+
+            if (!localStorage.getItem(passwordNoticeShownKey)) {
+                const noticeSessionId = `${trimmedUserId}-${Date.now()}`;
+                sessionStorage.setItem(
+                    PASSWORD_CHANGE_NOTICE_KEY,
+                    noticeSessionId
+                );
+                sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_SEEN_KEY);
+            }
 
             if (user.accountRole === "ADMIN") {
                 navigate("/admin/dashboard", { replace: true });

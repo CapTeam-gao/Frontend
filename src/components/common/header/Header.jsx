@@ -13,6 +13,8 @@ import {
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
+const getPasswordNoticeShownKey = (userId) =>
+    `capteam-password-change-notice-shown:${userId}`;
 
 const Header = () => {
     const location = useLocation();
@@ -104,11 +106,17 @@ const Header = () => {
                 pendingNoticeId
             );
             sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_KEY);
+            if (user?.userId) {
+                localStorage.setItem(
+                    getPasswordNoticeShownKey(user.userId),
+                    "true"
+                );
+            }
             window.setTimeout(() => {
                 setShowPasswordNotice(true);
             }, 0);
         }
-    }, [hasUser]);
+    }, [hasUser, user?.userId]);
 
     const makeHeaderName = (user) => {
         if (!user) return "";

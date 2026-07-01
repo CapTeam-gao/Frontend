@@ -112,6 +112,13 @@ export const subscribeTeamPresence = (client, teamId, onPresenceChange) => {
     });
 };
 
+export const subscribeUserChatUnreadEvents = (client, onEvent) => {
+    return client.subscribe("/user/queue/chat/unread", (message) => {
+        const event = JSON.parse(message.body);
+        onEvent?.(event);
+    });
+};
+
 const waitForUnsubscribeReceipt = (client, subscription) => {
     if (!client?.connected || !subscription) {
         return Promise.resolve();
