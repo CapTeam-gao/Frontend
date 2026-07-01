@@ -85,48 +85,41 @@ const Router = () => {
                     requiresTeam: true,
                 })}
             />
-            <Route path="/admin/log" element={adminRoute(<AdminLogList />)} />
+            <Route
+                path="/admin/log"
+                element={adminRoute(<AdminLogList />, { requiresTeam: true })}
+            />
             <Route
                 path="/admin/log/:id"
-                element={adminRoute(<AdminLogDetail />)}
+                element={adminRoute(<AdminLogDetail />, { requiresTeam: true })}
             />
             <Route
                 path="/admin/student"
-                element={adminRoute(<AdminStudentManage />, {
-                    requiresTeam: true,
-                })}
+                element={adminRoute(<AdminStudentManage />)}
             />
             <Route
                 path="/admin/notice"
-                element={adminRoute(<AdminNoticeList />, {
-                    requiresTeam: true,
-                })}
+                element={adminRoute(<AdminNoticeList />)}
             />
             <Route
                 path="/admin/notice/create"
-                element={adminRoute(<AdminNoticeCreate />, {
-                    requiresTeam: true,
-                })}
+                element={adminRoute(<AdminNoticeCreate />)}
             />
             <Route
                 path="/admin/notice/:id/edit"
-                element={adminRoute(<AdminNoticeEdit />, {
-                    requiresTeam: true,
-                })}
+                element={adminRoute(<AdminNoticeEdit />)}
             />
             <Route
                 path="/admin/notice/:id"
-                element={adminRoute(<AdminNoticeDetail />, {
-                    requiresTeam: true,
-                })}
+                element={adminRoute(<AdminNoticeDetail />)}
             />
             <Route
                 path="/admin/profile"
-                element={adminRoute(<AdminProfile />, { requiresTeam: true })}
+                element={adminRoute(<AdminProfile />)}
             />
             <Route
                 path="/admin/chat"
-                element={adminRoute(<AdminChatManage />)}
+                element={adminRoute(<AdminChatManage />, { requiresTeam: true })}
             />
             {/* 유저 페이지들 - user만 접근 가능 */}
             <Route
