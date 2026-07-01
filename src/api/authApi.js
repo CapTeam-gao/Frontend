@@ -1,5 +1,6 @@
 import api, { reissueAccessToken } from "./api";
 import { isValidAccessToken } from "../utils/authToken";
+import authStore from "../store/authStore";
 
 const makeAuthHeader = (token) => {
     if (!isValidAccessToken(token)) {
@@ -62,6 +63,8 @@ export const requestChangePassword = async ({
 };
 
 export const requestLogout = async () => {
+    authStore.getState().startLogout();
+
     const response = await api.post(
         "/api/auth/logout",
         {},

@@ -11,10 +11,21 @@ const REISSUE_BUFFER_SECONDS = 120;
 // 새로고침해도 토큰이 있으면 로그인 상태를 다시 확인함
 const useAuth = () => {
     const accessToken = authStore((state) => state.accessToken);
+    const authStatus = authStore((state) => state.authStatus);
+    const isLoggingOut = authStore((state) => state.isLoggingOut);
     const saveLogin = authStore((state) => state.saveLogin);
     const setUnauthenticated = authStore((state) => state.setUnauthenticated);
 
     const refreshLogin = useCallback(async () => {
+        const currentAuthState = authStore.getState();
+
+        if (
+            currentAuthState.isLoggingOut ||
+            currentAuthState.authStatus === "unauthenticated"
+        ) {
+            return null;
+        }
+
         const reissueData = await requestReissue();
         const newAccessToken = reissueData?.accessToken;
 
@@ -33,6 +44,10 @@ const useAuth = () => {
 
         const checkLogin = async () => {
             try {
+                if (authStore.getState().isLoggingOut) {
+                    return;
+                }
+
                 if (
                     !accessToken ||
                     isAccessTokenExpiringSoon(
@@ -40,6 +55,13 @@ const useAuth = () => {
                         REISSUE_BUFFER_SECONDS
                     )
                 ) {
+                    if (
+                        !accessToken &&
+                        authStore.getState().authStatus !== "checking"
+                    ) {
+                        return;
+                    }
+
                     await refreshLogin();
                     if (ignore) return;
 
@@ -54,7 +76,7 @@ const useAuth = () => {
 
                 saveLogin(user, latestAccessToken);
             } catch {
-                if (!ignore) {
+                if (!ignore && !authStore.getState().isLoggingOut) {
                     setUnauthenticated();
                 }
             }
@@ -65,26 +87,44 @@ const useAuth = () => {
         return () => {
             ignore = true;
         };
-    }, [accessToken, refreshLogin, saveLogin, setUnauthenticated]);
+    }, [
+        accessToken,
+        authStatus,
+        isLoggingOut,
+        refreshLogin,
+        saveLogin,
+        setUnauthenticated,
+    ]);
 
     useEffect(() => {
         let refreshTimerId;
         let isRefreshing = false;
 
         const refreshSession = async () => {
-            if (isRefreshing) return;
+            if (isRefreshing || authStore.getState().isLoggingOut) return;
 
             try {
                 isRefreshing = true;
                 await refreshLogin();
             } catch {
-                setUnauthenticated();
+                if (!authStore.getState().isLoggingOut) {
+                    setUnauthenticated();
+                }
             } finally {
                 isRefreshing = false;
             }
         };
 
         const refreshWhenNeeded = () => {
+            const currentAuthState = authStore.getState();
+
+            if (
+                currentAuthState.isLoggingOut ||
+                currentAuthState.authStatus === "unauthenticated"
+            ) {
+                return;
+            }
+
             const currentToken = authStore.getState().accessToken;
 
             if (
@@ -102,6 +142,15 @@ const useAuth = () => {
 
         const scheduleRefresh = () => {
             window.clearTimeout(refreshTimerId);
+
+            const currentAuthState = authStore.getState();
+
+            if (
+                currentAuthState.isLoggingOut ||
+                currentAuthState.authStatus === "unauthenticated"
+            ) {
+                return;
+            }
 
             const currentToken = authStore.getState().accessToken;
             const payload = getAccessTokenPayload(currentToken);
@@ -137,7 +186,7 @@ const useAuth = () => {
                 handleVisibilityChange
             );
         };
-    }, [accessToken, refreshLogin, setUnauthenticated]);
+    }, [accessToken, authStatus, isLoggingOut, refreshLogin, setUnauthenticated]);
 };
 
 export default useAuth;

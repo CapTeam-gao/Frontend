@@ -14,7 +14,13 @@ const getAccessTokenFromResponse = (response) => {
 
 let refreshPromise = null;
 
+const isLoggingOut = () => authStore.getState().isLoggingOut;
+
 const requestRefreshToken = () => {
+    if (isLoggingOut()) {
+        throw new Error("로그아웃 중에는 토큰을 재발급하지 않습니다.");
+    }
+
     if (!refreshPromise) {
         refreshPromise = api
             .post(
@@ -34,6 +40,10 @@ const requestRefreshToken = () => {
 };
 
 export const reissueAccessToken = async () => {
+    if (isLoggingOut()) {
+        throw new Error("로그아웃 중에는 토큰을 재발급하지 않습니다.");
+    }
+
     const response = await requestRefreshToken();
     const newAccessToken = getAccessTokenFromResponse(response);
 
@@ -75,7 +85,8 @@ api.interceptors.response.use(
             error.response?.status === 401 &&
             originalRequest &&
             !originalRequest._retry &&
-            !originalRequest.skipAuthRedirect
+            !originalRequest.skipAuthRedirect &&
+            !isLoggingOut()
         ) {
             originalRequest._retry = true;
 

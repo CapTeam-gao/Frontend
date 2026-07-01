@@ -25,6 +25,13 @@ const authStore = create((set) => ({
     isLogin: savedToken ? (savedUser ? true : null) : false,
     user: savedUser,
     accessToken: savedToken,
+    isLoggingOut: false,
+
+    startLogout: () => {
+        set({
+            isLoggingOut: true,
+        });
+    },
 
     setUnauthenticated: () => {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -35,6 +42,7 @@ const authStore = create((set) => ({
             user: null,
             accessToken: null,
             isLogin: false,
+            isLoggingOut: false,
         });
     },
 
@@ -47,6 +55,7 @@ const authStore = create((set) => ({
                 user: null,
                 accessToken: null,
                 isLogin: false,
+                isLoggingOut: false,
             });
             return;
         }
@@ -57,6 +66,7 @@ const authStore = create((set) => ({
             accessToken: accessToken.trim(),
             authStatus: state.user ? "authenticated" : state.authStatus,
             isLogin: state.user ? true : state.isLogin,
+            isLoggingOut: false,
         }));
     },
 
@@ -69,6 +79,7 @@ const authStore = create((set) => ({
                 user: null,
                 accessToken: null,
                 isLogin: false,
+                isLoggingOut: false,
             });
             return;
         }
@@ -81,6 +92,7 @@ const authStore = create((set) => ({
             user,
             accessToken: accessToken.trim(),
             isLogin: true,
+            isLoggingOut: false,
         });
     },
 
@@ -93,6 +105,7 @@ const authStore = create((set) => ({
             user: null,
             accessToken: null,
             isLogin: false,
+            isLoggingOut: false,
         });
     },
 }));
