@@ -3,6 +3,7 @@ const CAPSTONE_LOG_START_HOUR = 15;
 const CAPSTONE_LOG_START_MINUTE = 40;
 const CAPSTONE_LOG_END_HOUR = 18;
 const CAPSTONE_LOG_END_MINUTE = 10;
+const TEST_LOG_ALWAYS_OPEN = false;
 
 const createDateWithTime = (baseDate, hour, minute) => {
     const date = new Date(baseDate);
@@ -26,16 +27,20 @@ export const getTodayCapstoneLogWindow = (baseDate = new Date()) => {
     };
 };
 
-// export const isCapstoneLogTime = (baseDate = new Date()) => {
-//     const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
-//     const isCapstoneDay = baseDate.getDay() === CAPSTONE_LOG_DAY;
+export const isCapstoneLogTime = (baseDate = new Date()) => {
+    if (TEST_LOG_ALWAYS_OPEN) {
+        return true;
+    }
 
-//     return (
-//         isCapstoneDay &&
-//         baseDate.getTime() >= startAt.getTime() &&
-//         baseDate.getTime() <= endAt.getTime()
-//     );
-// };
+    const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
+    const isCapstoneDay = baseDate.getDay() === CAPSTONE_LOG_DAY;
+
+    return (
+        isCapstoneDay &&
+        baseDate.getTime() >= startAt.getTime() &&
+        baseDate.getTime() <= endAt.getTime()
+    );
+};
 
 export const getCapstoneLogRemainingMs = (baseDate = new Date()) => {
     const { endAt } = getTodayCapstoneLogWindow(baseDate);
@@ -56,16 +61,16 @@ export const formatCountdownTime = (milliseconds) => {
     return `${hours} : ${minutes} : ${seconds}`;
 };
 
-// export const getCapstoneLogStatusText = ({
-//     teamCreated,
-//     todayJournalSubmitted,
-//     baseDate = new Date(),
-// }) => {
-//     if (!teamCreated) return "팀 생성 전입니다";
+export const getCapstoneLogStatusText = ({
+    teamCreated,
+    todayJournalSubmitted,
+    baseDate = new Date(),
+}) => {
+    if (!teamCreated) return "팀 생성 전입니다";
 
-//     if (isCapstoneLogTime(baseDate) && !todayJournalSubmitted) {
-//         return "오늘 일지가 미제출 상태입니다";
-//     }
+    if (isCapstoneLogTime(baseDate) && !todayJournalSubmitted) {
+        return "오늘 일지가 미제출 상태입니다";
+    }
 
-//     return "";
-// };
+    return "";
+};
