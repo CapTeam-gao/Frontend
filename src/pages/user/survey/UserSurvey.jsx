@@ -63,6 +63,8 @@ const UserSurvey = () => {
     const leaderSectionRef = useRef(null);
     const personalitySectionRef = useRef(null);
     const developmentSectionRef = useRef(null);
+    const submitAreaRef = useRef(null);
+    const questionRefs = useRef({});
     const [selectedRole, setSelectedRole] = useState("");
     const [stackText, setStackText] = useState("");
     const [experiences, setExperiences] = useState([
@@ -106,6 +108,47 @@ const UserSurvey = () => {
     const scrollToSection = (sectionRef) => {
         requestAnimationFrame(() => {
             sectionRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        });
+    };
+
+    const scrollToQuestion = (questionId, fallbackRef) => {
+        requestAnimationFrame(() => {
+            const questionElement = questionRefs.current[questionId];
+
+            if (questionElement) {
+                questionElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+                return;
+            }
+
+            fallbackRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        });
+    };
+
+    const scrollToNextQuestion = (questionId) => {
+        const currentQuestionIndex = allRatingQuestions.findIndex(
+            (question) => question.id === questionId
+        );
+        const nextQuestion = allRatingQuestions[currentQuestionIndex + 1];
+
+        requestAnimationFrame(() => {
+            if (nextQuestion) {
+                questionRefs.current[nextQuestion.id]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+                return;
+            }
+
+            submitAreaRef.current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
@@ -161,10 +204,16 @@ const UserSurvey = () => {
     };
 
     const updateAnswer = (questionId, score) => {
+        const isFirstAnswer = !answers[questionId];
+
         setAnswers((prevAnswers) => ({
             ...prevAnswers,
             [questionId]: score,
         }));
+
+        if (isFirstAnswer) {
+            scrollToNextQuestion(questionId);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -207,11 +256,18 @@ const UserSurvey = () => {
 
         if (hasEmptyRating) {
             setError("성격 성향과 개발 성향 문항을 모두 선택해주세요.");
-            const hasEmptyPersonality = personalityQuestions.some(
+            const firstEmptyPersonalityQuestion = personalityQuestions.find(
                 (question) => !answers[question.id]
             );
-            scrollToSection(
-                hasEmptyPersonality
+            const firstEmptyDevelopmentQuestion = developmentQuestions.find(
+                (question) => !answers[question.id]
+            );
+            const firstEmptyQuestion =
+                firstEmptyPersonalityQuestion || firstEmptyDevelopmentQuestion;
+
+            scrollToQuestion(
+                firstEmptyQuestion.id,
+                firstEmptyPersonalityQuestion
                     ? personalitySectionRef
                     : developmentSectionRef
             );
@@ -560,6 +616,10 @@ const UserSurvey = () => {
                                 {personalityQuestions.map((question, index) => (
                                     <RatingRow
                                         key={question.id}
+                                        ref={(element) => {
+                                            questionRefs.current[question.id] =
+                                                element;
+                                        }}
                                         number={index + 1}
                                         question={question.question}
                                         categoryLabel={question.categoryLabel}
@@ -589,6 +649,10 @@ const UserSurvey = () => {
                                 {developmentQuestions.map((question, index) => (
                                     <RatingRow
                                         key={question.id}
+                                        ref={(element) => {
+                                            questionRefs.current[question.id] =
+                                                element;
+                                        }}
                                         number={index + 16}
                                         question={question.question}
                                         categoryLabel={question.categoryLabel}
@@ -602,6 +666,7 @@ const UserSurvey = () => {
                         </section>
 
                         <div
+                            ref={submitAreaRef}
                             className={`${styles.submitArea} ${
                                 isSubmitting ? styles.submittingArea : ""
                             }`}

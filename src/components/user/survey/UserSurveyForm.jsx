@@ -1,14 +1,12 @@
+import { forwardRef } from "react";
 import styles from "./UserSurveyForm.module.css";
 
-export const RatingRow = ({
-    number,
-    question,
-    categoryLabel,
-    value,
-    onChange,
-}) => {
+export const RatingRow = forwardRef(function RatingRow(
+    { number, question, categoryLabel, value, onChange },
+    ref
+) {
     return (
-        <li className={styles.questionItem}>
+        <li ref={ref} className={styles.questionItem}>
             <p className={styles.questionText}>
                 {number}. {question.text}
             </p>
@@ -40,4 +38,4 @@ export const RatingRow = ({
             </div>
         </li>
     );
-};
+});

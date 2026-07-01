@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import TeamCreatedRoute from "./TeamCreatedRoute";
 
 import Login from "../pages/auth/Login";
 
@@ -32,12 +33,28 @@ import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 
 // router 설정하는 파일
 const Router = () => {
-    const adminRoute = (page) => (
-        <ProtectedRoute requiredRole="ADMIN">{page}</ProtectedRoute>
+    const adminRoute = (page, { requiresTeam = false } = {}) => (
+        <ProtectedRoute requiredRole="ADMIN">
+            {requiresTeam ? (
+                <TeamCreatedRoute role="ADMIN" fallbackPath="/admin/dashboard">
+                    {page}
+                </TeamCreatedRoute>
+            ) : (
+                page
+            )}
+        </ProtectedRoute>
     );
 
-    const userRoute = (page) => (
-        <ProtectedRoute requiredRole="STUDENT">{page}</ProtectedRoute>
+    const userRoute = (page, { requiresTeam = false } = {}) => (
+        <ProtectedRoute requiredRole="STUDENT">
+            {requiresTeam ? (
+                <TeamCreatedRoute role="STUDENT" fallbackPath="/user/dashboard">
+                    {page}
+                </TeamCreatedRoute>
+            ) : (
+                page
+            )}
+        </ProtectedRoute>
     );
 
     return (
@@ -60,11 +77,13 @@ const Router = () => {
             />
             <Route
                 path="/admin/team-edit"
-                element={adminRoute(<AdminTeamEdit />)}
+                element={adminRoute(<AdminTeamEdit />, { requiresTeam: true })}
             />
             <Route
                 path="/admin/team-manage"
-                element={adminRoute(<AdminTeamManage />)}
+                element={adminRoute(<AdminTeamManage />, {
+                    requiresTeam: true,
+                })}
             />
             <Route path="/admin/log" element={adminRoute(<AdminLogList />)} />
             <Route
@@ -73,27 +92,37 @@ const Router = () => {
             />
             <Route
                 path="/admin/student"
-                element={adminRoute(<AdminStudentManage />)}
+                element={adminRoute(<AdminStudentManage />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/admin/notice"
-                element={adminRoute(<AdminNoticeList />)}
+                element={adminRoute(<AdminNoticeList />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/admin/notice/create"
-                element={adminRoute(<AdminNoticeCreate />)}
+                element={adminRoute(<AdminNoticeCreate />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/admin/notice/:id/edit"
-                element={adminRoute(<AdminNoticeEdit />)}
+                element={adminRoute(<AdminNoticeEdit />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/admin/notice/:id"
-                element={adminRoute(<AdminNoticeDetail />)}
+                element={adminRoute(<AdminNoticeDetail />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/admin/profile"
-                element={adminRoute(<AdminProfile />)}
+                element={adminRoute(<AdminProfile />, { requiresTeam: true })}
             />
             <Route
                 path="/admin/chat"
@@ -106,19 +135,21 @@ const Router = () => {
             />
             <Route
                 path="/user/log"
-                element={userRoute(<UserLogCountdown />)}
+                element={userRoute(<UserLogCountdown />, {
+                    requiresTeam: true,
+                })}
             />
             <Route
                 path="/user/log/write"
-                element={userRoute(<UserLogWrite />)}
+                element={userRoute(<UserLogWrite />, { requiresTeam: true })}
             />
             <Route
                 path="/user/log/result"
-                element={userRoute(<UserLogResult />)}
+                element={userRoute(<UserLogResult />, { requiresTeam: true })}
             />
             <Route
                 path="/user/project"
-                element={userRoute(<UserProject />)}
+                element={userRoute(<UserProject />, { requiresTeam: true })}
             />
             <Route
                 path="/user/notice"
@@ -130,7 +161,7 @@ const Router = () => {
             />
             <Route
                 path="/user/profile"
-                element={userRoute(<UserProfile />)}
+                element={userRoute(<UserProfile />, { requiresTeam: true })}
             />
             <Route
                 path="/user/survey/intro"
@@ -138,7 +169,10 @@ const Router = () => {
             />
             <Route path="/user/survey" element={userRoute(<UserSurvey />)} />
 
-            <Route path="/user/chat" element={userRoute(<UserTeamChat />)} />
+            <Route
+                path="/user/chat"
+                element={userRoute(<UserTeamChat />, { requiresTeam: true })}
+            />
             {/* 없는 주소 접근 시 로그인으로 */}
             <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

@@ -243,7 +243,7 @@ const AdminChatManage = () => {
                 <aside className={styles.roomSidebar}>
                     <div className={styles.roomHeader}>
                         <h1>채팅 관리</h1>
-                        <p>팀별 채팅방을 확인하고 메시지를 작성합니다.</p>
+                        <p>팀별 채팅방 확인 및 메세지 작성</p>
                     </div>
 
                     <div className={styles.roomList}>
