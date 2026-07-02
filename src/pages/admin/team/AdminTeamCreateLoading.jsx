@@ -6,7 +6,9 @@ import {
 } from "../../../api/teamApi";
 import {
     clearMatchingJobLock,
+    getActiveMatchingJobLock,
     setMatchingJobLock,
+    gradeLabels,
 } from "../../../utils/matchingJobLock";
 import styles from "./AdminTeamCreateLoading.module.css";
 
@@ -94,7 +96,8 @@ const parsePendingSurveyStudents = (message) => {
 const AdminTeamCreateLoading = () => {
     const navigate = useNavigate();
     const location = useLocation(); // navigate 안에 state값을 확인할 수 있는 함수
-    const grade = location.state?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 언디파인드
+    const storedMatchingJob = getActiveMatchingJobLock();
+    const grade = location.state?.grade || storedMatchingJob?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 저장된 작업의 학년을 사용
     const regenerationPrompt = location.state?.regenerationPrompt || "";
     const [error, setError] = useState("");
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
@@ -132,12 +135,43 @@ const AdminTeamCreateLoading = () => {
 
         const createTeamRecommendation = async () => {
             try {
-                const startedJob = await requestStartTeamMatchingJob(
-                    grade,
-                    regenerationPrompt
-                );
+                const activeLock = getActiveMatchingJobLock();
+                const shouldStartNewJob = Boolean(regenerationPrompt);
+                let currentJob;
 
-                let currentJob = startedJob;
+                if (!shouldStartNewJob && activeLock?.jobId) {
+                    if (activeLock.grade && activeLock.grade !== grade) {
+                        const activeGradeLabel =
+                            gradeLabels[activeLock.grade] || "선택한 학년";
+
+                        setError(
+                            `${activeGradeLabel} 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
+                        );
+                        return;
+                    }
+
+                    currentJob = await requestTeamMatchingJob(activeLock.jobId);
+                } else if (!shouldStartNewJob && activeLock) {
+                    setError(
+                        "팀 생성 작업을 시작하는 중입니다. 잠시 후 다시 확인해주세요."
+                    );
+                    return;
+                } else {
+                    if (shouldStartNewJob) {
+                        clearMatchingJobLock();
+                    }
+
+                    setMatchingJobLock({
+                        grade,
+                        status: "STARTING",
+                    });
+
+                    currentJob = await requestStartTeamMatchingJob(
+                        grade,
+                        regenerationPrompt
+                    );
+                }
+
                 setMatchingJobLock({
                     jobId: currentJob?.jobId,
                     grade,

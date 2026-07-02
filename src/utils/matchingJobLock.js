@@ -30,11 +30,19 @@ export const getActiveMatchingJobLock = () => {
 };
 
 export const setMatchingJobLock = (lock) => {
+    const currentLock = getActiveMatchingJobLock();
+    const shouldKeepStartedAt =
+        currentLock &&
+        ((lock.jobId && currentLock.jobId === lock.jobId) ||
+            (!lock.jobId && currentLock.grade === lock.grade));
+
     localStorage.setItem(
         MATCHING_JOB_LOCK_KEY,
         JSON.stringify({
             ...lock,
-            startedAt: lock.startedAt || Date.now(),
+            startedAt:
+                lock.startedAt ||
+                (shouldKeepStartedAt ? currentLock.startedAt : Date.now()),
         })
     );
 };

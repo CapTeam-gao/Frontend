@@ -67,6 +67,26 @@ const AdminTeamEdit = () => {
     }, [getRecommendations, grade]);
 
     useEffect(() => {
+        const preventUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = "";
+        };
+
+        const preventBack = () => {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("beforeunload", preventUnload);
+        window.addEventListener("popstate", preventBack);
+
+        return () => {
+            window.removeEventListener("beforeunload", preventUnload);
+            window.removeEventListener("popstate", preventBack);
+        };
+    }, []);
+
+    useEffect(() => {
         return () => {
             if (highlightTimerRef.current) {
                 clearTimeout(highlightTimerRef.current);
