@@ -4,6 +4,8 @@ import Header from "../../../components/common/header/Header";
 import {
     formatCountdownTime,
     getCapstoneLogRemainingMs,
+    getCapstoneLogUnavailableText,
+    getNextCapstoneLogStartRemainingMs,
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
 import styles from "./UserLogCountdown.module.css";
@@ -19,9 +21,11 @@ const UserLogCountdown = () => {
         return () => clearInterval(timerId);
     }, []);
 
-    const remainingMs = getCapstoneLogRemainingMs(currentTime);
-    const countdownText = formatCountdownTime(remainingMs);
     const canWriteLog = isCapstoneLogTime(currentTime);
+    const remainingMs = canWriteLog
+        ? getCapstoneLogRemainingMs(currentTime)
+        : getNextCapstoneLogStartRemainingMs(currentTime);
+    const countdownText = formatCountdownTime(remainingMs);
 
     return (
         <div className={styles.page}>
@@ -31,7 +35,7 @@ const UserLogCountdown = () => {
                 <section className={styles.countdownSection}>
                     <h1>
                         {canWriteLog
-                            ? "오늘 일지 작성까지"
+                            ? "오늘 일지 작성 마감까지"
                             : "현재는 일지 작성 시간이 아닙니다"}
                     </h1>
 
@@ -42,8 +46,7 @@ const UserLogCountdown = () => {
                         </div>
                     ) : (
                         <p className={styles.description}>
-                            캡스톤 일지는 매주 수요일 15:40부터 18:10까지 작성할
-                            수 있습니다.
+                            {getCapstoneLogUnavailableText(currentTime)}
                         </p>
                     )}
 

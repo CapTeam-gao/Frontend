@@ -10,6 +10,7 @@ import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,
     getStoredAdminTeamCreated,
 } from "../../../utils/adminTeamStatusStorage";
+import { isAdminRole } from "../../../utils/accountRole";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
@@ -22,7 +23,7 @@ const Header = () => {
     const user = authStore((state) => state.user);
 
     const hasUser = Boolean(user);
-    const isAdmin = user?.accountRole === "ADMIN";
+    const isAdmin = isAdminRole(user?.accountRole);
     const isAdminPage = location.pathname.startsWith("/admin");
 
     const [storedTeamCreated, setStoredTeamCreated] = useState(

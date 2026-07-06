@@ -76,7 +76,7 @@ const AdminDashboard = () => {
         ? "팀 생성 후 이용 가능합니다"
         : isCapstoneLogTime()
         ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
-        : "제출 시간 전입니다";
+        : "작성 시간이 아닙니다";
     const blockTeamRequiredCard = (event, message) => {
         if (isTeamCreated) return;
 

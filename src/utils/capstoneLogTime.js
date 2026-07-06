@@ -3,7 +3,7 @@ const CAPSTONE_LOG_START_HOUR = 15;
 const CAPSTONE_LOG_START_MINUTE = 40;
 const CAPSTONE_LOG_END_HOUR = 18;
 const CAPSTONE_LOG_END_MINUTE = 10;
-const TEST_LOG_ALWAYS_OPEN = true;
+const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 const createDateWithTime = (baseDate, hour, minute) => {
     const date = new Date(baseDate);
@@ -28,10 +28,6 @@ export const getTodayCapstoneLogWindow = (baseDate = new Date()) => {
 };
 
 export const isCapstoneLogTime = (baseDate = new Date()) => {
-    if (TEST_LOG_ALWAYS_OPEN) {
-        return true;
-    }
-
     const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
     const isCapstoneDay = baseDate.getDay() === CAPSTONE_LOG_DAY;
 
@@ -46,6 +42,59 @@ export const getCapstoneLogRemainingMs = (baseDate = new Date()) => {
     const { endAt } = getTodayCapstoneLogWindow(baseDate);
 
     return Math.max(endAt.getTime() - baseDate.getTime(), 0);
+};
+
+export const getNextCapstoneLogWindow = (baseDate = new Date()) => {
+    const currentDay = baseDate.getDay();
+    const daysUntilCapstoneDay =
+        (CAPSTONE_LOG_DAY - currentDay + 7) % 7;
+    const nextDate = new Date(baseDate);
+    nextDate.setDate(baseDate.getDate() + daysUntilCapstoneDay);
+
+    let nextWindow = getTodayCapstoneLogWindow(nextDate);
+
+    if (
+        daysUntilCapstoneDay === 0 &&
+        baseDate.getTime() > nextWindow.endAt.getTime()
+    ) {
+        nextDate.setDate(baseDate.getDate() + 7);
+        nextWindow = getTodayCapstoneLogWindow(nextDate);
+    }
+
+    return nextWindow;
+};
+
+export const getNextCapstoneLogStartRemainingMs = (
+    baseDate = new Date()
+) => {
+    const { startAt } = getNextCapstoneLogWindow(baseDate);
+
+    return Math.max(startAt.getTime() - baseDate.getTime(), 0);
+};
+
+const formatTime = (date) => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+};
+
+export const formatCapstoneLogDateTime = (date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayLabel = DAY_LABELS[date.getDay()];
+
+    return `${month}월 ${day}일(${dayLabel}) ${formatTime(date)}`;
+};
+
+export const getCapstoneLogUnavailableText = (
+    baseDate = new Date()
+) => {
+    const { startAt, endAt } = getNextCapstoneLogWindow(baseDate);
+
+    return `다음 작성 가능 시간은 ${formatCapstoneLogDateTime(
+        startAt
+    )}부터 ${formatTime(endAt)}까지입니다.`;
 };
 
 export const formatCountdownTime = (milliseconds) => {

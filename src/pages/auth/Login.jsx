@@ -4,6 +4,7 @@ import styles from "./Login.module.css";
 import Button from "../../components/common/button/Button";
 import { requestLogin, requestMyInfo } from "../../api/authApi";
 import authStore from "../../store/authStore";
+import { isAdminRole } from "../../utils/accountRole";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
@@ -23,7 +24,7 @@ const Login = () => {
     useEffect(() => {
         if (!user?.accountRole) return;
 
-        if (user.accountRole === "ADMIN") {
+        if (isAdminRole(user.accountRole)) {
             navigate("/admin/dashboard", { replace: true });
             return;
         }
@@ -71,7 +72,7 @@ const Login = () => {
                 sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_SEEN_KEY);
             }
 
-            if (user.accountRole === "ADMIN") {
+            if (isAdminRole(user.accountRole)) {
                 navigate("/admin/dashboard", { replace: true });
                 return;
             }

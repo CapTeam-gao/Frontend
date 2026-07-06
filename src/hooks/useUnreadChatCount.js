@@ -8,6 +8,7 @@ import {
     disconnectChatClient,
     subscribeUserChatUnreadEvents,
 } from "../api/chatSocket";
+import { isAdminRole } from "../utils/accountRole";
 
 const CHAT_UNREAD_REFRESH_INTERVAL = 1000 * 10;
 
@@ -34,7 +35,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         }
 
         try {
-            if (user.accountRole === "ADMIN") {
+            if (isAdminRole(user.accountRole)) {
                 const summary = await requestAdminChatUnreadSummary();
                 setUnreadChatCount(Number(summary?.totalUnreadCount ?? 0));
                 return;
@@ -80,7 +81,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     }, [refreshUnreadChatCount, shouldFetchUnreadCount]);
 
     useEffect(() => {
-        if (!shouldFetchUnreadCount || user?.accountRole === "ADMIN") {
+        if (!shouldFetchUnreadCount || isAdminRole(user?.accountRole)) {
             return undefined;
         }
 

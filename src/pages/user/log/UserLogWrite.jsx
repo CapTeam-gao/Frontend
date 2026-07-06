@@ -9,7 +9,10 @@ import {
     requestUserLogDetail,
     requestUserLogList,
 } from "../../../api/logApi";
-import { isCapstoneLogTime } from "../../../utils/capstoneLogTime";
+import {
+    getCapstoneLogUnavailableText,
+    isCapstoneLogTime,
+} from "../../../utils/capstoneLogTime";
 import styles from "./UserLogWrite.module.css";
 
 const initialFormData = {
@@ -48,6 +51,7 @@ const UserLogWrite = () => {
     const [isLoadingTeam, setIsLoadingTeam] = useState(true);
     const [isLoadingJournal, setIsLoadingJournal] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
         const getMyTeam = async () => {
@@ -69,11 +73,20 @@ const UserLogWrite = () => {
         getMyTeam();
     }, []);
 
+    useEffect(() => {
+        const timerId = window.setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+
+        return () => window.clearInterval(timerId);
+    }, []);
+
     const isInitialLoading = isLoadingTeam || isLoadingJournal;
     const teamName = myTeam?.project?.teamName || myTeam?.teamName || "";
     const pageTitle = teamName ? `${teamName} 캡스톤 일지` : "캡스톤 일지";
     const isLeader = myTeam?.myMember?.leaderRole === "LEADER";
-    const canWriteLog = isCapstoneLogTime();
+    const canWriteLog = isCapstoneLogTime(currentTime);
+    const logUnavailableText = getCapstoneLogUnavailableText(currentTime);
 
     const handleFieldChange = (fieldName, value) => {
         setSuccessMessage("");
@@ -132,9 +145,7 @@ const UserLogWrite = () => {
         e.preventDefault();
 
         if (!canWriteLog) {
-            setError(
-                "현재는 일지 작성 시간이 아닙니다. 수요일 15:40부터 18:10까지 작성할 수 있습니다."
-            );
+            setError(`현재는 일지 작성 시간이 아닙니다. ${logUnavailableText}`);
             return;
         }
 
@@ -181,8 +192,7 @@ const UserLogWrite = () => {
 
                 {!canWriteLog && (
                     <p className={styles.errorText}>
-                        현재는 일지 작성 시간이 아닙니다. 수요일 15:40부터
-                        18:10까지 작성할 수 있습니다.
+                        현재는 일지 작성 시간이 아닙니다. {logUnavailableText}
                     </p>
                 )}
 
