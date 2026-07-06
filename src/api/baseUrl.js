@@ -16,8 +16,8 @@ export const getAssetUrl = (path) => {
 };
 
 export const getSocketBaseUrl = () => {
-    if (import.meta.env.PROD) {
-        return window.location.origin;
+    if (import.meta.env.VITE_SOCKET_BASE_URL) {
+        return import.meta.env.VITE_SOCKET_BASE_URL;
     }
 
     return import.meta.env.VITE_BASE_URL || API_ORIGIN;

@@ -219,33 +219,35 @@ const useChatSocket = ({
     ]);
 
     const handleSendMessage = async (message) => {
-        if (!selectedChannel?.id) return;
+        if (!selectedChannel?.id) return false;
 
         const client = chatClientRef.current;
 
         if (!client?.connected) {
             setError("채팅 서버와 연결되지 않았습니다.");
-            return;
+            return false;
         }
 
         try {
             setIsSending(true);
             sendChatSocketMessage(client, selectedChannel.id, message);
+            return true;
         } catch {
             setError("메시지 전송에 실패했습니다.");
+            return false;
         } finally {
             setIsSending(false);
         }
     };
 
     const handleSendFile = async (file, message = "") => {
-        if (!selectedChannel?.id) return;
+        if (!selectedChannel?.id) return false;
 
         const client = chatClientRef.current;
 
         if (!client?.connected) {
             setError("채팅 서버와 연결되지 않았습니다.");
-            return;
+            return false;
         }
 
         try {
@@ -264,6 +266,8 @@ const useChatSocket = ({
                 fileType: uploadedFile.contentType,
                 fileSize: uploadedFile.size,
             });
+
+            return true;
         } catch (error) {
             setError(
                 error?.response?.status === 413

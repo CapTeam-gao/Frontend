@@ -64,6 +64,12 @@ const UserTeamChat = () => {
         messages.length > 0;
     const channelCount = room?.channels?.length ?? 0;
     const memberCount = members.length;
+    const isChatInputDisabled = !selectedChannel || !socketConnected;
+    const chatInputPlaceholder = !selectedChannel
+        ? "채널을 선택하면 메시지를 보낼 수 있습니다"
+        : !socketConnected
+        ? "채팅 서버에 연결하는 중입니다"
+        : `${selectedChannel.channelName}에 메시지 입력`;
 
     return (
         <div className={styles.page}>
@@ -129,14 +135,10 @@ const UserTeamChat = () => {
                         <ChatInput
                             onSend={handleSendMessage}
                             onFileSend={handleSendFile}
-                            disabled={!selectedChannel}
+                            disabled={isChatInputDisabled}
                             isSending={isSending}
                             isFileSending={isFileSending}
-                            placeholder={
-                                selectedChannel
-                                    ? `${selectedChannel.channelName}에 메시지 입력`
-                                    : "채널을 선택하면 메시지를 보낼 수 있습니다"
-                            }
+                            placeholder={chatInputPlaceholder}
                         />
                     </section>
 

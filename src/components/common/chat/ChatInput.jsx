@@ -75,7 +75,13 @@ const ChatInput = ({
 
         if (selectedFile) {
             try {
-                await onFileSend?.(selectedFile, trimmedMessage);
+                const sent = await onFileSend?.(selectedFile, trimmedMessage);
+
+                if (sent === false) {
+                    inputRef.current?.focus();
+                    return;
+                }
+
                 clearSelectedFile();
                 setMessage("");
             } catch (error) {
@@ -87,7 +93,13 @@ const ChatInput = ({
             return;
         }
 
-        await onSend(trimmedMessage);
+        const sent = await onSend?.(trimmedMessage);
+
+        if (sent === false) {
+            inputRef.current?.focus();
+            return;
+        }
+
         setMessage("");
         inputRef.current?.focus();
     };

@@ -235,6 +235,13 @@ const AdminChatManage = () => {
         selectedChannel &&
         messages.length > 0;
 
+    const isChatInputDisabled = !selectedChannel || !isSocketConnected;
+    const chatInputPlaceholder = !selectedChannel
+        ? "채널을 선택하면 메시지를 보낼 수 있습니다"
+        : !isSocketConnected
+        ? "채팅 서버에 연결하는 중입니다"
+        : `${selectedChannel.channelName}에 메시지 입력`;
+
     return (
         <div className={styles.page}>
             <Header />
@@ -328,9 +335,10 @@ const AdminChatManage = () => {
                         <ChatInput
                             onSend={sendMessage}
                             onFileSend={sendFile}
-                            disabled={!selectedChannel}
+                            disabled={isChatInputDisabled}
                             isSending={isSending}
                             isFileSending={isFileSending}
+                            placeholder={chatInputPlaceholder}
                         />
                     </section>
 

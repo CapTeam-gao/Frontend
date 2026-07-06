@@ -1,5 +1,4 @@
 import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import { requestReissue } from "./authApi";
 import authStore from "../store/authStore";
 import {
@@ -10,8 +9,11 @@ import { getSocketBaseUrl } from "./baseUrl";
 
 const getSocketUrl = () => {
     const baseUrl = getSocketBaseUrl();
+    const url = new URL("/ws", baseUrl);
 
-    return `${baseUrl}/ws`;
+    url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+
+    return url.toString();
 };
 
 const getFreshAccessToken = async () => {
@@ -35,7 +37,7 @@ const getFreshAccessToken = async () => {
 
 export const createChatClient = ({ onConnect, onError } = {}) => {
     const client = new Client({
-        webSocketFactory: () => new SockJS(getSocketUrl()),
+        webSocketFactory: () => new WebSocket(getSocketUrl()),
 
         reconnectDelay: 3000,
 

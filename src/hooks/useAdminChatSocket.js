@@ -177,13 +177,13 @@ const useAdminChatSocket = ({
         };
     }, [isSocketConnected, onUnreadEvent]);
     const sendMessage = async (message) => {
-        if (!selectedChannelId) return;
+        if (!selectedChannelId) return false;
 
         const client = chatClientRef.current;
 
         if (!client?.connected) {
             setSocketError("채팅 서버와 연결되지 않았습니다.");
-            return;
+            return false;
         }
 
         try {
@@ -193,21 +193,24 @@ const useAdminChatSocket = ({
             sendChatSocketMessage(client, selectedChannelId, {
                 message,
             });
+
+            return true;
         } catch {
             setSocketError("메시지 전송에 실패했습니다.");
+            return false;
         } finally {
             setIsSending(false);
         }
     };
 
     const sendFile = async (file, message = "") => {
-        if (!selectedChannelId) return;
+        if (!selectedChannelId) return false;
 
         const client = chatClientRef.current;
 
         if (!client?.connected) {
             setSocketError("채팅 서버와 연결되지 않았습니다.");
-            return;
+            return false;
         }
 
         try {
@@ -226,6 +229,8 @@ const useAdminChatSocket = ({
                 fileType: uploadedFile.contentType,
                 fileSize: uploadedFile.size,
             });
+
+            return true;
         } catch (error) {
             setSocketError(
                 error?.response?.status === 413
