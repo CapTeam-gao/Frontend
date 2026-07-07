@@ -287,7 +287,6 @@
 .emptySurveyMessage {
     margin: 28px 34px 34px;
     padding: 56px 28px;
-    border: 1px solid #d7ece2;
     border-radius: var(--border-radius-md);
     text-align: center;
 }

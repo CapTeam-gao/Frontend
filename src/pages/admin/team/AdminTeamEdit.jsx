@@ -54,7 +54,7 @@ const AdminTeamEdit = () => {
                     Array.isArray(data) ? normalizeRecommendations(data) : []
                 );
             } catch {
-                setError("팀 추천안을 불러오지 못했습니다.");
+                setError("해커톤 팀 추천안을 불러오지 못했습니다.");
             } finally {
                 setIsLoading(false);
             }
@@ -253,7 +253,8 @@ const AdminTeamEdit = () => {
 
                     {isLoading ? (
                         <p className={styles.messageText}>
-                            {showLoading && "팀 추천안을 불러오는 중입니다."}
+                            {showLoading &&
+                                "해커톤 팀 추천안을 불러오는 중입니다."}
                         </p>
                     ) : (
                         <div className={styles.teamGrid}>

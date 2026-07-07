@@ -236,7 +236,7 @@ const UserProfile = () => {
 
                             <div className={styles.chartGroups}>
                                 <div className={styles.chartGroup}>
-                                    <h3>성격 성향</h3>
+                                    <h3>해커톤 협업 성향</h3>
                                     <div className={styles.traitList}>
                                         {personalityChart.map((trait) => (
                                             <div
@@ -273,7 +273,7 @@ const UserProfile = () => {
                                 </div>
 
                                 <div className={styles.chartGroup}>
-                                    <h3>개발 성향</h3>
+                                    <h3>해커톤 실행 성향</h3>
                                     <div className={styles.traitList}>
                                         {developmentChart.map((trait) => (
                                             <div

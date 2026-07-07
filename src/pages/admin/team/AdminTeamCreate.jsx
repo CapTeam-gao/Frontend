@@ -31,7 +31,7 @@ const AdminTeamCreate = () => {
                 const dashboard = await requestAdminDashboard();
                 setTeamStatus(getAdminTeamCreationStatus(dashboard));
             } catch {
-                setError("팀 생성 상태를 불러오지 못했습니다.");
+                setError("해커톤 팀 생성 상태를 불러오지 못했습니다.");
             }
         };
 
@@ -51,7 +51,7 @@ const AdminTeamCreate = () => {
                 gradeLabels[activeLock.grade] || "선택한 학년";
 
             setError(
-                `${activeGradeLabel} 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
+                `${activeGradeLabel} 해커톤 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
             );
             return;
         }
@@ -81,10 +81,10 @@ const AdminTeamCreate = () => {
 
                         <div className={styles.titleGroup}>
                             <h1 className={styles.title}>
-                                캡스톤 팀 자동 생성
+                                해커톤 팀 자동 생성
                             </h1>
                             <p className={styles.description}>
-                                설문 데이터를 기반으로 학년별 팀 추천안을
+                                해커톤 설문 데이터를 기반으로 학년별 팀 추천안을
                                 생성합니다.
                             </p>
                         </div>
@@ -125,12 +125,14 @@ const AdminTeamCreate = () => {
                                 구성합니다.
                             </li>
                             <li>
-                                구현 경험과 기술 점수를 함께 참고해 팀별 실력
-                                차이가 과하게 벌어지지 않도록 조정합니다.
+                                구현 경험과 개발 실행력, 문제 해결력 점수를 함께
+                                참고해 해커톤 당일 바로 작업할 수 있는 팀을
+                                구성합니다.
                             </li>
                             <li>
-                                성격·개발 성향 점수, 팀장 희망 여부, 선호 팀원
-                                정보를 함께 반영해 실제 협업 흐름을 고려합니다.
+                                발표/설명, 리더십/정리, 시간 압박 대응, 체력/집중
+                                유지 점수를 함께 반영해 무박2일 협업 흐름을
+                                고려합니다.
                             </li>
                         </ul>
                     </section>
@@ -140,7 +142,7 @@ const AdminTeamCreate = () => {
                         className={styles.createButton}
                         onClick={handleCreate}
                     >
-                        {selectedGradeLabel} 팀 생성하기
+                        {selectedGradeLabel} 해커톤 팀 생성하기
                     </button>
                 </main>
             </section>

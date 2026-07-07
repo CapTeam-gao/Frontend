@@ -31,10 +31,10 @@ const getErrorMessage = (error) => {
     }
 
     if (error.response?.status === 502) {
-        return "AI 서버 또는 백엔드 연결이 불안정해 팀 추천안을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.";
+        return "AI 서버 또는 백엔드 연결이 불안정해 해커톤 팀 추천안을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.";
     }
 
-    return "팀 추천안 생성 중 오류가 발생했습니다.";
+    return "해커톤 팀 추천안 생성 중 오류가 발생했습니다.";
 };
 
 const wait = (ms) =>
@@ -145,7 +145,7 @@ const AdminTeamCreateLoading = () => {
                             gradeLabels[activeLock.grade] || "선택한 학년";
 
                         setError(
-                            `${activeGradeLabel} 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
+                            `${activeGradeLabel} 해커톤 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
                         );
                         return;
                     }
@@ -153,7 +153,7 @@ const AdminTeamCreateLoading = () => {
                     currentJob = await requestTeamMatchingJob(activeLock.jobId);
                 } else if (!shouldStartNewJob && activeLock) {
                     setError(
-                        "팀 생성 작업을 시작하는 중입니다. 잠시 후 다시 확인해주세요."
+                        "해커톤 팀 생성 작업을 시작하는 중입니다. 잠시 후 다시 확인해주세요."
                     );
                     return;
                 } else {
@@ -209,12 +209,12 @@ const AdminTeamCreateLoading = () => {
                 clearMatchingJobLock();
                 setError(
                     currentJob?.errorMessage ||
-                        "팀 추천안 생성 중 오류가 발생했습니다."
+                        "해커톤 팀 추천안 생성 중 오류가 발생했습니다."
                 );
             } catch (e) {
                 if (ignore) return;
 
-                console.error("팀 추천안 생성 실패:", e);
+                console.error("해커톤 팀 추천안 생성 실패:", e);
                 clearMatchingJobLock();
                 setError(getErrorMessage(e));
             }
@@ -241,7 +241,7 @@ const AdminTeamCreateLoading = () => {
                                 <h1>팀을 생성할 수 없습니다</h1>
                                 <p>
                                     아래 학생들의 설문 제출이 완료되면 다시
-                                    팀을 생성할 수 있습니다.
+                                    해커톤 팀을 생성할 수 있습니다.
                                 </p>
 
                                 <div className={styles.pendingGroupList}>
@@ -302,7 +302,7 @@ const AdminTeamCreateLoading = () => {
                         </>
                     ) : (
                         <h1 className={styles.loadingText}>
-                            팀이 생성되는 중입니다
+                            해커톤 팀이 생성되는 중입니다
                             <span className={styles.dots} aria-hidden="true" />
                         </h1>
                     )}
