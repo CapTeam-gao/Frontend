@@ -97,17 +97,15 @@ const UserSurvey = () => {
     const [stackText, setStackText] = useState(
         () => storedDraft?.stackText ?? ""
     );
-    const [experiences, setExperiences] = useState(
-        () =>
-            storedDraft?.experiences?.length
-                ? storedDraft.experiences
-                : defaultExperiences
+    const [experiences, setExperiences] = useState(() =>
+        storedDraft?.experiences?.length
+            ? storedDraft.experiences
+            : defaultExperiences
     );
-    const [preferredMembers, setPreferredMembers] = useState(
-        () =>
-            storedDraft?.preferredMembers?.length
-                ? storedDraft.preferredMembers
-                : [""]
+    const [preferredMembers, setPreferredMembers] = useState(() =>
+        storedDraft?.preferredMembers?.length
+            ? storedDraft.preferredMembers
+            : [""]
     );
     const [leaderPreference, setLeaderPreference] = useState(
         () => storedDraft?.leaderPreference ?? ""
@@ -461,7 +459,7 @@ const UserSurvey = () => {
                                     : ""
                             }
                         >
-                            성격 {personalityAnswerCount}/
+                            협업 {personalityAnswerCount}/
                             {personalityQuestions.length}
                         </span>
                         <span
@@ -472,7 +470,7 @@ const UserSurvey = () => {
                                     : ""
                             }
                         >
-                            개발 {developmentAnswerCount}/
+                            실행 {developmentAnswerCount}/
                             {developmentQuestions.length}
                         </span>
                     </div>
@@ -485,8 +483,8 @@ const UserSurvey = () => {
                                 <span>STEP 1</span>
                                 <h2>기술 정보</h2>
                                 <p>
-                                    해커톤 팀 매칭에 사용할 희망 역할, 기술 스택,
-                                    구현 경험을 입력해주세요.
+                                    해커톤 팀 매칭에 사용할 희망 역할, 기술
+                                    스택, 구현 경험을 입력해주세요.
                                 </p>
                             </div>
 
