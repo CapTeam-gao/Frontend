@@ -5,11 +5,11 @@ export const flattenQuestions = (groups, type) => {
         // group.questions는 한 카테고리 안에 들어있는 질문 배열
         group.questions.map((question, index) => ({
             // 질문마다 겹치지 않는 고유 id를 만들어줌
-            // 예: personality-communication-1
+            // 예: personality-ideaPlanning-1
             id: `${type}-${group.key}-${index + 1}`,
 
             // 점수 평균을 낼 때 사용할 카테고리 값
-            // 예: communication, responsibility
+            // 예: ideaPlanning, communication
             category: group.key,
 
             // 화면에 보여줄 카테고리 이름

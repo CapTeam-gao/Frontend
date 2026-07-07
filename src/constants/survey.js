@@ -12,91 +12,91 @@ export const roles = [
 
 export const personalityGroups = [
     {
+        key: "ideaPlanning",
+        label: "아이디어/기획",
+        questions: [
+            {
+                text: "나는 주제가 주어지면 빠르게 서비스 아이디어를 떠올리는 편이다.",
+                reverse: false,
+            },
+            {
+                text: "나는 해커톤에서 필요한 핵심 기능을 빠르게 정리할 수 있다.",
+                reverse: false,
+            },
+            {
+                text: "나는 아이디어가 많아도 실제로 만들 기능을 고르는 데 시간이 오래 걸린다.",
+                reverse: true,
+            },
+        ],
+    },
+    {
         key: "communication",
-        label: "소통 성향",
+        label: "협업/소통",
         questions: [
             {
-                text: "나는 팀원에게 진행 상황을 먼저 공유하는 편이다.",
+                text: "나는 팀원에게 내 작업 진행 상황을 자주 공유하는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 의견이 다를 때 직접 말로 풀어내려고 한다.",
+                text: "나는 막히는 부분이 있으면 혼자 오래 끌지 않고 팀원에게 알린다.",
                 reverse: false,
             },
             {
-                text: "나는 할 말이 있어도 굳이 먼저 꺼내지 않는다.",
+                text: "나는 작업 상황을 굳이 말하지 않아도 팀원이 알아서 이해할 거라고 생각한다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "responsibility",
-        label: "책임감",
+        key: "roleFlexibility",
+        label: "역할 유연성",
         questions: [
             {
-                text: "나는 맡은 일은 끝까지 마무리한다.",
+                text: "나는 내 역할이 아니어도 팀에 필요한 일이면 도울 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 내가 맡은 부분에 문제가 생기면 먼저 책임지려 한다.",
+                text: "나는 상황에 따라 기획, 디자인, 발표 준비도 함께 맡을 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 일이 어려워지면 일단 미루는 편이다.",
+                text: "나는 내가 맡은 역할 밖의 일은 최대한 하지 않는 편이다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "collaboration",
-        label: "협업 선호도",
+        key: "timePressure",
+        label: "시간 압박 대응",
         questions: [
             {
-                text: "나는 혼자 하는 것보다 팀으로 일하는 것을 선호한다.",
+                text: "나는 시간이 부족할 때 먼저 해야 할 일을 빠르게 고를 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 팀원의 의견이 다르면 맞춰서 조율하려고 한다.",
+                text: "나는 마감이 가까워져도 제출 가능한 상태를 만드는 데 집중한다.",
                 reverse: false,
             },
             {
-                text: "나는 내 방식대로 진행하는 것을 더 편하게 느낀다.",
+                text: "나는 시간이 부족해지면 무엇부터 해야 할지 정하지 못하고 흔들리는 편이다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "flexibility",
-        label: "유연성",
+        key: "staminaFocus",
+        label: "체력/집중 유지",
         questions: [
             {
-                text: "나는 기존 방식보다 더 나은 방법이 있으면 시도해본다.",
+                text: "나는 긴 시간 동안 한 가지 작업에 집중하는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 갑작스러운 일정·요구사항 변경에도 잘 적응한다.",
+                text: "나는 피곤해도 맡은 일을 제출 가능한 수준까지 마무리하려고 한다.",
                 reverse: false,
             },
             {
-                text: "나는 정해진 방식이 바뀌면 불편함을 느낀다.",
-                reverse: true,
-            },
-        ],
-    },
-    {
-        key: "emotionalStability",
-        label: "감정 안정성",
-        questions: [
-            {
-                text: "나는 예상치 못한 상황에서도 비교적 차분하게 대응한다.",
-                reverse: false,
-            },
-            {
-                text: "나는 압박감이 큰 상황에서도 평정심을 유지한다.",
-                reverse: false,
-            },
-            {
-                text: "나는 작은 문제에도 쉽게 스트레스를 받는다.",
+                text: "나는 밤이나 새벽 시간에는 집중력이 크게 떨어지는 편이다.",
                 reverse: true,
             },
         ],
@@ -105,19 +105,19 @@ export const personalityGroups = [
 
 export const developmentGroups = [
     {
-        key: "leadership",
-        label: "리더십",
+        key: "implementation",
+        label: "개발 실행력",
         questions: [
             {
-                text: "나는 리더 역할이 주어질 때 부담보다 의욕을 느낀다.",
+                text: "나는 계획이 정해지면 바로 코드나 화면 구현을 시작하는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 팀의 방향이 흔들릴 때 먼저 나서서 정리하려 한다.",
+                text: "나는 시간이 부족하면 핵심 기능부터 먼저 구현한다.",
                 reverse: false,
             },
             {
-                text: "나는 결정을 내려야 하는 상황을 피하고 싶어한다.",
+                text: "나는 구현을 시작하기 전에 모든 계획이 완벽히 정해져야 움직이는 편이다.",
                 reverse: true,
             },
         ],
@@ -127,69 +127,69 @@ export const developmentGroups = [
         label: "문제 해결력",
         questions: [
             {
-                text: "나는 문제가 생기면 여러 가지 해결 방법을 떠올려본다.",
+                text: "나는 오류가 생기면 당황하기보다 원인을 찾아보는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 복잡한 문제도 구조를 나눠서 차근차근 접근한다.",
+                text: "나는 막히는 문제가 생기면 검색, 로그 확인, 질문으로 해결하려 한다.",
                 reverse: false,
             },
             {
-                text: "나는 문제가 생기면 일단 다른 사람이 해결해주길 기다린다.",
+                text: "나는 오류가 생기면 일단 다른 사람이 해결해주길 기다리는 편이다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "implementation",
-        label: "구현 실행력",
+        key: "completionQuality",
+        label: "완성도 추구",
         questions: [
             {
-                text: "나는 계획이 정해지면 바로 실행에 옮기는 편이다.",
+                text: "나는 기능뿐 아니라 사용자가 보는 화면의 완성도도 신경 쓴다.",
                 reverse: false,
             },
             {
-                text: "나는 작업을 시작하면 외부 자극에 쉽게 산만해지지 않는다.",
+                text: "나는 제출 전에 오류나 어색한 화면 흐름을 점검하는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 아이디어는 많지만 실제로 끝까지 만들어내는 일은 적다.",
+                text: "나는 기능이 대충 돌아가면 화면이나 마무리 상태는 크게 신경 쓰지 않는다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "learningAbility",
-        label: "학습 성장성",
+        key: "presentation",
+        label: "발표/설명",
         questions: [
             {
-                text: "나는 새로운 기술이나 도구를 배우는 것에 거부감이 없다.",
+                text: "나는 우리가 만든 서비스의 목적과 핵심 기능을 쉽게 설명할 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 모르는 분야가 나오면 스스로 찾아서 학습한다.",
+                text: "나는 발표 자료나 시연 흐름을 정리하는 데 도움을 줄 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 익숙한 방식 외에 새로운 것을 배우는 게 부담스럽다.",
+                text: "나는 사람들 앞에서 결과물을 설명하는 일이 많이 부담스럽다.",
                 reverse: true,
             },
         ],
     },
     {
-        key: "planning",
-        label: "기획 정리력",
+        key: "leadership",
+        label: "리더십/정리",
         questions: [
             {
-                text: "나는 일을 시작하기 전에 전체 일정과 순서를 정리한다.",
+                text: "나는 팀에서 해야 할 일을 정리하고 역할을 나누는 데 도움을 줄 수 있다.",
                 reverse: false,
             },
             {
-                text: "나는 질서있고 체계적인 상태를 선호한다.",
+                text: "나는 의견이 많을 때 기준을 잡고 결정을 돕는 편이다.",
                 reverse: false,
             },
             {
-                text: "나는 계획 없이 일단 진행하다가 그때그때 정하는 편이다.",
+                text: "나는 팀의 방향이 흔들려도 누군가 정리해줄 때까지 기다리는 편이다.",
                 reverse: true,
             },
         ],

@@ -10,19 +10,19 @@ import styles from "./UserProfile.module.css";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 
 const personalityFields = [
+    { key: "ideaPlanning", label: "기획" },
     { key: "communication", label: "소통" },
-    { key: "responsibility", label: "책임감" },
-    { key: "collaboration", label: "협업" },
-    { key: "flexibility", label: "유연성" },
-    { key: "emotionalStability", label: "안정성" },
+    { key: "roleFlexibility", label: "유연 역할" },
+    { key: "timePressure", label: "시간 대응" },
+    { key: "staminaFocus", label: "집중 유지" },
 ];
 
 const developmentFields = [
-    { key: "leadership", label: "리더십" },
+    { key: "implementation", label: "실행력" },
     { key: "problemSolving", label: "문제 해결" },
-    { key: "implementation", label: "구현력" },
-    { key: "learningAbility", label: "학습력" },
-    { key: "planning", label: "기획력" },
+    { key: "completionQuality", label: "완성도" },
+    { key: "presentation", label: "발표" },
+    { key: "leadership", label: "리더십" },
 ];
 
 const getSurveyScore = (survey, groupKey, fieldKey) => {

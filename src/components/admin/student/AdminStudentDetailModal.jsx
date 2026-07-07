@@ -12,19 +12,19 @@ import {
 } from "recharts";
 
 const getDevelopmentChartData = (student) => [
-    { label: "리더십", score: student.leadership },
+    { label: "실행력", score: student.implementation },
     { label: "문제 해결", score: student.problemSolving },
-    { label: "구현력", score: student.implementation },
-    { label: "학습력", score: student.learningAbility },
-    { label: "기획력", score: student.planning },
+    { label: "완성도", score: student.completionQuality },
+    { label: "발표", score: student.presentation },
+    { label: "리더십", score: student.leadership },
 ];
 
 const getPersonalityChartData = (student) => [
+    { label: "기획", score: student.ideaPlanning },
     { label: "소통", score: student.communication },
-    { label: "책임감", score: student.responsibility },
-    { label: "협업", score: student.collaboration },
-    { label: "유연성", score: student.flexibility },
-    { label: "안정성", score: student.emotionalStability },
+    { label: "유연 역할", score: student.roleFlexibility },
+    { label: "시간 대응", score: student.timePressure },
+    { label: "집중 유지", score: student.staminaFocus },
 ];
 
 const reliabilityLabels = {
