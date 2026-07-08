@@ -4,6 +4,9 @@ import Header from "../../../components/common/header/Header";
 import TeamCreateIcon from "../../../assets/icons/teamCreate.svg";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import {
+    HACKATHON_TARGET_GRADE,
+    HACKATHON_TARGET_GRADE_LABEL,
+    IS_HACKATHON_GRADE_ONLY_MODE,
     getAdminTeamCreationStatus,
     isGradeTeamCreated,
 } from "../../../utils/teamStatus";
@@ -15,7 +18,7 @@ import styles from "./AdminTeamCreate.module.css";
 
 const AdminTeamCreate = () => {
     const navigate = useNavigate();
-    const [selectedGrade, setSelectedGrade] = useState("GRADE_2");
+    const [selectedGrade, setSelectedGrade] = useState(HACKATHON_TARGET_GRADE);
     const [teamStatus, setTeamStatus] = useState({
         grade2TeamCreated: false,
         grade3TeamCreated: false,
@@ -39,6 +42,16 @@ const AdminTeamCreate = () => {
     }, []);
 
     const handleGradeChange = (e) => {
+        if (
+            IS_HACKATHON_GRADE_ONLY_MODE &&
+            e.target.value !== HACKATHON_TARGET_GRADE
+        ) {
+            setError(
+                `${HACKATHON_TARGET_GRADE_LABEL} 해커톤 기간에는 3학년 팀 생성을 잠시 제외합니다.`
+            );
+            return;
+        }
+
         setSelectedGrade(e.target.value);
         setError("");
     };
@@ -52,6 +65,16 @@ const AdminTeamCreate = () => {
 
             setError(
                 `${activeGradeLabel} 해커톤 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
+            );
+            return;
+        }
+
+        if (
+            IS_HACKATHON_GRADE_ONLY_MODE &&
+            selectedGrade !== HACKATHON_TARGET_GRADE
+        ) {
+            setError(
+                `${HACKATHON_TARGET_GRADE_LABEL} 해커톤 기간에는 3학년 팀 생성을 잠시 제외합니다.`
             );
             return;
         }
@@ -102,15 +125,26 @@ const AdminTeamCreate = () => {
                             <span>2학년</span>
                         </label>
 
-                        <label className={styles.gradeOption}>
+                        <label
+                            className={`${styles.gradeOption} ${
+                                IS_HACKATHON_GRADE_ONLY_MODE
+                                    ? styles.disabledGradeOption
+                                    : ""
+                            }`}
+                        >
                             <input
                                 type="radio"
                                 name="grade"
                                 value="GRADE_3"
                                 checked={selectedGrade === "GRADE_3"}
                                 onChange={handleGradeChange}
+                                disabled={IS_HACKATHON_GRADE_ONLY_MODE}
                             />
-                            <span>3학년</span>
+                            <span>
+                                3학년
+                                {IS_HACKATHON_GRADE_ONLY_MODE &&
+                                    " - 해커톤 제외"}
+                            </span>
                         </label>
                     </div>
 

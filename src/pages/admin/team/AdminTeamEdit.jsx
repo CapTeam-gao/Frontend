@@ -170,18 +170,18 @@ const AdminTeamEdit = () => {
         try {
             await requestAcceptAllTeamRecommendations(grade);
 
-            let allTeamCreated = false;
+            let teamManageAccessible = false;
 
             try {
                 const dashboard = await requestAdminDashboard();
 
-                allTeamCreated =
-                    getAdminTeamCreationStatus(dashboard).allTeamCreated;
+                teamManageAccessible =
+                    getAdminTeamCreationStatus(dashboard).teamManageAccessible;
             } catch {
-                allTeamCreated = false;
+                teamManageAccessible = false;
             }
 
-            setStoredAdminTeamCreated(allTeamCreated);
+            setStoredAdminTeamCreated(teamManageAccessible);
 
             navigate("/admin/team-manage", {
                 replace: true,

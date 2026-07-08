@@ -91,7 +91,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 130px;
+    min-width: 170px;
     height: 38px;
     border-radius: var(--border-radius-sm);
     color: #000000;
@@ -103,6 +103,16 @@
 .gradeOption input:checked + span {
     background-color: var(--color-primary);
     color: #ffffff;
+}
+
+.disabledGradeOption {
+    cursor: not-allowed;
+}
+
+.disabledGradeOption span {
+    border: 1px solid var(--color-border);
+    background-color: #f3f4f6;
+    color: var(--color-text-secondary);
 }
 
 .errorText {

@@ -44,7 +44,7 @@ const AdminDashboard = () => {
                     ...data,
                 }));
                 setStoredAdminTeamCreated(
-                    getAdminTeamCreationStatus(data).allTeamCreated
+                    getAdminTeamCreationStatus(data).teamManageAccessible
                 );
             } catch {
                 setError("대시보드 정보를 불러오지 못했습니다.");
@@ -57,9 +57,10 @@ const AdminDashboard = () => {
     }, []);
 
     const teamStatus = getAdminTeamCreationStatus(dashboard);
-    const isTeamCreated = teamStatus.allTeamCreated;
+    const isTeamManageAccessible = teamStatus.teamManageAccessible;
+    const isAllTeamCreated = teamStatus.allTeamCreated;
     const { hasUnreadChat } = useUnreadChatCount({
-        enabled: isTeamCreated,
+        enabled: isAllTeamCreated,
     });
     const isDashboardReady = !isDashboardLoading;
     const teamStatusMessage = isDashboardLoading
@@ -67,18 +68,18 @@ const AdminDashboard = () => {
         : getNextTeamCreateMessage(teamStatus);
     const chatRoomStatusText = isDashboardLoading
         ? ""
-        : isTeamCreated
+        : isAllTeamCreated
         ? `${dashboard.activeChatRoomCount}개 채팅방`
         : "팀 생성 후 이용 가능합니다";
     const logStatusText = isDashboardLoading
         ? ""
-        : !isTeamCreated
+        : !isAllTeamCreated
         ? "팀 생성 후 이용 가능합니다"
         : isCapstoneLogTime()
         ? `${dashboard.journalNotSubmittedTeamCount}팀 미제출`
         : "작성 시간이 아닙니다";
     const blockTeamRequiredCard = (event, message) => {
-        if (isTeamCreated) return;
+        if (isAllTeamCreated) return;
 
         event.preventDefault();
         setTeamRequiredModal({
@@ -98,23 +99,25 @@ const AdminDashboard = () => {
                         <div className={styles.topGrid}>
                             <Link
                                 to={
-                                    isTeamCreated
+                                    isTeamManageAccessible
                                         ? "/admin/team-manage"
                                         : "/admin/team-create"
                                 }
                                 className={`${styles.mainCard} ${
-                                    !isTeamCreated ? styles.mainCardPending : ""
+                                    !isTeamManageAccessible
+                                        ? styles.mainCardPending
+                                        : ""
                                 }`}
                             >
                                 <div className={styles.mainContent}>
                                     <div className={styles.mainHeader}>
                                         <div>
                                             <h1 className={styles.mainTitle}>
-                                                {isTeamCreated
+                                                {isTeamManageAccessible
                                                     ? "팀 관리"
                                                     : "팀을 생성해주세요"}
                                             </h1>
-                                            {!isTeamCreated &&
+                                            {!isTeamManageAccessible &&
                                                 teamStatusMessage && (
                                                     <p
                                                         className={
@@ -128,7 +131,7 @@ const AdminDashboard = () => {
                                         <div className={styles.largeIcon}>
                                             <img
                                                 src={
-                                                    isTeamCreated
+                                                    isTeamManageAccessible
                                                         ? TeamIcon
                                                         : TeamCreateIcon
                                                 }
@@ -137,7 +140,7 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
 
-                                    {isTeamCreated && (
+                                    {isTeamManageAccessible && (
                                         <>
                                             <strong
                                                 className={styles.teamCount}
@@ -154,9 +157,9 @@ const AdminDashboard = () => {
                                     )}
 
                                     <p className={styles.description}>
-                                        {isTeamCreated
-                                            ? "팀 별 정보를 조회할 수 있습니다."
-                                            : "2학년과 3학년 팀 생성이 모두 완료되면 팀 관리가 가능합니다."}
+                                        {isTeamManageAccessible
+                                            ? "2학년 해커톤 팀 정보를 조회할 수 있습니다."
+                                            : "2학년 해커톤 팀 생성이 완료되면 팀 관리가 가능합니다."}
                                     </p>
                                 </div>
                             </Link>

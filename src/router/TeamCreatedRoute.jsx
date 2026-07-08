@@ -70,7 +70,10 @@ const TeamCreatedRoute = ({
                     const teamStatus = getAdminTeamCreationStatus(dashboard);
 
                     nextIsTeamCreated =
-                        teamStatus.allTeamCreated || partialAccessRef.current;
+                        (allowPartialAccess
+                            ? teamStatus.teamManageAccessible
+                            : teamStatus.allTeamCreated) ||
+                        partialAccessRef.current;
                 } else {
                     nextIsTeamCreated = Boolean(dashboard.teamCreated);
                 }
@@ -94,7 +97,7 @@ const TeamCreatedRoute = ({
         return () => {
             ignore = true;
         };
-    }, [role]);
+    }, [allowPartialAccess, role]);
 
     if (isTeamCreated === null) {
         return null;

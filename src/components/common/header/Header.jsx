@@ -5,12 +5,17 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import TeamRequiredModal from "../modal/TeamRequiredModal";
-import { requestUserDashboard } from "../../../api/dashboardApi";
+import {
+    requestAdminDashboard,
+    requestUserDashboard,
+} from "../../../api/dashboardApi";
 import {
     ADMIN_TEAM_CREATED_CHANGE_EVENT,
     getStoredAdminTeamCreated,
+    setStoredAdminTeamCreated,
 } from "../../../utils/adminTeamStatusStorage";
 import { isAdminRole } from "../../../utils/accountRole";
+import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
@@ -29,6 +34,7 @@ const Header = () => {
     const [storedTeamCreated, setStoredTeamCreated] = useState(
         getStoredAdminTeamCreated
     );
+    const [adminAllTeamCreated, setAdminAllTeamCreated] = useState(null);
     const [studentTeamCreated, setStudentTeamCreated] = useState(null);
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
     const [showPasswordNotice, setShowPasswordNotice] = useState(false);
@@ -62,6 +68,34 @@ const Header = () => {
             );
         };
     }, [isAdmin]);
+
+    useEffect(() => {
+        if (!hasUser || !isAdmin) return undefined;
+
+        let ignore = false;
+
+        const loadAdminTeamStatus = async () => {
+            try {
+                const dashboard = await requestAdminDashboard();
+                const teamStatus = getAdminTeamCreationStatus(dashboard);
+
+                if (!ignore) {
+                    setStoredAdminTeamCreated(teamStatus.teamManageAccessible);
+                    setAdminAllTeamCreated(teamStatus.allTeamCreated);
+                }
+            } catch {
+                if (!ignore) {
+                    setAdminAllTeamCreated(false);
+                }
+            }
+        };
+
+        loadAdminTeamStatus();
+
+        return () => {
+            ignore = true;
+        };
+    }, [hasUser, isAdmin]);
 
     useEffect(() => {
         if (!hasUser || isAdmin) return undefined;
@@ -140,13 +174,14 @@ const Header = () => {
             ? "/admin/dashboard"
             : "/user/dashboard";
 
-    const teamCreated = isAdmin ? storedTeamCreated : studentTeamCreated;
+    const adminTeamManageAccessible = storedTeamCreated;
+    const teamCreated = isAdmin ? adminAllTeamCreated : studentTeamCreated;
 
-    const adminTeamPath = teamCreated
+    const adminTeamPath = adminTeamManageAccessible
         ? "/admin/team-manage"
         : "/admin/team-create";
 
-    const adminTeamLabel = teamCreated ? "팀 관리" : "팀 생성";
+    const adminTeamLabel = adminTeamManageAccessible ? "팀 관리" : "팀 생성";
 
     const showTeamRequiredModal = (event, message) => {
         event.preventDefault();
