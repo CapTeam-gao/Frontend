@@ -14,8 +14,13 @@ const getAccessTokenFromResponse = (response) => {
 };
 
 let refreshPromise = null;
+const AUTH_EXPIRED_STATUS_CODES = [401, 403];
 
 const isLoggingOut = () => authStore.getState().isLoggingOut;
+
+export const isAuthenticationExpiredError = (error) => {
+    return AUTH_EXPIRED_STATUS_CODES.includes(error.response?.status);
+};
 
 const requestRefreshToken = () => {
     if (isLoggingOut()) {
@@ -99,10 +104,15 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken.trim()}`;
 
                 return api(originalRequest);
-            } catch {
-                authStore.getState().setUnauthenticated();
-                error.isAuthExpired = true;
-                return Promise.reject(error);
+            } catch (refreshError) {
+                if (isAuthenticationExpiredError(refreshError)) {
+                    authStore.getState().setUnauthenticated();
+                    refreshError.isAuthExpired = true;
+                } else {
+                    refreshError.isAuthRefreshFailed = true;
+                }
+
+                return Promise.reject(refreshError);
             }
         }
 

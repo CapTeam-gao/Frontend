@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { requestMyInfo, requestReissue } from "../api/authApi";
+import { isAuthenticationExpiredError } from "../api/api";
 import authStore from "../store/authStore";
 import {
     getAccessTokenPayload,
@@ -75,8 +76,16 @@ const useAuth = () => {
                     authStore.getState().accessToken ?? accessToken;
 
                 saveLogin(user, latestAccessToken);
-            } catch {
-                if (!ignore && !authStore.getState().isLoggingOut) {
+            } catch (error) {
+                const shouldClearLogin =
+                    !authStore.getState().accessToken ||
+                    isAuthenticationExpiredError(error);
+
+                if (
+                    !ignore &&
+                    !authStore.getState().isLoggingOut &&
+                    shouldClearLogin
+                ) {
                     setUnauthenticated();
                 }
             }
@@ -106,8 +115,11 @@ const useAuth = () => {
             try {
                 isRefreshing = true;
                 await refreshLogin();
-            } catch {
-                if (!authStore.getState().isLoggingOut) {
+            } catch (error) {
+                if (
+                    !authStore.getState().isLoggingOut &&
+                    isAuthenticationExpiredError(error)
+                ) {
                     setUnauthenticated();
                 }
             } finally {
