@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import TeamCreatedRoute from "./TeamCreatedRoute";
+import authStore from "../store/authStore";
 
 import Login from "../pages/auth/Login";
 
@@ -32,6 +33,8 @@ import UserSurveyIntro from "../pages/user/survey/UserSurveyIntro";
 import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 
 const Router = () => {
+    const user = authStore((state) => state.user);
+
     const adminRoute = (
         page,
         { requiresTeam = false, allowPartialAccess = false } = {}
@@ -51,9 +54,14 @@ const Router = () => {
         </ProtectedRoute>
     );
 
-    const userRoute = (page, { requiresTeam = false } = {}) => (
+    const userRoute = (
+        page,
+        { requiresTeam = false, requiresSurvey = false } = {}
+    ) => (
         <ProtectedRoute requiredRole="STUDENT">
-            {requiresTeam ? (
+            {requiresSurvey && user?.surveyCompleted === false ? (
+                <Navigate to="/user/survey/intro" replace />
+            ) : requiresTeam ? (
                 <TeamCreatedRoute role="STUDENT" fallbackPath="/user/dashboard">
                     {page}
                 </TeamCreatedRoute>
@@ -199,7 +207,12 @@ const Router = () => {
                 element={userRoute(<UserNoticeDetail />)}
             />
 
-            <Route path="/user/profile" element={userRoute(<UserProfile />)} />
+            <Route
+                path="/user/profile"
+                element={userRoute(<UserProfile />, {
+                    requiresSurvey: true,
+                })}
+            />
 
             <Route
                 path="/user/survey/intro"
