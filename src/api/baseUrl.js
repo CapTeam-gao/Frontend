@@ -1,11 +1,7 @@
 const API_ORIGIN = "https://api.capteam.n-e.kr";
 
 export const getApiBaseUrl = () => {
-    if (import.meta.env.PROD) {
-        return "";
-    }
-
-    return import.meta.env.VITE_BASE_URL || "";
+    return import.meta.env.VITE_BASE_URL || (import.meta.env.PROD ? API_ORIGIN : "");
 };
 
 export const getAssetUrl = (path) => {

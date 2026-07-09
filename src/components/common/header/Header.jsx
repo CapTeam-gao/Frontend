@@ -19,8 +19,35 @@ import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
+const TEAM_STATUS_CACHE_TTL = 1000 * 60 * 5;
+const teamStatusCache = new Map();
+
 const getPasswordNoticeShownKey = (userId) =>
     `capteam-password-change-notice-shown:${userId}`;
+
+const getTeamStatusCacheKey = (role, userId) => `${role}:${userId || ""}`;
+
+const getCachedTeamStatus = (cacheKey) => {
+    const cachedTeamStatus = teamStatusCache.get(cacheKey);
+
+    if (!cachedTeamStatus) return null;
+
+    const isExpired = Date.now() - cachedTeamStatus.savedAt > TEAM_STATUS_CACHE_TTL;
+
+    if (isExpired) {
+        teamStatusCache.delete(cacheKey);
+        return null;
+    }
+
+    return cachedTeamStatus.value;
+};
+
+const setCachedTeamStatus = (cacheKey, value) => {
+    teamStatusCache.set(cacheKey, {
+        value,
+        savedAt: Date.now(),
+    });
+};
 
 const Header = () => {
     const location = useLocation();
@@ -30,6 +57,10 @@ const Header = () => {
     const hasUser = Boolean(user);
     const isAdmin = isAdminRole(user?.accountRole);
     const isAdminPage = location.pathname.startsWith("/admin");
+    const teamStatusCacheKey = getTeamStatusCacheKey(
+        isAdmin ? "ADMIN" : "STUDENT",
+        user?.userId
+    );
 
     const [storedTeamCreated, setStoredTeamCreated] = useState(
         getStoredAdminTeamCreated
@@ -47,10 +78,12 @@ const Header = () => {
         if (!isAdmin) return undefined;
 
         const updateStoredTeamStatus = () => {
+            teamStatusCache.clear();
             setStoredTeamCreated(getStoredAdminTeamCreated());
         };
 
         const updateChangedTeamStatus = (event) => {
+            teamStatusCache.clear();
             setStoredTeamCreated(event.detail);
         };
 
@@ -73,6 +106,18 @@ const Header = () => {
         if (!hasUser || !isAdmin) return undefined;
 
         let ignore = false;
+        const cachedTeamStatus = getCachedTeamStatus(teamStatusCacheKey);
+
+        if (cachedTeamStatus) {
+            const cacheTimerId = window.setTimeout(() => {
+                setStoredAdminTeamCreated(cachedTeamStatus.teamManageAccessible);
+                setAdminAllTeamCreated(cachedTeamStatus.allTeamCreated);
+            }, 0);
+
+            return () => {
+                window.clearTimeout(cacheTimerId);
+            };
+        }
 
         const loadAdminTeamStatus = async () => {
             try {
@@ -82,6 +127,10 @@ const Header = () => {
                 if (!ignore) {
                     setStoredAdminTeamCreated(teamStatus.teamManageAccessible);
                     setAdminAllTeamCreated(teamStatus.allTeamCreated);
+                    setCachedTeamStatus(teamStatusCacheKey, {
+                        teamManageAccessible: teamStatus.teamManageAccessible,
+                        allTeamCreated: teamStatus.allTeamCreated,
+                    });
                 }
             } catch {
                 if (!ignore) {
@@ -95,12 +144,23 @@ const Header = () => {
         return () => {
             ignore = true;
         };
-    }, [hasUser, isAdmin]);
+    }, [hasUser, isAdmin, teamStatusCacheKey]);
 
     useEffect(() => {
         if (!hasUser || isAdmin) return undefined;
 
         let ignore = false;
+        const cachedTeamStatus = getCachedTeamStatus(teamStatusCacheKey);
+
+        if (cachedTeamStatus) {
+            const cacheTimerId = window.setTimeout(() => {
+                setStudentTeamCreated(cachedTeamStatus.teamCreated);
+            }, 0);
+
+            return () => {
+                window.clearTimeout(cacheTimerId);
+            };
+        }
 
         const loadStudentTeamStatus = async () => {
             try {
@@ -108,6 +168,9 @@ const Header = () => {
 
                 if (!ignore) {
                     setStudentTeamCreated(Boolean(dashboard.teamCreated));
+                    setCachedTeamStatus(teamStatusCacheKey, {
+                        teamCreated: Boolean(dashboard.teamCreated),
+                    });
                 }
             } catch {
                 if (!ignore) {
@@ -121,7 +184,7 @@ const Header = () => {
         return () => {
             ignore = true;
         };
-    }, [hasUser, isAdmin]);
+    }, [hasUser, isAdmin, teamStatusCacheKey]);
 
     useEffect(() => {
         if (!hasUser) return;

@@ -12,7 +12,7 @@ import {
 } from "../../../utils/matchingJobLock";
 import styles from "./AdminTeamCreateLoading.module.css";
 
-const MATCHING_POLL_INTERVAL = 2000;
+const MATCHING_POLL_INTERVAL = 5000;
 const WAITING_JOB_STATUSES = ["QUEUED", "RUNNING", "COMPLETING"];
 
 const getErrorMessage = (error) => {

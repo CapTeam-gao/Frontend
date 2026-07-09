@@ -39,7 +39,7 @@ export const createChatClient = ({ onConnect, onError } = {}) => {
     const client = new Client({
         webSocketFactory: () => new WebSocket(getSocketUrl()),
 
-        reconnectDelay: 3000,
+        reconnectDelay: 15000,
 
         beforeConnect: async () => {
             const accessToken = await getFreshAccessToken();
