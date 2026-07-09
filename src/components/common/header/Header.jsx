@@ -6,6 +6,7 @@ import authStore from "../../../store/authStore";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import TeamRequiredModal from "../modal/TeamRequiredModal";
 import {
+    clearDashboardCache,
     requestAdminDashboard,
     requestUserDashboard,
 } from "../../../api/dashboardApi";
@@ -79,11 +80,13 @@ const Header = () => {
 
         const updateStoredTeamStatus = () => {
             teamStatusCache.clear();
+            clearDashboardCache();
             setStoredTeamCreated(getStoredAdminTeamCreated());
         };
 
         const updateChangedTeamStatus = (event) => {
             teamStatusCache.clear();
+            clearDashboardCache();
             setStoredTeamCreated(event.detail);
         };
 

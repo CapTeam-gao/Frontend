@@ -49,6 +49,20 @@ const useAuth = () => {
                     return;
                 }
 
+                const currentAuthState = authStore.getState();
+
+                if (
+                    currentAuthState.authStatus === "authenticated" &&
+                    currentAuthState.user &&
+                    currentAuthState.accessToken === accessToken &&
+                    !isAccessTokenExpiringSoon(
+                        accessToken,
+                        REISSUE_BUFFER_SECONDS
+                    )
+                ) {
+                    return;
+                }
+
                 if (
                     !accessToken ||
                     isAccessTokenExpiringSoon(

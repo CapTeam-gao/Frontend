@@ -173,7 +173,7 @@ const AdminTeamEdit = () => {
             let teamManageAccessible = false;
 
             try {
-                const dashboard = await requestAdminDashboard();
+                const dashboard = await requestAdminDashboard({ force: true });
 
                 teamManageAccessible =
                     getAdminTeamCreationStatus(dashboard).teamManageAccessible;
