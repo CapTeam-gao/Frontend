@@ -56,11 +56,15 @@ const Router = () => {
 
     const userRoute = (
         page,
-        { requiresTeam = false, requiresSurvey = false } = {}
+        { requiresTeam = false, surveyAccess = "completed" } = {}
     ) => (
         <ProtectedRoute requiredRole="STUDENT">
-            {requiresSurvey && user?.surveyCompleted === false ? (
+            {surveyAccess === "completed" &&
+            user?.surveyCompleted === false ? (
                 <Navigate to="/user/survey/intro" replace />
+            ) : surveyAccess === "incomplete" &&
+              user?.surveyCompleted === true ? (
+                <Navigate to="/user/dashboard" replace />
             ) : requiresTeam ? (
                 <TeamCreatedRoute role="STUDENT" fallbackPath="/user/dashboard">
                     {page}
@@ -209,17 +213,22 @@ const Router = () => {
 
             <Route
                 path="/user/profile"
-                element={userRoute(<UserProfile />, {
-                    requiresSurvey: true,
-                })}
+                element={userRoute(<UserProfile />)}
             />
 
             <Route
                 path="/user/survey/intro"
-                element={userRoute(<UserSurveyIntro />)}
+                element={userRoute(<UserSurveyIntro />, {
+                    surveyAccess: "incomplete",
+                })}
             />
 
-            <Route path="/user/survey" element={userRoute(<UserSurvey />)} />
+            <Route
+                path="/user/survey"
+                element={userRoute(<UserSurvey />, {
+                    surveyAccess: "incomplete",
+                })}
+            />
 
             <Route
                 path="/user/chat"
