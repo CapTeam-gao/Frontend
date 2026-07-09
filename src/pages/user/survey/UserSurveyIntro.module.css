@@ -7,15 +7,17 @@
 }
 
 .intro {
+    position: relative;
     width: min(1080px, 100%);
     text-align: center;
 }
 
 .topActions {
+    position: absolute;
+    top: 0;
+    right: 0;
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-bottom: 18px;
 }
 
 .secondaryButton {
@@ -209,13 +211,10 @@
         padding: 40px 16px;
     }
 
-    .topActions {
-        justify-content: stretch;
-    }
-
     .secondaryButton {
-        flex: 1;
-        min-width: 0;
+        min-width: 92px;
+        height: 36px;
+        padding: 0 12px;
     }
 
     .logo {

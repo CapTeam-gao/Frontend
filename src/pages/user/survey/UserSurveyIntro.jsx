@@ -29,10 +29,6 @@ const UserSurveyIntro = () => {
     const navigate = useNavigate();
     const logout = authStore((state) => state.logout);
 
-    const handleBack = () => {
-        navigate(-1);
-    };
-
     const handleLogout = async () => {
         try {
             await requestLogout();
@@ -49,16 +45,9 @@ const UserSurveyIntro = () => {
                     <button
                         type="button"
                         className={styles.secondaryButton}
-                        onClick={handleBack}
-                    >
-                        뒤로가기
-                    </button>
-                    <button
-                        type="button"
-                        className={styles.secondaryButton}
                         onClick={handleLogout}
                     >
-                        계정 바꾸기
+                        로그아웃
                     </button>
                 </div>
 
