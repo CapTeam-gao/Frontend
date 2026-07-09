@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { requestLogout } from "../../../api/authApi";
+import authStore from "../../../store/authStore";
 import Logo from "../../../assets/images/logo.png";
 import styles from "./UserSurveyIntro.module.css";
 
@@ -24,9 +26,42 @@ const surveySections = [
 ];
 
 const UserSurveyIntro = () => {
+    const navigate = useNavigate();
+    const logout = authStore((state) => state.logout);
+
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await requestLogout();
+        } finally {
+            logout();
+            navigate("/login", { replace: true });
+        }
+    };
+
     return (
         <main className={styles.page}>
             <section className={styles.intro}>
+                <div className={styles.topActions}>
+                    <button
+                        type="button"
+                        className={styles.secondaryButton}
+                        onClick={handleBack}
+                    >
+                        뒤로가기
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.secondaryButton}
+                        onClick={handleLogout}
+                    >
+                        계정 바꾸기
+                    </button>
+                </div>
+
                 <img className={styles.logo} src={Logo} alt="CapTeam 로고" />
 
                 <h1 className={styles.title}>해커톤 팀 매칭 설문 안내</h1>
