@@ -81,3 +81,14 @@ export const getReliabilityLevel = (inconsistentCount) => {
 
     return "LOW";
 };
+
+export const isSurveyCompleted = (surveyCompleted) => {
+    if (surveyCompleted === true || surveyCompleted === 1) return true;
+    if (typeof surveyCompleted !== "string") return false;
+
+    const normalizedValue = surveyCompleted.trim().toLowerCase();
+
+    return ["true", "1", "y", "yes", "complete", "completed"].includes(
+        normalizedValue
+    );
+};

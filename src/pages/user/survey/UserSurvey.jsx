@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
@@ -75,7 +75,6 @@ const getSurveySubmitErrorMessage = (error) => {
 
 const UserSurvey = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const user = authStore((state) => state.user);
     const accessToken = authStore((state) => state.accessToken);
     const saveLogin = authStore((state) => state.saveLogin);
@@ -165,20 +164,29 @@ const UserSurvey = () => {
     ]);
 
     useEffect(() => {
-        if (!location.state?.fromSurveyIntro) return undefined;
+        const surveyUrl = window.location.href;
 
-        window.history.pushState(null, "", window.location.href);
+        window.history.pushState(null, "", surveyUrl);
 
-        const blockBackToIntro = () => {
-            window.history.pushState(null, "", window.location.href);
+        const blockBack = (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.history.pushState(null, "", surveyUrl);
         };
 
-        window.addEventListener("popstate", blockBackToIntro);
+        const blockRefresh = (event) => {
+            event.preventDefault();
+            event.returnValue = "";
+        };
+
+        window.addEventListener("popstate", blockBack, true);
+        window.addEventListener("beforeunload", blockRefresh);
 
         return () => {
-            window.removeEventListener("popstate", blockBackToIntro);
+            window.removeEventListener("popstate", blockBack, true);
+            window.removeEventListener("beforeunload", blockRefresh);
         };
-    }, [location.state]);
+    }, []);
 
     const scrollToSection = (sectionRef) => {
         requestAnimationFrame(() => {
@@ -412,7 +420,7 @@ const UserSurvey = () => {
                 );
             }
 
-            navigate("/user/dashboard");
+            navigate("/user/dashboard", { replace: true });
         } catch (e) {
             console.error("설문 제출 실패:", e);
             setError(getSurveySubmitErrorMessage(e));

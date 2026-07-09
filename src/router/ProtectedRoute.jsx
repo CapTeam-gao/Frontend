@@ -6,6 +6,7 @@ import {
     normalizeAccountRole,
 } from "../utils/accountRole";
 import { getAccessTokenPayload } from "../utils/authToken";
+import { isSurveyCompleted } from "../utils/survey";
 
 const getPayloadRole = (payload) => {
     if (!payload || typeof payload !== "object") return "";
@@ -24,9 +25,9 @@ const getPayloadRole = (payload) => {
 const getHomePath = (accountRole, user) => {
     if (isAdminRole(accountRole)) return "/admin/dashboard";
 
-    return user?.surveyCompleted === false
-        ? "/user/survey/intro"
-        : "/user/dashboard";
+    return isSurveyCompleted(user?.surveyCompleted)
+        ? "/user/dashboard"
+        : "/user/survey/intro";
 };
 
 const ProtectedRoute = ({ children, requiredRole }) => {

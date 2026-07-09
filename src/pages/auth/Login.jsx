@@ -5,6 +5,7 @@ import Button from "../../components/common/button/Button";
 import { requestLogin, requestMyInfo } from "../../api/authApi";
 import authStore from "../../store/authStore";
 import { isAdminRole } from "../../utils/accountRole";
+import { isSurveyCompleted } from "../../utils/survey";
 
 const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
 const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
@@ -30,7 +31,9 @@ const Login = () => {
         }
 
         navigate(
-            user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro",
+            isSurveyCompleted(user.surveyCompleted)
+                ? "/user/dashboard"
+                : "/user/survey/intro",
             { replace: true }
         );
     }, [navigate, user]);
@@ -78,7 +81,9 @@ const Login = () => {
             }
 
             navigate(
-                user.surveyCompleted ? "/user/dashboard" : "/user/survey/intro",
+                isSurveyCompleted(user.surveyCompleted)
+                    ? "/user/dashboard"
+                    : "/user/survey/intro",
                 { replace: true }
             );
         } catch (e) {

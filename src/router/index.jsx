@@ -31,9 +31,11 @@ import UserTeamChat from "../pages/user/chat/UserTeamChat";
 import UserSurvey from "../pages/user/survey/UserSurvey";
 import UserSurveyIntro from "../pages/user/survey/UserSurveyIntro";
 import UserLogCountdown from "../pages/user/log/UserLogCountdown";
+import { isSurveyCompleted } from "../utils/survey";
 
 const Router = () => {
     const user = authStore((state) => state.user);
+    const surveyCompleted = isSurveyCompleted(user?.surveyCompleted);
 
     const adminRoute = (
         page,
@@ -59,11 +61,9 @@ const Router = () => {
         { requiresTeam = false, surveyAccess = "completed" } = {}
     ) => (
         <ProtectedRoute requiredRole="STUDENT">
-            {surveyAccess === "completed" &&
-            user?.surveyCompleted === false ? (
+            {surveyAccess === "completed" && !surveyCompleted ? (
                 <Navigate to="/user/survey/intro" replace />
-            ) : surveyAccess === "incomplete" &&
-              user?.surveyCompleted === true ? (
+            ) : surveyAccess === "incomplete" && surveyCompleted ? (
                 <Navigate to="/user/dashboard" replace />
             ) : requiresTeam ? (
                 <TeamCreatedRoute role="STUDENT" fallbackPath="/user/dashboard">
