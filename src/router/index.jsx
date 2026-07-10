@@ -165,6 +165,7 @@ const Router = () => {
                 path="/admin/chat"
                 element={adminRoute(<AdminChatManage />, {
                     requiresTeam: true,
+                    allowPartialAccess: true,
                 })}
             />
 

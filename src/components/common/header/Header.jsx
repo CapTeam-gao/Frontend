@@ -241,7 +241,7 @@ const Header = () => {
             : "/user/dashboard";
 
     const adminTeamManageAccessible = storedTeamCreated;
-    const teamCreated = isAdmin ? adminAllTeamCreated : studentTeamCreated;
+    const teamCreated = isAdmin ? adminTeamManageAccessible : studentTeamCreated;
 
     const adminTeamPath = adminTeamManageAccessible
         ? "/admin/team-manage"
