@@ -189,24 +189,7 @@ const AdminChatManage = () => {
 
         clearMessages();
         updateSelectedChannel(channel);
-
-        try {
-            await requestMarkAdminChatAsRead(channel.id);
-            setChannelSummaries((prevSummaries) =>
-                prevSummaries.map((summary) =>
-                    String(summary.channel?.id) === String(channel.id)
-                        ? {
-                              ...summary,
-                              unreadCount: 0,
-                          }
-                        : summary
-                )
-            );
-
-            window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
-        } catch {
-            // 읽음 처리 실패해도 채팅 조회 자체는 막지 않음
-        }
+        clearChannelUnreadCount(channel.id);
     };
 
     const handleSelectRoom = (room) => {

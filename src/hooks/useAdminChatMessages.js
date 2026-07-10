@@ -7,7 +7,7 @@ import {
     requestDeleteChatMessage,
     requestUpdateChatMessage,
 } from "../api/chatApi";
-import { parseChatDate } from "../utils/chat";
+import { CHAT_UNREAD_CHANGE_EVENT, parseChatDate } from "../utils/chat";
 
 const getPageContent = (data) => {
     if (Array.isArray(data)) return data;
@@ -66,6 +66,7 @@ const useAdminChatMessages = (selectedChannel) => {
                 setHasMoreMessages(data.last === false);
 
                 await requestMarkAdminChatAsRead(selectedChannelId);
+                window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
             } catch {
                 setMessageError("메시지를 불러오지 못했습니다.");
             } finally {
