@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import api from "../../../api/api";
 import { getAssetUrl } from "../../../api/baseUrl";
-import { getStoredAccessToken } from "../../../utils/authToken";
 import { formatChatTime, parseMessageTextWithLinks } from "../../../utils/chat";
 import fileIcon from "../../../assets/icons/file.svg";
 import styles from "./ChatMessage.module.css";
@@ -37,31 +37,67 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
     const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [actionError, setActionError] = useState("");
+    const [imageSrc, setImageSrc] = useState("");
+    const [isImageLoading, setIsImageLoading] = useState(false);
+    const [imageError, setImageError] = useState("");
     const fileUrl = getFileUrl(message.fileUrl);
+    const isImage = isImageMessage(message);
     const messageParts = parseMessageTextWithLinks(message.message ?? "");
 
-    const fetchFileBlob = async () => {
-        const accessToken = getStoredAccessToken();
-        const headers = accessToken
-            ? {
-                  Authorization: `Bearer ${accessToken}`,
-              }
-            : {};
-
-        const response = await fetch(fileUrl, {
-            headers,
+    const fetchFileBlob = useCallback(async () => {
+        const response = await api.get(fileUrl, {
+            responseType: "blob",
         });
-
-        if (!response.ok) {
-            throw new Error("파일을 불러오지 못했습니다.");
-        }
-
-        const blob = await response.blob();
+        const blob = response.data;
 
         return new Blob([blob], {
             type: message.fileType || blob.type || "application/octet-stream",
         });
-    };
+    }, [fileUrl, message.fileType]);
+
+    useEffect(() => {
+        if (!fileUrl || !isImage) {
+            setImageSrc("");
+            setImageError("");
+            setIsImageLoading(false);
+            return undefined;
+        }
+
+        let isMounted = true;
+        let objectUrl = "";
+
+        const loadImage = async () => {
+            try {
+                setIsImageLoading(true);
+                setImageError("");
+
+                const blob = await fetchFileBlob();
+
+                if (!isMounted) return;
+
+                objectUrl = URL.createObjectURL(blob);
+                setImageSrc(objectUrl);
+            } catch {
+                if (!isMounted) return;
+
+                setImageSrc("");
+                setImageError("이미지를 불러오지 못했습니다.");
+            } finally {
+                if (isMounted) {
+                    setIsImageLoading(false);
+                }
+            }
+        };
+
+        loadImage();
+
+        return () => {
+            isMounted = false;
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [fetchFileBlob, fileUrl, isImage]);
 
     const handleDownloadFile = async () => {
         try {
@@ -233,16 +269,31 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
                         )}
 
                         {message.fileUrl &&
-                            (isImageMessage(message) ? (
+                            (isImage ? (
                                 <button
                                     type="button"
                                     className={styles.imageMessage}
-                                    onClick={() => setIsImagePreviewOpen(true)}
+                                    onClick={() =>
+                                        imageSrc &&
+                                        setIsImagePreviewOpen(true)
+                                    }
+                                    disabled={!imageSrc}
                                 >
-                                    <img
-                                        src={fileUrl}
-                                        alt={message.fileName ?? "첨부 이미지"}
-                                    />
+                                    {imageSrc ? (
+                                        <img
+                                            src={imageSrc}
+                                            alt={
+                                                message.fileName ??
+                                                "첨부 이미지"
+                                            }
+                                        />
+                                    ) : (
+                                        <span className={styles.imageFallback}>
+                                            {isImageLoading
+                                                ? "이미지를 불러오는 중"
+                                                : imageError}
+                                        </span>
+                                    )}
                                 </button>
                             ) : (
                                 <button
@@ -339,7 +390,7 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
                 </div>
             )}
 
-            {isImagePreviewOpen && (
+            {isImagePreviewOpen && imageSrc && (
                 <div
                     className={styles.imagePreviewOverlay}
                     onClick={() => setIsImagePreviewOpen(false)}
@@ -357,7 +408,7 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
                             ×
                         </button>
                         <img
-                            src={fileUrl}
+                            src={imageSrc}
                             alt={message.fileName ?? "첨부 이미지"}
                         />
                         <button
