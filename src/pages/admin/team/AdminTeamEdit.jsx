@@ -54,7 +54,7 @@ const AdminTeamEdit = () => {
                     Array.isArray(data) ? normalizeRecommendations(data) : []
                 );
             } catch {
-                setError("해커톤 팀 추천안을 불러오지 못했습니다.");
+                setError("팀 추천안을 불러오지 못했습니다.");
             } finally {
                 setIsLoading(false);
             }
@@ -183,12 +183,12 @@ const AdminTeamEdit = () => {
 
             setStoredAdminTeamCreated(teamManageAccessible);
 
-            navigate("/admin/team-manage", {
-                replace: true,
-                state: {
-                    allowPartialTeamAccess: true,
-                },
-            });
+            navigate(
+                teamManageAccessible ? "/admin/team-manage" : "/admin/team-create",
+                {
+                    replace: true,
+                }
+            );
         } catch {
             setMessage("팀 구성 승인에 실패했습니다.");
         }
@@ -254,7 +254,7 @@ const AdminTeamEdit = () => {
                     {isLoading ? (
                         <p className={styles.messageText}>
                             {showLoading &&
-                                "해커톤 팀 추천안을 불러오는 중입니다."}
+                                "팀 추천안을 불러오는 중입니다."}
                         </p>
                     ) : (
                         <div className={styles.teamGrid}>

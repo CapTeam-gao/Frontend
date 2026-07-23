@@ -37,16 +37,12 @@ const Router = () => {
     const user = authStore((state) => state.user);
     const surveyCompleted = isSurveyCompleted(user?.surveyCompleted);
 
-    const adminRoute = (
-        page,
-        { requiresTeam = false, allowPartialAccess = false } = {}
-    ) => (
+    const adminRoute = (page, { requiresTeam = false } = {}) => (
         <ProtectedRoute requiredRole="ADMIN">
             {requiresTeam ? (
                 <TeamCreatedRoute
                     role="ADMIN"
                     fallbackPath="/admin/dashboard"
-                    allowPartialAccess={allowPartialAccess}
                 >
                     {page}
                 </TeamCreatedRoute>
@@ -105,15 +101,11 @@ const Router = () => {
                 element={adminRoute(<AdminTeamEdit />)}
             />
 
-            {/*
-             * 평소에는 두 학년 팀이 모두 생성되어야 접근 가능합니다.
-             * 단, 팀 승인 직후 전달받은 임시 접근권한은 허용합니다.
-             */}
+            {/* 두 학년 팀이 모두 생성되어야 접근 가능합니다. */}
             <Route
                 path="/admin/team-manage"
                 element={adminRoute(<AdminTeamManage />, {
                     requiresTeam: true,
-                    allowPartialAccess: true,
                 })}
             />
 
@@ -165,7 +157,6 @@ const Router = () => {
                 path="/admin/chat"
                 element={adminRoute(<AdminChatManage />, {
                     requiresTeam: true,
-                    allowPartialAccess: true,
                 })}
             />
 

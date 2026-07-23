@@ -158,8 +158,8 @@ const AdminDashboard = () => {
 
                                     <p className={styles.description}>
                                         {isTeamManageAccessible
-                                            ? "2학년 해커톤 팀 정보를 조회할 수 있습니다."
-                                            : "2학년 해커톤 팀 생성이 완료되면 팀 관리가 가능합니다."}
+                                            ? "학년별 팀 정보를 조회할 수 있습니다."
+                                            : "2학년과 3학년 팀 생성이 완료되면 팀 관리가 가능합니다."}
                                     </p>
                                 </div>
                             </Link>

@@ -20,7 +20,7 @@ export const personalityGroups = [
                 reverse: false,
             },
             {
-                text: "나는 해커톤에서 필요한 핵심 기능을 빠르게 정리할 수 있다.",
+                text: "나는 프로젝트에서 필요한 핵심 기능을 빠르게 정리할 수 있다.",
                 reverse: false,
             },
             {

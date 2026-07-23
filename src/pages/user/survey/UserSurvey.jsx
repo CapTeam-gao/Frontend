@@ -339,7 +339,7 @@ const UserSurvey = () => {
 
         if (hasEmptyRating) {
             setError(
-                "해커톤 협업 성향과 해커톤 실행 성향 문항을 모두 선택해주세요."
+                "캡스톤 협업 성향과 캡스톤 실행 성향 문항을 모두 선택해주세요."
             );
             const firstEmptyPersonalityQuestion = personalityQuestions.find(
                 (question) => !answers[question.id]
@@ -491,7 +491,7 @@ const UserSurvey = () => {
                                 <span>STEP 1</span>
                                 <h2>기술 정보</h2>
                                 <p>
-                                    해커톤 팀 매칭에 사용할 희망 역할, 기술
+                                    캡스톤 팀 매칭에 사용할 희망 역할, 기술
                                     스택, 구현 경험을 입력해주세요.
                                 </p>
                             </div>
@@ -695,9 +695,9 @@ const UserSurvey = () => {
                         >
                             <div className={styles.cardHeader}>
                                 <span>STEP 2</span>
-                                <h2>해커톤 협업 성향</h2>
+                                <h2>캡스톤 협업 성향</h2>
                                 <p>
-                                    아이디어 정리, 소통, 역할 유연성, 시간 압박
+                                    아이디어 정리, 소통, 역할 유연성, 일정 압박
                                     대응, 집중 유지 성향을 확인합니다.
                                 </p>
                             </div>
@@ -728,7 +728,7 @@ const UserSurvey = () => {
                         >
                             <div className={styles.cardHeader}>
                                 <span>STEP 3</span>
-                                <h2>해커톤 실행 성향</h2>
+                                <h2>캡스톤 실행 성향</h2>
                                 <p>
                                     개발 실행력, 문제 해결, 완성도, 발표, 리더십
                                     정리 성향을 선택해주세요.
@@ -769,7 +769,7 @@ const UserSurvey = () => {
                                     <div className={styles.analysisHeader}>
                                         <strong>설문을 분석하고 있어요</strong>
                                         <p>
-                                            해커톤 역량과 성향을 정리해 팀 추천
+                                            캡스톤 역량과 성향을 정리해 팀 추천
                                             데이터를 준비하는 중이에요.
                                         </p>
                                     </div>

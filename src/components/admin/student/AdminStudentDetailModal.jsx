@@ -407,11 +407,11 @@ const AdminStudentDetailModal = ({
 
                         <aside className={styles.chartColumn}>
                             <StudentRadarChart
-                                title="해커톤 실행 성향"
+                                title="캡스톤 실행 성향"
                                 data={developmentChartData}
                             />
                             <StudentRadarChart
-                                title="해커톤 협업 성향"
+                                title="캡스톤 협업 성향"
                                 data={personalityChartData}
                             />
                             <SurveyReliabilityCard student={student} />

@@ -4,9 +4,7 @@ import Header from "../../../components/common/header/Header";
 import TeamCreateIcon from "../../../assets/icons/teamCreate.svg";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import {
-    HACKATHON_TARGET_GRADE,
-    HACKATHON_TARGET_GRADE_LABEL,
-    IS_HACKATHON_GRADE_ONLY_MODE,
+    DEFAULT_TEAM_CREATE_GRADE,
     getAdminTeamCreationStatus,
     isGradeTeamCreated,
 } from "../../../utils/teamStatus";
@@ -18,7 +16,9 @@ import styles from "./AdminTeamCreate.module.css";
 
 const AdminTeamCreate = () => {
     const navigate = useNavigate();
-    const [selectedGrade, setSelectedGrade] = useState(HACKATHON_TARGET_GRADE);
+    const [selectedGrade, setSelectedGrade] = useState(
+        DEFAULT_TEAM_CREATE_GRADE
+    );
     const [teamStatus, setTeamStatus] = useState({
         grade2TeamCreated: false,
         grade3TeamCreated: false,
@@ -32,9 +32,22 @@ const AdminTeamCreate = () => {
         const getTeamStatus = async () => {
             try {
                 const dashboard = await requestAdminDashboard();
-                setTeamStatus(getAdminTeamCreationStatus(dashboard));
+                const nextTeamStatus = getAdminTeamCreationStatus(dashboard);
+                setTeamStatus(nextTeamStatus);
+
+                if (
+                    nextTeamStatus.grade2TeamCreated &&
+                    !nextTeamStatus.grade3TeamCreated
+                ) {
+                    setSelectedGrade("GRADE_3");
+                } else if (
+                    !nextTeamStatus.grade2TeamCreated &&
+                    nextTeamStatus.grade3TeamCreated
+                ) {
+                    setSelectedGrade("GRADE_2");
+                }
             } catch {
-                setError("해커톤 팀 생성 상태를 불러오지 못했습니다.");
+                setError("팀 생성 상태를 불러오지 못했습니다.");
             }
         };
 
@@ -42,16 +55,6 @@ const AdminTeamCreate = () => {
     }, []);
 
     const handleGradeChange = (e) => {
-        if (
-            IS_HACKATHON_GRADE_ONLY_MODE &&
-            e.target.value !== HACKATHON_TARGET_GRADE
-        ) {
-            setError(
-                `${HACKATHON_TARGET_GRADE_LABEL} 해커톤 기간에는 3학년 팀 생성을 잠시 제외합니다.`
-            );
-            return;
-        }
-
         setSelectedGrade(e.target.value);
         setError("");
     };
@@ -64,17 +67,7 @@ const AdminTeamCreate = () => {
                 gradeLabels[activeLock.grade] || "선택한 학년";
 
             setError(
-                `${activeGradeLabel} 해커톤 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
-            );
-            return;
-        }
-
-        if (
-            IS_HACKATHON_GRADE_ONLY_MODE &&
-            selectedGrade !== HACKATHON_TARGET_GRADE
-        ) {
-            setError(
-                `${HACKATHON_TARGET_GRADE_LABEL} 해커톤 기간에는 3학년 팀 생성을 잠시 제외합니다.`
+                `${activeGradeLabel} 팀 생성 작업이 진행 중입니다. 완료 후 다시 시도해주세요.`
             );
             return;
         }
@@ -104,10 +97,10 @@ const AdminTeamCreate = () => {
 
                         <div className={styles.titleGroup}>
                             <h1 className={styles.title}>
-                                해커톤 팀 자동 생성
+                                캡스톤 팀 자동 생성
                             </h1>
                             <p className={styles.description}>
-                                해커톤 설문 데이터를 기반으로 학년별 팀 추천안을
+                                설문 데이터를 기반으로 학년별 팀 추천안을
                                 생성합니다.
                             </p>
                         </div>
@@ -125,26 +118,15 @@ const AdminTeamCreate = () => {
                             <span>2학년</span>
                         </label>
 
-                        <label
-                            className={`${styles.gradeOption} ${
-                                IS_HACKATHON_GRADE_ONLY_MODE
-                                    ? styles.disabledGradeOption
-                                    : ""
-                            }`}
-                        >
+                        <label className={styles.gradeOption}>
                             <input
                                 type="radio"
                                 name="grade"
                                 value="GRADE_3"
                                 checked={selectedGrade === "GRADE_3"}
                                 onChange={handleGradeChange}
-                                disabled={IS_HACKATHON_GRADE_ONLY_MODE}
                             />
-                            <span>
-                                3학년
-                                {IS_HACKATHON_GRADE_ONLY_MODE &&
-                                    " - 해커톤 제외"}
-                            </span>
+                            <span>3학년</span>
                         </label>
                     </div>
 
@@ -160,12 +142,12 @@ const AdminTeamCreate = () => {
                             </li>
                             <li>
                                 구현 경험과 개발 실행력, 문제 해결력 점수를 함께
-                                참고해 해커톤 당일 바로 작업할 수 있는 팀을
+                                참고해 프로젝트를 안정적으로 진행할 수 있는 팀을
                                 구성합니다.
                             </li>
                             <li>
                                 발표/설명, 리더십/정리, 시간 압박 대응, 체력/집중
-                                유지 점수를 함께 반영해 무박2일 협업 흐름을
+                                유지 점수를 함께 반영해 장기 프로젝트 협업 흐름을
                                 고려합니다.
                             </li>
                         </ul>
@@ -176,7 +158,7 @@ const AdminTeamCreate = () => {
                         className={styles.createButton}
                         onClick={handleCreate}
                     >
-                        {selectedGradeLabel} 해커톤 팀 생성하기
+                        {selectedGradeLabel} 팀 생성하기
                     </button>
                 </main>
             </section>
