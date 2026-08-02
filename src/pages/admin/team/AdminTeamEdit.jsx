@@ -5,6 +5,7 @@ import TeamEditCard from "../../../components/admin/team/TeamEditCard";
 import {
     requestAcceptAllTeamRecommendations,
     requestSwapTeamMembers,
+    requestTeamMatchingJob,
     requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
@@ -16,12 +17,22 @@ import {
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
+import {
+    MATCHING_POLL_INTERVAL,
+    WAITING_JOB_STATUSES,
+    wait,
+} from "../../../utils/matchingJobLock";
 
 const AdminTeamEdit = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const grade = location.state?.grade || "GRADE_2";
+    const streamingJobId = location.state?.jobId || null;
     const [teams, setTeams] = useState([]);
+    const [streamingJobStatus, setStreamingJobStatus] = useState(
+        streamingJobId ? "RUNNING" : null
+    );
+    const isStreaming = Boolean(streamingJobId) && streamingJobStatus !== "SUCCEEDED";
     const [selectedMember, setSelectedMember] = useState(null);
     const [highlightedUserIds, setHighlightedUserIds] = useState([]);
     const [flippedTeamIds, setFlippedTeamIds] = useState([]);
@@ -63,8 +74,68 @@ const AdminTeamEdit = () => {
     );
 
     useEffect(() => {
-        getRecommendations(grade);
-    }, [getRecommendations, grade]);
+        if (!streamingJobId) {
+            getRecommendations(grade);
+            return undefined;
+        }
+
+        // ponytail: 로딩 화면이 첫 팀만 도착하면 넘어오므로, 여기서 나머지 팀을
+        // 이어서 폴링해 도착하는 대로 teams에 추가한다. 다 끝나면(SUCCEEDED)
+        // 스왑 등에 필요한 확정 ID를 얻기 위해 한 번 더 정식 조회로 교체한다.
+        let ignore = false;
+
+        const pollRemainingTeams = async () => {
+            try {
+                setError("");
+
+                let currentJob = await requestTeamMatchingJob(streamingJobId);
+
+                while (
+                    !ignore &&
+                    WAITING_JOB_STATUSES.includes(currentJob?.status)
+                ) {
+                    const partialTeams = Array.isArray(currentJob?.partialTeams)
+                        ? normalizeRecommendations(currentJob.partialTeams)
+                        : [];
+
+                    setTeams(partialTeams);
+                    setStreamingJobStatus(currentJob?.status);
+                    setIsLoading(false);
+
+                    await wait(MATCHING_POLL_INTERVAL);
+                    if (ignore) return;
+
+                    currentJob = await requestTeamMatchingJob(streamingJobId);
+                }
+
+                if (ignore) return;
+
+                setStreamingJobStatus(currentJob?.status);
+
+                if (currentJob?.status === "SUCCEEDED") {
+                    await getRecommendations(grade);
+                    return;
+                }
+
+                setError(
+                    currentJob?.errorMessage ||
+                        "일부 팀 생성에 실패했습니다. 이미 도착한 팀은 그대로 남아있습니다."
+                );
+                setIsLoading(false);
+            } catch {
+                if (!ignore) {
+                    setError("팀 추천안을 불러오지 못했습니다.");
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        pollRemainingTeams();
+
+        return () => {
+            ignore = true;
+        };
+    }, [streamingJobId, grade, getRecommendations]);
 
     useEffect(() => {
         const preventUnload = (event) => {
@@ -95,6 +166,11 @@ const AdminTeamEdit = () => {
     }, []);
 
     const handleMemberClick = async (recommendationId, userId) => {
+        if (isStreaming) {
+            setMessage("팀 생성이 모두 끝나면 수정할 수 있습니다.");
+            return;
+        }
+
         const clickedMember = teams
             .find((team) => team.id === recommendationId)
             ?.members.find((member) => member.userId === userId);
@@ -219,6 +295,7 @@ const AdminTeamEdit = () => {
                                 type="button"
                                 className={styles.secondaryButton}
                                 onClick={handleRegenerate}
+                                disabled={isStreaming}
                             >
                                 재생성
                             </button>
@@ -226,12 +303,20 @@ const AdminTeamEdit = () => {
                                 type="button"
                                 className={styles.primaryButton}
                                 onClick={handleApprove}
+                                disabled={isStreaming}
                             >
                                 팀 구성 승인
                             </button>
                         </div>
                     </div>
 
+                    {isStreaming && (
+                        <p className={styles.messageText}>
+                            팀이 생성되는 대로 이 화면에 순서대로 나타납니다
+                            (현재 {teams.length}팀 도착) — 완료되면 수정할 수
+                            있습니다.
+                        </p>
+                    )}
                     {message && <p className={styles.messageText}>{message}</p>}
                     {error && <p className={styles.messageText}>{error}</p>}
 

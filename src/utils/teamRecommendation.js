@@ -68,6 +68,22 @@ export const getRoleSummary = (members = []) => {
         .join(" / ");
 };
 
+export const getRoleBarSegments = (members = []) => {
+    const total = members.length;
+    const counts = members.reduce((acc, member) => {
+        if (!member.studentRole) return acc;
+        acc[member.studentRole] = (acc[member.studentRole] || 0) + 1;
+        return acc;
+    }, {});
+
+    return summaryRoleOrder
+        .filter((role) => counts[role])
+        .map((role) => ({
+            role,
+            percent: total ? (counts[role] / total) * 100 : 0,
+        }));
+};
+
 export const getRoleCount = (roleCount = {}, role) => roleCount[role] || 0;
 
 export const getRoleCountSummary = (roleCount = {}) => {

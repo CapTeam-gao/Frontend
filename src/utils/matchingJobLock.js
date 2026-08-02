@@ -6,6 +6,14 @@ export const gradeLabels = {
     GRADE_3: "3학년",
 };
 
+export const MATCHING_POLL_INTERVAL = 5000;
+export const WAITING_JOB_STATUSES = ["QUEUED", "RUNNING", "COMPLETING"];
+
+export const wait = (ms) =>
+    new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+
 export const getActiveMatchingJobLock = () => {
     const rawLock = localStorage.getItem(MATCHING_JOB_LOCK_KEY);
 

@@ -1,6 +1,19 @@
 .teamCardShell {
     height: 500px;
     perspective: 1000px;
+    animation: teamCardEnter 0.45s ease-out;
+}
+
+@keyframes teamCardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .teamCardInner {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Header from "../../../components/common/header/Header";
 import {
     requestStartTeamMatchingJob,
     requestTeamMatchingJob,
@@ -9,11 +10,39 @@ import {
     getActiveMatchingJobLock,
     setMatchingJobLock,
     gradeLabels,
+    MATCHING_POLL_INTERVAL,
+    WAITING_JOB_STATUSES,
+    wait,
 } from "../../../utils/matchingJobLock";
 import styles from "./AdminTeamCreateLoading.module.css";
 
-const MATCHING_POLL_INTERVAL = 5000;
-const WAITING_JOB_STATUSES = ["QUEUED", "RUNNING", "COMPLETING"];
+const STEPS = [
+    {
+        title: "설문 데이터 분석",
+        desc: "희망 직군, 기술 스택, 실행 경험을 취합합니다",
+    },
+    {
+        title: "역할 밸런싱",
+        desc: "프론트엔드·백엔드·AI·앱 역할이 몰리지 않도록 분산합니다",
+    },
+    {
+        title: "협업 성향 매칭",
+        desc: "리더십, 시간 압박 대응, 체력·집중 유지 점수를 반영합니다",
+    },
+    {
+        title: "팀 구성 확정",
+        desc: "추천 팀장과 팀 배정 이유를 정리합니다",
+    },
+];
+
+// ponytail: 백엔드가 배치 단위 진행률(totalBatches/completedBatches)을 아직 안 주기 때문에
+// job.status만으로 대략적인 단계만 표시함 — 배치 스트리밍 API가 생기면 실제 진행률로 교체.
+const getActiveStepIndex = (jobStatus) => {
+    if (jobStatus === "COMPLETING") return 3;
+    if (jobStatus === "RUNNING") return 1;
+
+    return 0;
+};
 
 const getErrorMessage = (error) => {
     const responseData = error.response?.data;
@@ -36,11 +65,6 @@ const getErrorMessage = (error) => {
 
     return "팀 추천안 생성 중 오류가 발생했습니다.";
 };
-
-const wait = (ms) =>
-    new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
 
 const parsePendingSurveyStudents = (message) => {
     if (typeof message !== "string" || !message.includes("설문 미완료 학생")) {
@@ -100,8 +124,12 @@ const AdminTeamCreateLoading = () => {
     const grade = location.state?.grade || storedMatchingJob?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 저장된 작업의 학년을 사용
     const regenerationPrompt = location.state?.regenerationPrompt || "";
     const [error, setError] = useState("");
+    const [jobStatus, setJobStatus] = useState(
+        storedMatchingJob?.status || "QUEUED"
+    );
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
     const isMatchingInProgress = Boolean(grade) && !error;
+    const activeStepIndex = getActiveStepIndex(jobStatus);
 
     useEffect(() => {
         if (!isMatchingInProgress) return;
@@ -165,6 +193,7 @@ const AdminTeamCreateLoading = () => {
                         grade,
                         status: "STARTING",
                     });
+                    setJobStatus("STARTING");
 
                     currentJob = await requestStartTeamMatchingJob(
                         grade,
@@ -177,6 +206,19 @@ const AdminTeamCreateLoading = () => {
                     grade,
                     status: currentJob?.status,
                 });
+                setJobStatus(currentJob?.status);
+
+                // ponytail: 첫 팀(완료된 배치 1개)만 도착해도 로딩 화면을 벗어나
+                // 팀 에딧 화면으로 넘어간다 — 전체 완료를 기다리게 하지 않기 위함(8/2 결정).
+                // 나머지 팀은 팀 에딧 화면이 이어서 폴링해 순차적으로 채워 넣는다.
+                if ((currentJob?.completedBatches ?? 0) >= 1) {
+                    clearMatchingJobLock();
+                    navigate("/admin/team-edit", {
+                        replace: true,
+                        state: { grade, jobId: currentJob.jobId },
+                    });
+                    return;
+                }
 
                 while (
                     !ignore &&
@@ -191,6 +233,16 @@ const AdminTeamCreateLoading = () => {
                         grade,
                         status: currentJob?.status,
                     });
+                    setJobStatus(currentJob?.status);
+
+                    if ((currentJob?.completedBatches ?? 0) >= 1) {
+                        clearMatchingJobLock();
+                        navigate("/admin/team-edit", {
+                            replace: true,
+                            state: { grade, jobId: currentJob.jobId },
+                        });
+                        return;
+                    }
                 }
 
                 if (ignore) return;
@@ -229,84 +281,108 @@ const AdminTeamCreateLoading = () => {
 
     return (
         <div className={styles.page}>
+            <Header />
+
             <main className={styles.panel}>
-                <div className={styles.loadingContent}>
-                    <div className={styles.loadingIcon} aria-hidden="true" />
-                    {pendingSurveyGroups ? (
-                        <>
-                            <section className={styles.errorCard}>
-                                <span className={styles.errorLabel}>
-                                    설문 미완료
-                                </span>
-                                <h1>팀을 생성할 수 없습니다</h1>
-                                <p>
-                                    아래 학생들의 설문 제출이 완료되면 다시
-                                    팀을 생성할 수 있습니다.
-                                </p>
+                {pendingSurveyGroups ? (
+                    <section className={styles.errorCard}>
+                        <span className={styles.errorLabel}>설문 미완료</span>
+                        <h1>팀을 생성할 수 없습니다</h1>
+                        <p>
+                            아래 학생들의 설문 제출이 완료되면 다시 팀을 생성할
+                            수 있습니다.
+                        </p>
 
-                                <div className={styles.pendingGroupList}>
-                                    {pendingSurveyGroups.map((group) => (
-                                        <article
-                                            key={group.groupKey}
-                                            className={styles.pendingGroup}
-                                        >
-                                            <div
-                                                className={
-                                                    styles.pendingGroupHeader
-                                                }
-                                            >
-                                                <strong>
-                                                    {group.groupKey}
-                                                </strong>
-                                                <span>
-                                                    {group.students.length}명
-                                                </span>
-                                            </div>
+                        <div className={styles.pendingGroupList}>
+                            {pendingSurveyGroups.map((group) => (
+                                <article
+                                    key={group.groupKey}
+                                    className={styles.pendingGroup}
+                                >
+                                    <div
+                                        className={styles.pendingGroupHeader}
+                                    >
+                                        <strong>{group.groupKey}</strong>
+                                        <span>{group.students.length}명</span>
+                                    </div>
 
-                                            <ul>
-                                                {group.students.map(
-                                                    (student) => (
-                                                        <li
-                                                            key={
-                                                                student.userId
-                                                            }
-                                                        >
-                                                            {student.name}
-                                                        </li>
-                                                    )
-                                                )}
-                                            </ul>
-                                        </article>
-                                    ))}
-                                </div>
-                            </section>
+                                    <ul>
+                                        {group.students.map((student) => (
+                                            <li key={student.userId}>
+                                                {student.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </article>
+                            ))}
+                        </div>
 
-                            <button
-                                type="button"
-                                className={styles.retryButton}
-                                onClick={() => navigate("/admin/team-create")}
-                            >
-                                다시 선택하기
-                            </button>
-                        </>
-                    ) : error ? (
-                        <>
-                            <h1 className={styles.loadingText}>{error}</h1>
-                            <button
-                                type="button"
-                                className={styles.retryButton}
-                                onClick={() => navigate("/admin/team-create")}
-                            >
-                                다시 선택하기
-                            </button>
-                        </>
-                    ) : (
-                        <h1 className={styles.loadingText}>
+                        <button
+                            type="button"
+                            className={styles.retryButton}
+                            onClick={() => navigate("/admin/team-create")}
+                        >
+                            다시 선택하기
+                        </button>
+                    </section>
+                ) : error ? (
+                    <div className={styles.loadingState}>
+                        <h1 className={styles.loadingTitle}>{error}</h1>
+                        <button
+                            type="button"
+                            className={styles.retryButton}
+                            onClick={() => navigate("/admin/team-create")}
+                        >
+                            다시 선택하기
+                        </button>
+                    </div>
+                ) : (
+                    <div className={styles.loadingState}>
+                        <div className={styles.spinner} aria-hidden="true" />
+                        <h1 className={styles.loadingTitle}>
                             팀이 생성되는 중입니다
                             <span className={styles.dots} aria-hidden="true" />
                         </h1>
-                    )}
-                </div>
+                        <p className={styles.loadingSub}>
+                            {gradeLabels[grade]} 설문 데이터를 분석하고
+                            있습니다
+                        </p>
+
+                        <div className={styles.stepTracker}>
+                            {STEPS.map((step, index) => (
+                                <div
+                                    key={step.title}
+                                    className={`${styles.stepRow} ${
+                                        index < activeStepIndex
+                                            ? styles.done
+                                            : index === activeStepIndex
+                                            ? styles.active
+                                            : ""
+                                    }`}
+                                >
+                                    <div className={styles.stepDot}>
+                                        {index < activeStepIndex
+                                            ? "✓"
+                                            : index + 1}
+                                    </div>
+                                    <div className={styles.stepBody}>
+                                        <div className={styles.stepTitle}>
+                                            {step.title}
+                                        </div>
+                                        <div className={styles.stepDesc}>
+                                            {step.desc}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <p className={styles.cancelNote}>
+                            창을 닫거나 뒤로 가면 생성 작업이 중단될 수
+                            있습니다.
+                        </p>
+                    </div>
+                )}
             </main>
         </div>
     );

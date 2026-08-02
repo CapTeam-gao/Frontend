@@ -10,6 +10,7 @@ import AdminTeamCreate from "../pages/admin/team/AdminTeamCreate";
 import AdminTeamCreateLoading from "../pages/admin/team/AdminTeamCreateLoading";
 import AdminTeamEdit from "../pages/admin/team/AdminTeamEdit";
 import AdminTeamManage from "../pages/admin/team/AdminTeamManage";
+import AdminTeamManualCreate from "../pages/admin/team/AdminTeamManualCreate";
 import AdminLogList from "../pages/admin/log/AdminLogList";
 import AdminLogDetail from "../pages/admin/log/AdminLogDetail";
 import AdminStudentManage from "../pages/admin/student/AdminStudentManage";
@@ -19,6 +20,7 @@ import AdminNoticeCreate from "../pages/admin/notice/AdminNoticeCreate";
 import AdminNoticeEdit from "../pages/admin/notice/AdminNoticeEdit";
 import AdminProfile from "../pages/admin/profile/AdminProfile";
 import AdminChatManage from "../pages/admin/chat/AdminChatManage";
+import AdminChatList from "../pages/admin/chat/AdminChatList";
 
 import UserDashboard from "../pages/user/dashboard/UserDashboard";
 import UserLogWrite from "../pages/user/log/UserLogWrite";
@@ -101,6 +103,12 @@ const Router = () => {
                 element={adminRoute(<AdminTeamEdit />)}
             />
 
+            {/* 직접 팀 구성 화면도 팀 생성 전 사용하는 화면이라 가드 없음. */}
+            <Route
+                path="/admin/team-manual-create"
+                element={adminRoute(<AdminTeamManualCreate />)}
+            />
+
             {/* 두 학년 팀이 모두 생성되어야 접근 가능합니다. */}
             <Route
                 path="/admin/team-manage"
@@ -155,6 +163,13 @@ const Router = () => {
 
             <Route
                 path="/admin/chat"
+                element={adminRoute(<AdminChatList />, {
+                    requiresTeam: true,
+                })}
+            />
+
+            <Route
+                path="/admin/chat/:roomId"
                 element={adminRoute(<AdminChatManage />, {
                     requiresTeam: true,
                 })}

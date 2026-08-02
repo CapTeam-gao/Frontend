@@ -113,3 +113,12 @@ export const requestMyTeam = async () => {
 
     return getResponseData(response);
 };
+
+export const requestCreateManualTeams = async (grade, teams) => {
+    const response = await api.post("/api/admin/teams/manual", {
+        grade,
+        teams,
+    });
+
+    return getResponseData(response);
+};
