@@ -13,3 +13,12 @@ export const requestMySurvey = async () => {
 
     return getResponseData(response);
 };
+
+export const requestSurveyReminder = async (grade) => {
+    const response = await api.post(
+        "/api/admin/notifications/survey-reminder",
+        { grade }
+    );
+
+    return getResponseData(response);
+};
