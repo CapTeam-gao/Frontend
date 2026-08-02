@@ -5,6 +5,20 @@ import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { getLogTeamName } from "../../../utils/log";
 import styles from "./UserLogResult.module.css";
 
+const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+
+const formatLogResultDate = (date) => {
+    if (!date) return "";
+
+    const parsed = new Date(date);
+
+    if (Number.isNaN(parsed.getTime())) return date;
+
+    return `${parsed.getMonth() + 1}월 ${parsed.getDate()}일(${
+        DAY_LABELS[parsed.getDay()]
+    })`;
+};
+
 const UserLogResult = () => {
     const [journalDetail, setJournalDetail] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -75,42 +89,76 @@ const UserLogResult = () => {
             <Header />
 
             <main className={styles.content}>
-                <section className={styles.headerSection}>
-                    <h1>{getLogTeamName(journalDetail)} 캡스톤 일지</h1>
-                    <span>{journalDetail.date}</span>
+                <section className={styles.pageHead}>
+                    <div className={styles.pageTitle}>
+                        {getLogTeamName(journalDetail)} 캡스톤 일지
+                    </div>
+                    <div className={styles.pageMeta}>
+                        <span className={styles.pageStatus}>
+                            제출 완료 · {journalDetail.entries?.length ?? 0}/
+                            {journalDetail.entries?.length ?? 0}명
+                        </span>
+                        <span className={styles.pageDate}>
+                            {formatLogResultDate(journalDetail.date)}
+                        </span>
+                    </div>
                 </section>
 
                 {journalDetail.todayActivityContent && (
                     <section className={styles.section}>
-                        <h2>오늘 방과후 프로젝트 진행 상황</h2>
-                        <p>{journalDetail.todayActivityContent}</p>
+                        <div className={styles.sectionTitle}>
+                            <span className={styles.sectionIndex}>01</span>
+                            오늘 방과후 프로젝트 진행 상황
+                        </div>
+                        <p className={styles.sectionBody}>
+                            {journalDetail.todayActivityContent}
+                        </p>
                     </section>
                 )}
 
                 <section className={styles.section}>
-                    <h2>팀원별 활동 내용</h2>
+                    <div className={styles.sectionTitle}>
+                        <span className={styles.sectionIndex}>
+                            {journalDetail.todayActivityContent ? "02" : "01"}
+                        </span>
+                        팀원별 활동 내용
+                    </div>
 
-                    <div className={styles.entryList}>
+                    <div className={styles.entryGrid}>
                         {journalDetail.entries?.map((entry) => (
                             <article
                                 key={entry.entryId}
-                                className={styles.entryCard}
+                                className={styles.entry}
                             >
-                                <h3>{entry.writerName}</h3>
-
-                                <div className={styles.entryBlock}>
-                                    <strong>활동 내용</strong>
-                                    <p>{entry.activityContent}</p>
+                                <div className={styles.entryName}>
+                                    {entry.writerName}
                                 </div>
 
                                 <div className={styles.entryBlock}>
-                                    <strong>다음 계획</strong>
-                                    <p>{entry.nextPlanContent}</p>
+                                    <div className={styles.entryLabel}>
+                                        활동 내용
+                                    </div>
+                                    <p className={styles.entryText}>
+                                        {entry.activityContent}
+                                    </p>
                                 </div>
 
                                 <div className={styles.entryBlock}>
-                                    <strong>자기 반성</strong>
-                                    <p>{entry.reflectionContent}</p>
+                                    <div className={styles.entryLabel}>
+                                        다음 계획
+                                    </div>
+                                    <p className={styles.entryText}>
+                                        {entry.nextPlanContent}
+                                    </p>
+                                </div>
+
+                                <div className={styles.entryBlock}>
+                                    <div className={styles.entryLabel}>
+                                        자기 반성
+                                    </div>
+                                    <p className={styles.entryText}>
+                                        {entry.reflectionContent}
+                                    </p>
                                 </div>
                             </article>
                         ))}

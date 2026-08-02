@@ -16,22 +16,26 @@ const AdminLogItem = ({ log }) => {
         <>
             <div className={styles.mainInfo}>
                 <div className={styles.titleRow}>
-                    <h2>{teamName}</h2>
+                    <span className={styles.logTeam}>{teamName}</span>
                     <span className={styles.gradeBadge}>
                         {getLogGradeLabel(log.grade)}
                     </span>
                     <span
-                        className={
-                            submitted
-                                ? styles.submittedBadge
-                                : styles.pendingBadge
-                        }
+                        className={`${styles.statusBadge} ${
+                            submitted ? styles.submitted : styles.pending
+                        }`}
                     >
                         {submitted ? "제출완료" : "미제출"}
                     </span>
                 </div>
-                <p>{log.serviceName || "프로젝트 정보가 입력되지 않았습니다."}</p>
-                <span className={styles.submitText}>
+                <p className={styles.logService}>
+                    {log.serviceName || "프로젝트 정보가 입력되지 않았습니다."}
+                </p>
+                <span
+                    className={`${styles.logSubmitText} ${
+                        submitted ? styles.submitted : styles.pending
+                    }`}
+                >
                     {submitted
                         ? `${log.submittedMemberCount}/${log.totalMemberCount}명 제출`
                         : `${log.notSubmittedMemberCount}명 미제출`}
@@ -42,9 +46,9 @@ const AdminLogItem = ({ log }) => {
         </>
     );
 
-    const itemClassName = `${styles.logItem} ${
-        submitted ? styles.submitted : styles.pending
-    } ${!canOpenDetail ? styles.disabled : ""}`;
+    const itemClassName = `${styles.logRow} ${
+        !canOpenDetail ? styles.disabled : ""
+    }`;
 
     if (!canOpenDetail) {
         return (

@@ -129,15 +129,13 @@ const AdminLogDetail = () => {
                     ← 목록으로
                 </Link>
 
-                <article className={styles.detailCard}>
+                <article>
                     <header className={styles.detailHeader}>
-                        <div className={styles.headerMain}>
-                            <div className={styles.titleGroup}>
-                                <h1>{teamName}</h1>
-                                <span className={styles.statusBadge}>
-                                    제출완료
-                                </span>
-                            </div>
+                        <div className={styles.titleGroup}>
+                            <h1>{teamName}</h1>
+                            <span className={styles.statusBadge}>
+                                제출완료
+                            </span>
                         </div>
 
                         <div className={styles.headerMeta}>

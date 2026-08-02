@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from "react";
 import Header from "../../../components/common/header/Header";
 import AdminLogItem from "../../../components/admin/log/AdminLogItem";
 import styles from "./AdminLogList.module.css";
-import logIcon from "../../../assets/icons/capstonLog.svg";
 import { requestAdminLogList } from "../../../api/logApi";
 import {
     getLogTeamName,
@@ -12,19 +11,9 @@ import {
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 
 const summaryCards = [
-    {
-        key: "all",
-        label: "전체 일지",
-        iconType: "log",
-    },
-    {
-        key: "submitted",
-        label: "제출 일지",
-    },
-    {
-        key: "pending",
-        label: "미제출 일지",
-    },
+    { key: "all", label: "전체 일지" },
+    { key: "submitted", label: "제출 일지" },
+    { key: "pending", label: "미제출 일지" },
 ];
 
 const AdminLogList = () => {
@@ -85,16 +74,12 @@ const AdminLogList = () => {
             <Header />
 
             <main className={styles.body}>
-                <section className={styles.pageHeader}>
-                    <div>
-                        <h1>캡스톤 일지 관리</h1>
-                        <p>
-                            팀별 일지 제출 현황을 확인하고 피드백을 제공합니다.
-                        </p>
-                    </div>
-                </section>
+                <h1 className={styles.pageTitle}>캡스톤 일지 관리</h1>
+                <p className={styles.pageSub}>
+                    팀별 일지 제출 현황을 확인합니다.
+                </p>
 
-                <section className={styles.summaryGrid}>
+                <div className={styles.summaryRow}>
                     {summaryCards.map((card) => {
                         const count = summary[card.key] ?? 0;
                         const isActive = activeStatus === card.key;
@@ -103,52 +88,43 @@ const AdminLogList = () => {
                             <button
                                 key={card.key}
                                 type="button"
-                                className={`${styles.summaryCard} ${
-                                    styles[card.key]
-                                } ${isActive ? styles.active : ""}`}
+                                className={`${styles.summaryItem} ${
+                                    isActive ? styles.active : ""
+                                }`}
                                 aria-pressed={isActive}
                                 onClick={() => setActiveStatus(card.key)}
                             >
-                                <div>
-                                    <span>{card.label}</span>
-                                    <strong>{count}</strong>
+                                <div className={styles.summaryLabel}>
+                                    {card.label}
                                 </div>
-
-                                {card.iconType === "log" && (
-                                    <div className={styles.summaryIcon}>
-                                        <img src={logIcon} alt="" />
-                                    </div>
-                                )}
-                                {card.iconType === "check" && (
-                                    <span className={styles.statusIcon}>
-                                        <span className={styles.hiddenText}>
-                                            제출 완료
-                                        </span>
-                                    </span>
-                                )}
-                                {card.iconType === "close" && (
-                                    <span className={styles.mutedIcon}>
-                                        <span className={styles.hiddenText}>
-                                            미제출
-                                        </span>
-                                    </span>
-                                )}
+                                <div
+                                    className={`${styles.summaryValue} ${
+                                        styles[card.key] ?? ""
+                                    }`}
+                                >
+                                    {count}
+                                </div>
                             </button>
                         );
                     })}
-                </section>
+                </div>
 
-                <section className={styles.controlArea}>
+                <p className={styles.autoNotifyNote}>
+                    미제출 팀에게는 마감 30분 전에 자동으로 알림이
+                    발송됩니다.
+                </p>
+
+                <section className={styles.controlRow}>
                     <div className={styles.gradeTabs}>
                         {LOG_GRADE_OPTIONS.map((grade) => (
                             <button
                                 key={grade.value}
                                 type="button"
-                                className={
+                                className={`${styles.gradeTab} ${
                                     activeGrade === grade.value
-                                        ? styles.selected
+                                        ? styles.active
                                         : ""
-                                }
+                                }`}
                                 onClick={() => setActiveGrade(grade.value)}
                             >
                                 {grade.label}
@@ -156,26 +132,24 @@ const AdminLogList = () => {
                         ))}
                     </div>
 
-                    <label className={styles.searchBox}>
-                        <input
-                            type="text"
-                            value={searchKeyword}
-                            placeholder="팀명 또는 작성날짜를 검색하세요...."
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                        />
-                        <span>⌕</span>
-                    </label>
+                    <input
+                        type="text"
+                        className={styles.search}
+                        value={searchKeyword}
+                        placeholder="팀명 또는 작성날짜를 검색하세요"
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
                 </section>
 
                 <section className={styles.logList}>
                     {isLoading && showLoading && (
-                        <div className={styles.messageBox}>
+                        <div className={styles.emptyText}>
                             캡스톤 일지 목록을 불러오는 중입니다.
                         </div>
                     )}
 
                     {!isLoading && error && (
-                        <div className={styles.messageBox}>{error}</div>
+                        <div className={styles.emptyText}>{error}</div>
                     )}
 
                     {!isLoading &&
@@ -189,7 +163,7 @@ const AdminLogList = () => {
                         })}
 
                     {!isLoading && !error && filteredLogs.length === 0 && (
-                        <div className={styles.messageBox}>
+                        <div className={styles.emptyText}>
                             작성된 일지가 없습니다.
                         </div>
                     )}

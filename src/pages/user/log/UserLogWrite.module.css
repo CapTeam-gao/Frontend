@@ -1,58 +1,88 @@
 .page {
     min-height: 100vh;
-    background-color: #ffffff;
+    background-color: var(--color-bg);
 }
 
 .content {
-    width: min(900px, 100%);
+    max-width: 900px;
     margin: 0 auto;
-    padding: 58px 24px 88px;
+    padding: 40px clamp(20px, 3vw, 40px) 64px;
 }
 
-.hero {
-    text-align: center;
+.pageHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
 }
 
-.eyebrow {
-    margin-bottom: 12px;
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-md);
+.pageHead h1 {
+    margin: 0;
+    font-size: var(--font-size-2xl-sm);
     font-weight: var(--font-weight-bold);
-}
-
-.hero h1 {
-    color: #000000;
-    font-size: 34px;
-    font-weight: var(--font-weight-bold);
-    line-height: 1.3;
 }
 
 .hiddenTitle {
     visibility: hidden;
 }
 
+.pageSub {
+    margin: 4px 0 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+}
+
+.progressLine {
+    margin-top: 16px;
+    max-width: 420px;
+}
+
+.progressTrack {
+    height: 6px;
+    border-radius: 4px;
+    background: var(--color-bg-secondary);
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--color-primary);
+    transition: width 0.2s ease;
+}
+
+.progressLabel {
+    margin: 8px 0 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+}
+
+.progressLabel b {
+    color: var(--color-primary-dark);
+    font-weight: var(--font-weight-bold);
+}
+
+.roleTag {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
+}
+
 .errorText {
-    margin: 0 0 20px;
+    margin: 20px 0 0;
     color: var(--color-danger);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 1.6;
 }
 
-.hero span {
-    display: inline-block;
-    margin-top: 10px;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-}
-
 @media (max-width: 768px) {
     .content {
-        padding: 38px 16px 64px;
-    }
-
-    .hero h1 {
-        font-size: var(--font-size-3xl);
+        padding: 32px 16px 56px;
     }
 }

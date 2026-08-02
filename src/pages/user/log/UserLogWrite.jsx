@@ -13,6 +13,7 @@ import {
     getCapstoneLogUnavailableText,
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
+import { getFilledFieldCount, getLogFields } from "../../../utils/log";
 import styles from "./UserLogWrite.module.css";
 
 const initialFormData = {
@@ -22,13 +23,14 @@ const initialFormData = {
     reflectionContent: "",
 };
 
+const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+
 const getTodayText = () => {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const date = String(today.getDate()).padStart(2, "0");
 
-    return `${year}.${month}.${date}`;
+    return `${today.getMonth() + 1}월 ${today.getDate()}일(${
+        DAY_LABELS[today.getDay()]
+    })`;
 };
 const getTodayApiDate = () => {
     const today = new Date();
@@ -83,10 +85,14 @@ const UserLogWrite = () => {
 
     const isInitialLoading = isLoadingTeam || isLoadingJournal;
     const teamName = myTeam?.project?.teamName || myTeam?.teamName || "";
-    const pageTitle = teamName ? `${teamName} 캡스톤 일지` : "캡스톤 일지";
     const isLeader = myTeam?.myMember?.leaderRole === "LEADER";
     const canWriteLog = isCapstoneLogTime(currentTime);
     const logUnavailableText = getCapstoneLogUnavailableText(currentTime);
+    const fields = getLogFields(isLeader);
+    const filledCount = getFilledFieldCount(formData, fields);
+    const progressPercent = fields.length
+        ? Math.round((filledCount / fields.length) * 100)
+        : 0;
 
     const handleFieldChange = (fieldName, value) => {
         setSuccessMessage("");
@@ -183,11 +189,44 @@ const UserLogWrite = () => {
             <Header />
 
             <main className={styles.content}>
-                <section className={styles.hero}>
-                    <h1 className={isInitialLoading ? styles.hiddenTitle : ""}>
-                        {pageTitle}
-                    </h1>
-                    <span>{getTodayText()}</span>
+                <section className={styles.pageHead}>
+                    <div>
+                        <h1
+                            className={
+                                isInitialLoading ? styles.hiddenTitle : ""
+                            }
+                        >
+                            오늘 캡스톤 일지 작성
+                        </h1>
+                        <p className={styles.pageSub}>
+                            {teamName && `${teamName} · `}
+                            {getTodayText()}
+                        </p>
+
+                        {!isInitialLoading && canWriteLog && (
+                            <div className={styles.progressLine}>
+                                <div className={styles.progressTrack}>
+                                    <div
+                                        className={styles.progressFill}
+                                        style={{
+                                            width: `${progressPercent}%`,
+                                        }}
+                                    />
+                                </div>
+                                <p className={styles.progressLabel}>
+                                    작성 완료 <b>{filledCount}</b> /{" "}
+                                    {fields.length}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {!isInitialLoading && canWriteLog && (
+                        <span className={styles.roleTag}>
+                            {isLeader ? "팀장 작성" : "팀원 작성"} ·{" "}
+                            {fields.length}개 항목
+                        </span>
+                    )}
                 </section>
 
                 {!canWriteLog && (
