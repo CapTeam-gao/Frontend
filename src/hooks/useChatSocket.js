@@ -18,6 +18,7 @@ const useChatSocket = ({
     onChannelEvent,
     clearChannelUnreadCount,
     increaseChannelUnreadCount,
+    onForeignMessage,
     setError,
 }) => {
     const chatClientRef = useRef(null);
@@ -195,6 +196,7 @@ const useChatSocket = ({
                                 channel.id,
                                 receivedMessage
                             );
+                            onForeignMessage?.(channel, receivedMessage);
                         }
                     )
                 );
@@ -216,6 +218,7 @@ const useChatSocket = ({
         channels,
         selectedChannel?.id,
         increaseChannelUnreadCount,
+        onForeignMessage,
     ]);
 
     const handleSendMessage = async (message) => {

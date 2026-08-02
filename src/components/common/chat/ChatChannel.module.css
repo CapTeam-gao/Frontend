@@ -4,42 +4,33 @@
     align-items: center;
     border-left: 3px solid transparent;
     border-radius: 6px;
-    color: #667085;
+    color: var(--color-text-secondary);
 }
 
 .channelRow:hover {
-    background-color: #f5f7f6;
-    color: #111827;
+    color: var(--color-text-primary);
 }
 
 .channelRow.selected {
-    border-left-color: #5fc49b;
-    background-color: #f7fcfa;
-    color: #2f946f;
+    border-left-color: var(--color-primary);
+    color: var(--color-primary-dark);
 }
 
 .channelButton {
     display: flex;
     align-items: center;
     width: 100%;
-    gap: 10px;
+    gap: 8px;
     min-height: 36px;
-    padding: 0 9px;
+    padding: 10px 10px 10px 12px;
     border: 0;
-    border-radius: 4px;
     background-color: transparent;
     color: inherit;
     font-family: var(--font-family);
-    font-size: 15px;
-    font-weight: 650;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
     text-align: left;
     cursor: pointer;
-}
-
-.channelMark {
-    color: inherit;
-    font-size: 18px;
-    font-weight: 800;
 }
 
 .channelName {
@@ -54,14 +45,14 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 6px;
-    background-color: #52b98f;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background-color: var(--color-danger);
     color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
     line-height: 1;
 }
 
@@ -73,7 +64,7 @@
     gap: 4px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.12s ease;
+    transition: opacity var(--transition);
 }
 
 .channelRow:hover .channelActions {
@@ -87,19 +78,17 @@
     border: 0;
     border-radius: 4px;
     background-color: #ffffff;
-    color: #667085;
+    color: var(--color-text-secondary);
     font-family: var(--font-family);
-    font-size: 11px;
-    font-weight: 700;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
 }
 
 .channelActions button:hover {
-    background-color: #f2f4f7;
-    color: #111827;
+    color: var(--color-text-primary);
 }
 
 .channelActions button:last-child:hover {
-    background-color: #fff1f0;
-    color: #dc2626;
+    color: var(--color-danger-dark);
 }

@@ -28,7 +28,6 @@ const ChatChannel = ({
                 className={styles.channelButton}
                 onClick={onClick}
             >
-                <span className={styles.channelMark}>#</span>
                 <span className={styles.channelName}>
                     {channel.channelName}
                 </span>

@@ -4,8 +4,11 @@ import useChatPresence from "./useChatPresence";
 import useChatRoom from "./useChatRoom";
 import useChatSocket from "./useChatSocket";
 
+let toastIdSeq = 1;
+
 const useUserTeamChat = () => {
     const [error, setError] = useState("");
+    const [toasts, setToasts] = useState([]);
     const {
         room,
         selectedChannel,
@@ -62,8 +65,36 @@ const useUserTeamChat = () => {
         onChannelEvent: handleChannelEvent,
         clearChannelUnreadCount,
         increaseChannelUnreadCount,
+        onForeignMessage: (channel, receivedMessage) => {
+            setToasts((prevToasts) => [
+                ...prevToasts,
+                {
+                    id: toastIdSeq++,
+                    channelId: channel.id,
+                    channelName: channel.channelName,
+                    senderName: receivedMessage.senderName,
+                    preview: receivedMessage.message,
+                },
+            ]);
+        },
         setError,
     });
+
+    const dismissToast = (toastId) => {
+        setToasts((prevToasts) =>
+            prevToasts.filter((toast) => toast.id !== toastId)
+        );
+    };
+
+    const selectToastChannel = (toast) => {
+        const channel = (room?.channels ?? []).find(
+            (candidate) => String(candidate.id) === String(toast.channelId)
+        );
+
+        if (channel) {
+            updateSelectedChannel(channel);
+        }
+    };
 
     const {
         members,
@@ -124,6 +155,9 @@ const useUserTeamChat = () => {
         openEditChannelModal,
         openDeleteChannelModal,
         closeChannelModal,
+        toasts,
+        dismissToast,
+        selectToastChannel,
     };
 };
 

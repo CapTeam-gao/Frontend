@@ -1,204 +1,135 @@
 .page {
     height: 100vh;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
 }
 
 .panel {
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
+    flex: 1;
+    min-height: 0;
 }
 
 .chatLayout {
-    display: grid;
-    grid-template-columns: 264px minmax(0, 1fr) 244px;
-    height: calc(100vh - 84px);
+    display: flex;
+    height: 100%;
     min-height: 0;
-    background-color: #ffffff;
 }
 
+/* ---- 좌: 채널 목록 ---- */
 .sidebar {
+    width: 260px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     min-height: 0;
-    padding: 18px 14px;
-    border-right: 1px solid #eef1f4;
-    background-color: #fbfcfc;
-}
-
-.sidebarHeader {
-    padding: 4px 8px 18px;
+    padding: 24px 20px;
+    border-right: 1px solid var(--color-border);
 }
 
 .sidebarHeader h1 {
     margin: 0;
-    color: #111827;
-    font-size: 21px;
-    font-weight: 750;
-    line-height: 1.15;
-    word-break: keep-all;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
 }
 
 .sidebarHeader p {
-    margin: 8px 0 0;
-    color: #667085;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.45;
+    margin: 2px 0 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
 }
 
 .channelArea {
+    margin-top: 28px;
+    flex: 1;
     min-height: 0;
-    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sectionTitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0 8px 10px;
-    color: #98a2b3;
-    font-size: 12px;
-    font-weight: 750;
+    margin-bottom: 10px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
 }
 
 .addChannelButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border: 0;
-    border-radius: 6px;
-    background-color: transparent;
-    color: #667085;
-    font-size: 21px;
-    font-weight: 800;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
     cursor: pointer;
 }
 
 .addChannelButton:hover {
-    background-color: #eef7f2;
-    color: #2f9f78;
+    color: var(--color-primary);
 }
 
 .channelList {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
+/* ---- 중앙: 메시지 스트림 ---- */
 .chatContent {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
     min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    background-color: #ffffff;
 }
 
 .chatHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
     flex-shrink: 0;
-    min-height: 82px;
-    padding: 16px 28px;
-    border-bottom: 1px solid #eef1f4;
-    background-color: #ffffff;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--color-border);
 }
 
-.chatHeaderLabel {
-    display: block;
-    margin-bottom: 5px;
-    color: #98a2b3;
-    font-size: 12px;
-    font-weight: 750;
-}
-
-.chatHeader h2 {
-    margin: 0;
-    color: #111827;
-    font-size: 22px;
-    font-weight: 750;
-    line-height: 1.25;
-    word-break: keep-all;
+.chatHeaderTitle {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
 }
 
 .chatHeaderMeta {
-    margin: 7px 0 0;
-    color: #667085;
-    font-size: 13px;
-    font-weight: 550;
-}
-
-.connectionBadge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 11px;
-    border-radius: 999px;
-    background-color: #f3f4f6;
-    color: #667085;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.connectionBadge::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #c7cbd1;
-}
-
-.connected {
-    background-color: #edf8f3;
-    color: #3f9f7a;
-}
-
-.connected::before {
-    background-color: #5fc49b;
-}
-
-.disconnected {
-    background-color: #f3f4f6;
-    color: #98a2b3;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
 }
 
 .errorText {
-    flex-shrink: 0;
-    align-self: center;
-    max-width: calc(100% - 56px);
-    margin: 12px 28px 0;
-    padding: 0;
+    margin: 12px 32px 0;
     color: var(--color-danger);
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 1.5;
-    text-align: center;
-    word-break: keep-all;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
 }
 
 .messageArea {
     flex: 1;
     min-height: 0;
-    overflow: hidden;
-    background-color: #fcfdfc;
 }
 
 .messageList {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     width: 100%;
     height: 100%;
     min-height: 0;
     margin: 0;
-    padding: 18px 28px 22px;
+    padding: 24px 32px;
     overflow-y: auto;
     list-style: none;
 }
@@ -207,198 +138,120 @@
     display: flex;
     justify-content: center;
     padding: 10px 0 14px;
-    color: #98a2b3;
-    font-size: 12px;
-    font-weight: 750;
-}
-
-.messageList::-webkit-scrollbar {
-    width: 10px;
-}
-
-.messageList::-webkit-scrollbar-thumb {
-    border: 3px solid #fcfdfc;
-    border-radius: 999px;
-    background-color: #cfd6dd;
-}
-
-.messageList::-webkit-scrollbar-track {
-    background-color: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
 }
 
 .dateDivider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    margin: 18px 0;
-    color: #98a2b3;
-    font-size: 12px;
-    font-weight: 650;
-}
-
-.dateDivider::before,
-.dateDivider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background-color: #eef1f4;
-}
-
-.dateDivider span {
-    flex-shrink: 0;
+    align-self: center;
+    margin: 12px 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
 }
 
 .emptyText {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
     align-items: center;
     justify-content: center;
     height: 100%;
     margin: 0;
     padding: 24px;
-    color: #98a2b3;
-    font-size: 15px;
-    font-weight: 650;
-    line-height: 1.6;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
     text-align: center;
-    word-break: keep-all;
 }
 
+/* ---- 우: 팀원 명단 ---- */
 .memberSidebar {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 0;
-    padding: 18px 14px;
-    border-left: 1px solid #eef1f4;
-    background-color: #fbfcfc;
+    width: 240px;
+    flex-shrink: 0;
+    padding: 24px 20px;
+    border-left: 1px solid var(--color-border);
+    overflow-y: auto;
 }
 
 .memberSidebarHeader {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    padding: 4px 4px 14px;
-    color: #111827;
+}
+
+.memberSidebarHeader strong {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.memberSidebarHeader span {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
 }
 
 .memberPendingArea {
     min-height: 180px;
 }
 
-.memberSidebarHeader strong {
-    font-size: 16px;
-    font-weight: 750;
-}
-
-.memberSidebarHeader span {
-    color: #98a2b3;
-    font-size: 13px;
-    font-weight: 700;
-}
-
 .memberGroup {
-    margin-bottom: 18px;
+    margin-top: 18px;
 }
 
 .memberGroupTitle {
-    margin: 0 8px 10px;
-    color: #98a2b3;
-    font-size: 12px;
-    font-weight: 750;
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
 }
 
 .memberList {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
     margin: 0;
     padding: 0;
     list-style: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .memberItem {
+    margin-top: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 38px;
-    padding: 0 8px;
-    border-radius: 6px;
-    color: #4b5563;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.onlineMember {
-    color: #111827;
-}
-
-.offlineMember {
-    color: #98a2b3;
-}
-.channelModalError {
-    margin: 8px 0 0;
-    color: var(--color-danger);
-    font-size: 13px;
-    font-weight: 800;
-}
-.createButton:disabled {
-    border-color: #d1d5db;
-    background-color: #d1d5db;
-    cursor: not-allowed;
-}
-.memberAvatar {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background-color: #edf8f3;
-    color: #3f9f7a;
-    font-size: 13px;
-    font-weight: 750;
-}
-
-.offlineMember .memberAvatar {
-    background-color: #f0f2f4;
-    color: #98a2b3;
 }
 
 .statusDot {
-    position: absolute;
-    right: -1px;
-    bottom: -1px;
-    width: 9px;
-    height: 9px;
-    border: 2px solid #fbfcfc;
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background-color: #c7cbd1;
+    background-color: var(--color-text-muted);
 }
 
 .statusDot.online {
-    background-color: #5fc49b;
+    background-color: var(--color-primary);
 }
 
 .memberName {
-    overflow: hidden;
-    color: inherit;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+}
+
+.offlineMember .memberName {
+    color: var(--color-text-secondary);
 }
 
 .memberEmptyText {
-    margin: 0 8px;
-    color: #98a2b3;
-    font-size: 13px;
-    font-weight: 550;
-    line-height: 1.5;
+    margin-top: 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
 }
 
+/* ---- 채널 추가/수정/삭제 모달 ---- */
 .modalOverlay {
     position: fixed;
     inset: 0;
@@ -407,14 +260,13 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background-color: rgba(17, 24, 39, 0.38);
+    background-color: rgba(20, 24, 28, 0.45);
 }
 
 .channelModal {
     width: min(440px, 100%);
-    padding: 26px;
-    border: 1px solid #e4e7ec;
-    border-radius: 8px;
+    padding: 28px;
+    border-radius: 14px;
     background-color: #ffffff;
 }
 
@@ -422,163 +274,161 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 20px;
 }
 
 .channelModalHeader span {
     display: inline-flex;
     margin-bottom: 6px;
-    color: #5fc49b;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
 .channelModalHeader h2 {
     margin: 0;
-    color: #111827;
-    font-size: 24px;
-    font-weight: 800;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
 }
 
 .channelModalHeader button {
+    flex-shrink: 0;
     border: 0;
-    background-color: transparent;
-    color: #667085;
+    background: none;
+    color: var(--color-text-muted);
     font-family: var(--font-family);
-    font-size: 18px;
-    font-weight: 900;
+    font-size: var(--font-size-xl);
     cursor: pointer;
 }
 
 .channelModalHeader button:hover {
-    color: #111827;
+    color: var(--color-text-primary);
 }
 
 .channelModalField {
     display: flex;
     flex-direction: column;
-    gap: 9px;
-    color: #344054;
-    font-size: 14px;
-    font-weight: 900;
+    gap: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
 }
 
 .channelModalField input {
     height: 48px;
     padding: 0 14px;
-    border: 1px solid #d9dee5;
-    border-radius: 6px;
-    color: #111827;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
     font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: 650;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
 }
 
 .channelModalField input:focus {
-    border-color: #5fc49b;
+    border-color: var(--color-primary);
     outline: none;
 }
 
 .channelModalField input::placeholder {
-    color: #98a2b3;
-    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.channelModalError {
+    margin: 8px 0 0;
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
 }
 
 .channelDeleteText {
     margin: 0;
-    padding: 16px;
-    border: 1px solid #fee4e2;
-    border-radius: 6px;
-    background-color: #fff8f7;
-    color: #344054;
-    font-size: 14px;
-    font-weight: 500;
+    padding-left: 16px;
+    border-left: 3px solid var(--color-danger);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
     line-height: 1.6;
+    font-weight: var(--font-weight-semibold);
 }
 
 .channelDeleteText strong {
-    color: #111827;
-    font-weight: 900;
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
 }
 
 .channelModalActions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 10px;
     margin-top: 22px;
 }
 
 .cancelButton,
 .createButton {
     height: 40px;
-    padding: 0 16px;
-    border-radius: 6px;
+    padding: 0 18px;
+    border-radius: var(--border-radius-md);
     font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: 900;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
 }
 
 .cancelButton {
-    border: 1px solid #d9dee5;
+    border: 1.5px solid var(--color-border);
     background-color: #ffffff;
-    color: #667085;
+    color: var(--color-text-primary);
 }
 
 .cancelButton:hover {
-    border-color: #b9c0ca;
-    background-color: #f8fafc;
-    color: #111827;
+    border-color: var(--color-text-muted);
 }
 
 .createButton {
-    border: 1px solid #5fc49b;
-    background-color: #5fc49b;
+    border: none;
+    background-color: var(--color-primary);
     color: #ffffff;
 }
 
 .createButton:hover {
-    border-color: #43aa82;
-    background-color: #43aa82;
+    background-color: var(--color-primary-dark);
+}
+
+.createButton:disabled {
+    background-color: var(--color-text-muted);
+    cursor: not-allowed;
 }
 
 .deleteButton {
-    border-color: #f04438;
-    background-color: #f04438;
+    background-color: var(--color-danger);
 }
 
 .deleteButton:hover {
-    border-color: #d92d20;
-    background-color: #d92d20;
+    background-color: var(--color-danger-dark);
 }
 
-@media (max-width: 1100px) {
-    .chatLayout {
-        grid-template-columns: 230px minmax(0, 1fr);
-    }
-
+@media (max-width: 1080px) {
     .memberSidebar {
         display: none;
     }
 }
 
 @media (max-width: 820px) {
-    .chatLayout {
-        grid-template-columns: 1fr;
+    .sidebar {
+        width: 200px;
+        padding: 20px 14px;
     }
 
+    .chatHeader,
+    .messageList {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media (max-width: 560px) {
     .sidebar {
         display: none;
-    }
-
-    .chatHeader {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 16px 18px;
-    }
-
-    .messageList {
-        padding: 18px;
     }
 }

@@ -3,26 +3,15 @@
     flex-direction: column;
     align-items: stretch;
     flex-shrink: 0;
-    gap: 8px;
-    margin: 0 28px 40px;
-    padding: 8px;
-    border: 1px solid #dfe4ea;
-    border-radius: 8px;
-    background-color: #ffffff;
-}
-
-.inputForm:focus-within {
-    border-color: #5fc49b;
-}
-.inputForm ::placeholder {
-    font-weight: 500;
-    font-size: 14px;
+    gap: 10px;
+    padding: 16px 32px 20px;
+    border-top: 1px solid var(--color-border);
 }
 
 .inputRow {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     min-height: 42px;
 }
 
@@ -33,9 +22,8 @@
     align-items: center;
     gap: 12px;
     padding: 10px;
-    border: 1px solid #e4eee9;
-    border-radius: 8px;
-    background-color: #fbfdfc;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
 }
 
 .imagePreview,
@@ -47,15 +35,14 @@
 
 .imagePreview {
     object-fit: cover;
-    border: 1px solid #e4e7ec;
-    background-color: #ffffff;
+    background-color: var(--color-bubble);
 }
 
 .documentPreview {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f4fbf8;
+    background-color: var(--color-bubble);
 }
 
 .documentIcon {
@@ -65,7 +52,7 @@
     width: 44px;
     height: 44px;
     border-radius: 10px;
-    background-color: #eaf7f1;
+    background-color: #ffffff;
 }
 
 .documentIcon img {
@@ -83,17 +70,17 @@
 
 .previewInfo strong {
     overflow: hidden;
-    color: #111827;
-    font-size: 14px;
-    font-weight: 750;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .previewInfo span {
-    color: #667085;
-    font-size: 12px;
-    font-weight: 650;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
 }
 
 .removeFileButton {
@@ -104,17 +91,16 @@
     height: 26px;
     border: 0;
     border-radius: 50%;
-    background-color: #e4e7ec;
-    color: #667085;
+    background-color: var(--color-bubble);
+    color: var(--color-text-muted);
     font-family: var(--font-family);
-    font-size: 18px;
-    font-weight: 700;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
 }
 
 .removeFileButton:hover {
-    background-color: #d0d5dd;
-    color: #111827;
+    color: var(--color-text-primary);
 }
 
 .fileButton {
@@ -122,20 +108,19 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     border: 0;
-    border-radius: 6px;
-    background-color: #f2f4f7;
-    color: #667085;
-    font-size: 24px;
-    font-weight: 700;
+    border-radius: 50%;
+    background-color: var(--color-bubble);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
 }
 
 .fileButton:hover {
-    background-color: #eef7f2;
-    color: #2f9f78;
+    color: var(--color-primary-dark);
 }
 
 .fileButton:disabled {
@@ -150,21 +135,23 @@
 .messageInput {
     flex: 1;
     height: 42px;
-    border: 0;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
     background-color: transparent;
-    color: #111827;
+    color: var(--color-text-primary);
     font-family: var(--font-family);
-    font-size: 15px;
-    font-weight: 500;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
 }
 
 .messageInput:focus {
+    border-bottom-color: var(--color-primary);
     outline: none;
 }
 
 .messageInput::placeholder {
-    color: #98a2b3;
-    font-weight: 500;
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
 }
 
 .sendButton {
@@ -173,31 +160,31 @@
     justify-content: center;
     flex-shrink: 0;
     min-width: 64px;
-    height: 42px;
-    padding: 0 14px;
+    height: 40px;
+    padding: 0 16px;
     border: 0;
-    border-radius: 6px;
-    background-color: #5fc49b;
+    border-radius: 10px;
+    background-color: var(--color-primary);
     color: #ffffff;
     font-family: var(--font-family);
-    font-size: 12px;
-    font-weight: 650;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
 }
 
 .sendButton:hover {
-    background-color: #55b98f;
+    background-color: var(--color-primary-dark);
 }
 
 .sendButton:disabled {
-    background-color: #d1d5db;
+    background-color: var(--color-text-muted);
     color: #ffffff;
     cursor: not-allowed;
 }
 
 .errorText {
     margin: 0;
-    color: #dc2626;
-    font-size: 12px;
-    font-weight: 600;
+    color: var(--color-danger);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
 }

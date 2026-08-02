@@ -5,6 +5,7 @@ import ChatChannelModal from "../../../components/common/chat/ChatChannelModal";
 import ChatMemberSidebar from "../../../components/common/chat/ChatMemberSidebar";
 import ChatMessageList from "../../../components/common/chat/ChatMessageList";
 import ChatSidebar from "../../../components/common/chat/ChatSidebar";
+import ChatToast from "../../../components/common/chat/ChatToast";
 import useUserTeamChat from "../../../hooks/useUserTeamChat";
 import styles from "./UserTeamChat.module.css";
 
@@ -46,6 +47,9 @@ const UserTeamChat = () => {
         openEditChannelModal,
         openDeleteChannelModal,
         closeChannelModal,
+        toasts,
+        dismissToast,
+        selectToastChannel,
     } = useUserTeamChat();
     const currentMember = room?.myMember;
 
@@ -62,7 +66,6 @@ const UserTeamChat = () => {
         !isMessageLoading &&
         selectedChannel &&
         messages.length > 0;
-    const channelCount = room?.channels?.length ?? 0;
     const memberCount = members.length;
     const isChatInputDisabled = !selectedChannel || !socketConnected;
     const chatInputPlaceholder = !selectedChannel
@@ -90,6 +93,17 @@ const UserTeamChat = () => {
                     />
 
                     <section className={styles.chatContent}>
+                        {selectedChannel && (
+                            <div className={styles.chatHeader}>
+                                <div className={styles.chatHeaderTitle}>
+                                    {selectedChannel.channelName}
+                                </div>
+                                <div className={styles.chatHeaderMeta}>
+                                    {memberCount}명 참여 중
+                                </div>
+                            </div>
+                        )}
+
                         {error && <p className={styles.errorText}>{error}</p>}
 
                         <div className={styles.messageArea}>
@@ -163,6 +177,12 @@ const UserTeamChat = () => {
                     )}
                 </section>
             </main>
+
+            <ChatToast
+                toasts={toasts}
+                onDismiss={dismissToast}
+                onSelect={selectToastChannel}
+            />
         </div>
     );
 };

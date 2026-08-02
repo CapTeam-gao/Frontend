@@ -37,7 +37,7 @@ const saveSelectedChannelId = (channelId) => {
     );
 };
 
-const useAdminChatRoom = () => {
+const useAdminChatRoom = (routeRoomId) => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [selectedChannel, setSelectedChannel] = useState(null);
@@ -61,6 +61,7 @@ const useAdminChatRoom = () => {
                 );
 
                 const nextRoom =
+                    findRoomById(normalizedRooms, routeRoomId) ??
                     findRoomById(normalizedRooms, storedRoomId) ??
                     normalizedRooms[0] ??
                     null;
@@ -82,7 +83,7 @@ const useAdminChatRoom = () => {
         };
 
         getRooms();
-    }, []);
+    }, [routeRoomId]);
 
     const updateSelectedRoom = (room) => {
         const firstChannel = room.channels?.[0] ?? null;

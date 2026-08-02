@@ -7,14 +7,11 @@ const MemberItem = ({ member, online }) => {
                 online ? styles.onlineMember : styles.offlineMember
             }`}
         >
-            <span className={styles.memberAvatar}>
-                {member.name?.slice(0, 1)}
-                <span
-                    className={`${styles.statusDot} ${
-                        online ? styles.online : ""
-                    }`}
-                />
-            </span>
+            <span
+                className={`${styles.statusDot} ${
+                    online ? styles.online : ""
+                }`}
+            />
             <span className={styles.memberName}>{member.name}</span>
         </li>
     );

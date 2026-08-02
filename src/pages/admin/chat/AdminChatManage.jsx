@@ -1,3 +1,4 @@
+import { Link, useParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import ChatInput from "../../../components/common/chat/ChatInput";
 import ChatMessageList from "../../../components/common/chat/ChatMessageList";
@@ -20,17 +21,16 @@ import { CHAT_UNREAD_CHANGE_EVENT } from "../../../utils/chat";
 const AdminChatManage = () => {
     const user = authStore((state) => state.user);
     const currentUserId = user?.userId;
+    const { roomId } = useParams();
 
     const {
-        rooms,
         selectedRoom,
         selectedChannel,
         isLoading,
         error,
-        updateSelectedRoom,
         updateSelectedChannel,
         handleChannelEvent,
-    } = useAdminChatRoom();
+    } = useAdminChatRoom(roomId);
 
     const {
         messages,
@@ -192,15 +192,6 @@ const AdminChatManage = () => {
         clearChannelUnreadCount(channel.id);
     };
 
-    const handleSelectRoom = (room) => {
-        if (String(selectedRoom?.id) === String(room?.id)) {
-            return;
-        }
-
-        clearMessages();
-        updateSelectedRoom(room);
-    };
-
     const finalError = error || messageError || socketError;
 
     const showEmptyChannel =
@@ -218,6 +209,7 @@ const AdminChatManage = () => {
         selectedChannel &&
         messages.length > 0;
 
+    const memberCount = members.length;
     const isChatInputDisabled = !selectedChannel || !isSocketConnected;
     const chatInputPlaceholder = !selectedChannel
         ? "채널을 선택하면 메시지를 보낼 수 있습니다"
@@ -230,30 +222,11 @@ const AdminChatManage = () => {
             <Header />
 
             <main className={styles.panel}>
-                <aside className={styles.roomSidebar}>
-                    <div className={styles.roomHeader}>
-                        <h1>채팅 관리</h1>
-                        <p>팀별 채팅방 확인 및 메세지 작성</p>
-                    </div>
-
-                    <div className={styles.roomList}>
-                        {rooms.map((room) => (
-                            <button
-                                key={room.id}
-                                type="button"
-                                className={`${styles.roomButton} ${
-                                    selectedRoom?.id === room.id
-                                        ? styles.selectedRoom
-                                        : ""
-                                }`}
-                                onClick={() => handleSelectRoom(room)}
-                            >
-                                <strong>{room.teamName}</strong>
-                                <span>{room.channels?.length ?? 0}개 채널</span>
-                            </button>
-                        ))}
-                    </div>
-                </aside>
+                <div className={styles.backBar}>
+                    <Link to="/admin/chat" className={styles.backLink}>
+                        ← 채팅 목록으로
+                    </Link>
+                </div>
 
                 <section className={styles.chatLayout}>
                     <ChatSidebar
@@ -269,6 +242,17 @@ const AdminChatManage = () => {
                     />
 
                     <section className={styles.chatContent}>
+                        {selectedChannel && (
+                            <div className={styles.chatHeader}>
+                                <div className={styles.chatHeaderTitle}>
+                                    {selectedChannel.channelName}
+                                </div>
+                                <div className={styles.chatHeaderMeta}>
+                                    {memberCount}명 참여 중
+                                </div>
+                            </div>
+                        )}
+
                         {finalError && (
                             <p className={styles.errorText}>{finalError}</p>
                         )}
