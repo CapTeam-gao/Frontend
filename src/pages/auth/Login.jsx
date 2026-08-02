@@ -7,11 +7,6 @@ import authStore from "../../store/authStore";
 import { isAdminRole } from "../../utils/accountRole";
 import { isSurveyCompleted } from "../../utils/survey";
 
-const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
-const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
-const getPasswordNoticeShownKey = (userId) =>
-    `capteam-password-change-notice-shown:${userId}`;
-
 const Login = () => {
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
@@ -63,17 +58,6 @@ const Login = () => {
             }
 
             saveLogin(user, token);
-            const passwordNoticeShownKey =
-                getPasswordNoticeShownKey(trimmedUserId);
-
-            if (!localStorage.getItem(passwordNoticeShownKey)) {
-                const noticeSessionId = `${trimmedUserId}-${Date.now()}`;
-                sessionStorage.setItem(
-                    PASSWORD_CHANGE_NOTICE_KEY,
-                    noticeSessionId
-                );
-                sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_SEEN_KEY);
-            }
 
             if (isAdminRole(user.accountRole)) {
                 navigate("/admin/dashboard", { replace: true });
@@ -104,11 +88,11 @@ const Login = () => {
                     className={styles.logo}
                     src="/logo-login.webp"
                     alt="CapTeam 로고"
-                    width="150"
-                    height="150"
+                    width="64"
+                    height="64"
                     fetchPriority="high"
-                />{" "}
-                <p className={styles.title}>로그인</p>
+                />
+                <h1 className={styles.title}>로그인</h1>
                 <p className={styles.subtitle}>
                     서비스를 이용하려면 로그인하세요
                 </p>

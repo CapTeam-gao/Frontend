@@ -1,272 +1,207 @@
 .page {
     min-height: 100vh;
-    background-color: #ffffff;
+    background-color: var(--color-bg);
 }
 
 .body {
-    min-height: calc(100vh - var(--header-height));
-    padding: 24px 24px 40px;
-    background-color: #ffffff;
-}
-
-.profileCard {
-    width: min(100%, 1180px);
+    max-width: 900px;
     margin: 0 auto;
+    padding: 40px clamp(20px, 3vw, 40px) 64px;
 }
 
-.profileHeader {
-    display: grid;
-    grid-template-columns: 84px minmax(0, 1fr) 190px;
-    align-items: center;
-    gap: 28px;
+.pageHead {
     padding-bottom: 24px;
     border-bottom: 1px solid var(--color-border);
 }
 
-.avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    background-color: var(--color-primary);
-}
-
-.avatar span {
-    position: relative;
-    display: block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    transform: translateY(-14px);
-}
-
-.avatar span::after {
-    position: absolute;
-    content: "";
-    left: 50%;
-    bottom: -40px;
-    width: 46px;
-    height: 26px;
-    border-radius: 50% 50% 42% 42%;
-    background-color: #ffffff;
-    transform: translateX(-50%);
-}
-
-.profileText {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.roleBadge {
-    width: fit-content;
-    padding: 5px 9px;
-    border: 1px solid var(--color-primary);
-    border-radius: 4px;
-    color: var(--color-primary-dark);
+.roleEyebrow {
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
-.profileText h1 {
-    margin: 0;
-    color: #111827;
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.25;
+.pageTitle {
+    margin: 6px 0 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
 }
 
-.profileText p {
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
+.pageSub {
+    margin: 4px 0 0;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
 }
 
-.infoPanel {
-    width: min(100%, 760px);
-    margin-top: 24px;
-    padding-bottom: 22px;
+.statusSection {
+    margin-top: 32px;
+    padding-bottom: 28px;
     border-bottom: 1px solid var(--color-border);
 }
 
-.panelTitle {
+.statusTitle {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.statusRow {
+    margin-top: 16px;
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+}
+
+.statusItem {
+    flex: 1;
+    min-width: 120px;
+}
+
+.statusLabel {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+}
+
+.statusValue {
+    margin-top: 6px;
+    font-size: var(--font-size-2xl-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.statusValueWarn {
+    color: var(--color-danger);
+}
+
+.statusLink {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
+}
+
+.statusLink:hover {
+    text-decoration: underline;
+}
+
+.passwordSection {
+    margin-top: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.passwordHead {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 18px;
 }
 
-.panelTitle h2 {
-    margin: 0;
-    color: #111827;
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
+.passwordTitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
 }
 
-.textButton {
-    height: 36px;
-    padding: 0 14px;
-    border: 1px solid var(--color-primary);
-    border-radius: 4px;
-    background-color: #ffffff;
-    color: var(--color-primary-dark);
+.textBtn {
+    padding: 0;
+    border: none;
+    background: none;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
-.textButton:hover {
-    background-color: var(--color-primary);
-    color: #ffffff;
+.textBtn:hover:not(:disabled) {
+    text-decoration: underline;
 }
 
-.textButton:disabled {
-    border-color: var(--color-border);
+.textBtn:disabled {
     color: var(--color-text-muted);
     cursor: not-allowed;
 }
 
-.textButton:disabled:hover {
-    background-color: #ffffff;
+.passwordPreview {
+    margin-top: 16px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
 }
 
-.passwordPreview {
-    width: 100%;
-}
-
-.passwordPreview div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    min-height: 52px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.passwordPreview p {
-    margin: 0;
-    color: #111827;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-medium);
-}
-
 .passwordPreview strong {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-medium);
+    margin-left: 8px;
     letter-spacing: 2px;
+    color: var(--color-text-primary);
 }
 
 .passwordForm {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
     gap: 16px;
+    max-width: 420px;
 }
 
 .passwordForm label {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    color: var(--color-text-secondary);
+    display: block;
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
 }
 
 .passwordForm input {
+    margin-top: 6px;
     width: 100%;
-    height: 48px;
+    padding: 10px 12px;
     border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 0 12px;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
     color: var(--color-text-primary);
-    font-size: var(--font-size-sm);
+    outline: none;
 }
 
 .passwordForm input:focus {
     border-color: var(--color-primary);
 }
 
-.errorText,
-.successText {
-    margin: 14px 0 0;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-}
-
-.errorText {
-    color: var(--color-danger);
-}
-
-.successText {
-    color: var(--color-primary-dark);
-}
-
-.logoutButton {
-    display: block;
-    margin-top: 22px;
-    margin-left: auto;
-    border: none;
-    background: none;
-    color: var(--color-danger);
-    font-size: var(--font-size-xl);
+.formMsg {
+    margin-top: 12px;
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
 }
 
-.logoutButton:hover {
-    color: #dc2626;
+.formMsg.error {
+    color: var(--color-danger);
 }
 
-.characterImage {
-    display: block;
-    width: 190px;
-    max-width: 100%;
-    justify-self: end;
+.formMsg.success {
+    color: var(--color-primary-dark);
 }
 
-@media (max-width: 768px) {
-    .body {
-        padding: 24px 16px 40px;
+.logoutRow {
+    margin-top: 28px;
+    text-align: right;
+}
+
+.logoutBtn {
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-danger);
+}
+
+.logoutBtn:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    .statusRow {
+        gap: 24px;
     }
 
-    .passwordForm {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    .profileHeader {
-        grid-template-columns: 58px minmax(0, 1fr);
-        gap: 14px;
-        padding-bottom: 20px;
-    }
-
-    .avatar {
-        width: 58px;
-        height: 58px;
-    }
-
-    .avatar span {
-        width: 15px;
-        height: 15px;
-        transform: translateY(-9px);
-    }
-
-    .avatar span::after {
-        bottom: -28px;
-        width: 32px;
-        height: 18px;
-    }
-
-    .characterImage {
-        display: none;
-    }
-
-    .infoPanel {
-        width: 100%;
+    .statusItem {
+        min-width: 45%;
     }
 }
