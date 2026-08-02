@@ -248,6 +248,7 @@
     color: var(--color-text-secondary);
     font-size: var(--font-size-md);
     line-height: 1.5;
+    font-weight: var(--font-weight-semibold);
 }
 
 .deleteError {

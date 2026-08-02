@@ -379,6 +379,7 @@
     display: flex;
     justify-content: center;
     font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
 }
 
 @media (max-width: 768px) {

@@ -136,7 +136,7 @@
 .memberRow {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    row-gap: 4px;
 }
 
 .memberChip {
@@ -144,10 +144,14 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 6px;
-    padding: 8px 10px;
-    border-radius: var(--border-radius-sm);
-    background-color: #f8faf9;
+    padding: 8px 14px 8px 0;
+    border-right: 1px solid var(--color-border);
     color: var(--color-text-primary);
+}
+
+.memberChip:last-child {
+    border-right: none;
+    padding-right: 0;
 }
 
 .memberName {
@@ -158,11 +162,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 3px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: #fff7cc;
-    color: #8a6a00;
-    font-size: 12px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
 }
 
