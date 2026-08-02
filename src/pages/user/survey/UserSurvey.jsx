@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
+import { requestStudentSearch } from "../../../api/studentApi";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
 import {
@@ -101,11 +102,12 @@ const UserSurvey = () => {
             ? storedDraft.experiences
             : defaultExperiences
     );
-    const [preferredMembers, setPreferredMembers] = useState(() =>
-        storedDraft?.preferredMembers?.length
-            ? storedDraft.preferredMembers
-            : [""]
+    const [preferredTeammates, setPreferredTeammates] = useState(
+        () => storedDraft?.preferredTeammates ?? []
     );
+    const [preferredKeyword, setPreferredKeyword] = useState("");
+    const [preferredResults, setPreferredResults] = useState([]);
+    const [isSearchingPreferred, setIsSearchingPreferred] = useState(false);
     const [leaderPreference, setLeaderPreference] = useState(
         () => storedDraft?.leaderPreference ?? ""
     );
@@ -144,7 +146,7 @@ const UserSurvey = () => {
             selectedRole,
             stackText,
             experiences,
-            preferredMembers,
+            preferredTeammates,
             leaderPreference,
             answers,
         };
@@ -157,7 +159,7 @@ const UserSurvey = () => {
         selectedRole,
         stackText,
         experiences,
-        preferredMembers,
+        preferredTeammates,
         leaderPreference,
         answers,
         user?.userId,
@@ -266,25 +268,60 @@ const UserSurvey = () => {
         );
     };
 
-    const updatePreferredMember = (index, value) => {
-        setPreferredMembers((prevMembers) =>
-            prevMembers.map((member, memberIndex) =>
-                memberIndex === index ? value : member
-            )
+    const selectPreferredTeammate = (student) => {
+        if (preferredTeammates.length >= 3) return;
+        if (preferredTeammates.some((m) => m.userId === student.userId)) return;
+
+        setPreferredTeammates((prevMembers) => [...prevMembers, student]);
+        setPreferredKeyword("");
+        setPreferredResults([]);
+    };
+
+    const removePreferredTeammate = (userId) => {
+        setPreferredTeammates((prevMembers) =>
+            prevMembers.filter((member) => member.userId !== userId)
         );
     };
 
-    const addPreferredMember = () => {
-        if (preferredMembers.length >= 3) return;
+    useEffect(() => {
+        const keyword = preferredKeyword.trim();
 
-        setPreferredMembers((prevMembers) => [...prevMembers, ""]);
-    };
+        if (!keyword || preferredTeammates.length >= 3) {
+            setPreferredResults([]);
+            return undefined;
+        }
 
-    const removePreferredMember = (index) => {
-        setPreferredMembers((prevMembers) =>
-            prevMembers.filter((_, memberIndex) => memberIndex !== index)
-        );
-    };
+        let ignore = false;
+        const timeoutId = window.setTimeout(async () => {
+            try {
+                setIsSearchingPreferred(true);
+
+                const results = await requestStudentSearch(keyword);
+                const selectedIds = new Set(
+                    preferredTeammates.map((member) => member.userId)
+                );
+
+                if (!ignore) {
+                    setPreferredResults(
+                        (results ?? []).filter(
+                            (student) =>
+                                student.userId !== user?.userId &&
+                                !selectedIds.has(student.userId)
+                        )
+                    );
+                }
+            } catch {
+                if (!ignore) setPreferredResults([]);
+            } finally {
+                if (!ignore) setIsSearchingPreferred(false);
+            }
+        }, 300);
+
+        return () => {
+            ignore = true;
+            window.clearTimeout(timeoutId);
+        };
+    }, [preferredKeyword, preferredTeammates, user?.userId]);
 
     const updateAnswer = (questionId, score) => {
         const isFirstAnswer = !answers[questionId];
@@ -305,9 +342,9 @@ const UserSurvey = () => {
         const cleanExperiences = experiences
             .map((experience) => experience.value.trim())
             .filter(Boolean);
-        const cleanPreferredMembers = preferredMembers
-            .map((member) => member.trim())
-            .filter(Boolean);
+        const cleanPreferredMembers = preferredTeammates.map(
+            (member) => member.userId
+        );
 
         if (!selectedRole) {
             setError("희망 직군을 선택해주세요.");
@@ -609,52 +646,118 @@ const UserSurvey = () => {
                                 <div className={styles.sectionTitleArea}>
                                     <h3>선호 팀원</h3>
                                     <p>
-                                        함께 팀을 하고 싶은 학생을 최대 3명까지
-                                        작성할 수 있습니다.
+                                        함께 팀을 하고 싶은 학생을 검색해서
+                                        최대 3명까지 선택할 수 있습니다.
                                     </p>
                                 </div>
 
-                                <div className={styles.memberList}>
-                                    {preferredMembers.map((member, index) => (
-                                        <div
-                                            key={`member-${index}`}
-                                            className={styles.memberRow}
-                                        >
-                                            <input
-                                                type="text"
-                                                value={member}
-                                                placeholder="예: stu2313 허재원"
-                                                onChange={(e) =>
-                                                    updatePreferredMember(
-                                                        index,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            {preferredMembers.length > 1 && (
+                                {preferredTeammates.length > 0 && (
+                                    <div className={styles.preferredChipList}>
+                                        {preferredTeammates.map((member) => (
+                                            <span
+                                                key={member.userId}
+                                                className={styles.preferredChip}
+                                            >
+                                                {member.name}
                                                 <button
                                                     type="button"
+                                                    aria-label={`${member.name} 선택 해제`}
                                                     onClick={() =>
-                                                        removePreferredMember(
-                                                            index
+                                                        removePreferredTeammate(
+                                                            member.userId
                                                         )
                                                     }
                                                 >
-                                                    삭제
+                                                    ×
                                                 </button>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
 
-                                <button
-                                    type="button"
-                                    className={styles.addButton}
-                                    onClick={addPreferredMember}
-                                    disabled={preferredMembers.length >= 3}
-                                >
-                                    선호 팀원 추가
-                                </button>
+                                {preferredTeammates.length < 3 && (
+                                    <div
+                                        className={styles.preferredSearchArea}
+                                    >
+                                        <input
+                                            type="text"
+                                            className={styles.preferredSearchInput}
+                                            value={preferredKeyword}
+                                            placeholder="이름 또는 학번으로 검색"
+                                            onChange={(e) =>
+                                                setPreferredKeyword(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+
+                                        {preferredKeyword.trim() && (
+                                            <ul
+                                                className={
+                                                    styles.preferredResultList
+                                                }
+                                            >
+                                                {isSearchingPreferred && (
+                                                    <li
+                                                        className={
+                                                            styles.preferredResultEmpty
+                                                        }
+                                                    >
+                                                        검색하는 중입니다.
+                                                    </li>
+                                                )}
+
+                                                {!isSearchingPreferred &&
+                                                    preferredResults.length ===
+                                                        0 && (
+                                                        <li
+                                                            className={
+                                                                styles.preferredResultEmpty
+                                                            }
+                                                        >
+                                                            검색 결과가
+                                                            없습니다.
+                                                        </li>
+                                                    )}
+
+                                                {preferredResults.map(
+                                                    (student) => (
+                                                        <li
+                                                            key={
+                                                                student.userId
+                                                            }
+                                                        >
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    selectPreferredTeammate(
+                                                                        student
+                                                                    )
+                                                                }
+                                                            >
+                                                                <strong>
+                                                                    {
+                                                                        student.name
+                                                                    }
+                                                                </strong>
+                                                                <span>
+                                                                    {student.grade
+                                                                        ? `${student.grade}학년 `
+                                                                        : ""}
+                                                                    {student.classNumber
+                                                                        ? `${student.classNumber}반 `
+                                                                        : ""}
+                                                                    {student.number ??
+                                                                        ""}
+                                                                </span>
+                                                            </button>
+                                                        </li>
+                                                    )
+                                                )}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div
@@ -712,7 +815,6 @@ const UserSurvey = () => {
                                         }}
                                         number={index + 1}
                                         question={question.question}
-                                        categoryLabel={question.categoryLabel}
                                         value={answers[question.id]}
                                         onChange={(score) =>
                                             updateAnswer(question.id, score)
@@ -745,7 +847,6 @@ const UserSurvey = () => {
                                         }}
                                         number={index + 16}
                                         question={question.question}
-                                        categoryLabel={question.categoryLabel}
                                         value={answers[question.id]}
                                         onChange={(score) =>
                                             updateAnswer(question.id, score)

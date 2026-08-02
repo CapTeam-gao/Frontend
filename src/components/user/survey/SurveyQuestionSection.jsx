@@ -27,7 +27,6 @@ const SurveyQuestionSection = ({
                             key={question.id}
                             number={questionNumber}
                             question={question.question}
-                            categoryLabel={question.categoryLabel}
                             value={answers[question.id]}
                             onChange={(score) =>
                                 onChangeAnswer(question.id, score)

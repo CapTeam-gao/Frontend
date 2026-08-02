@@ -1,5 +1,13 @@
 import api from "./api";
 
+export const requestStudentSearch = async (keyword) => {
+    const response = await api.get("/api/students/search", {
+        params: { keyword },
+    });
+
+    return response.data?.data ?? [];
+};
+
 export const requestAdminStudentList = async () => {
     const response = await api.get("/api/admin/students");
 

@@ -60,8 +60,8 @@
 
 .title {
     margin-top: 14px;
-    color: #000000;
-    font-size: 42px;
+    color: var(--color-text-primary);
+    font-size: 36px;
     font-weight: var(--font-weight-bold);
     line-height: 1.25;
 }
@@ -103,8 +103,8 @@
 
 .infoCard h2 {
     margin-top: 16px;
-    color: #000000;
-    font-size: var(--font-size-2xl);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl-sm);
     font-weight: var(--font-weight-bold);
     line-height: 1.35;
 }
@@ -125,9 +125,8 @@
     max-width: 760px;
     margin: 42px auto 0;
     padding: 18px 24px;
-    border: 1px solid #d7f0e6;
     border-radius: var(--border-radius-md);
-    background-color: #f7fcfa;
+    background-color: var(--color-primary-bg);
     text-align: left;
 }
 
@@ -145,7 +144,7 @@
 }
 
 .timeInfo span {
-    color: var(--color-warning);
+    color: var(--color-primary-dark);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
 }

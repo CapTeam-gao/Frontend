@@ -15,19 +15,8 @@
     line-height: 1.5;
 }
 
-.questionCategory {
-    width: fit-content;
-    margin-top: 12px;
-    padding: 6px 12px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-}
-
 .scaleArea {
-    margin-top: 14px;
+    margin-top: 20px;
 }
 
 .scaleLabels {
