@@ -5,7 +5,11 @@ const AdminTeamProjectPanel = ({ projectWritten, team, mainFeatures }) => {
         <section className={styles.projectPanel}>
             <div className={styles.sectionHeader}>
                 <span>프로젝트 정보</span>
-                <strong>{projectWritten ? "작성 완료" : "작성 전"}</strong>
+                <strong
+                    className={projectWritten ? styles.done : styles.pending}
+                >
+                    {projectWritten ? "작성 완료" : "작성 전"}
+                </strong>
             </div>
 
             <article className={styles.projectHero}>

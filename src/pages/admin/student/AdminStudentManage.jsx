@@ -147,45 +147,47 @@ const AdminStudentManage = () => {
             <Header />
 
             <main className={styles.body}>
-                <section className={styles.pageHeader}>
-                    <div>
-                        <h1>학생 관리</h1>
-                    </div>
-                    <span className={styles.resultCount}>
-                        {!isLoading && `${filteredStudents.length}명 표시 중`}
-                    </span>
-                </section>
+                <div className={styles.pageHeader}>
+                    <h1>학생 관리</h1>
+                    <p>학생별 설문 결과와 성향 분석을 확인할 수 있습니다.</p>
+                </div>
 
-                <section className={styles.summaryGrid}>
+                <section className={styles.summaryRow}>
                     {summaryFilters.map((filter) => (
                         <button
                             key={filter.key}
                             type="button"
-                            className={`${styles.summaryCard} ${
+                            className={`${styles.summaryItem} ${
                                 activeSummaryFilter === filter.key
                                     ? styles.active
                                     : ""
                             }`}
                             onClick={() => setActiveSummaryFilter(filter.key)}
                         >
-                            <span>{filter.label}</span>
-                            <strong>
+                            <span className={styles.summaryLabel}>
+                                {filter.label}
+                            </span>
+                            <strong
+                                className={`${styles.summaryValue} ${
+                                    filter.key === "surveyPending"
+                                        ? styles.danger
+                                        : ""
+                                }`}
+                            >
                                 {!isLoading && summaryCounts[filter.key]}
                             </strong>
                         </button>
                     ))}
                 </section>
 
-                <section className={styles.controlPanel}>
-                    <label className={styles.searchBox}>
-                        <span>검색</span>
-                        <input
-                            type="text"
-                            value={searchKeyword}
-                            placeholder="이름, 학번, 희망 직군 검색"
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                        />
-                    </label>
+                <section className={styles.controlRow}>
+                    <input
+                        type="text"
+                        className={styles.search}
+                        value={searchKeyword}
+                        placeholder="이름, 학번, 희망 직군 검색"
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
                 </section>
 
                 {error && <p className={styles.errorText}>{error}</p>}

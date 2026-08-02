@@ -9,22 +9,15 @@
     background-color: rgba(15, 23, 42, 0.46);
     overflow: hidden;
     overscroll-behavior: contain;
-    -ms-overflow-style: none;
-}
-::-webkit-scrollbar {
-    display: none;
 }
 
 .modal {
     position: relative;
-    width: min(100%, 1180px);
-    max-height: calc(100vh - 56px);
+    width: min(100%, 1080px);
+    max-height: calc(100vh - 48px);
     overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: 46px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
+    padding: 40px 44px;
+    border-radius: 14px;
     background-color: #ffffff;
 }
 
@@ -35,114 +28,80 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border: 1px solid var(--color-border);
     border-radius: 50%;
     background-color: #ffffff;
     color: var(--color-text-secondary);
     font-family: var(--font-family);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
 }
 
 .closeButton:hover {
-    border-color: #344054;
-    background-color: #344054;
-    color: #ffffff;
+    border-color: var(--color-text-primary);
+    color: var(--color-text-primary);
 }
 
 .modalHeader {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 28px;
-    padding-right: 20px;
-    padding-bottom: 15px;
+    gap: 24px;
+    padding-bottom: 18px;
     border-bottom: 1px solid var(--color-border);
 }
 
-.teamTitleGroup {
+.teamTitleRow {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
-    min-width: 0;
+    flex-wrap: wrap;
 }
 
-.teamTitleGroup h2 {
-    color: #000000;
-    font-size: 36px;
+.teamTitleRow h2 {
+    margin: 0;
+    font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
-    line-height: 1.1;
+    color: var(--color-text-primary);
 }
-.teamTitleGroup p {
-    font-size: var(--font-size-md);
+
+.teamGrade {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.roleSummary {
+    margin: 8px 0 0;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
 }
 
-.teamTitleGroup span,
-.roleBadgeList span,
-.roleBadge,
-.leaderBadge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-}
-
-.teamTitleGroup span {
-    min-height: 36px;
-    padding: 0 14px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
-}
-
-.roleBadgeList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 8px;
-    max-width: 480px;
-}
-
-.roleBadgeList span {
-    min-height: 32px;
-    padding: 0 12px;
-    border-radius: var(--border-radius-sm);
-    background-color: #f4f8f6;
-    color: var(--color-primary-dark);
+.modalHint {
+    max-width: 280px;
+    margin: 0;
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    text-align: right;
+    line-height: 1.5;
 }
 
 .modalContent {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: start;
-    gap: 28px;
-    padding-top: 34px;
+    gap: 32px;
+    padding-top: 26px;
 }
 
 .projectPanel,
 .insightPanel,
 .memberPanel {
-    border-radius: var(--border-radius-sm);
     background-color: #ffffff;
-}
-
-.projectPanel,
-.insightPanel {
-    padding: 0;
-    background-color: #ffffff;
-}
-
-.projectPanel,
-.memberPanel {
-    min-height: 420px;
 }
 
 .projectPanel {
@@ -151,6 +110,9 @@
 
 .insightPanel {
     grid-column: 1 / -1;
+    margin-top: 10px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-border);
 }
 
 .sectionHeader {
@@ -158,67 +120,67 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    min-height: 36px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .sectionHeader span {
-    color: #000000;
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
 }
 
 .sectionHeader strong {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primary-dark);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
-    white-space: nowrap;
+}
+
+.sectionHeader strong.done {
+    color: var(--color-primary-dark);
+}
+
+.sectionHeader strong.pending {
+    color: var(--color-text-muted);
 }
 
 .projectHero {
-    padding: 20px 22px;
-    border-left: 4px solid var(--color-primary);
-    border-radius: var(--border-radius-sm);
-    background-color: #fbfcfc;
+    padding-left: 14px;
+    border-left: 3px solid var(--color-primary);
 }
 
 .projectHero span {
     display: block;
-    margin-bottom: 8px;
-    color: var(--color-primary-dark);
+    margin-bottom: 6px;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
 .projectHero h3 {
-    color: #000000;
-    font-size: var(--font-size-xl);
+    margin: 0;
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
     line-height: 1.45;
 }
 
 .infoCard {
-    margin-top: 18px;
-    padding: 18px 22px;
-    border-radius: var(--border-radius-sm);
-    background-color: #fbfcfc;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
 }
 
 .infoCard h4 {
-    margin-bottom: 12px;
-    color: #000000;
-    font-size: var(--font-size-md);
+    margin: 0 0 10px;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
 }
 
 .infoCard p,
 .featureList li {
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     line-height: 1.7;
     white-space: pre-line;
 }
@@ -227,94 +189,93 @@
 .memberList {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
+.featureList {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
 .featureList li {
     position: relative;
-    padding-left: 18px;
+    margin-top: 8px;
+    padding-left: 16px;
 }
 
 .featureList li::before {
     position: absolute;
-    top: 11px;
+    top: 9px;
     left: 0;
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background-color: var(--color-primary);
     content: "";
 }
 
-.featureList {
-    max-height: 160px;
-    overflow-y: auto;
-    padding-right: 6px;
-}
-
 .insightGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: 28px;
 }
 
 .insightCard {
-    min-height: 88px;
-    padding: 10px 22px;
-    border-radius: var(--border-radius-sm);
-    background-color: #fbfcfc;
-}
-
-.insightCard strong {
-    display: inline-flex;
-    align-items: center;
-    min-height: 26px;
-    margin-bottom: 12px;
-    color: #000000;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
+    padding-left: 14px;
 }
 
 .insightCard:first-child {
-    border-left: 4px solid #58c79b;
+    border-left: 3px solid var(--color-primary);
 }
 
 .insightCard:last-child {
-    border-left: 4px solid #ff7878;
+    border-left: 3px solid var(--color-danger);
+}
+
+.insightCard strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.insightCard:first-child strong {
+    color: var(--color-primary-dark);
+}
+
+.insightCard:last-child strong {
+    color: var(--color-danger);
 }
 
 .insightCard p {
+    margin: 0;
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     line-height: 1.7;
 }
 
 .memberPanel {
-    padding: 0;
-    border: 1px solid var(--color-border);
-    border: none;
     align-self: stretch;
 }
 
 .memberList {
-    max-height: 440px;
+    max-height: 460px;
     overflow-y: auto;
     padding-right: 6px;
 }
 
 .modalMember {
-    padding: 0 0 18px;
+    padding: 24px 0;
     border-bottom: 1px solid var(--color-border);
-    border-radius: 0;
-    background-color: #ffffff;
 }
 
-.modalMember + .modalMember {
-    padding-top: 18px;
+.modalMember:first-child {
+    padding-top: 0;
 }
 
 .modalMember:last-child {
@@ -326,12 +287,12 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 14px;
+    gap: 16px;
 }
 
 .memberNameArea {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     flex-wrap: wrap;
     gap: 8px;
     min-width: 0;
@@ -341,10 +302,10 @@
     padding: 0;
     border: none;
     background: none;
-    color: #000000;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
-    font-family: var(--font-family);
     line-height: 1.25;
     text-align: left;
     cursor: pointer;
@@ -357,42 +318,27 @@
 }
 
 .leaderBadge {
-    min-height: 24px;
-    padding: 0 8px;
-    border-radius: 6px;
-    background-color: #fff2a8;
-    color: #9b7a00;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
 .roleBadge {
     flex-shrink: 0;
-    min-height: 28px;
-    padding: 0 10px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
 .memberSkills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    margin-top: 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
 }
 
-.memberSkills span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 26px;
-    padding: 0 10px;
-    border-radius: var(--border-radius-sm);
-    background-color: #f4f6f7;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-xs);
+.memberSkills b {
+    color: var(--color-primary-dark);
     font-weight: var(--font-weight-bold);
 }
 
@@ -400,7 +346,7 @@
 .modalError {
     padding: 80px 0;
     color: var(--color-text-secondary);
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     text-align: center;
 }
@@ -415,26 +361,17 @@
         flex-direction: column;
     }
 
-    .roleBadgeList {
-        justify-content: flex-start;
+    .modalHint {
         max-width: none;
+        text-align: left;
     }
 
     .modalContent {
         grid-template-columns: 1fr;
     }
 
-    .insightPanel {
+    .projectPanel {
         grid-column: auto;
-    }
-
-    .projectPanel,
-    .memberPanel {
-        min-height: auto;
-    }
-
-    .memberPanel {
-        align-self: stretch;
     }
 }
 
@@ -444,30 +381,11 @@
     }
 
     .modal {
-        padding: 30px 20px;
+        padding: 28px 20px;
     }
 
-    .modalHeader {
-        padding-right: 44px;
-    }
-
-    .teamTitleGroup {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .teamTitleGroup h2 {
-        font-size: 34px;
-    }
-
-    .projectPanel,
-    .insightPanel,
-    .memberPanel {
-        padding: 0;
-    }
-
-    .memberTop {
-        flex-direction: column;
+    .teamTitleRow h2 {
+        font-size: var(--font-size-2xl);
     }
 
     .insightGrid {

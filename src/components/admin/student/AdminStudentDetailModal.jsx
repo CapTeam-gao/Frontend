@@ -295,15 +295,11 @@ const AdminStudentDetailModal = ({
                                     <h3>기술 스택 · 구현 경험</h3>
                                 </div>
 
-                                <div className={styles.stackList}>
-                                    {(student.skill || []).length > 0 ? (
-                                        student.skill.map((stack) => (
-                                            <span key={stack}>{stack}</span>
-                                        ))
-                                    ) : (
-                                        <span>기술 스택 없음</span>
-                                    )}
-                                </div>
+                                <p className={styles.stackList}>
+                                    {(student.skill || []).length > 0
+                                        ? student.skill.join(" · ")
+                                        : "기술 스택 없음"}
+                                </p>
 
                                 <ul className={styles.timelineList}>
                                     {(student.experience || []).length > 0 ? (
@@ -377,23 +373,19 @@ const AdminStudentDetailModal = ({
                             <section className={styles.compactSection}>
                                 <h3>선호 팀원</h3>
 
-                                <div className={styles.stackList}>
-                                    {(student.preferredTeammates || []).length >
-                                    0 ? (
-                                        student.preferredTeammates.map(
-                                            (member) => (
-                                                <span key={member}>
-                                                    {formatPreferredMember(
-                                                        member,
-                                                        students
-                                                    )}
-                                                </span>
-                                            )
-                                        )
-                                    ) : (
-                                        <span>없음</span>
-                                    )}
-                                </div>
+                                <p className={styles.stackList}>
+                                    {(student.preferredTeammates || [])
+                                        .length > 0
+                                        ? student.preferredTeammates
+                                              .map((member) =>
+                                                  formatPreferredMember(
+                                                      member,
+                                                      students
+                                                  )
+                                              )
+                                              .join(" · ")
+                                        : "없음"}
+                                </p>
                             </section>
 
                             <section className={styles.analysisSection}>

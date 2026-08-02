@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { gradeLabels } from "../../../constants/team";
 import { parseMainFeatures } from "../../../utils/projectPlan";
 import {
+    getRoleSummary,
     hasProjectInfo,
     getTeamDisplayName,
 } from "../../../utils/teamRecommendation";
@@ -49,18 +50,20 @@ const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
                     <>
                         <header className={styles.modalHeader}>
                             <div>
-                                <div className={styles.teamTitleGroup}>
+                                <div className={styles.teamTitleRow}>
                                     <h2>{displayTeamName}</h2>
-                                    <span>
+                                    <span className={styles.teamGrade}>
                                         {gradeLabels[team.grade] || team.grade}
                                     </span>
-                                    <p>
-                                        스크롤하여 더 많은 학생과 주요 기능
-                                        확인이 가능하며 학생 클릭 시 상세 조회가
-                                        가능합니다.
-                                    </p>
                                 </div>
+                                <p className={styles.roleSummary}>
+                                    {getRoleSummary(members)}
+                                </p>
                             </div>
+                            <p className={styles.modalHint}>
+                                스크롤하여 더 많은 정보를 확인할 수 있으며,
+                                학생 이름을 클릭하면 상세 조회로 이동합니다.
+                            </p>
                         </header>
 
                         <div className={styles.modalContent}>

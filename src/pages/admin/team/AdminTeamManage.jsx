@@ -7,7 +7,6 @@ import {
     requestAdminTeamDetail,
     requestAdminTeamList,
 } from "../../../api/teamApi";
-import TeamIcon from "../../../assets/icons/team.svg";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import styles from "./AdminTeamManage.module.css";
 
@@ -113,59 +112,63 @@ const AdminTeamManage = () => {
             <Header />
 
             <main className={styles.body}>
-                <section className={styles.summaryArea}>
+                <div className={styles.pageHeader}>
+                    <h1>팀 관리</h1>
+                    <p>팀별 프로젝트 정보와 팀원 구성을 확인할 수 있습니다.</p>
+                </div>
+
+                <section className={styles.summaryRow}>
                     <button
                         type="button"
-                        className={`${styles.summaryCard} ${
+                        className={`${styles.summaryItem} ${
                             selectedGrade === "all" ? styles.active : ""
                         }`}
                         onClick={() => setSelectedGrade("all")}
                         aria-pressed={selectedGrade === "all"}
                     >
-                        <div>
-                            <p>전체 팀</p>
-                            <strong>{!isLoading && counts.total}</strong>
-                        </div>
-                        <span className={styles.summaryIcon}>
-                            <img src={TeamIcon} alt="" />
-                        </span>
+                        <span className={styles.summaryLabel}>전체 팀</span>
+                        <strong className={styles.summaryValue}>
+                            {!isLoading && counts.total}
+                        </strong>
                     </button>
 
                     <button
                         type="button"
-                        className={`${styles.summaryCard} ${
+                        className={`${styles.summaryItem} ${
                             selectedGrade === "GRADE_2" ? styles.active : ""
                         }`}
                         onClick={() => setSelectedGrade("GRADE_2")}
                         aria-pressed={selectedGrade === "GRADE_2"}
                     >
-                        <p>2학년 팀</p>
-                        <strong>{!isLoading && counts.grade2}</strong>
+                        <span className={styles.summaryLabel}>2학년 팀</span>
+                        <strong className={styles.summaryValue}>
+                            {!isLoading && counts.grade2}
+                        </strong>
                     </button>
 
                     <button
                         type="button"
-                        className={`${styles.summaryCard} ${
+                        className={`${styles.summaryItem} ${
                             selectedGrade === "GRADE_3" ? styles.active : ""
                         }`}
                         onClick={() => setSelectedGrade("GRADE_3")}
                         aria-pressed={selectedGrade === "GRADE_3"}
                     >
-                        <p>3학년 팀</p>
-                        <strong>{!isLoading && counts.grade3}</strong>
+                        <span className={styles.summaryLabel}>3학년 팀</span>
+                        <strong className={styles.summaryValue}>
+                            {!isLoading && counts.grade3}
+                        </strong>
                     </button>
                 </section>
 
-                <section className={styles.controlArea}>
-                    <label className={styles.searchBox}>
-                        <input
-                            type="text"
-                            value={searchText}
-                            placeholder="팀명 또는 학생 이름을 검색하세요..."
-                            onChange={(e) => setSearchText(e.target.value)}
-                        />
-                        <span>⌕</span>
-                    </label>
+                <section className={styles.controlRow}>
+                    <input
+                        type="text"
+                        className={styles.search}
+                        value={searchText}
+                        placeholder="팀명 또는 학생 이름을 검색하세요"
+                        onChange={(e) => setSearchText(e.target.value)}
+                    />
                 </section>
 
                 {error && <p className={styles.errorText}>{error}</p>}

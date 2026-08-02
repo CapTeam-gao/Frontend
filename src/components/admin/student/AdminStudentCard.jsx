@@ -1,49 +1,70 @@
+import { roleLabels } from "../../../constants/student";
 import { getStudentNumberInfo } from "../../../utils/student";
 import styles from "./AdminStudentCard.module.css";
 
 const AdminStudentCard = ({ student, onClick }) => {
     const numberInfo = getStudentNumberInfo(student.userId);
-    const teamDisplayName = student.projectTeamName || student.teamName || "미배정";
+
+    if (!student.surveyCompleted) {
+        return (
+            <button
+                type="button"
+                className={`${styles.studentCard} ${styles.pending}`}
+                onClick={onClick}
+            >
+                <div className={styles.titleRow}>
+                    <span className={styles.studentName}>
+                        {student.name}
+                    </span>
+                    <span className={styles.studentClass}>
+                        {numberInfo.classText}
+                    </span>
+                </div>
+                <p className={`${styles.studentStatus} ${styles.pending}`}>
+                    설문 미완료
+                </p>
+            </button>
+        );
+    }
+
+    const teamDisplayName =
+        student.projectTeamName || student.teamName || "미배정";
+    const roleSummary = `${teamDisplayName} · ${
+        roleLabels[student.studentRole] || student.studentRole
+    }`;
     const visibleSkills = Array.isArray(student.skill)
         ? student.skill.slice(0, 4)
         : [];
 
     return (
-        <button type="button" className={styles.studentCard} onClick={onClick}>
-            <div className={styles.cardHeader}>
-                <div>
-                    <strong>{student.name}</strong>
-                    <p>{numberInfo.classText}</p>
-                </div>
-                <span
-                    className={
-                        student.surveyCompleted
-                            ? styles.doneBadge
-                            : styles.pendingBadge
-                    }
-                >
-                    {student.surveyCompleted ? "설문 완료" : "설문 미완료"}
+        <button
+            type="button"
+            className={`${styles.studentCard} ${styles.done}`}
+            onClick={onClick}
+        >
+            <div className={styles.titleRow}>
+                <span className={styles.studentName}>{student.name}</span>
+                <span className={styles.studentClass}>
+                    {numberInfo.classText}
                 </span>
             </div>
 
-            <div className={styles.cardMeta}>
-                <span>소속 팀</span>
-                <strong>{teamDisplayName}</strong>
-            </div>
+            <p className={styles.roleSummary}>{roleSummary}</p>
 
-            <div className={styles.cardSkillList}>
+            <div className={styles.cardBody}>
                 {visibleSkills.length > 0 ? (
-                    visibleSkills.map((skill) => <span key={skill}>{skill}</span>)
+                    <div className={styles.skillRow}>
+                        <span>기술 스택</span>
+                        <strong>{visibleSkills.join(" · ")}</strong>
+                    </div>
                 ) : (
-                    <span>기술 정보 없음</span>
+                    <p className={styles.emptyText}>
+                        기술 스택 정보가 없습니다.
+                    </p>
                 )}
             </div>
 
-            <p className={styles.cardHint}>
-                {student.surveyCompleted
-                    ? "클릭하여 상세 정보 확인"
-                    : "설문이 미완료입니다"}
-            </p>
+            <p className={styles.cardFooter}>클릭하여 상세 확인</p>
         </button>
     );
 };

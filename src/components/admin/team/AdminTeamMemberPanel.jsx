@@ -35,12 +35,9 @@ const AdminTeamMemberPanel = ({ members, onMemberClick }) => {
 
                         {member.skill?.length > 0 && (
                             <div className={styles.memberSkills}>
-                                {member.skill.slice(0, 2).map((skill) => (
-                                    <span key={skill}>{skill}</span>
-                                ))}
-                                {member.skill.length > 2 && (
-                                    <span>+{member.skill.length - 2}</span>
-                                )}
+                                {member.skill.slice(0, 3).join(" · ")}
+                                {member.skill.length > 3 &&
+                                    ` · +${member.skill.length - 3}`}
                             </div>
                         )}
                     </article>

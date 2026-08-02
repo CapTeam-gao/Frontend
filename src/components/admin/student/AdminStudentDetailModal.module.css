@@ -12,11 +12,11 @@
 }
 
 .modal {
-    width: min(1180px, 100%);
+    width: min(1080px, 100%);
     max-height: calc(100vh - 48px);
     overflow-y: auto;
     padding: 0;
-    border-radius: var(--border-radius-md);
+    border-radius: 14px;
     background-color: #ffffff;
 }
 
@@ -28,45 +28,45 @@
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    padding: 28px 34px 18px;
-    border-bottom: 1px solid #eef1f3;
+    padding: 32px 40px 20px;
+    border-bottom: 1px solid var(--color-border);
     background-color: #ffffff;
 }
 
 .meta {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
     min-width: 0;
+    flex-wrap: wrap;
 }
 
 .meta p {
-    color: var(--color-text-secondary);
+    margin: 0;
+    color: var(--color-text-muted);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
 }
 
 .meta h2 {
-    color: #000000;
+    margin: 0;
+    color: var(--color-text-primary);
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     white-space: nowrap;
 }
 
 .meta > span {
-    padding: 5px 14px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary);
-    color: #ffffff;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
 }
 
 .closeButton {
     width: 36px;
     height: 36px;
     border: 0;
-    border-radius: var(--border-radius-sm);
+    border-radius: 8px;
     background-color: transparent;
     color: var(--color-text-secondary);
     font-family: var(--font-family);
@@ -76,14 +76,14 @@
 
 .closeButton:hover {
     background-color: #f2f4f7;
-    color: #111827;
+    color: var(--color-text-primary);
 }
 
 .modalContent {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 24px;
-    padding: 0 34px 34px;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 32px;
+    padding: 0 40px 40px;
 }
 
 .infoColumn {
@@ -93,7 +93,7 @@
 .profileStrip div {
     min-width: 0;
     padding: 0 18px;
-    border-right: 1px solid #eef1f3;
+    border-right: 1px solid var(--color-border);
 }
 
 .profileStrip div:first-child {
@@ -107,14 +107,14 @@
 .profileStrip span {
     display: block;
     margin-bottom: 8px;
-    color: var(--color-text-secondary);
+    color: var(--color-text-muted);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
 }
 
 .profileStrip strong,
 .teamLinkButton {
-    color: #111827;
+    color: var(--color-text-primary);
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
@@ -141,27 +141,15 @@
 .sectionHeader h3,
 .compactSection h3,
 .analysisSection h3 {
-    color: #000000;
+    color: var(--color-text-primary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
 }
 
 .stackList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.stackList span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 30px;
-    padding: 0 12px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-primary-dark);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
 }
 
 .timelineList {
@@ -186,14 +174,15 @@
     position: absolute;
     top: 10px;
     left: 0;
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background-color: var(--color-primary);
     content: "";
 }
 
 .analysisSection p {
+    margin: 0;
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
@@ -202,7 +191,7 @@
 
 .chartCard h3,
 .reliabilityHeader h3 {
-    color: #000000;
+    color: var(--color-text-primary);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
 }
@@ -216,37 +205,20 @@
 }
 
 .reliabilityBadge {
-    min-width: 48px;
-    height: 28px;
-    padding: 0 10px;
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
 }
 
 .reliabilityHIGH {
-    background-color: var(--color-primary-bg);
-    display: flex;
     color: var(--color-primary-dark);
-    justify-content: center;
-    align-items: center;
 }
 
 .reliabilityMEDIUM {
-    background-color: #fff4cc;
-    display: flex;
-    color: #9a6a00;
-    justify-content: center;
-    align-items: center;
+    color: var(--color-text-muted);
 }
 
 .reliabilityLOW {
-    background-color: #ffe5e5;
-    display: flex;
-
     color: var(--color-danger);
-    justify-content: center;
-    align-items: center;
 }
 
 .reliabilityCount {
@@ -269,7 +241,7 @@
     display: flex;
     align-items: center;
     min-height: 72px;
-    color: var(--color-text-secondary);
+    color: var(--color-text-muted);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
 }
@@ -277,22 +249,20 @@
 .errorText {
     width: fit-content;
     margin: 18px auto 0;
-    padding: 10px 14px;
-    border-radius: var(--border-radius-sm);
+    padding: 0;
     color: var(--color-danger);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
 }
 
 .emptySurveyMessage {
-    margin: 28px 34px 34px;
+    margin: 28px 40px 40px;
     padding: 56px 28px;
-    border-radius: var(--border-radius-md);
     text-align: center;
 }
 
 .emptySurveyMessage strong {
-    color: #000000;
+    color: var(--color-text-primary);
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
 }
@@ -311,70 +281,66 @@
     gap: 0;
     min-height: 88px;
     padding: 22px 0;
-    border-bottom: 1px solid #eef1f3;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .trackSection,
 .compactSection,
 .analysisSection {
-    padding: 28px 0;
-    border-bottom: 1px solid #eef1f3;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .trackSection {
-    min-height: 280px;
+    min-height: 260px;
 }
 
 .chartColumn {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 24px;
     min-width: 0;
+    margin-top: 20px;
 }
 
 .chartCard,
 .reliabilityCard {
-    padding: 16px;
-    padding-top: 20px;
-    background-color: #ffffff;
+    padding: 0;
 }
 
 .chartBox {
     width: 100%;
-    height: 205px;
+    height: 200px;
     pointer-events: none;
 }
 
 .emptyChartText {
     justify-content: center;
-    height: 205px;
+    height: 200px;
 }
+
 .memberList {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 6px 16px;
 }
 
 .memberButton {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    align-items: baseline;
+    gap: 6px;
     min-width: 0;
-    min-height: 42px;
-    padding: 10px 12px;
-    border: 1px solid #e4e7ec;
-    border-radius: var(--border-radius-sm);
-    background-color: #ffffff;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background-color: transparent;
     color: var(--color-text-primary);
     font-family: var(--font-family);
     text-align: left;
-    transition: border-color var(--transition),
-        background-color var(--transition), color var(--transition);
+    transition: color var(--transition);
 }
 
 .memberButton:hover {
-    border-color: var(--color-primary);
-    background-color: #f8faf9;
     color: var(--color-primary-dark);
 }
 
@@ -389,18 +355,15 @@
 
 .memberButton span {
     flex-shrink: 0;
-    color: var(--color-text-secondary);
+    color: var(--color-text-muted);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
 }
 
 .memberButton em {
     flex-shrink: 0;
-    padding: 3px 7px;
-    border-radius: var(--border-radius-sm);
-    background-color: #fff7cc;
-    color: #8a6a00;
-    font-size: 11px;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
     font-style: normal;
     font-weight: var(--font-weight-bold);
 }
