@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env
 .env.local
+.env.*
+
+# AI coding assistant instructions (internal, not for public repo)
+AGENTS.md
