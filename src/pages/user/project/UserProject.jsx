@@ -67,6 +67,15 @@ const UserProject = () => {
         }));
     };
 
+    const removeCoreFeature = (id) => {
+        setProjectPlan((prevPlan) => ({
+            ...prevPlan,
+            coreFeatures: prevPlan.coreFeatures.filter(
+                (feature) => feature.id !== id
+            ),
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -110,6 +119,7 @@ const UserProject = () => {
                         onFieldChange={updateField}
                         onAddFeature={addCoreFeature}
                         onFeatureChange={updateCoreFeature}
+                        onRemoveFeature={removeCoreFeature}
                     />
                 </section>
             </main>

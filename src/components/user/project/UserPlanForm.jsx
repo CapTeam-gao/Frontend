@@ -11,6 +11,7 @@ const UserPlanForm = ({
     onFieldChange,
     onAddFeature,
     onFeatureChange,
+    onRemoveFeature,
 }) => {
     const showLoading = useDelayedLoading(isLoading);
 
@@ -19,6 +20,16 @@ const UserPlanForm = ({
             {showLoading && (
                 <p className={styles.loadingText}>
                     기획서를 불러오는 중입니다...
+                </p>
+            )}
+
+            {hasSavedPlan && (
+                <p className={styles.savedNote}>
+                    <strong>저장된 기획서가 있습니다</strong>
+                    <span>
+                        내용을 수정한 뒤 "수정 저장"을 누르면 최신 내용으로
+                        반영됩니다.
+                    </span>
                 </p>
             )}
 
@@ -87,15 +98,28 @@ const UserPlanForm = ({
                 </div>
 
                 <div className={styles.featureList}>
-                    {projectPlan.coreFeatures.map((feature) => (
-                        <input
-                            key={feature.id}
-                            value={feature.value}
-                            placeholder="예: 팀 생성 기능 - 학년을 선택하면 분석된 학생 정보를 기반으로 추천 팀이 생성됩니다."
-                            onChange={(e) =>
-                                onFeatureChange(feature.id, e.target.value)
-                            }
-                        />
+                    {projectPlan.coreFeatures.map((feature, index) => (
+                        <div key={feature.id} className={styles.featureRow}>
+                            <span className={styles.featureIndex}>
+                                {String(index + 1).padStart(2, "0")}
+                            </span>
+                            <input
+                                value={feature.value}
+                                placeholder="예: 팀 생성 기능 - 학년을 선택하면 분석된 학생 정보를 기반으로 추천 팀이 생성됩니다."
+                                onChange={(e) =>
+                                    onFeatureChange(feature.id, e.target.value)
+                                }
+                            />
+                            {projectPlan.coreFeatures.length > 1 && (
+                                <button
+                                    type="button"
+                                    className={styles.removeFeature}
+                                    onClick={() => onRemoveFeature(feature.id)}
+                                >
+                                    삭제
+                                </button>
+                            )}
+                        </div>
                     ))}
                 </div>
 

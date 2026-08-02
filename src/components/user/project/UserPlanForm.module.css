@@ -1,38 +1,49 @@
 .formCard {
     width: 100%;
-    max-width: 900px;
-    margin: 24px auto 0;
-    padding: 48px;
-    border: 1px solid #d9e7df;
-    border-radius: var(--border-radius-md);
-    background-color: #ffffff;
+}
+
+.savedNote {
+    margin: 0 0 32px;
+    padding-left: 16px;
+    border-left: 3px solid var(--color-primary);
+}
+
+.savedNote strong {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
+}
+
+.savedNote span {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-semibold);
 }
 
 .formSectionHeader {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--color-border);
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.formSectionHeader:first-of-type {
+    margin-top: 0;
 }
 
 .formSectionHeader span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 30px;
-    padding: 0 10px;
-    border-radius: 999px;
-    background-color: var(--color-primary-bg);
-    color: var(--color-primary-dark);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    letter-spacing: 0.03em;
 }
 
 .formSectionHeader h2 {
     margin: 0;
-    color: #000000;
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
 }
@@ -61,7 +72,7 @@
 .field textarea {
     width: 100%;
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     background-color: #ffffff;
     color: var(--color-text-primary);
     font-family: var(--font-family);
@@ -102,14 +113,9 @@
 }
 
 .addFeatureButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    padding: 0 16px;
-    border: 1px solid var(--color-primary);
-    border-radius: var(--border-radius-sm);
-    background-color: #ffffff;
+    padding: 0;
+    border: none;
+    background: none;
     color: var(--color-primary-dark);
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
@@ -117,19 +123,47 @@
 }
 
 .addFeatureButton:hover {
-    border-color: var(--color-primary-dark);
-    background-color: var(--color-primary-dark);
-    color: #ffffff;
+    text-decoration: underline;
 }
 
 .featureList {
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    border: 1px solid #e3efe8;
-    border-radius: var(--border-radius-sm);
-    background-color: #fbfffd;
+    gap: 10px;
+}
+
+.featureRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.featureIndex {
+    flex-shrink: 0;
+    width: 22px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.featureRow input {
+    flex: 1;
+}
+
+.removeFeature {
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+}
+
+.removeFeature:hover {
+    color: var(--color-danger-dark);
 }
 
 .errorMessage {
@@ -148,18 +182,14 @@
 }
 
 .submitButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    height: 52px;
-    margin: 20px auto 0;
-    border: 1px solid var(--color-primary);
-    border-radius: var(--border-radius-sm);
+    margin-top: 36px;
+    padding: 15px 32px;
+    border: none;
+    border-radius: var(--border-radius-md);
     background-color: var(--color-primary);
     color: #ffffff;
     font-family: var(--font-family);
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
 }
 
@@ -174,20 +204,16 @@
 }
 
 @media (max-width: 640px) {
-    .formCard {
-        padding: 28px 20px;
-    }
-
     .fieldGrid {
         grid-template-columns: 1fr;
     }
 
     .featureHeader {
-        align-items: stretch;
+        align-items: flex-start;
         flex-direction: column;
+        gap: 8px;
     }
 
-    .addFeatureButton,
     .submitButton {
         width: 100%;
     }
