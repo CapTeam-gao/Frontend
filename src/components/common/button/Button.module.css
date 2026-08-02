@@ -51,8 +51,8 @@
 }
 
 .danger:hover:not(:disabled) {
-    border-color: #dc2626;
-    background-color: #dc2626;
+    border-color: var(--color-danger-dark);
+    background-color: var(--color-danger-dark);
     color: #ffffff;
 }
 
@@ -60,18 +60,18 @@
     font-size: var(--font-size-lg);
     padding: 14px 24px;
     width: 100%;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 .medium {
     font-size: var(--font-size-md);
     padding: 10px 50px;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 .small {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     padding: 8px 16px;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }

@@ -14,11 +14,10 @@
     --color-bg-hover: #f1f8f5;
 
     --color-border: #d8d9dd;
-    --color-border-active: #4caf8a;
+    --color-bubble: #f1f3f5;
 
-    --color-success: #4caf8a;
     --color-danger: #ef4444;
-    --color-warning: #f59e0b;
+    --color-danger-dark: #dc2626;
 
     --font-family: "Inter", -apple-system, sans-serif;
 

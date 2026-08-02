@@ -18,13 +18,8 @@ import {
 import { isAdminRole } from "../../../utils/accountRole";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 
-const PASSWORD_CHANGE_NOTICE_KEY = "capteam-show-password-change-notice";
-const PASSWORD_CHANGE_NOTICE_SEEN_KEY = "capteam-show-password-change-notice-seen";
 const TEAM_STATUS_CACHE_TTL = 1000 * 60 * 5;
 const teamStatusCache = new Map();
-
-const getPasswordNoticeShownKey = (userId) =>
-    `capteam-password-change-notice-shown:${userId}`;
 
 const getTeamStatusCacheKey = (role, userId) => `${role}:${userId || ""}`;
 
@@ -69,7 +64,6 @@ const Header = () => {
     const [adminAllTeamCreated, setAdminAllTeamCreated] = useState(null);
     const [studentTeamCreated, setStudentTeamCreated] = useState(null);
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
-    const [showPasswordNotice, setShowPasswordNotice] = useState(false);
 
     const { hasUnreadChat } = useUnreadChatCount({
         enabled: hasUser,
@@ -188,36 +182,6 @@ const Header = () => {
             ignore = true;
         };
     }, [hasUser, isAdmin, teamStatusCacheKey]);
-
-    useEffect(() => {
-        if (!hasUser) return;
-
-        const pendingNoticeId = sessionStorage.getItem(
-            PASSWORD_CHANGE_NOTICE_KEY
-        );
-        const shownNoticeId = sessionStorage.getItem(
-            PASSWORD_CHANGE_NOTICE_SEEN_KEY
-        );
-        const shouldShowNotice =
-            Boolean(pendingNoticeId) && pendingNoticeId !== shownNoticeId;
-
-        if (shouldShowNotice) {
-            sessionStorage.setItem(
-                PASSWORD_CHANGE_NOTICE_SEEN_KEY,
-                pendingNoticeId
-            );
-            sessionStorage.removeItem(PASSWORD_CHANGE_NOTICE_KEY);
-            if (user?.userId) {
-                localStorage.setItem(
-                    getPasswordNoticeShownKey(user.userId),
-                    "true"
-                );
-            }
-            window.setTimeout(() => {
-                setShowPasswordNotice(true);
-            }, 0);
-        }
-    }, [hasUser, user?.userId]);
 
     const makeHeaderName = (user) => {
         if (!user) return "";
@@ -373,18 +337,6 @@ const Header = () => {
                 />
             )}
 
-            {showPasswordNotice && (
-                <TeamRequiredModal
-                    label="보안 안내"
-                    title="비밀번호를 변경해주세요"
-                    message="처음 발급받은 비밀번호를 계속 사용 중이라면 내 정보에서 새 비밀번호로 변경해주세요."
-                    actionText="변경하러 가기"
-                    onAction={() =>
-                        navigate(isAdmin ? "/admin/profile" : "/user/profile")
-                    }
-                    onClose={() => setShowPasswordNotice(false)}
-                />
-            )}
         </div>
     );
 };
