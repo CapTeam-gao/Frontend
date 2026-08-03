@@ -16,12 +16,50 @@ export const requestCreateTeamRecommendation = async (
 
 export const requestStartTeamMatchingJob = async (
     grade,
-    regenerationPrompt = ""
+    regenerationPrompt = "",
+    baseVersionId = null
 ) => {
     const response = await api.post("/api/admin/team-recommendations/matching/run", {
         grade,
         regenerationPrompt: regenerationPrompt.trim() || null,
+        baseVersionId: baseVersionId || null,
     });
+
+    return getResponseData(response);
+};
+
+export const requestTeamMatchingVersionDetail = async (versionId) => {
+    const response = await api.get(
+        `/api/admin/team-recommendations/versions/${versionId}`
+    );
+
+    return getResponseData(response);
+};
+
+export const requestTeamMatchingVersionDiff = async (
+    fromVersionId,
+    toVersionId
+) => {
+    const response = await api.get(
+        "/api/admin/team-recommendations/versions/diff",
+        { params: { fromVersionId, toVersionId } }
+    );
+
+    return getResponseData(response);
+};
+
+export const requestApplyTeamMatchingVersion = async (versionId) => {
+    const response = await api.post(
+        `/api/admin/team-recommendations/versions/${versionId}/apply`
+    );
+
+    return getResponseData(response);
+};
+
+export const requestDiscardTeamMatchingVersion = async (versionId) => {
+    const response = await api.post(
+        `/api/admin/team-recommendations/versions/${versionId}/discard`
+    );
 
     return getResponseData(response);
 };

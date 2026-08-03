@@ -4,16 +4,22 @@ import Header from "../../../components/common/header/Header";
 import TeamEditCard from "../../../components/admin/team/TeamEditCard";
 import {
     requestAcceptAllTeamRecommendations,
+    requestApplyTeamMatchingVersion,
+    requestDiscardTeamMatchingVersion,
     requestSwapTeamMembers,
     requestTeamMatchingJob,
+    requestTeamMatchingVersionDetail,
+    requestTeamMatchingVersionDiff,
     requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import styles from "./AdminTeamEdit.module.css";
 import {
+    getRoleSummary,
     normalizeRecommendations,
     swapMembersInTeams,
 } from "../../../utils/teamRecommendation";
+import { roleLabels } from "../../../constants/team";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
@@ -28,11 +34,20 @@ const AdminTeamEdit = () => {
     const location = useLocation();
     const grade = location.state?.grade || "GRADE_2";
     const streamingJobId = location.state?.jobId || null;
+    const baseVersionId = location.state?.baseVersionId || null;
     const [teams, setTeams] = useState([]);
     const [streamingJobStatus, setStreamingJobStatus] = useState(
         streamingJobId ? "RUNNING" : null
     );
     const isStreaming = Boolean(streamingJobId) && streamingJobStatus !== "SUCCEEDED";
+    const [baselineTeams, setBaselineTeams] = useState(null);
+    const [reviewPending, setReviewPending] = useState(false);
+    const [pendingVersionId, setPendingVersionId] = useState(null);
+    const [isChangesModalOpen, setIsChangesModalOpen] = useState(false);
+    const [compareTab, setCompareTab] = useState("before");
+    const [diffData, setDiffData] = useState(null);
+    const [isDiffLoading, setIsDiffLoading] = useState(false);
+    const isLocked = isStreaming || reviewPending;
     const [selectedMember, setSelectedMember] = useState(null);
     const [highlightedUserIds, setHighlightedUserIds] = useState([]);
     const [flippedTeamIds, setFlippedTeamIds] = useState([]);
@@ -43,6 +58,35 @@ const AdminTeamEdit = () => {
     const highlightTimerRef = useRef(null);
     const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
     const [regenerationPrompt, setRegenerationPrompt] = useState("");
+    const movedByUserId = useMemo(() => {
+        if (!diffData?.movedStudents) return {};
+
+        return diffData.movedStudents.reduce((acc, moved) => {
+            acc[moved.userId] = moved;
+            return acc;
+        }, {});
+    }, [diffData]);
+
+    const changedByTeam = useMemo(() => {
+        if (!diffData?.movedStudents) return [];
+
+        const groups = new Map();
+
+        diffData.movedStudents.forEach((moved) => {
+            if (!groups.has(moved.toTeamId)) {
+                groups.set(moved.toTeamId, {
+                    teamId: moved.toTeamId,
+                    teamName: moved.toTeamName,
+                    students: [],
+                });
+            }
+
+            groups.get(moved.toTeamId).students.push(moved);
+        });
+
+        return Array.from(groups.values());
+    }, [diffData]);
+
     const selectedMemberName = useMemo(() => {
         if (!selectedMember) return "";
 
@@ -88,6 +132,23 @@ const AdminTeamEdit = () => {
             try {
                 setError("");
 
+                if (baseVersionId) {
+                    try {
+                        const baseline = await requestTeamMatchingVersionDetail(
+                            baseVersionId
+                        );
+                        if (!ignore) {
+                            setBaselineTeams(
+                                Array.isArray(baseline)
+                                    ? normalizeRecommendations(baseline)
+                                    : []
+                            );
+                        }
+                    } catch {
+                        // ponytail: baseline 조회 실패해도 스트리밍은 계속 진행 — 이 경우 "변경사항" 비교만 못 하게 됨
+                    }
+                }
+
                 let currentJob = await requestTeamMatchingJob(streamingJobId);
 
                 while (
@@ -113,6 +174,23 @@ const AdminTeamEdit = () => {
                 setStreamingJobStatus(currentJob?.status);
 
                 if (currentJob?.status === "SUCCEEDED") {
+                    if (baseVersionId && currentJob?.versionId) {
+                        const finalTeams = await requestTeamMatchingVersionDetail(
+                            currentJob.versionId
+                        );
+                        if (!ignore) {
+                            setTeams(
+                                Array.isArray(finalTeams)
+                                    ? normalizeRecommendations(finalTeams)
+                                    : []
+                            );
+                            setPendingVersionId(currentJob.versionId);
+                            setReviewPending(true);
+                            setIsLoading(false);
+                        }
+                        return;
+                    }
+
                     await getRecommendations(grade);
                     return;
                 }
@@ -135,7 +213,7 @@ const AdminTeamEdit = () => {
         return () => {
             ignore = true;
         };
-    }, [streamingJobId, grade, getRecommendations]);
+    }, [streamingJobId, grade, getRecommendations, baseVersionId]);
 
     useEffect(() => {
         const preventUnload = (event) => {
@@ -235,12 +313,70 @@ const AdminTeamEdit = () => {
         setIsRegenerateModalOpen(true);
     };
     const handleRegenerateConfirm = () => {
+        const currentVersionId = teams[0]?.matchingVersionId || null;
+
         navigate("/admin/team-create/loading", {
             state: {
                 grade,
                 regenerationPrompt,
+                baseVersionId: currentVersionId,
             },
         });
+    };
+
+    const openChangesModal = async () => {
+        setIsChangesModalOpen(true);
+        setCompareTab("before");
+
+        if (!baseVersionId || !pendingVersionId) return;
+
+        try {
+            setIsDiffLoading(true);
+            const diff = await requestTeamMatchingVersionDiff(
+                baseVersionId,
+                pendingVersionId
+            );
+            setDiffData(diff);
+        } catch {
+            setDiffData(null);
+        } finally {
+            setIsDiffLoading(false);
+        }
+    };
+
+    const closeChangesModal = () => setIsChangesModalOpen(false);
+
+    const handleApplyChanges = async () => {
+        if (!pendingVersionId) return;
+
+        try {
+            await requestApplyTeamMatchingVersion(pendingVersionId);
+            setReviewPending(false);
+            setBaselineTeams(null);
+            setPendingVersionId(null);
+            setDiffData(null);
+            setIsChangesModalOpen(false);
+            setMessage("재생성 결과가 적용되었습니다.");
+        } catch {
+            setMessage("결과 적용에 실패했습니다.");
+        }
+    };
+
+    const handleDiscardChanges = async () => {
+        if (!pendingVersionId) return;
+
+        try {
+            await requestDiscardTeamMatchingVersion(pendingVersionId);
+            setTeams(baselineTeams || []);
+            setReviewPending(false);
+            setBaselineTeams(null);
+            setPendingVersionId(null);
+            setDiffData(null);
+            setIsChangesModalOpen(false);
+            setMessage("재생성을 취소했습니다. 기존 팀 배정이 유지됩니다.");
+        } catch {
+            setMessage("취소 처리에 실패했습니다.");
+        }
     };
     const handleApprove = async () => {
         try {
@@ -291,11 +427,26 @@ const AdminTeamEdit = () => {
                         </div>
 
                         <div className={styles.actionArea}>
+                            {reviewPending && (
+                                <button
+                                    type="button"
+                                    className={styles.changesButton}
+                                    onClick={openChangesModal}
+                                    disabled={isStreaming}
+                                >
+                                    변경사항
+                                    {diffData?.movedStudents?.length ? (
+                                        <span className={styles.changesCount}>
+                                            {diffData.movedStudents.length}
+                                        </span>
+                                    ) : null}
+                                </button>
+                            )}
                             <button
                                 type="button"
                                 className={styles.secondaryButton}
                                 onClick={handleRegenerate}
-                                disabled={isStreaming}
+                                disabled={isLocked}
                             >
                                 재생성
                             </button>
@@ -303,7 +454,7 @@ const AdminTeamEdit = () => {
                                 type="button"
                                 className={styles.primaryButton}
                                 onClick={handleApprove}
-                                disabled={isStreaming}
+                                disabled={isLocked}
                             >
                                 팀 구성 승인
                             </button>
@@ -315,6 +466,12 @@ const AdminTeamEdit = () => {
                             팀이 생성되는 대로 이 화면에 순서대로 나타납니다
                             (현재 {teams.length}팀 도착) — 완료되면 수정할 수
                             있습니다.
+                        </p>
+                    )}
+                    {reviewPending && !isStreaming && (
+                        <p className={styles.messageText}>
+                            재생성 결과 검토 대기 — 변경사항에서 확인 후 적용
+                            또는 취소
                         </p>
                     )}
                     {message && <p className={styles.messageText}>{message}</p>}
@@ -413,6 +570,269 @@ const AdminTeamEdit = () => {
                                 onClick={handleRegenerateConfirm}
                             >
                                 재생성 시작
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+            {isChangesModalOpen && (
+                <div className={styles.modalOverlay}>
+                    <section className={styles.changesModal}>
+                        <div className={styles.modalHeader}>
+                            <h2 className={styles.modalTitle}>
+                                재생성 전·후 비교
+                            </h2>
+                            <button
+                                type="button"
+                                className={styles.modalCloseButton}
+                                onClick={closeChangesModal}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div className={styles.compareTabs}>
+                            <button
+                                type="button"
+                                className={`${styles.compareTab} ${
+                                    compareTab === "before"
+                                        ? styles.compareTabActive
+                                        : ""
+                                }`}
+                                onClick={() => setCompareTab("before")}
+                            >
+                                이전 결과
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.compareTab} ${
+                                    compareTab === "after"
+                                        ? styles.compareTabActive
+                                        : ""
+                                }`}
+                                onClick={() => setCompareTab("after")}
+                            >
+                                재생성 결과
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.compareTab} ${
+                                    compareTab === "changed"
+                                        ? styles.compareTabActive
+                                        : ""
+                                }`}
+                                onClick={() => setCompareTab("changed")}
+                            >
+                                변경된 항목만 보기
+                                {diffData?.movedStudents?.length ? (
+                                    <span className={styles.compareTabCount}>
+                                        {diffData.movedStudents.length}명
+                                    </span>
+                                ) : null}
+                            </button>
+                        </div>
+
+                        <div className={styles.compareBody}>
+                            {isDiffLoading ? (
+                                <p className={styles.messageText}>
+                                    비교 결과를 불러오는 중입니다.
+                                </p>
+                            ) : compareTab === "changed" ? (
+                                changedByTeam.length === 0 ? (
+                                    <p className={styles.messageText}>
+                                        변경된 학생이 없습니다.
+                                    </p>
+                                ) : (
+                                    <div className={styles.compareGrid}>
+                                        {changedByTeam.map((group) => (
+                                            <article
+                                                key={group.teamId}
+                                                className={styles.diffCard}
+                                            >
+                                                <header
+                                                    className={
+                                                        styles.diffHeader
+                                                    }
+                                                >
+                                                    <h3>
+                                                        {group.teamName}로
+                                                        이동
+                                                    </h3>
+                                                    <div
+                                                        className={
+                                                            styles.roleLegend
+                                                        }
+                                                    >
+                                                        {group.students.length}
+                                                        명 이동
+                                                    </div>
+                                                </header>
+                                                <ul
+                                                    className={
+                                                        styles.diffMemberList
+                                                    }
+                                                >
+                                                    {group.students.map(
+                                                        (student) => (
+                                                            <li
+                                                                key={
+                                                                    student.userId
+                                                                }
+                                                                className={`${styles.diffMember} ${styles.diffMemberChanged}`}
+                                                            >
+                                                                <div>
+                                                                    <div
+                                                                        className={
+                                                                            styles.diffMemberName
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            student.name
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <span
+                                                                    className={
+                                                                        styles.diffMemberMoved
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        student.fromTeamName
+                                                                    }{" "}
+                                                                    →{" "}
+                                                                    {
+                                                                        student.toTeamName
+                                                                    }
+                                                                </span>
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </article>
+                                        ))}
+                                    </div>
+                                )
+                            ) : (
+                                <div className={styles.compareGrid}>
+                                    {(compareTab === "before"
+                                        ? baselineTeams || []
+                                        : teams
+                                    ).map((team, index) => (
+                                        <article
+                                            key={team.id}
+                                            className={styles.diffCard}
+                                        >
+                                            <header
+                                                className={styles.diffHeader}
+                                            >
+                                                <h3>{index + 1}팀</h3>
+                                                <div
+                                                    className={
+                                                        styles.roleLegend
+                                                    }
+                                                >
+                                                    {getRoleSummary(
+                                                        team.members
+                                                    )}
+                                                </div>
+                                            </header>
+                                            <ul
+                                                className={
+                                                    styles.diffMemberList
+                                                }
+                                            >
+                                                {team.members.map(
+                                                    (member) => {
+                                                        const moved =
+                                                            movedByUserId[
+                                                                member.userId
+                                                            ];
+
+                                                        return (
+                                                            <li
+                                                                key={
+                                                                    member.userId
+                                                                }
+                                                                className={`${
+                                                                    styles.diffMember
+                                                                } ${
+                                                                    moved
+                                                                        ? styles.diffMemberChanged
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                <div>
+                                                                    <div
+                                                                        className={
+                                                                            styles.diffMemberName
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            member.name
+                                                                        }
+                                                                        {member.recommendedLeader
+                                                                            ? " · 팀장"
+                                                                            : ""}
+                                                                    </div>
+                                                                    <div
+                                                                        className={
+                                                                            styles.diffMemberRole
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            roleLabels[
+                                                                                member
+                                                                                    .studentRole
+                                                                            ]
+                                                                        }{" "}
+                                                                        ·{" "}
+                                                                        {
+                                                                            member.skill
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                {moved &&
+                                                                compareTab ===
+                                                                    "after" ? (
+                                                                    <span
+                                                                        className={
+                                                                            styles.diffMemberMoved
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            moved.fromTeamName
+                                                                        }{" "}
+                                                                        →{" "}
+                                                                        {
+                                                                            moved.toTeamName
+                                                                        }
+                                                                    </span>
+                                                                ) : null}
+                                                            </li>
+                                                        );
+                                                    }
+                                                )}
+                                            </ul>
+                                        </article>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={styles.modalActionArea}>
+                            <button
+                                type="button"
+                                className={styles.modalCancelButton}
+                                onClick={handleDiscardChanges}
+                            >
+                                취소
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.modalConfirmButton}
+                                onClick={handleApplyChanges}
+                            >
+                                새 결과 적용
                             </button>
                         </div>
                     </section>

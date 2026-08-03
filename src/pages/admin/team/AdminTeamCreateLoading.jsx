@@ -123,6 +123,7 @@ const AdminTeamCreateLoading = () => {
     const storedMatchingJob = getActiveMatchingJobLock();
     const grade = location.state?.grade || storedMatchingJob?.grade; // 만약 state가 넘어왔다면 그레이드를 사용하지만 안 넘어오면 저장된 작업의 학년을 사용
     const regenerationPrompt = location.state?.regenerationPrompt || "";
+    const baseVersionId = location.state?.baseVersionId || null;
     const [error, setError] = useState("");
     const [jobStatus, setJobStatus] = useState(
         storedMatchingJob?.status || "QUEUED"
@@ -197,7 +198,8 @@ const AdminTeamCreateLoading = () => {
 
                     currentJob = await requestStartTeamMatchingJob(
                         grade,
-                        regenerationPrompt
+                        regenerationPrompt,
+                        baseVersionId
                     );
                 }
 
@@ -215,7 +217,7 @@ const AdminTeamCreateLoading = () => {
                     clearMatchingJobLock();
                     navigate("/admin/team-edit", {
                         replace: true,
-                        state: { grade, jobId: currentJob.jobId },
+                        state: { grade, jobId: currentJob.jobId, baseVersionId },
                     });
                     return;
                 }
@@ -239,7 +241,7 @@ const AdminTeamCreateLoading = () => {
                         clearMatchingJobLock();
                         navigate("/admin/team-edit", {
                             replace: true,
-                            state: { grade, jobId: currentJob.jobId },
+                            state: { grade, jobId: currentJob.jobId, baseVersionId },
                         });
                         return;
                     }
@@ -253,6 +255,8 @@ const AdminTeamCreateLoading = () => {
                         replace: true,
                         state: {
                             grade,
+                            jobId: currentJob.jobId,
+                            baseVersionId,
                         },
                     });
                     return;
@@ -277,7 +281,7 @@ const AdminTeamCreateLoading = () => {
         return () => {
             ignore = true;
         };
-    }, [grade, navigate, regenerationPrompt]);
+    }, [grade, navigate, regenerationPrompt, baseVersionId]);
 
     return (
         <div className={styles.page}>

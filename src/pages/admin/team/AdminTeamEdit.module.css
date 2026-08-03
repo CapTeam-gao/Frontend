@@ -99,6 +99,188 @@
     background-color: var(--color-primary-dark);
 }
 
+.changesButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 16px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.changesButton:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+}
+
+.changesButton:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.changesCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.changesModal {
+    width: 100%;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 32px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.compareTabs {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-shrink: 0;
+    margin-top: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.compareTab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 2px 12px;
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.compareTabActive {
+    color: #000000;
+}
+
+.compareTabActive::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--color-primary);
+}
+
+.compareTabCount {
+    margin-left: 6px;
+    color: var(--color-danger);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.compareBody {
+    flex: 1;
+    min-height: 0;
+    padding-top: 24px;
+    overflow-y: auto;
+}
+
+.compareGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+    align-items: start;
+}
+
+.diffCard {
+    padding-top: 2px;
+}
+
+.diffHeader {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+    min-height: 64px;
+}
+
+.diffHeader h3 {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.roleLegend {
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.diffMemberList {
+    display: flex;
+    flex-direction: column;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.diffMember {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.diffMember:last-child {
+    border-bottom: none;
+}
+
+.diffMemberChanged {
+    padding-left: 12px;
+    border-left: 3px solid var(--color-primary);
+    border-bottom-color: transparent;
+}
+
+.diffMemberName {
+    color: #000000;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.diffMemberRole {
+    margin-top: 2px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.diffMemberMoved {
+    flex-shrink: 0;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+}
+
 .messageText {
     width: fit-content;
     margin: 18px 0 0;
@@ -277,7 +459,8 @@
     background-color: var(--color-primary-dark);
 }
 @media (max-width: 1024px) {
-    .teamGrid {
+    .teamGrid,
+    .compareGrid {
         grid-template-columns: 1fr;
     }
 }
