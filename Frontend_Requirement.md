@@ -9,7 +9,7 @@
 ## 완료된 것
 
 - 설문 문항 역량 태그 제거
-- 선호 팀원 검색·선택 UI (`UserSurvey.jsx`) — API 존재 여부만 미확인
+- 선호 팀원 검색·선택 UI (`UserSurvey.jsx`) — 단, 실제로는 잘못된 경로 호출 버그로 작동 안 함(0순위 참고)
 - 팀 생성 배치 스트리밍(로딩 → 첫 팀 도착 시 조기 전환) — API 필드 존재 여부만 미확인
 - **팀 재생성 → 버전 기반 전·후 비교**(재생성도 같은 로딩 화면 재사용, "변경사항" 모달로 검토 후 적용/취소) — API·엔티티 전부 미확인
 - **팀 구성 방식 선택(AI 자동 / 직접 구성)** — `AdminTeamCreate.jsx`에 모드 선택 UI, `AdminTeamManualCreate.jsx`(직접 구성 화면, 역할 검색·5명 정원 제한 포함) 실제 페이지, `requestCreateManualTeams` API 연동까지 전부 이전 세션에 이미 완료됨(`FrontendResult.md` 18번). Design 목업 단계가 아니라 실구현 상태 — 이 문서 이전 버전에 "미착수"로 잘못 적혀 있었음, 정정.
@@ -25,6 +25,9 @@
 
 ## 남은 작업 순서
 
+### 0순위 — 지금 당장 고쳐야 하는 버그 (백엔드 무관, 프론트만 고치면 끝)
+1. **선호 팀원 검색이 항상 실패함(8/3 발견)** — `studentApi.js`의 `requestStudentSearch`가 `/api/students/search`를 호출하는데, 실제 백엔드(`UserController`)는 `/api/user/students/search`에 있음(이 코드베이스는 로그인 사용자 자기 서비스 API를 `/api/user/...`로 그룹핑하는 관례를 이미 쓰고 있고, `surveyApi.js`/`authApi.js`는 이 관례를 맞게 따르고 있는데 `studentApi.js`만 어긋남). 경로를 고치는 김에 응답 필드도 실제로는 `{ userId, name, grade, studentRole }`(=`classNumber`/`number` 없음, `User` 엔티티에 해당 필드 자체가 없음)이므로 `UserSurvey.jsx`가 렌더링하는 `student.classNumber`/`student.number`도 같이 정리해야 함. Notion·`Frontend.md`는 이미 정정 완료.
+
 ### 1순위 — 지금 만든 기능 검증 (백엔드 무관, 바로 가능)
 - [ ] 로그인해서 팀 재생성 전체 흐름(재생성 → 로딩 → 팀 에딧 복귀 → 변경사항 모달 → 적용/취소) 브라우저 실사용 검증
 - [ ] 이번 세션에서 손댄 화면 전체 브라우저 검증(대부분 `npm run build`/`eslint`만 통과한 상태)
@@ -32,8 +35,8 @@
 ### 2순위 — 백엔드 확인 필요, 확인되는 즉시 마무리 가능 (거의 다 됨)
 1. **팀 재생성 버전 API** — `TeamMatchingVersion` 엔티티, `versions/{id}`, `versions/diff`, `versions/{id}/apply`, `versions/{id}/discard`, `MatchingJob`의 `origin`/`baseVersionId`/`versionId` 필드. 프론트는 이미 이 스펙대로 `AdminTeamEdit.jsx`/`AdminTeamCreateLoading.jsx`/`teamApi.js`에 연결까지 끝냄 — 필드만 내려오면 그대로 동작.
 2. **팀 생성 배치 스트리밍** — `totalBatches`/`completedBatches`/`partialTeams`. 위와 마찬가지로 프론트 구현은 끝, 확인만 남음.
-3. **`GET /api/students/search?keyword=`** — 선호 팀원 검색, 역할 라벨 매칭 포함. 없으면 검색이 항상 빈 결과.
-4. **대시보드 `MOCK_*` → 실제 API 교체** — `requestMyTeam`/`requestUserProjectPlan`/`requestNoticeList`/`requestAdminStudentList`/`requestAdminLogList`는 이미 존재 확인됨(연결만 하면 됨). 채팅 미리보기(`recentChatMessages`)만 대응 API가 아예 없어서 백엔드에 신규 필드 요청 필요.
+3. **대시보드 `MOCK_*` → 실제 API 교체** — `requestMyTeam`/`requestUserProjectPlan`/`requestNoticeList`/`requestAdminStudentList`/`requestAdminLogList`는 이미 존재 확인됨(연결만 하면 됨). 채팅 미리보기(`recentChatMessages`)만 대응 API가 아예 없어서 백엔드에 신규 필드 요청 필요.
+4. **`POST /api/admin/teams/manual` 백엔드 미구현 확인(8/3)** — `AdminTeamController`(`/api/admin/teams`)를 직접 읽어보니 `/manual` 매핑이 아예 없음. `AdminTeamManualCreate.jsx`의 "직접 구성 완료" 버튼을 누르면 지금은 404가 날 것으로 보임(프론트 코드 자체는 api.md 스펙대로 맞게 구현돼 있음 — 백엔드 쪽만 없는 상태). 실제로 눌러서 재현 확인 필요.
 
 ### 3순위 — 아직 프론트 실구현도 안 한 것
 Notion P0 항목은 위 완료 목록으로 전부 끝났음(설문 태그 제거·선호 팀원 검색·버전 저장·재생성 비교·팀 구성 방식 선택 5개 다 완료). 여기서부터는 P1→P2 순서.

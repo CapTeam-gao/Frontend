@@ -1,7 +1,7 @@
 import api from "./api";
 
 export const requestStudentSearch = async (keyword) => {
-    const response = await api.get("/api/students/search", {
+    const response = await api.get("/api/user/students/search", {
         params: { keyword },
     });
 

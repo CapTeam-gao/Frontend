@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
 import { requestStudentSearch } from "../../../api/studentApi";
+import { gradeLabels, roleLabels } from "../../../constants/team";
 import authStore from "../../../store/authStore";
 import styles from "./UserSurvey.module.css";
 import {
@@ -742,13 +743,11 @@ const UserSurvey = () => {
                                                                 </strong>
                                                                 <span>
                                                                     {student.grade
-                                                                        ? `${student.grade}학년 `
+                                                                        ? `${gradeLabels[student.grade] ?? student.grade} `
                                                                         : ""}
-                                                                    {student.classNumber
-                                                                        ? `${student.classNumber}반 `
-                                                                        : ""}
-                                                                    {student.number ??
-                                                                        ""}
+                                                                    {roleLabels[
+                                                                        student.studentRole
+                                                                    ] ?? ""}
                                                                 </span>
                                                             </button>
                                                         </li>
