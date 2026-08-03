@@ -15,6 +15,7 @@
 - **팀 구성 방식 선택(AI 자동 / 직접 구성)** — `AdminTeamCreate.jsx`에 모드 선택 UI, `AdminTeamManualCreate.jsx`(직접 구성 화면, 역할 검색·5명 정원 제한 포함) 실제 페이지, `requestCreateManualTeams` API 연동까지 전부 이전 세션에 이미 완료됨(`FrontendResult.md` 18번). Design 목업 단계가 아니라 실구현 상태 — 이 문서 이전 버전에 "미착수"로 잘못 적혀 있었음, 정정.
 - 관리자 대시보드 미응답 알림 버튼 제거(기능 자체가 계획에서 제외됨)
 - 전체 서비스 디자인 스윕(배경색 배지 제거, 폰트 굵기, border-radius 등)
+- **FCM 공통 인프라 뼈대(8/3)** — `src/firebase/firebaseConfig.js`/`messaging.js`(토큰 발급·포그라운드 수신), `public/firebase-messaging-sw.js`(백그라운드 알림), `src/api/notificationApi.js`(토큰 등록/해제), `src/hooks/useFcmNotifications.js`(로그인 시 등록·로그아웃 시 해제, 포그라운드 알림 토스트) + `NotificationToast` 컴포넌트, `App.jsx`에 연결. `notificationType`(`JOURNAL_DEADLINE`/`CHAT_MESSAGE`/`NOTICE_CREATED`) 전부 제네릭하게 처리하므로 캡스톤 일지 마감 알림·공지 알림은 프론트 쪽 추가 작업 없이 이 인프라만으로 끝남. **실제 Firebase 프로젝트 설정값이 아직 없어서(`VITE_FIREBASE_*`, VAPID key) 지금은 아무 것도 등록되지 않는 안전한 no-op 상태** — 값이 채워지면 바로 동작.
 
 ## 계획에서 제외된 것
 
@@ -38,14 +39,17 @@
 3. **대시보드 `MOCK_*` → 실제 API 교체** — `requestMyTeam`/`requestUserProjectPlan`/`requestNoticeList`/`requestAdminStudentList`/`requestAdminLogList`는 이미 존재 확인됨(연결만 하면 됨). 채팅 미리보기(`recentChatMessages`)만 대응 API가 아예 없어서 백엔드에 신규 필드 요청 필요.
 4. **`POST /api/admin/teams/manual` 백엔드 미구현 확인(8/3)** — `AdminTeamController`(`/api/admin/teams`)를 직접 읽어보니 `/manual` 매핑이 아예 없음. `AdminTeamManualCreate.jsx`의 "직접 구성 완료" 버튼을 누르면 지금은 404가 날 것으로 보임(프론트 코드 자체는 api.md 스펙대로 맞게 구현돼 있음 — 백엔드 쪽만 없는 상태). 실제로 눌러서 재현 확인 필요.
 
+### 2.5순위 — Firebase 프로젝트 실제 값만 있으면 바로 되는 것
+1. **`VITE_FIREBASE_*`/VAPID key 필요** — 팀에서 Firebase 프로젝트를 만들면 `.env.development`/`.env.production`에 `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_VAPID_KEY`를 채우고, `public/firebase-messaging-sw.js`의 `REPLACE_ME` 6곳도 같은 값으로 채워야 함(서비스워커는 정적 파일이라 `import.meta.env`를 못 씀). **`.env` 파일 자체는 직접 건드리면 안 되는 파일이라 이 작업은 팀원이 직접 해야 함.**
+2. **`POST /api/user/fcm-token`/`DELETE /api/user/fcm-token` 백엔드 확인** — `FcmToken` 엔티티, 로그인/로그아웃 시 등록·해제 API. 프론트는 `useFcmNotifications.js`에 이미 연결 완료.
+3. **`JournalDeadlineScheduler` 등 백엔드 자동 발송 확인** — `notificationType: JOURNAL_DEADLINE`/`NOTICE_CREATED` payload가 실제로 오는지. 프론트는 `NotificationToast`가 타입 무관하게 제네릭 처리하므로 추가 작업 없음.
+
 ### 3순위 — 아직 프론트 실구현도 안 한 것
 Notion P0 항목은 위 완료 목록으로 전부 끝났음(설문 태그 제거·선호 팀원 검색·버전 저장·재생성 비교·팀 구성 방식 선택 5개 다 완료). 여기서부터는 P1→P2 순서.
 
-1. **캡스톤 일지 마감 알림** — FCM 공통 인프라(`FcmToken`/`NotificationLog`, 토큰 등록 API 연동)부터 시작해야 함. 현재 프로젝트에 FCM 코드가 전혀 없는 그린필드 상태. `AdminLogList`의 수동 발송 버튼(있다면) 제거도 함께. P1.
-2. **AI 처리 진행률/신뢰성 설명 보강** — LLM 비용 관련은 백엔드/AI 담당 영역이 커서 프론트는 처리 시간·토큰 사용량 등을 보여주는 UI 정도만 해당(있다면). P1, 범위 작음.
+1. **AI 처리 진행률/신뢰성 설명 보강** — LLM 비용 관련은 백엔드/AI 담당 영역이 커서 프론트는 처리 시간·토큰 사용량 등을 보여주는 UI 정도만 해당(있다면). P1, 범위 작음.
+2. **팀 채팅 FCM 푸시 + 포그라운드 토스트(웹소켓 분기)** — api.md 8번. FCM 인프라 뼈대는 됐지만, "웹소켓 연결 여부로 포그라운드/백그라운드 분기"하고 `/sub/users/{userId}/notifications` 구독으로 토스트 띄우는 부분은 아직 안 함(현재 `ChatToast`는 `UserTeamChat.jsx` 페이지 안에서만 동작, 페이지를 벗어난 상태의 전역 토스트가 아님). P1.
 3. **팀 채팅 — 메시지 고정 / 읽음 상태 / 담당 업무 표시** — 디자인 목업도 아직 없음. P2.
-4. **팀 채팅 FCM 푸시 + 포그라운드 토스트** — 1번(FCM 인프라) 선행 필요. P1이지만 FCM 인프라에 종속.
-5. **공지 등록 시 FCM 알림** — 1번 선행 필요, 프론트 작업량은 거의 없음(공통 알림 수신 분기에 케이스 하나 추가). P1이지만 FCM 인프라에 종속.
 
 ### 보류
 - 팀 버전 이력 목록 화면(`GET /api/admin/team-recommendations/versions?grade=` 전체 목록 UI) — 지금은 "직전 버전과의 비교"만 구현, 여러 버전을 오가며 보는 UI는 필요성이 확인되면 추가.
@@ -54,4 +58,4 @@ Notion P0 항목은 위 완료 목록으로 전부 끝났음(설문 태그 제�
 
 ## 다음에 손댈 것 (제안)
 
-Notion P0는 전부 끝났다. **FCM 공통 인프라(`FcmToken`/`NotificationLog`, 토큰 등록 API) 구축 → 캡스톤 일지 마감 알림**부터 시작하는 걸 추천한다 — P1에서 가장 앞서 있고, 한 번 만들면 팀 채팅 알림·공지 알림이 그 위에 그대로 얹히는 구조라 나머지 P1 항목 2개를 자동으로 절반 이상 끝내주는 선행 작업이다.
+Notion P0는 전부 끝났고, FCM 공통 인프라 뼈대도 세웠다. 다음은 **팀 채팅 전역 알림(api.md 8번, 웹소켓 연결 여부 분기 + `/sub/users/{userId}/notifications` 구독)**부터 시작하는 걸 추천한다 — 남은 P1 중 유일하게 지금 바로 코드로 진행 가능(FCM 실제 키나 백엔드 새 엔드포인트 없이도, 최소한 웹소켓 구독/전역 토스트 배선까지는 미리 짜둘 수 있음).

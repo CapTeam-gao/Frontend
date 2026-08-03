@@ -1,12 +1,15 @@
 import Router from "./router/index";
 import "./styles/global.css";
 import useAuth from "./hooks/useAuth";
+import useFcmNotifications from "./hooks/useFcmNotifications";
 import authStore from "./store/authStore";
+import NotificationToast from "./components/common/notification/NotificationToast";
 
 function App() {
     const authStatus = authStore((state) => state.authStatus);
 
     useAuth();
+    const { toasts, dismissToast, selectToast } = useFcmNotifications();
 
     if (authStatus === "checking") {
         return (
@@ -26,7 +29,16 @@ function App() {
         );
     }
 
-    return <Router />;
+    return (
+        <>
+            <Router />
+            <NotificationToast
+                toasts={toasts}
+                onDismiss={dismissToast}
+                onSelect={selectToast}
+            />
+        </>
+    );
 }
 
 export default App;
