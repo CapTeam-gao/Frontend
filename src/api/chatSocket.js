@@ -122,6 +122,15 @@ export const subscribeUserChatUnreadEvents = (client, onEvent) => {
     });
 };
 
+// api.md 8번 섹션: 다른 채널/다른 화면에서 온 채팅 메시지를 전역 토스트로 보여주기 위한 구독.
+// 기존 /user/queue/chat/unread와 같은 Spring user-destination 방식(경로에 userId 안 넣음).
+export const subscribeUserChatNotifications = (client, onEvent) => {
+    return client.subscribe("/user/queue/chat/notifications", (message) => {
+        const event = JSON.parse(message.body);
+        onEvent?.(event);
+    });
+};
+
 const waitForUnsubscribeReceipt = (client, subscription) => {
     if (!client?.connected || !subscription) {
         return Promise.resolve();
