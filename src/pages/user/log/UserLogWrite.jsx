@@ -14,6 +14,7 @@ import {
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
 import { getFilledFieldCount, getLogFields } from "../../../utils/log";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./UserLogWrite.module.css";
 
 const initialFormData = {
@@ -176,9 +177,7 @@ const UserLogWrite = () => {
             setIsEditMode(true);
             navigate("/user/dashboard");
         } catch (e) {
-            setError(
-                e.response?.data?.error || "일지 저장에 실패했습니다."
-            );
+            setError(getApiErrorMessage(e, "일지 저장에 실패했습니다."));
         } finally {
             setIsSubmitting(false);
         }

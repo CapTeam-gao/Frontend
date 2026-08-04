@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import fileIcon from "../../../assets/icons/file.svg";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./ChatInput.module.css";
 
 const MAX_CHAT_FILE_SIZE = 20 * 1024 * 1024;
@@ -27,11 +28,7 @@ const getFileUploadErrorMessage = (error) => {
         return "20MB 이하 파일만 업로드할 수 있습니다.";
     }
 
-    if (error?.response?.data?.error) {
-        return error.response.data.error;
-    }
-
-    return "파일 전송에 실패했습니다.";
+    return getApiErrorMessage(error, "파일 전송에 실패했습니다.");
 };
 
 const ChatInput = ({

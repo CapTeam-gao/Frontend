@@ -4,6 +4,7 @@ import Header from "../../../components/common/header/Header";
 import { requestAdminStudentList } from "../../../api/studentApi";
 import { requestCreateManualTeams } from "../../../api/teamApi";
 import { roleLabels, gradeLabels } from "../../../constants/team";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import {
     getRoleBarSegments,
     getRoleSummary,
@@ -166,9 +167,7 @@ const AdminTeamManualCreate = () => {
             await requestCreateManualTeams(grade, buildTeamsPayload());
             navigate("/admin/team-manage");
         } catch (e) {
-            setError(
-                e.response?.data?.error || "팀 구성 저장에 실패했습니다."
-            );
+            setError(getApiErrorMessage(e, "팀 구성 저장에 실패했습니다."));
         } finally {
             setIsSubmitting(false);
         }

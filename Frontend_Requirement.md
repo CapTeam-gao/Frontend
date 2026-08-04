@@ -29,15 +29,20 @@
 ## 남은 작업 순서
 
 ### 1순위 — 지금 만든 기능 검증 (백엔드 무관, 바로 가능)
-- [ ] 로그인해서 팀 재생성 전체 흐름(재생성 → 로딩 → 팀 에딧 복귀 → 변경사항 모달 → 적용/취소) 브라우저 실사용 검증
-- [ ] 이번 세션에서 손댄 화면 전체 브라우저 검증(대부분 `npm run build`/`eslint`만 통과한 상태)
+- [x] **로그인/로그아웃, 관리자·학생 대시보드, 페이지 이동 콘솔 에러 없음 확인(8/4)** — 로컬 백엔드(docker compose) 띄우고 `tea1111`(관리자)/`stu2301`(학생) 실계정으로 로그인해서 확인. 로그아웃 후 `localStorage`만 지워도 refresh 쿠키로 자동 재로그인되는 것도 실제로 확인(지난번 `useAuth.js` 검토 때 지키기로 한 그 동작).
+- [x] **AI 팀 생성 흐름 — 에러 처리 정상 확인, 생성 자체는 백엔드/AI 서버 이슈로 막힘(8/4)** — `stu2399`(시연학생) 설문을 34문항 전부 채워 제출 완료시켜서 2학년 설문 완료율 100%(10/10)로 만듦. 그 결과 "설문 미완료 학생" 에러 화면은 정상적으로 사라지고 AI 생성이 실제로 시작되는 것까지 확인. 다만 생성 도중 **"AI 서버 호출에 실패했습니다"** 에러로 끝남 — 백엔드 로그 확인 결과 프론트 문제가 아니라 AI(FastAPI) 서버가 `role_counts`를 객체로 응답하는데 백엔드(`AiClient.java:171`, `AiTeamSummaryResponseDto.TeamDto.role_counts`)는 `List<RoleCountDto>`로 역직렬화를 시도하다 `MismatchedInputException` → `AiServerException`으로 실패하는 백엔드/AI 레이어 스키마 불일치 버그. 에러 메시지 자체는 한글로 정상 노출됨(`getApiErrorMessage` 수정 반영 확인). **AI 팀 생성 성공 케이스, 재생성/변경사항 모달은 이 백엔드 버그가 고쳐져야 이어서 확인 가능.**
+- [x] **`POST /api/admin/teams/manual` 405 실제 재현(8/4)** — 위 2순위 4번 참고.
+- [x] **`GET /api/user/students/search`(선호 팀원 검색) 수정 확인(8/4)** — `stu2399`로 재테스트 중 404 발생 → 원인은 프론트 코드가 아니라 **로컬 백엔드 도커 이미지가 8일 전(7/25) 빌드본이라 8/2에 추가된 검색 엔드포인트를 못 갖고 있던 것**(`docker inspect` 빌드 시각 vs `git log` 커밋 시각 비교로 확인). `docker compose build backend` + `up -d`로 이미지 재빌드 후 재확인하니 정상 200 응답, 검색 결과도 올바르게 나옴. 프론트 코드 수정(경로 등)은 이미 맞게 되어 있었음.
+- [ ] 팀 재생성 전체 흐름(재생성 → 로딩 → 팀 에딧 복귀 → 변경사항 모달 → 적용/취소) — 확정된 팀이 있어야 재생성이 가능한데, AI 서버 스키마 버그로 팀이 아예 안 만들어져서 이번에도 확인 못 함
+- [ ] 팀 채팅(전역 알림 포함) — 팀이 없어서 `/user/chat` 접근 자체가 막힘(정상 가드 동작은 확인). 팀 배정 후 재확인 필요
 
 ### 2순위 — 백엔드 확인 필요, 확인되는 즉시 마무리 가능 (거의 다 됨)
 1. **팀 재생성 버전 API** — `TeamMatchingVersion` 엔티티, `versions/{id}`, `versions/diff`, `versions/{id}/apply`, `versions/{id}/discard`, `MatchingJob`의 `origin`/`baseVersionId`/`versionId` 필드. 프론트는 이미 이 스펙대로 `AdminTeamEdit.jsx`/`AdminTeamCreateLoading.jsx`/`teamApi.js`에 연결까지 끝냄 — 필드만 내려오면 그대로 동작.
 2. **팀 생성 배치 스트리밍** — `totalBatches`/`completedBatches`/`partialTeams`. 위와 마찬가지로 프론트 구현은 끝, 확인만 남음.
 3. **대시보드 `MOCK_*` → 실제 API 교체** — `requestMyTeam`/`requestUserProjectPlan`/`requestNoticeList`/`requestAdminStudentList`/`requestAdminLogList`는 이미 존재 확인됨(연결만 하면 됨). 채팅 미리보기(`recentChatMessages`)만 대응 API가 아예 없어서 백엔드에 신규 필드 요청 필요.
-4. **`POST /api/admin/teams/manual` 백엔드 미구현 확인(8/3)** — `AdminTeamController`(`/api/admin/teams`)를 직접 읽어보니 `/manual` 매핑이 아예 없음. `AdminTeamManualCreate.jsx`의 "직접 구성 완료" 버튼을 누르면 지금은 404가 날 것으로 보임(프론트 코드 자체는 api.md 스펙대로 맞게 구현돼 있음 — 백엔드 쪽만 없는 상태). 실제로 눌러서 재현 확인 필요.
+4. **`POST /api/admin/teams/manual` 백엔드 미구현 — 실제 재현 확인 완료(8/4)** — 로컬 백엔드(`docker compose`, `gao-backend`)에 로그인해서 직접 구성 화면에서 "직접 구성 완료"를 눌러 재현함: `405 Method Not Allowed` 응답. 프론트 코드는 스펙대로 맞게 구현돼 있고 백엔드에만 없는 게 확정됐으니, 백엔드가 엔드포인트를 추가하면 바로 될 것. **영문 에러 원문("Method Not Allowed")이 그대로 노출되던 문제는 프론트에서 자체 수정 완료(8/4)** — `src/utils/apiError.js`에 `getApiErrorMessage` 헬퍼 신규 작성, `GlobalExceptionHandler`가 실제로 처리하는 상태코드(400/401/403/404/503)에서만 서버 메시지를 신뢰하고 그 외(405 등 스프링 기본 에러 페이지로 빠지는 케이스)는 항상 한글 fallback을 쓰도록 7개 호출 지점에 전부 적용함.
 5. **`/user/queue/chat/notifications` 백엔드 발행 확인** — 팀 채팅 전역 알림용 신규 채널. 백엔드가 아직 이 경로로 안 보내면 조용히 no-op(위 완료 목록 참고).
+6. **AI 서버 `role_counts` 응답 스키마 불일치 — 신규 발견(8/4)** — AI(FastAPI) 매칭 서버가 팀 생성 응답의 `role_counts`를 객체(object)로 내려주는데, 백엔드 `AiTeamSummaryResponseDto.TeamDto.role_counts`는 `List<RoleCountDto>`를 기대해서 역직렬화 시 `MismatchedInputException` → `AiServerException`으로 실패, AI 팀 생성이 항상 실패함(`AiClient.java:171`). 프론트 범위 밖(백엔드/AI 레이어)이라 코드는 안 건드렸고, 백엔드·AI 담당에게 스키마 정합 확인 요청 필요. 이게 고쳐져야 AI 팀 생성 성공 케이스·재생성·변경사항 모달·팀 채팅 테스트를 이어갈 수 있음.
 
 ### 2.5순위 — Firebase 프로젝트 실제 값만 있으면 바로 되는 것
 1. **`VITE_FIREBASE_*`/VAPID key 필요** — 팀에서 Firebase 프로젝트를 만들면 `.env.development`/`.env.production`에 `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_VAPID_KEY`를 채우고, `public/firebase-messaging-sw.js`의 `REPLACE_ME` 6곳도 같은 값으로 채워야 함(서비스워커는 정적 파일이라 `import.meta.env`를 못 씀). **`.env` 파일 자체는 직접 건드리면 안 되는 파일이라 이 작업은 팀원이 직접 해야 함.**

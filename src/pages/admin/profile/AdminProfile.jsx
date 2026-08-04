@@ -4,6 +4,7 @@ import Header from "../../../components/common/header/Header";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import authStore from "../../../store/authStore";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./AdminProfile.module.css";
 
 const AdminProfile = () => {
@@ -90,9 +91,7 @@ const AdminProfile = () => {
             setNewPassword("");
             setConfirmPassword("");
         } catch (e) {
-            setError(
-                e.response?.data?.error || "비밀번호 변경에 실패했습니다."
-            );
+            setError(getApiErrorMessage(e, "비밀번호 변경에 실패했습니다."));
         } finally {
             setIsSubmittingPassword(false);
         }

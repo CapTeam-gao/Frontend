@@ -13,6 +13,7 @@ import {
     normalizeSearchText,
 } from "../../../utils/student";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./AdminStudentManage.module.css";
 
 const AdminStudentManage = () => {
@@ -48,8 +49,7 @@ const AdminStudentManage = () => {
                 });
             } catch (e) {
                 setError(
-                    e.response?.data?.error ||
-                        "학생 정보를 불러오지 못했습니다."
+                    getApiErrorMessage(e, "학생 정보를 불러오지 못했습니다.")
                 );
             } finally {
                 setIsLoading(false);
@@ -126,8 +126,7 @@ const AdminStudentManage = () => {
         } catch (e) {
             setSelectedStudent(student);
             setModalError(
-                e.response?.data?.error ||
-                    "학생 상세 정보를 불러오지 못했습니다."
+                getApiErrorMessage(e, "학생 상세 정보를 불러오지 못했습니다.")
             );
         }
     };

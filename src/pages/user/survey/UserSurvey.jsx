@@ -4,6 +4,7 @@ import { requestSubmitSurvey } from "../../../api/surveyApi";
 import { requestStudentSearch } from "../../../api/studentApi";
 import { gradeLabels, roleLabels } from "../../../constants/team";
 import authStore from "../../../store/authStore";
+import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./UserSurvey.module.css";
 import {
     roles,
@@ -47,7 +48,7 @@ const getStoredSurveyDraft = (userId) => {
 };
 
 const getSurveySubmitErrorMessage = (error) => {
-    const serverMessage = error.response?.data?.error || "";
+    const serverMessage = getApiErrorMessage(error, "");
 
     if (error.isAuthExpired || error.response?.status === 401) {
         return "로그인이 만료되었습니다. 다시 로그인한 뒤 설문을 제출해주세요.";

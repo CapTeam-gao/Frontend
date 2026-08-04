@@ -8,6 +8,7 @@ import { requestMyTeam } from "../../../api/teamApi";
 import { roleLabels } from "../../../constants/student";
 import styles from "./UserProfile.module.css";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
+import { getApiErrorMessage } from "../../../utils/apiError";
 
 const personalityFields = [
     { key: "ideaPlanning", label: "기획" },
@@ -161,9 +162,7 @@ const UserProfile = () => {
             setNewPassword("");
             setConfirmPassword("");
         } catch (e) {
-            setError(
-                e.response?.data?.error || "비밀번호 변경에 실패했습니다."
-            );
+            setError(getApiErrorMessage(e, "비밀번호 변경에 실패했습니다."));
         } finally {
             setIsSubmittingPassword(false);
         }
