@@ -15,6 +15,9 @@ const ChatMessageList = ({
     onScroll,
     onEditMessage,
     onDeleteMessage,
+    pinnedMessageId,
+    flashingMessageId,
+    onTogglePin,
 }) => {
     return (
         <ul
@@ -56,8 +59,11 @@ const ChatMessageList = ({
                             message={message}
                             mine={message.senderId === currentUserId}
                             showTime={showTime}
+                            isPinned={message.id === pinnedMessageId}
+                            isFlashing={message.id === flashingMessageId}
                             onEdit={onEditMessage}
                             onDelete={onDeleteMessage}
+                            onTogglePin={() => onTogglePin(message.id)}
                         />
                     </Fragment>
                 );

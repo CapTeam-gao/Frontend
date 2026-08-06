@@ -31,7 +31,16 @@ const getFileExtension = (fileName = "") => {
     return extension.toUpperCase();
 };
 
-const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
+const ChatMessage = ({
+    message,
+    mine,
+    showTime,
+    isPinned,
+    isFlashing,
+    onEdit,
+    onDelete,
+    onTogglePin,
+}) => {
     const [actionMode, setActionMode] = useState("");
     const [editText, setEditText] = useState(message.message ?? "");
     const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
@@ -193,9 +202,10 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
 
     return (
         <li
+            id={`chat-message-${message.id}`}
             className={`${styles.messageItem} ${mine ? styles.mine : ""} ${
                 showTime ? styles.timeSeparated : ""
-            }`}
+            } ${isFlashing ? styles.flash : ""}`}
         >
             {showTime && (
                 <div className={styles.messageMeta}>
@@ -322,22 +332,29 @@ const ChatMessage = ({ message, mine, showTime, onEdit, onDelete }) => {
                     </div>
                 )}
 
-                {mine && actionMode !== "edit" && (
+                {actionMode !== "edit" && (
                     <div className={styles.messageActions}>
-                        {message.message && (
-                            <button
-                                type="button"
-                                onClick={() => setActionMode("edit")}
-                            >
-                                수정
-                            </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={() => setActionMode("delete")}
-                        >
-                            삭제
+                        <button type="button" onClick={onTogglePin}>
+                            {isPinned ? "고정 해제" : "고정"}
                         </button>
+                        {mine && (
+                            <>
+                                {message.message && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setActionMode("edit")}
+                                    >
+                                        수정
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => setActionMode("delete")}
+                                >
+                                    삭제
+                                </button>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

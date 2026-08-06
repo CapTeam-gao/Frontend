@@ -92,6 +92,32 @@
     color: #ffffff;
 }
 
+.flash .messageBubble {
+    animation: pinFlash 1.1s ease;
+}
+
+@keyframes pinFlash {
+    0% {
+        background-color: var(--color-primary-bg);
+    }
+    100% {
+        background-color: var(--color-bubble);
+    }
+}
+
+.flash.mine .messageBubble {
+    animation: pinFlashMine 1.1s ease;
+}
+
+@keyframes pinFlashMine {
+    0% {
+        background-color: var(--color-primary-dark);
+    }
+    100% {
+        background-color: var(--color-primary);
+    }
+}
+
 .mine .messageLink {
     color: #ffffff;
     text-decoration-color: rgba(255, 255, 255, 0.72);
