@@ -33,6 +33,29 @@ const reliabilityLabels = {
     LOW: "낮음",
 };
 
+const getAnalysisDisplay = (student) => {
+    const status = student.analysisStatus;
+
+    if (status === "PENDING") {
+        return { levelText: "분석 중", resultText: "분석이 진행 중입니다. 잠시 후 다시 확인해주세요." };
+    }
+
+    if (status === "FAILED") {
+        return {
+            levelText: "분석 실패",
+            resultText: "분석에 실패했습니다. 잠시 후 다시 시도해주세요.",
+            isFailed: true,
+        };
+    }
+
+    return {
+        levelText: levelLabels[student.studentLevel] || student.studentLevel || "분석 전",
+        resultText:
+            student.analysisResult ||
+            "분석 설명을 아직 조회할 수 없습니다. 학생의 성향 점수와 기술 스택을 함께 참고해주세요.",
+    };
+};
+
 const reliabilityDescriptions = {
     HIGH: "문항 간 답변 흐름이 안정적입니다.",
     MEDIUM: "일부 문항에서 답변 차이가 있어 참고가 필요합니다.",
@@ -166,6 +189,7 @@ const AdminStudentDetailModal = ({
 
     const developmentChartData = getDevelopmentChartData(student);
     const personalityChartData = getPersonalityChartData(student);
+    const analysisDisplay = getAnalysisDisplay(student);
     const numberInfo = getStudentNumberInfo(student.userId);
     const studentTeamKey = getStudentTeamKey(student);
     const teamDisplayName =
@@ -212,10 +236,14 @@ const AdminStudentDetailModal = ({
                     <div className={styles.meta}>
                         <p>{numberInfo.number}</p>
                         <h2 id="student-modal-title">{student.name}</h2>
-                        <span>
-                            {levelLabels[student.studentLevel] ||
-                                student.studentLevel ||
-                                "분석 전"}
+                        <span
+                            className={
+                                analysisDisplay.isFailed
+                                    ? styles.levelBadgeFailed
+                                    : undefined
+                            }
+                        >
+                            {analysisDisplay.levelText}
                         </span>
                     </div>
 
@@ -390,9 +418,14 @@ const AdminStudentDetailModal = ({
 
                             <section className={styles.analysisSection}>
                                 <h3>학생 분석 결과</h3>
-                                <p>
-                                    {student.analysisResult ||
-                                        "분석 설명을 아직 조회할 수 없습니다. 학생의 성향 점수와 기술 스택을 함께 참고해주세요."}
+                                <p
+                                    className={
+                                        analysisDisplay.isFailed
+                                            ? styles.analysisFailedText
+                                            : undefined
+                                    }
+                                >
+                                    {analysisDisplay.resultText}
                                 </p>
                             </section>
                         </div>

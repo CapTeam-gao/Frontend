@@ -18,6 +18,7 @@
 - **dev 환경 로그인 404 수정(8/3)** — `.env.development`가 git 추적에서 빠진 뒤 대체 템플릿이 없어서 새로 클론한 환경에선 로그인이 404가 나던 문제. `vite.config.js`에 `/api`,`/ws` → `localhost:8080` 프록시 추가 + `.env.example` 신규(＋`.gitignore` 예외 처리), 커밋 `9192d16`.
 - **FCM 공통 인프라 뼈대(8/3)** — `src/firebase/firebaseConfig.js`/`messaging.js`(토큰 발급·포그라운드 수신), `public/firebase-messaging-sw.js`(백그라운드 알림), `src/api/notificationApi.js`(토큰 등록/해제), `src/hooks/useFcmNotifications.js`(로그인 시 등록·로그아웃 시 해제, 포그라운드 알림 토스트) + `NotificationToast` 컴포넌트, `App.jsx`에 연결. `notificationType`(`JOURNAL_DEADLINE`/`CHAT_MESSAGE`/`NOTICE_CREATED`) 전부 제네릭하게 처리하므로 캡스톤 일지 마감 알림·공지 알림은 프론트 쪽 추가 작업 없이 이 인프라만으로 끝남. **실제 Firebase 프로젝트 설정값이 아직 없어서(`VITE_FIREBASE_*`, VAPID key) 지금은 아무 것도 등록되지 않는 안전한 no-op 상태** — 값이 채워지면 바로 동작.
 - **팀 채팅 전역 알림(8/3)** — api.md 8번. `chatSocket.js`에 `subscribeUserChatNotifications` 추가(경로를 `/sub/users/{userId}/notifications`에서 이 코드베이스의 실제 관례인 `/user/queue/chat/notifications`로 정정), `useFcmNotifications.js`에서 로그인 시(학생 계정만) 구독해 FCM 토스트와 같은 `NotificationToast`로 표시. `/user/chat` 페이지를 보고 있을 때는 그 화면 안에서 이미 실시간으로 보이므로 전역 토스트는 생략. api.md/Notion 8번 섹션도 같이 정정. 백엔드가 이 경로로 아직 발행 안 하면 구독만 걸린 채 조용히 아무 일도 안 일어남(기존 동작 안 깨짐).
+- **학생 상세 분석 결과 `analysisStatus` 분기(8/6)** — 백엔드 확인 결과 `studentLevel`/`analysisResult`가 null이던 건 프론트 필드 매핑 문제가 아니라 백엔드가 아직 null을 내려주고 있었기 때문(프론트는 이미 올바르게 읽고 fallback 문구 처리 중이었음). 백엔드가 확정한 신규 계약(`analysisStatus`: SUCCESS/PENDING/FAILED)에 맞춰 `AdminStudentDetailModal.jsx`에 상태별 분기 추가 — PENDING("분석 중"), FAILED("분석 실패", 빨간색 강조 + 재시도 안내), SUCCESS/미지정은 기존과 동일하게 등급+분석 설명 표시. `reason`/`skill_level` 등 AI 원본 필드는 여전히 프론트에서 직접 참조하지 않음(계약 유지). 백엔드가 아직 `analysisStatus`를 안 내려주므로 현재는 항상 기존과 동일한 분기라 회귀 없음.
 
 ## 계획에서 제외된 것
 
@@ -53,7 +54,7 @@
 Notion P0 항목은 위 완료 목록으로 전부 끝났음(설문 태그 제거·선호 팀원 검색·버전 저장·재생성 비교·팀 구성 방식 선택 5개 다 완료). 여기서부터는 P1→P2 순서.
 
 1. **AI 처리 진행률/신뢰성 설명 보강** — LLM 비용 관련은 백엔드/AI 담당 영역이 커서 프론트는 처리 시간·토큰 사용량 등을 보여주는 UI 정도만 해당(있다면). P1, 범위 작음.
-2. **팀 채팅 — 메시지 고정 / 읽음 상태 / 담당 업무 표시** — 디자인 목업도 아직 없음. P2.
+2. **팀 채팅 — 메시지 고정 / 읽음 상태 / 담당 업무 표시** — **디자인 목업 완료(`Design/TeamChat.html`, 8/4 확인)**, 실구현만 남음. 메시지 호버 → 고정 버튼 → 상단 고정바 표시/해제, 내 메시지 읽음 인원 수 표시, 우측 팀원 패널에 담당 업무 한 줄, 다른 채널 새 메시지 시 우하단 토스트까지 전부 정적 mock으로 클릭/입력 가능한 상태로 만들어져 있었음(이전 세션 작업분, 이 문서에 반영이 안 돼 있었음 — 정정). 실제 `UserTeamChat.jsx`에 연결하려면 고정 메시지 API(`pinnedMessageId` 등), 읽음 인원 API, 팀원 담당 업무 필드가 백엔드에 있는지 확인 필요 — 현재 스펙 미확인. P2.
 
 ### 보류
 - 팀 버전 이력 목록 화면(`GET /api/admin/team-recommendations/versions?grade=` 전체 목록 UI) — 지금은 "직전 버전과의 비교"만 구현, 여러 버전을 오가며 보는 UI는 필요성이 확인되면 추가.
