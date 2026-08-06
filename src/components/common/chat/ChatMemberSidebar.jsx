@@ -1,6 +1,9 @@
+import { roleLabels } from "../../../constants/student";
 import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const MemberItem = ({ member, online }) => {
+    const roleLabel = roleLabels[member.studentRole];
+
     return (
         <li
             className={`${styles.memberItem} ${
@@ -12,7 +15,12 @@ const MemberItem = ({ member, online }) => {
                     online ? styles.online : ""
                 }`}
             />
-            <span className={styles.memberName}>{member.name}</span>
+            <div className={styles.memberInfo}>
+                <span className={styles.memberName}>{member.name}</span>
+                {roleLabel && (
+                    <span className={styles.memberTask}>담당: {roleLabel}</span>
+                )}
+            </div>
         </li>
     );
 };

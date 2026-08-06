@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { requestMyTeam } from "../api/teamApi";
 import useChatMessages from "./useChatMessages";
 import useChatPresence from "./useChatPresence";
 import useChatRoom from "./useChatRoom";
@@ -9,6 +10,7 @@ let toastIdSeq = 1;
 const useUserTeamChat = () => {
     const [error, setError] = useState("");
     const [toasts, setToasts] = useState([]);
+    const [memberRoles, setMemberRoles] = useState({});
     const {
         room,
         selectedChannel,
@@ -97,9 +99,9 @@ const useUserTeamChat = () => {
     };
 
     const {
-        members,
-        onlineMembers,
-        offlineMembers,
+        members: presenceMembers,
+        onlineMembers: presenceOnlineMembers,
+        offlineMembers: presenceOfflineMembers,
         hasPresenceLoaded,
     } = useChatPresence({
         selectedChannel,
@@ -107,6 +109,40 @@ const useUserTeamChat = () => {
         chatClientRef,
         setError,
     });
+
+    // presence 응답엔 담당 업무(studentRole)가 없어서, 이미 확정된 팀 정보 API(/api/teams/my-team)에서
+    // 한 번만 받아 userId로 합쳐준다.
+    useEffect(() => {
+        if (!room?.id) return;
+
+        let isMounted = true;
+
+        requestMyTeam()
+            .then((data) => {
+                if (!isMounted) return;
+
+                const roleByUserId = {};
+                (data?.members ?? []).forEach((member) => {
+                    roleByUserId[member.userId] = member.studentRole;
+                });
+                setMemberRoles(roleByUserId);
+            })
+            .catch(() => {});
+
+        return () => {
+            isMounted = false;
+        };
+    }, [room?.id]);
+
+    const withStudentRole = (memberList) =>
+        memberList.map((member) => ({
+            ...member,
+            studentRole: memberRoles[member.userId],
+        }));
+
+    const members = withStudentRole(presenceMembers);
+    const onlineMembers = withStudentRole(presenceOnlineMembers);
+    const offlineMembers = withStudentRole(presenceOfflineMembers);
 
     useEffect(() => {
         return scrollToBottom({

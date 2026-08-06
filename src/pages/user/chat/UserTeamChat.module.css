@@ -308,6 +308,13 @@
     background-color: var(--color-primary);
 }
 
+.memberInfo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
 .memberName {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
@@ -316,6 +323,12 @@
 
 .offlineMember .memberName {
     color: var(--color-text-secondary);
+}
+
+.memberTask {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
 }
 
 .memberEmptyText {
