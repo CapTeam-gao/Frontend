@@ -334,9 +334,11 @@ const ChatMessage = ({
 
                 {actionMode !== "edit" && (
                     <div className={styles.messageActions}>
-                        <button type="button" onClick={onTogglePin}>
-                            {isPinned ? "고정 해제" : "고정"}
-                        </button>
+                        {onTogglePin && (
+                            <button type="button" onClick={onTogglePin}>
+                                {isPinned ? "고정 해제" : "고정"}
+                            </button>
+                        )}
                         {mine && (
                             <>
                                 {message.message && (

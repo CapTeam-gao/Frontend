@@ -26,7 +26,7 @@
 
 .leaderMember .memberButton {
     min-height: 82px;
-    background-color: #fbfdfc;
+    border-left: 3px solid var(--color-primary);
     cursor: not-allowed;
 }
 
@@ -70,20 +70,16 @@
 .positionBadge,
 .leaderBadge {
     flex-shrink: 0;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: var(--font-weight-bold);
     white-space: nowrap;
 }
 
 .positionBadge {
-    background-color: var(--color-primary-bg);
     color: var(--color-primary-dark);
 }
 
 .leaderBadge {
-    background-color: #fff2a8;
     color: #9b7a00;
 }
 
@@ -103,12 +99,8 @@
 
 .selectedMember .memberName,
 .selectedMember .stackText,
-.selectedMember .levelText {
-    color: #ffffff;
-}
-
+.selectedMember .levelText,
 .selectedMember .positionBadge {
-    background-color: rgba(255, 255, 255, 0.22);
     color: #ffffff;
 }
 

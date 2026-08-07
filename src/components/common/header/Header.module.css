@@ -47,6 +47,22 @@
     color: var(--color-primary);
 }
 
+.nav a.underlineNavLink {
+    overflow: visible;
+    position: relative;
+}
+
+.underlineNavLink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--color-primary);
+}
+
 .teamNavLink {
     display: inline-flex;
     justify-content: center;

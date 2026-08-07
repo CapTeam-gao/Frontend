@@ -305,6 +305,7 @@ const Header = () => {
                         </Link>
                         <Link
                             to="/user/log"
+                            className={styles.underlineNavLink}
                             onClick={(event) => {
                                 if (teamCreated === false) {
                                     showTeamRequiredModal(

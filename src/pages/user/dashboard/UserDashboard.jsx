@@ -161,7 +161,15 @@ const UserDashboard = () => {
           }
         : canWriteLog && !dashboard.todayJournalSubmitted
         ? {
-              title: "오늘 캡스톤 일지를 작성해주세요",
+              title: (
+                  <>
+                      오늘{" "}
+                      <span className={styles.heroTitleHighlight}>
+                          캡스톤 일지
+                      </span>
+                      를 작성해주세요
+                  </>
+              ),
               sub: "아직 오늘 일지를 작성하지 않았습니다. 작성 가능 시간 안에 활동 내용을 남기면 팀원 일지와 함께 취합됩니다.",
               countdownText: formatCountdownTime(
                   getCapstoneLogRemainingMs(currentTime)
@@ -173,13 +181,29 @@ const UserDashboard = () => {
           }
         : canWriteLog
         ? {
-              title: "오늘 캡스톤 일지 작성을 완료했어요",
+              title: (
+                  <>
+                      오늘{" "}
+                      <span className={styles.heroTitleHighlight}>
+                          캡스톤 일지
+                      </span>{" "}
+                      작성을 완료했어요
+                  </>
+              ),
               sub: "수고하셨습니다. 지난 일지는 언제든 다시 확인할 수 있습니다.",
               ctaText: "지난 일지 보기",
               ctaTo: "/user/log/result",
           }
         : {
-              title: "지금은 캡스톤 일지 작성 시간이 아니에요",
+              title: (
+                  <>
+                      지금은{" "}
+                      <span className={styles.heroTitleHighlight}>
+                          캡스톤 일지
+                      </span>{" "}
+                      작성 시간이 아니에요
+                  </>
+              ),
               sub: getCapstoneLogUnavailableText(currentTime),
               ctaText: "지난 일지 보기",
               ctaTo: "/user/log/result",

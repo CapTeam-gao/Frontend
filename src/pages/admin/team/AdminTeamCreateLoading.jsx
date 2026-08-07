@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../../../components/common/header/Header";
 import {
     requestStartTeamMatchingJob,
     requestTeamMatchingJob,
@@ -285,8 +284,6 @@ const AdminTeamCreateLoading = () => {
 
     return (
         <div className={styles.page}>
-            <Header />
-
             <main className={styles.panel}>
                 {pendingSurveyGroups ? (
                     <section className={styles.errorCard}>
