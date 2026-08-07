@@ -131,7 +131,7 @@ const ChatMessage = ({
     };
 
     const handleOpenOriginalImage = async () => {
-        const imageWindow = window.open("", "_blank");
+        const imageWindow = window.open("", "_blank", "noopener,noreferrer");
 
         try {
             setActionError("");
