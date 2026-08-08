@@ -1,3 +1,4 @@
+import ModalOverlay from "./ModalOverlay";
 import styles from "./TeamRequiredModal.module.css";
 
 const TeamRequiredModal = ({
@@ -14,22 +15,22 @@ const TeamRequiredModal = ({
     };
 
     return (
-        <div className={styles.overlay} onClick={onClose}>
-            <section
-                className={styles.modal}
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className={styles.content}>
-                    <span className={styles.label}>{label}</span>
-                    <h2>{title}</h2>
-                    <p>{message}</p>
-                </div>
+        <ModalOverlay
+            onClose={onClose}
+            overlayClassName={styles.overlay}
+            modalClassName={styles.modal}
+            ariaLabelledby="team-required-modal-title"
+        >
+            <div className={styles.content}>
+                <span className={styles.label}>{label}</span>
+                <h2 id="team-required-modal-title">{title}</h2>
+                <p>{message}</p>
+            </div>
 
-                <button type="button" onClick={handleAction}>
-                    {actionText}
-                </button>
-            </section>
-        </div>
+            <button type="button" onClick={handleAction}>
+                {actionText}
+            </button>
+        </ModalOverlay>
     );
 };
 

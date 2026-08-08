@@ -9,6 +9,7 @@ import {
 import AdminTeamInsightPanel from "./AdminTeamInsightPanel";
 import AdminTeamMemberPanel from "./AdminTeamMemberPanel";
 import AdminTeamProjectPanel from "./AdminTeamProjectPanel";
+import ModalOverlay from "../../common/modal/ModalOverlay";
 import styles from "./AdminTeamDetailModal.module.css";
 
 const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
@@ -28,63 +29,65 @@ const AdminTeamDetailModal = ({ team, loading, error, onClose }) => {
     };
 
     return (
-        <div className={styles.modalOverlay} onClick={onClose}>
-            <section
-                className={styles.modal}
-                onClick={(e) => e.stopPropagation()}
+        <ModalOverlay
+            onClose={onClose}
+            overlayClassName={styles.modalOverlay}
+            modalClassName={styles.modal}
+            ariaLabelledby="admin-team-detail-modal-title"
+        >
+            <button
+                type="button"
+                className={styles.closeButton}
+                onClick={onClose}
             >
-                <button
-                    type="button"
-                    className={styles.closeButton}
-                    onClick={onClose}
-                >
-                    X
-                </button>
+                X
+            </button>
 
-                {loading && (
-                    <p className={styles.modalStatus}>불러오는 중...</p>
-                )}
-                {error && <p className={styles.modalError}>{error}</p>}
+            {loading && (
+                <p className={styles.modalStatus}>불러오는 중...</p>
+            )}
+            {error && <p className={styles.modalError}>{error}</p>}
 
-                {team && (
-                    <>
-                        <header className={styles.modalHeader}>
-                            <div>
-                                <div className={styles.teamTitleRow}>
-                                    <h2>{displayTeamName}</h2>
-                                    <span className={styles.teamGrade}>
-                                        {gradeLabels[team.grade] || team.grade}
-                                    </span>
-                                </div>
-                                <p className={styles.roleSummary}>
-                                    {getRoleSummary(members)}
-                                </p>
+            {team && (
+                <>
+                    <header className={styles.modalHeader}>
+                        <div>
+                            <div className={styles.teamTitleRow}>
+                                <h2 id="admin-team-detail-modal-title">
+                                    {displayTeamName}
+                                </h2>
+                                <span className={styles.teamGrade}>
+                                    {gradeLabels[team.grade] || team.grade}
+                                </span>
                             </div>
-                            <p className={styles.modalHint}>
-                                스크롤하여 더 많은 정보를 확인할 수 있으며,
-                                학생 이름을 클릭하면 상세 조회로 이동합니다.
+                            <p className={styles.roleSummary}>
+                                {getRoleSummary(members)}
                             </p>
-                        </header>
-
-                        <div className={styles.modalContent}>
-                            <AdminTeamProjectPanel
-                                projectWritten={projectWritten}
-                                team={team}
-                                mainFeatures={mainFeatures}
-                            />
-                            <AdminTeamMemberPanel
-                                members={members}
-                                onMemberClick={moveToStudentDetail}
-                            />
-                            <AdminTeamInsightPanel
-                                strength={teamStrength}
-                                weakness={teamWeakness}
-                            />
                         </div>
-                    </>
-                )}
-            </section>
-        </div>
+                        <p className={styles.modalHint}>
+                            스크롤하여 더 많은 정보를 확인할 수 있으며,
+                            학생 이름을 클릭하면 상세 조회로 이동합니다.
+                        </p>
+                    </header>
+
+                    <div className={styles.modalContent}>
+                        <AdminTeamProjectPanel
+                            projectWritten={projectWritten}
+                            team={team}
+                            mainFeatures={mainFeatures}
+                        />
+                        <AdminTeamMemberPanel
+                            members={members}
+                            onMemberClick={moveToStudentDetail}
+                        />
+                        <AdminTeamInsightPanel
+                            strength={teamStrength}
+                            weakness={teamWeakness}
+                        />
+                    </div>
+                </>
+            )}
+        </ModalOverlay>
     );
 };
 

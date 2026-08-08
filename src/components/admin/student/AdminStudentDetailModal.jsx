@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { levelLabels, roleLabels } from "../../../constants/student";
 import { getStudentNumberInfo } from "../../../utils/student";
+import ModalOverlay from "../../common/modal/ModalOverlay";
 import styles from "./AdminStudentDetailModal.module.css";
 import {
     PolarAngleAxis,
@@ -218,18 +219,12 @@ const AdminStudentDetailModal = ({
     };
 
     return (
-        <div
-            className={styles.modalOverlay}
-            role="presentation"
-            onClick={onClose}
+        <ModalOverlay
+            onClose={onClose}
+            overlayClassName={styles.modalOverlay}
+            modalClassName={styles.modal}
+            ariaLabelledby="student-modal-title"
         >
-            <section
-                className={styles.modal}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="student-modal-title"
-                onClick={(e) => e.stopPropagation()}
-            >
                 <header className={styles.modalHeader}>
                     <div className={styles.meta}>
                         <p>{numberInfo.number}</p>
@@ -441,8 +436,7 @@ const AdminStudentDetailModal = ({
                         </aside>
                     </div>
                 )}
-            </section>
-        </div>
+        </ModalOverlay>
     );
 };
 
