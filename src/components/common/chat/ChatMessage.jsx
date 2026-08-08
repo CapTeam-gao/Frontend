@@ -332,6 +332,14 @@ const ChatMessage = ({
                     </div>
                 )}
 
+                {mine && actionMode !== "edit" && (
+                    <span className={styles.readCountText}>
+                        {message.readCount > 0
+                            ? `${message.readCount}명 읽음`
+                            : "안읽음"}
+                    </span>
+                )}
+
                 {actionMode !== "edit" && (
                     <div className={styles.messageActions}>
                         {onTogglePin && (
