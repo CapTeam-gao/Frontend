@@ -10,6 +10,7 @@ import {
     requestTeamMatchingJob,
     requestTeamMatchingVersionDetail,
     requestTeamMatchingVersionDiff,
+    requestTeamMatchingVersionList,
     requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
@@ -28,6 +29,13 @@ import {
     WAITING_JOB_STATUSES,
     wait,
 } from "../../../utils/matchingJobLock";
+import { formatCreatedAt } from "../../../utils/format";
+
+const VERSION_STATUS_LABELS = {
+    DRAFT: "검토 중",
+    APPLIED: "적용됨",
+    DISCARDED: "폐기됨",
+};
 
 const AdminTeamEdit = () => {
     const navigate = useNavigate();
@@ -58,6 +66,10 @@ const AdminTeamEdit = () => {
     const showLoading = useDelayedLoading(isLoading);
     const highlightTimerRef = useRef(null);
     const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
+    const [isVersionHistoryOpen, setIsVersionHistoryOpen] = useState(false);
+    const [versionHistory, setVersionHistory] = useState([]);
+    const [isVersionHistoryLoading, setIsVersionHistoryLoading] = useState(false);
+    const [versionHistoryError, setVersionHistoryError] = useState("");
     const [regenerationPrompt, setRegenerationPrompt] = useState("");
     const movedByUserId = useMemo(() => {
         if (!diffData?.movedStudents) return {};
@@ -354,6 +366,23 @@ const AdminTeamEdit = () => {
 
     const closeChangesModal = () => setIsChangesModalOpen(false);
 
+    const openVersionHistory = async () => {
+        setIsVersionHistoryOpen(true);
+
+        try {
+            setIsVersionHistoryLoading(true);
+            setVersionHistoryError("");
+            const versions = await requestTeamMatchingVersionList(grade);
+            setVersionHistory(Array.isArray(versions) ? versions : []);
+        } catch {
+            setVersionHistoryError("버전 이력을 불러오지 못했습니다.");
+        } finally {
+            setIsVersionHistoryLoading(false);
+        }
+    };
+
+    const closeVersionHistory = () => setIsVersionHistoryOpen(false);
+
     const handleApplyChanges = async () => {
         if (!pendingVersionId) return;
 
@@ -450,6 +479,13 @@ const AdminTeamEdit = () => {
                                     ) : null}
                                 </button>
                             )}
+                            <button
+                                type="button"
+                                className={styles.secondaryButton}
+                                onClick={openVersionHistory}
+                            >
+                                버전 이력
+                            </button>
                             <button
                                 type="button"
                                 className={styles.secondaryButton}
@@ -847,6 +883,81 @@ const AdminTeamEdit = () => {
                                 새 결과 적용
                             </button>
                         </div>
+                    </section>
+                </div>
+            )}
+
+            {isVersionHistoryOpen && (
+                <div
+                    className={styles.modalOverlay}
+                    onClick={closeVersionHistory}
+                >
+                    <section
+                        className={styles.regenerateModal}
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className={styles.modalHeader}>
+                            <h2 className={styles.modalTitle}>버전 이력</h2>
+                            <button
+                                type="button"
+                                className={styles.modalCloseButton}
+                                onClick={closeVersionHistory}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {isVersionHistoryLoading ? (
+                            <p className={styles.modalDescription}>
+                                불러오는 중입니다.
+                            </p>
+                        ) : versionHistoryError ? (
+                            <p className={styles.modalDescription}>
+                                {versionHistoryError}
+                            </p>
+                        ) : versionHistory.length === 0 ? (
+                            <p className={styles.modalDescription}>
+                                아직 생성된 버전이 없습니다.
+                            </p>
+                        ) : (
+                            <ul className={styles.diffMemberList}>
+                                {versionHistory.map((version) => (
+                                    <li
+                                        key={version.versionId}
+                                        className={styles.diffMember}
+                                    >
+                                        <div>
+                                            <span
+                                                className={
+                                                    styles.diffMemberName
+                                                }
+                                            >
+                                                v{version.versionNumber} ·{" "}
+                                                {VERSION_STATUS_LABELS[
+                                                    version.status
+                                                ] || version.status}
+                                            </span>
+                                            {version.regenerationPrompt && (
+                                                <p
+                                                    className={
+                                                        styles.diffMemberRole
+                                                    }
+                                                >
+                                                    {version.regenerationPrompt}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <span
+                                            className={styles.diffMemberMoved}
+                                        >
+                                            {formatCreatedAt(
+                                                version.createdAt
+                                            )}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </section>
                 </div>
             )}
