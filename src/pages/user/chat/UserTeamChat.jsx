@@ -9,6 +9,10 @@ import ChatPinnedBar from "../../../components/common/chat/ChatPinnedBar";
 import ChatSidebar from "../../../components/common/chat/ChatSidebar";
 import ChatToast from "../../../components/common/chat/ChatToast";
 import useUserTeamChat from "../../../hooks/useUserTeamChat";
+import {
+    requestPinChatMessage,
+    requestUnpinChatMessage,
+} from "../../../api/chatApi";
 import styles from "./UserTeamChat.module.css";
 
 const FLASH_DURATION_MS = 1100;
@@ -16,11 +20,9 @@ const FLASH_DURATION_MS = 1100;
 const UserTeamChat = () => {
     const user = authStore((state) => state.user);
     const currentUserId = user?.userId;
-    // 백엔드에 고정 메시지 API가 아직 없어 채널 전환 시 초기화되는 로컬 상태로만 관리한다.
-    // API가 확정되면 이 state를 서버 값으로 교체하면 된다.
-    const [pinnedMessageId, setPinnedMessageId] = useState(null);
     const [flashingMessageId, setFlashingMessageId] = useState(null);
-    const [pinnedChannelId, setPinnedChannelId] = useState(undefined);
+    const [isPinUpdating, setIsPinUpdating] = useState(false);
+    const [pinError, setPinError] = useState("");
     const {
         room,
         selectedChannel,
@@ -44,6 +46,7 @@ const UserTeamChat = () => {
         isCreatingChannel,
         messageListRef,
         updateSelectedChannel,
+        updateMyAssignedTask,
         getChannelUnreadCount,
         handleSendMessage,
         handleSendFile,
@@ -61,24 +64,43 @@ const UserTeamChat = () => {
         selectToastChannel,
     } = useUserTeamChat();
     const currentMember = room?.myMember;
+    const pinnedMessageId = selectedChannel?.pinnedMessageId ?? null;
     const pinnedMessage = messages.find(
         (message) => message.id === pinnedMessageId
     );
 
-    // 채널을 전환하면 고정 메시지도 초기화한다(렌더 중 상태 조정 — React 권장 패턴).
-    if (pinnedChannelId !== selectedChannel?.id) {
-        setPinnedChannelId(selectedChannel?.id);
-        setPinnedMessageId(null);
-        setFlashingMessageId(null);
-    }
+    const handleTogglePin = async (messageId) => {
+        if (!selectedChannel?.id || isPinUpdating) return;
 
-    const handleTogglePin = (messageId) => {
-        setPinnedMessageId((current) =>
-            current === messageId ? null : messageId
-        );
+        try {
+            setIsPinUpdating(true);
+            setPinError("");
+
+            if (pinnedMessageId === messageId) {
+                await requestUnpinChatMessage(selectedChannel.id);
+            } else {
+                await requestPinChatMessage(selectedChannel.id, messageId);
+            }
+        } catch {
+            setPinError("메시지 고정에 실패했습니다.");
+        } finally {
+            setIsPinUpdating(false);
+        }
     };
 
-    const handleUnpin = () => setPinnedMessageId(null);
+    const handleUnpin = async () => {
+        if (!selectedChannel?.id || isPinUpdating) return;
+
+        try {
+            setIsPinUpdating(true);
+            setPinError("");
+            await requestUnpinChatMessage(selectedChannel.id);
+        } catch {
+            setPinError("고정 해제에 실패했습니다.");
+        } finally {
+            setIsPinUpdating(false);
+        }
+    };
 
     const handleJumpToPinnedMessage = () => {
         if (!pinnedMessage) return;
@@ -154,6 +176,9 @@ const UserTeamChat = () => {
                         />
 
                         {error && <p className={styles.errorText}>{error}</p>}
+                        {pinError && (
+                            <p className={styles.errorText}>{pinError}</p>
+                        )}
 
                         <div className={styles.messageArea}>
                             {isLoading && (
@@ -213,6 +238,8 @@ const UserTeamChat = () => {
                         members={members}
                         onlineMembers={onlineMembers}
                         offlineMembers={offlineMembers}
+                        currentUserId={currentUserId}
+                        onUpdateAssignedTask={updateMyAssignedTask}
                     />
 
                     {isChannelModalOpen && (

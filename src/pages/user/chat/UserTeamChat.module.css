@@ -326,9 +326,54 @@
 }
 
 .memberTask {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: var(--color-text-muted);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
+}
+
+.memberTask button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.memberTaskEdit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.memberTaskEdit input {
+    width: 120px;
+    padding: 2px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: var(--font-size-xs);
+}
+
+.memberTaskEdit button {
+    padding: 2px 6px;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.memberTaskEditError {
+    margin: 2px 0 0;
+    color: var(--color-danger);
+    font-size: var(--font-size-xs);
 }
 
 .memberEmptyText {

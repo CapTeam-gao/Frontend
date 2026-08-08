@@ -152,6 +152,14 @@ export const requestMyTeam = async () => {
     return getResponseData(response);
 };
 
+export const requestUpdateAssignedTask = async (userId, assignedTask) => {
+    const response = await api.patch(`/api/teams/members/${userId}/task`, {
+        assignedTask,
+    });
+
+    return getResponseData(response);
+};
+
 export const requestCreateManualTeams = async (grade, teams) => {
     const response = await api.post("/api/admin/teams/manual", {
         grade,

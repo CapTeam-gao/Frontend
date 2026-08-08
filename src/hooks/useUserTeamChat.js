@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { requestMyTeam } from "../api/teamApi";
+import { useCallback, useEffect, useState } from "react";
+import { requestMyTeam, requestUpdateAssignedTask } from "../api/teamApi";
 import { requestChatMessages, requestMarkChatAsRead } from "../api/chatApi";
+import authStore from "../store/authStore";
 import useChatMessages from "./useChatMessages";
 import useChatPresence from "./useChatPresence";
 import useChatRoom from "./useChatRoom";
@@ -9,6 +10,7 @@ import useChatSocket from "./useChatSocket";
 let toastIdSeq = 1;
 
 const useUserTeamChat = () => {
+    const currentUserId = authStore((state) => state.user?.userId);
     const [error, setError] = useState("");
     const [toasts, setToasts] = useState([]);
     const [memberRoles, setMemberRoles] = useState({});
@@ -113,10 +115,10 @@ const useUserTeamChat = () => {
         onError: setError,
     });
 
-    // presence 응답엔 담당 업무(studentRole)가 없어서, 이미 확정된 팀 정보 API(/api/teams/my-team)에서
-    // 한 번만 받아 userId로 합쳐준다.
-    useEffect(() => {
-        if (!room?.id) return;
+    // presence 응답엔 희망 직군(studentRole)·담당 업무(assignedTask)가 없어서, 이미 확정된
+    // 팀 정보 API(/api/teams/my-team)에서 받아 userId로 합쳐준다.
+    const loadMemberDetails = useCallback(() => {
+        if (!room?.id) return undefined;
 
         let isMounted = true;
 
@@ -124,28 +126,47 @@ const useUserTeamChat = () => {
             .then((data) => {
                 if (!isMounted) return;
 
-                const roleByUserId = {};
+                const detailByUserId = {};
                 (data?.members ?? []).forEach((member) => {
-                    roleByUserId[member.userId] = member.studentRole;
+                    detailByUserId[member.userId] = {
+                        studentRole: member.studentRole,
+                        assignedTask: member.assignedTask,
+                    };
                 });
-                setMemberRoles(roleByUserId);
+                setMemberRoles(detailByUserId);
             })
-            .catch(() => {});
+            .catch(() => setError("팀원 정보를 불러오지 못했습니다."));
 
         return () => {
             isMounted = false;
         };
     }, [room?.id]);
 
-    const withStudentRole = (memberList) =>
+    useEffect(() => loadMemberDetails(), [loadMemberDetails]);
+
+    const withMemberDetails = (memberList) =>
         memberList.map((member) => ({
             ...member,
-            studentRole: memberRoles[member.userId],
+            studentRole: memberRoles[member.userId]?.studentRole,
+            assignedTask: memberRoles[member.userId]?.assignedTask,
         }));
 
-    const members = withStudentRole(presenceMembers);
-    const onlineMembers = withStudentRole(presenceOnlineMembers);
-    const offlineMembers = withStudentRole(presenceOfflineMembers);
+    const members = withMemberDetails(presenceMembers);
+    const onlineMembers = withMemberDetails(presenceOnlineMembers);
+    const offlineMembers = withMemberDetails(presenceOfflineMembers);
+
+    const updateMyAssignedTask = async (assignedTask) => {
+        if (!currentUserId) return;
+
+        await requestUpdateAssignedTask(currentUserId, assignedTask);
+        setMemberRoles((prev) => ({
+            ...prev,
+            [currentUserId]: {
+                ...prev[currentUserId],
+                assignedTask,
+            },
+        }));
+    };
 
     useEffect(() => {
         return scrollToBottom({
@@ -182,6 +203,7 @@ const useUserTeamChat = () => {
         isCreatingChannel,
         messageListRef,
         updateSelectedChannel,
+        updateMyAssignedTask,
         getChannelUnreadCount,
         handleSendMessage,
         handleSendFile,
