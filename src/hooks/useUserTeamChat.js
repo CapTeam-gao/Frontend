@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { requestMyTeam } from "../api/teamApi";
+import { requestChatMessages, requestMarkChatAsRead } from "../api/chatApi";
 import useChatMessages from "./useChatMessages";
 import useChatPresence from "./useChatPresence";
 import useChatRoom from "./useChatRoom";
@@ -47,8 +48,10 @@ const useUserTeamChat = () => {
         handleMessageScroll,
     } = useChatMessages({
         selectedChannel,
-        clearChannelUnreadCount,
-        setError,
+        fetchMessages: requestChatMessages,
+        markAsRead: requestMarkChatAsRead,
+        onReadComplete: clearChannelUnreadCount,
+        onError: setError,
     });
 
     const {

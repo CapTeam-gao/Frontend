@@ -1,12 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-    requestChatMessages,
     requestDeleteChatMessage,
-    requestMarkChatAsRead,
     requestUpdateChatMessage,
 } from "../api/chatApi";
+import { parseChatDate } from "../utils/chat";
 
-const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError }) => {
+const getPageContent = (data) => {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.content)) return data.content;
+    return [];
+};
+
+const useChatMessages = ({
+    selectedChannel,
+    fetchMessages,
+    markAsRead,
+    onReadComplete,
+    onError,
+    autoScrollOnLoad = false,
+}) => {
     const isLoadingOlderMessagesRef = useRef(false);
     const messageListRef = useRef(null);
 
@@ -15,7 +27,39 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
     const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
     const [messagePage, setMessagePage] = useState(0);
     const [hasMoreMessages, setHasMoreMessages] = useState(false);
+    const [messageError, setMessageError] = useState("");
+
     const selectedChannelId = selectedChannel?.id;
+
+    const setErrorMessage = useCallback(
+        (message) => {
+            setMessageError(message);
+            onError?.(message);
+        },
+        [onError]
+    );
+
+    const scrollToBottom = useCallback(
+        ({ isPageLoading } = {}) => {
+            if (isLoadingOlderMessagesRef.current) return;
+            if (isPageLoading || isMessageLoading || messages.length === 0) {
+                return;
+            }
+
+            const messageList = messageListRef.current;
+
+            if (!messageList) return;
+
+            const frameId = requestAnimationFrame(() => {
+                messageList.scrollTop = messageList.scrollHeight;
+            });
+
+            return () => {
+                cancelAnimationFrame(frameId);
+            };
+        },
+        [isMessageLoading, messages.length]
+    );
 
     useEffect(() => {
         if (!selectedChannelId) return undefined;
@@ -25,18 +69,21 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
         const getMessages = async () => {
             try {
                 setIsMessageLoading(true);
-                const data = await requestChatMessages(selectedChannelId);
-                const messageList = data.content ?? [];
+                setMessageError("");
+
+                const data = await fetchMessages(selectedChannelId);
+                const messageList = getPageContent(data);
 
                 if (ignore) return;
 
                 setMessages([...messageList].reverse());
                 setMessagePage(0);
                 setHasMoreMessages(data.last === false);
-                await requestMarkChatAsRead(selectedChannelId);
-                if (!ignore) clearChannelUnreadCount(selectedChannelId);
+
+                await markAsRead(selectedChannelId);
+                if (!ignore) onReadComplete?.();
             } catch {
-                if (!ignore) setError("메시지를 불러오지 못했습니다.");
+                if (!ignore) setErrorMessage("메시지를 불러오지 못했습니다.");
             } finally {
                 if (!ignore) setIsMessageLoading(false);
             }
@@ -47,24 +94,47 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
         return () => {
             ignore = true;
         };
-    }, [selectedChannelId, clearChannelUnreadCount, setError]);
+    }, [
+        selectedChannelId,
+        fetchMessages,
+        markAsRead,
+        onReadComplete,
+        setErrorMessage,
+    ]);
 
-    const scrollToBottom = useCallback(({ isPageLoading }) => {
-        if (isLoadingOlderMessagesRef.current) return;
-        if (isPageLoading || isMessageLoading || messages.length === 0) return;
+    useLayoutEffect(() => {
+        if (!autoScrollOnLoad) return;
+        if (isMessageLoading || messages.length === 0) return;
 
-        const messageList = messageListRef.current;
+        scrollToBottom();
+    }, [autoScrollOnLoad, isMessageLoading, messages, scrollToBottom]);
 
-        if (!messageList) return;
+    const addMessage = useCallback(
+        (message) => {
+            setMessages((prevMessages) => {
+                const alreadyExists = prevMessages.some(
+                    (prevMessage) =>
+                        String(prevMessage.id) === String(message.id)
+                );
 
-        const frameId = requestAnimationFrame(() => {
-            messageList.scrollTop = messageList.scrollHeight;
-        });
+                if (alreadyExists) return prevMessages;
 
-        return () => {
-            cancelAnimationFrame(frameId);
-        };
-    }, [isMessageLoading, messages.length]);
+                return [...prevMessages, message].sort(
+                    (a, b) =>
+                        parseChatDate(a.createdAt) - parseChatDate(b.createdAt)
+                );
+            });
+
+            if (autoScrollOnLoad) scrollToBottom();
+        },
+        [autoScrollOnLoad, scrollToBottom]
+    );
+
+    const clearMessages = useCallback(() => {
+        setMessages([]);
+        setMessagePage(0);
+        setHasMoreMessages(false);
+    }, []);
 
     const handleEditMessage = async (messageId, nextMessage) => {
         const trimmedMessage = nextMessage.trim();
@@ -79,7 +149,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
 
             setMessages((prevMessages) =>
                 prevMessages.map((message) =>
-                    message.id === messageId
+                    String(message.id) === String(messageId)
                         ? {
                               ...message,
                               ...updatedMessage,
@@ -90,7 +160,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
                 )
             );
         } catch {
-            setError("메시지 수정에 실패했습니다.");
+            setErrorMessage("메시지 수정에 실패했습니다.");
             throw new Error("메시지 수정 실패");
         }
     };
@@ -102,10 +172,12 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
             await requestDeleteChatMessage(messageId);
 
             setMessages((prevMessages) =>
-                prevMessages.filter((message) => message.id !== messageId)
+                prevMessages.filter(
+                    (message) => String(message.id) !== String(messageId)
+                )
             );
         } catch {
-            setError("메시지 삭제에 실패했습니다.");
+            setErrorMessage("메시지 삭제에 실패했습니다.");
             throw new Error("메시지 삭제 실패");
         }
     };
@@ -142,7 +214,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
             messageList.scrollTop > 40 ||
             isLoadingMoreMessages ||
             !hasMoreMessages ||
-            !selectedChannel?.id
+            !selectedChannelId
         ) {
             return;
         }
@@ -154,18 +226,18 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
             setIsLoadingMoreMessages(true);
             isLoadingOlderMessagesRef.current = true;
 
-            const data = await requestChatMessages(selectedChannel.id, {
+            const data = await fetchMessages(selectedChannelId, {
                 page: nextPage,
                 size: 30,
             });
-            const olderMessages = [...(data.content ?? [])].reverse();
+            const olderMessages = [...getPageContent(data)].reverse();
 
             setMessages((prevMessages) => {
                 const prevMessageIds = new Set(
-                    prevMessages.map((message) => message.id)
+                    prevMessages.map((message) => String(message.id))
                 );
                 const nextMessages = olderMessages.filter(
-                    (message) => !prevMessageIds.has(message.id)
+                    (message) => !prevMessageIds.has(String(message.id))
                 );
 
                 return [...nextMessages, ...prevMessages];
@@ -180,7 +252,7 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
             });
         } catch {
             isLoadingOlderMessagesRef.current = false;
-            setError("이전 메시지를 불러오지 못했습니다.");
+            setErrorMessage("이전 메시지를 불러오지 못했습니다.");
         } finally {
             setIsLoadingMoreMessages(false);
         }
@@ -189,8 +261,11 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
     return {
         messages,
         setMessages,
+        addMessage,
+        clearMessages,
         isMessageLoading,
         isLoadingMoreMessages,
+        messageError,
         messageListRef,
         scrollToBottom,
         handleEditMessage,

@@ -6,7 +6,7 @@ import ChatMemberSidebar from "../../../components/common/chat/ChatMemberSidebar
 import ChatSidebar from "../../../components/common/chat/ChatSidebar";
 import authStore from "../../../store/authStore";
 import useAdminChatRoom from "../../../hooks/useAdminChatRoom";
-import useAdminChatMessages from "../../../hooks/useAdminChatMessages";
+import useChatMessages from "../../../hooks/useChatMessages";
 import useAdminChatSocket from "../../../hooks/useAdminChatSocket";
 import useChatPresence from "../../../hooks/useChatPresence";
 import styles from "./AdminChatManage.module.css";
@@ -14,9 +14,14 @@ import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { useCallback, useEffect, useState } from "react";
 import {
     requestAdminChannelSummaries,
+    requestAdminChatMessages,
     requestMarkAdminChatAsRead,
 } from "../../../api/adminChatApi";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../../../utils/chat";
+
+const dispatchChatUnreadChange = () => {
+    window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+};
 
 const AdminChatManage = () => {
     const user = authStore((state) => state.user);
@@ -44,7 +49,13 @@ const AdminChatManage = () => {
         handleDeleteMessage,
         handleMessageEvent,
         handleMessageScroll,
-    } = useAdminChatMessages(selectedChannel);
+    } = useChatMessages({
+        selectedChannel,
+        fetchMessages: requestAdminChatMessages,
+        markAsRead: requestMarkAdminChatAsRead,
+        onReadComplete: dispatchChatUnreadChange,
+        autoScrollOnLoad: true,
+    });
 
     const [channelSummaries, setChannelSummaries] = useState([]);
     const selectedRoomId = selectedRoom?.id;
