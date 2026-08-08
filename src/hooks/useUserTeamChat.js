@@ -107,7 +107,7 @@ const useUserTeamChat = () => {
         selectedChannel,
         socketConnected,
         chatClientRef,
-        setError,
+        onError: setError,
     });
 
     // presence 응답엔 담당 업무(studentRole)가 없어서, 이미 확정된 팀 정보 API(/api/teams/my-team)에서

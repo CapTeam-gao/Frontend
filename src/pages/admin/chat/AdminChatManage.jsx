@@ -8,7 +8,7 @@ import authStore from "../../../store/authStore";
 import useAdminChatRoom from "../../../hooks/useAdminChatRoom";
 import useAdminChatMessages from "../../../hooks/useAdminChatMessages";
 import useAdminChatSocket from "../../../hooks/useAdminChatSocket";
-import useAdminChatPresence from "../../../hooks/useAdminChatPresence";
+import useChatPresence from "../../../hooks/useChatPresence";
 import styles from "./AdminChatManage.module.css";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { useCallback, useEffect, useState } from "react";
@@ -175,11 +175,12 @@ const AdminChatManage = () => {
     });
 
     const { members, onlineMembers, offlineMembers, hasPresenceLoaded } =
-        useAdminChatPresence({
+        useChatPresence({
             chatClientRef,
-            isSocketConnected,
-            selectedRoom,
+            socketConnected: isSocketConnected,
             selectedChannel,
+            teamIdFallback: selectedRoom?.teamId,
+            gateBySelectedChannel: true,
         });
 
     const handleSelectChannel = async (channel) => {

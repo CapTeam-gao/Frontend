@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { requestChatPresence } from "../api/chatApi";
 import { subscribeTeamPresence } from "../api/chatSocket";
 
@@ -6,7 +6,9 @@ const useChatPresence = ({
     selectedChannel,
     socketConnected,
     chatClientRef,
-    setError,
+    onError,
+    teamIdFallback,
+    gateBySelectedChannel = false,
 }) => {
     const [members, setMembers] = useState([]);
     const [presenceTeamId, setPresenceTeamId] = useState(null);
@@ -27,16 +29,16 @@ const useChatPresence = ({
 
             const data = await requestChatPresence(selectedChannelId);
 
-            setPresenceTeamId(data?.teamId ?? null);
+            setPresenceTeamId(data?.teamId ?? teamIdFallback ?? null);
             setMembers(Array.isArray(data?.members) ? data.members : []);
         } catch {
             setMembers([]);
             setPresenceTeamId(null);
-            setError("팀원 접속 상태를 불러오지 못했습니다.");
+            onError?.("팀원 접속 상태를 불러오지 못했습니다.");
         } finally {
             setHasPresenceLoaded(true);
         }
-    }, [selectedChannelId, setError]);
+    }, [selectedChannelId, teamIdFallback, onError]);
 
     useEffect(() => {
         refreshPresence();
@@ -55,7 +57,9 @@ const useChatPresence = ({
     }, [refreshPresence, selectedChannelId, socketConnected]);
 
     useEffect(() => {
-        if (!presenceTeamId || !socketConnected) return undefined;
+        if (!chatClientRef?.current || !socketConnected || !presenceTeamId) {
+            return undefined;
+        }
 
         const presenceSubscription = subscribeTeamPresence(
             chatClientRef.current,
@@ -79,22 +83,33 @@ const useChatPresence = ({
                             : member
                     );
                 });
+
+                setHasPresenceLoaded(true);
             }
         );
 
         return () => {
-            presenceSubscription?.unsubscribe();
+            presenceSubscription?.unsubscribe?.();
         };
     }, [presenceTeamId, socketConnected, chatClientRef]);
 
-    const onlineMembers = members.filter((member) => member.online);
-    const offlineMembers = members.filter((member) => !member.online);
+    const onlineMembers = useMemo(
+        () => members.filter((member) => member.online),
+        [members]
+    );
+
+    const offlineMembers = useMemo(
+        () => members.filter((member) => !member.online),
+        [members]
+    );
+
+    const shouldGate = gateBySelectedChannel && !selectedChannel;
 
     return {
-        members,
-        onlineMembers,
-        offlineMembers,
-        hasPresenceLoaded,
+        members: shouldGate ? [] : members,
+        onlineMembers: shouldGate ? [] : onlineMembers,
+        offlineMembers: shouldGate ? [] : offlineMembers,
+        hasPresenceLoaded: shouldGate ? false : hasPresenceLoaded,
     };
 };
 
