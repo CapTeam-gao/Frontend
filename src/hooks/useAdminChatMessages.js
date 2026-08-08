@@ -53,6 +53,8 @@ const useAdminChatMessages = (selectedChannel) => {
     useEffect(() => {
         if (!selectedChannelId) return undefined;
 
+        let ignore = false;
+
         const getMessages = async () => {
             try {
                 setIsMessageLoading(true);
@@ -61,20 +63,28 @@ const useAdminChatMessages = (selectedChannel) => {
                 const data = await requestAdminChatMessages(selectedChannelId);
                 const messageList = getPageContent(data);
 
+                if (ignore) return;
+
                 setMessages([...messageList].reverse());
                 setMessagePage(0);
                 setHasMoreMessages(data.last === false);
 
                 await requestMarkAdminChatAsRead(selectedChannelId);
-                window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+                if (!ignore) {
+                    window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
+                }
             } catch {
-                setMessageError("메시지를 불러오지 못했습니다.");
+                if (!ignore) setMessageError("메시지를 불러오지 못했습니다.");
             } finally {
-                setIsMessageLoading(false);
+                if (!ignore) setIsMessageLoading(false);
             }
         };
 
         getMessages();
+
+        return () => {
+            ignore = true;
+        };
     }, [selectedChannelId]);
 
     useLayoutEffect(() => {

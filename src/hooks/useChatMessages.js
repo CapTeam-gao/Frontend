@@ -18,7 +18,9 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
     const selectedChannelId = selectedChannel?.id;
 
     useEffect(() => {
-        if (!selectedChannelId) return;
+        if (!selectedChannelId) return undefined;
+
+        let ignore = false;
 
         const getMessages = async () => {
             try {
@@ -26,19 +28,25 @@ const useChatMessages = ({ selectedChannel, clearChannelUnreadCount, setError })
                 const data = await requestChatMessages(selectedChannelId);
                 const messageList = data.content ?? [];
 
+                if (ignore) return;
+
                 setMessages([...messageList].reverse());
                 setMessagePage(0);
                 setHasMoreMessages(data.last === false);
                 await requestMarkChatAsRead(selectedChannelId);
-                clearChannelUnreadCount(selectedChannelId);
+                if (!ignore) clearChannelUnreadCount(selectedChannelId);
             } catch {
-                setError("메시지를 불러오지 못했습니다.");
+                if (!ignore) setError("메시지를 불러오지 못했습니다.");
             } finally {
-                setIsMessageLoading(false);
+                if (!ignore) setIsMessageLoading(false);
             }
         };
 
         getMessages();
+
+        return () => {
+            ignore = true;
+        };
     }, [selectedChannelId, clearChannelUnreadCount, setError]);
 
     const scrollToBottom = useCallback(({ isPageLoading }) => {
