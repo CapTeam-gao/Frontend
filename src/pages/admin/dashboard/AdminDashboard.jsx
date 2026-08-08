@@ -1,18 +1,22 @@
 // Design/AdminDashboard.html 반영.
-// [임시 목데이터] 학생 현황 / 캡스톤 일지 제출 현황 / 팀별 채팅 미리보기 / 최근 공지는
-// requestAdminStudentList·requestAdminLogList·requestNoticeList 등 실제 API 대신
-// Design html 목업과 동일한 값을 하드코딩해서 우선 디자인만 맞춘 상태.
-// 백엔드 연동 시 아래 MOCK_* 상수를 실제 API 응답으로 교체할 것.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import TeamRequiredModal from "../../../components/common/modal/TeamRequiredModal";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
+import { requestAdminStudentList } from "../../../api/studentApi";
+import { requestAdminLogList } from "../../../api/logApi";
+import {
+    requestAdminChannelSummaries,
+    requestAdminChatRooms,
+} from "../../../api/adminChatApi";
+import { requestNoticeList } from "../../../api/noticeApi";
 import {
     formatCountdownTime,
     getCapstoneLogRemainingMs,
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
+import { formatChatTime } from "../../../utils/chat";
 import {
     formatCreatedAt,
     stripMarkdown,
@@ -26,133 +30,45 @@ import heroVisualPending from "../../../assets/images/dashboardHeroPuzzle.png";
 import heroVisualCreated from "../../../assets/images/dashboardHeroPuzzleUser.png";
 import styles from "./AdminDashboard.module.css";
 
-// Design/AdminDashboard.html(설문·팀 생성 진행 중 상태) 목데이터
-const MOCK_SURVEY_PROGRESS = { respondedCount: 27, totalCount: 32 };
+const countSurveyProgress = (students, grade) => {
+    const gradeStudents = students.filter((student) => student.grade === grade);
 
-const PENDING_MOCK = {
-    studentStatus: {
-        totalStudentCount: 64,
-        grade2Responded: 28,
-        grade2Total: 32,
-        grade3Responded: 27,
-        grade3Total: 32,
-    },
-    journalStatus: {
-        submittedTeamCount: 4,
-        totalTeamCount: 6,
-        notSubmittedTeamNames: ["2학년 3팀", "2학년 4팀"],
-    },
-    chat: {
-        activeChatRoomCount: 4,
-        unreadMessageCount: 2,
-        recentMessages: [
-            {
-                teamName: "2학년 1팀",
-                timeText: "10분 전",
-                preview: "허재원: 오늘 회의는 7시에 할게요",
-                extraSenderCount: 2,
-            },
-            {
-                teamName: "3학년 4팀",
-                timeText: "32분 전",
-                preview: "파일 업로드: 기획서_초안.pdf",
-                extraSenderCount: 1,
-            },
-        ],
-    },
-    notices: [
-        {
-            noticeId: 1,
-            title: "2학년 팀 배정 결과 안내",
-            content:
-                "2학년 4개 팀의 최종 배정 결과와 팀장, 역할 구성을 공지 상세에서 확인할 수 있습니다.",
-            important: "IMPORTANT",
-            writer: "관리자",
-            createdAt: "2026-07-24",
-        },
-        {
-            noticeId: 2,
-            title: "캡스톤 일지 작성 시간 변경 안내",
-            content: "",
-            important: "NORMAL",
-            writer: "관리자",
-            createdAt: "2026-07-22",
-        },
-        {
-            noticeId: 3,
-            title: "3학년 설문 마감 임박 안내(~07.27)",
-            content: "",
-            important: "IMPORTANT",
-            writer: "관리자",
-            createdAt: "2026-07-21",
-        },
-    ],
+    return {
+        responded: gradeStudents.filter((student) => student.surveyCompleted)
+            .length,
+        total: gradeStudents.length,
+    };
 };
 
-// Design/CreatedAdminDashboard.html(모든 학년 팀 생성 완료 상태) 목데이터
-const ALL_CREATED_MOCK = {
-    hero: {
-        totalTeamCount: 6,
-        grade2TeamCount: 4,
-        grade3TeamCount: 2,
-    },
-    studentStatus: {
-        totalStudentCount: 64,
-        grade2Responded: 32,
-        grade2Total: 32,
-        grade3Responded: 32,
-        grade3Total: 32,
-    },
-    journalStatus: {
-        submittedTeamCount: 4,
-        totalTeamCount: 6,
-        notSubmittedTeamNames: ["2학년 3팀", "2학년 4팀"],
-    },
-    chat: {
-        activeChatRoomCount: 6,
-        unreadMessageCount: 3,
-        recentMessages: [
-            {
-                teamName: "2학년 1팀",
-                timeText: "10분 전",
-                preview: "허재원: 오늘 회의는 7시에 할게요",
-                extraSenderCount: 2,
-            },
-            {
-                teamName: "3학년 2팀",
-                timeText: "32분 전",
-                preview: "파일 업로드: 기획서_초안.pdf",
-                extraSenderCount: 1,
-            },
-        ],
-    },
-    notices: [
-        {
-            noticeId: 4,
-            title: "3학년 팀 배정 결과 안내",
-            content:
-                "3학년 2개 팀의 최종 배정 결과와 팀장, 역할 구성을 공지 상세에서 확인할 수 있습니다.",
-            important: "IMPORTANT",
-            writer: "관리자",
-            createdAt: "2026-07-25",
-        },
-        {
-            noticeId: 1,
-            title: "2학년 팀 배정 결과 안내",
-            content: "",
-            important: "NORMAL",
-            writer: "관리자",
-            createdAt: "2026-07-20",
-        },
-        {
-            noticeId: 2,
-            title: "캡스톤 일지 작성 시간 변경 안내",
-            content: "",
-            important: "NORMAL",
-            writer: "관리자",
-            createdAt: "2026-07-22",
-        },
-    ],
+// 채팅방 목록에서 각 방의 마지막 메시지를 병렬로 가져온다(방 개수가 적어 N+1이어도 무해함).
+const fetchRecentMessages = async (rooms) => {
+    const previews = await Promise.all(
+        rooms.map(async (room) => {
+            const firstChannel = room.channels?.[0];
+            if (!firstChannel) return null;
+
+            const summaries = await requestAdminChannelSummaries(
+                room.id
+            ).catch(() => []);
+            const lastMessage = summaries?.[0]?.lastMessage;
+
+            if (!lastMessage) return null;
+
+            return {
+                teamName: room.teamName,
+                timeText: formatChatTime(lastMessage.createdAt),
+                preview: `${lastMessage.senderName}: ${
+                    lastMessage.message ?? "파일을 보냈습니다."
+                }`,
+                createdAt: lastMessage.createdAt,
+            };
+        })
+    );
+
+    return previews
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 2);
 };
 
 const AdminDashboard = () => {
@@ -168,6 +84,18 @@ const AdminDashboard = () => {
         totalStudentCount: 0,
         hasUnreadNotice: false,
     });
+    const [surveyProgress, setSurveyProgress] = useState({
+        grade2: { responded: 0, total: 0 },
+        grade3: { responded: 0, total: 0 },
+    });
+    const [journalStatus, setJournalStatus] = useState({
+        submittedTeamCount: 0,
+        totalTeamCount: 0,
+        notSubmittedTeamNames: [],
+    });
+    const [recentMessages, setRecentMessages] = useState([]);
+    const [notices, setNotices] = useState([]);
+    const [sectionErrors, setSectionErrors] = useState({});
     const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
@@ -196,6 +124,74 @@ const AdminDashboard = () => {
     }, []);
 
     useEffect(() => {
+        const getSectionData = async () => {
+            const [studentsResult, logsResult, roomsResult, noticesResult] =
+                await Promise.allSettled([
+                    requestAdminStudentList(),
+                    requestAdminLogList(),
+                    requestAdminChatRooms(),
+                    requestNoticeList(),
+                ]);
+
+            const nextSectionErrors = {};
+
+            if (studentsResult.status === "fulfilled") {
+                const students = studentsResult.value?.students ?? [];
+                setSurveyProgress({
+                    grade2: countSurveyProgress(students, "GRADE_2"),
+                    grade3: countSurveyProgress(students, "GRADE_3"),
+                });
+            } else {
+                nextSectionErrors.students = "학생 현황을 불러오지 못했습니다.";
+            }
+
+            if (logsResult.status === "fulfilled") {
+                const logData = logsResult.value;
+                const journals = Array.isArray(logData?.journals)
+                    ? logData.journals
+                    : [];
+                setJournalStatus({
+                    submittedTeamCount: logData?.submittedCount ?? 0,
+                    totalTeamCount: logData?.totalCount ?? 0,
+                    notSubmittedTeamNames: journals
+                        .filter((journal) => !journal.submitted)
+                        .map(
+                            (journal) =>
+                                `${gradeLabels[journal.grade] ?? ""} ${
+                                    journal.teamName
+                                }`
+                        ),
+                });
+            } else {
+                nextSectionErrors.journal = "일지 제출 현황을 불러오지 못했습니다.";
+            }
+
+            if (roomsResult.status === "fulfilled") {
+                const rooms = Array.isArray(roomsResult.value)
+                    ? roomsResult.value
+                    : [];
+                setRecentMessages(await fetchRecentMessages(rooms));
+            } else {
+                nextSectionErrors.chat = "채팅 미리보기를 불러오지 못했습니다.";
+            }
+
+            if (noticesResult.status === "fulfilled") {
+                setNotices(
+                    Array.isArray(noticesResult.value)
+                        ? noticesResult.value.slice(0, 3)
+                        : []
+                );
+            } else {
+                nextSectionErrors.notices = "공지를 불러오지 못했습니다.";
+            }
+
+            setSectionErrors(nextSectionErrors);
+        };
+
+        getSectionData();
+    }, []);
+
+    useEffect(() => {
         const timerId = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -221,26 +217,28 @@ const AdminDashboard = () => {
         setTeamRequiredModal({ message });
     };
 
-    const nextGradeRespondedCount = MOCK_SURVEY_PROGRESS.respondedCount;
-    const nextGradeTotalCount = MOCK_SURVEY_PROGRESS.totalCount;
+    const nextGradeSurvey =
+        nextGrade === "GRADE_3"
+            ? surveyProgress.grade3
+            : surveyProgress.grade2;
+    const nextGradeRespondedCount = nextGradeSurvey.responded;
+    const nextGradeTotalCount = nextGradeSurvey.total;
     const nextGradeSurveyPercent = nextGradeTotalCount
         ? Math.round((nextGradeRespondedCount / nextGradeTotalCount) * 100)
         : 0;
 
-    const mock = nextGrade ? PENDING_MOCK : ALL_CREATED_MOCK;
     const grade2NotResponded =
-        mock.studentStatus.grade2Total - mock.studentStatus.grade2Responded;
+        surveyProgress.grade2.total - surveyProgress.grade2.responded;
     const grade3NotResponded =
-        mock.studentStatus.grade3Total - mock.studentStatus.grade3Responded;
+        surveyProgress.grade3.total - surveyProgress.grade3.responded;
 
-    const journalRatioPercent = mock.journalStatus.totalTeamCount
-        ? (mock.journalStatus.submittedTeamCount /
-              mock.journalStatus.totalTeamCount) *
+    const journalRatioPercent = journalStatus.totalTeamCount
+        ? (journalStatus.submittedTeamCount / journalStatus.totalTeamCount) *
           100
         : 0;
 
-    const featuredNotice = mock.notices[0];
-    const restNotices = mock.notices.slice(1, 3);
+    const featuredNotice = notices[0];
+    const restNotices = notices.slice(1, 3);
 
     return (
         <div className={styles.page}>
@@ -314,26 +312,12 @@ const AdminDashboard = () => {
                                     <>
                                         <h1 className={styles.heroTitle}>
                                             이번 학기{" "}
-                                            <em>
-                                                {
-                                                    ALL_CREATED_MOCK.hero
-                                                        .totalTeamCount
-                                                }
-                                                팀
-                                            </em>{" "}
+                                            <em>{dashboard.totalTeamCount}팀</em>{" "}
                                             생성이 완료됐어요
                                         </h1>
                                         <p className={styles.heroSub}>
-                                            2학년{" "}
-                                            {
-                                                ALL_CREATED_MOCK.hero
-                                                    .grade2TeamCount
-                                            }
-                                            팀, 3학년{" "}
-                                            {
-                                                ALL_CREATED_MOCK.hero
-                                                    .grade3TeamCount
-                                            }
+                                            2학년 {dashboard.grade2TeamCount}
+                                            팀, 3학년 {dashboard.grade3TeamCount}
                                             팀이 모두 확정되어 프로젝트를 진행
                                             중입니다.
                                         </p>
@@ -402,65 +386,114 @@ const AdminDashboard = () => {
                                         학생 관리
                                     </Link>
                                 </div>
-                                <p className={styles.tileMeta}>
-                                    전체{" "}
-                                    <b>
-                                        {mock.studentStatus.totalStudentCount}명
-                                    </b>{" "}
-                                    등록
-                                </p>
-                                <div className={styles.miniBars}>
-                                    <div className={styles.miniBarRow}>
-                                        <span className={styles.miniBarLabel}>
-                                            2학년
-                                        </span>
-                                        <div className={styles.miniBarTrack}>
-                                            <div
-                                                className={styles.miniBarFill}
-                                                style={{
-                                                    width: `${
-                                                        (mock.studentStatus
-                                                            .grade2Responded /
-                                                            mock.studentStatus
-                                                                .grade2Total) *
-                                                        100
-                                                    }%`,
-                                                }}
-                                            />
+                                {sectionErrors.students ? (
+                                    <p className={styles.tileDisabledMsg}>
+                                        {sectionErrors.students}
+                                    </p>
+                                ) : (
+                                    <>
+                                        <p className={styles.tileMeta}>
+                                            전체{" "}
+                                            <b>
+                                                {dashboard.totalStudentCount}명
+                                            </b>{" "}
+                                            등록
+                                        </p>
+                                        <div className={styles.miniBars}>
+                                            <div className={styles.miniBarRow}>
+                                                <span
+                                                    className={
+                                                        styles.miniBarLabel
+                                                    }
+                                                >
+                                                    2학년
+                                                </span>
+                                                <div
+                                                    className={
+                                                        styles.miniBarTrack
+                                                    }
+                                                >
+                                                    <div
+                                                        className={
+                                                            styles.miniBarFill
+                                                        }
+                                                        style={{
+                                                            width: `${
+                                                                surveyProgress
+                                                                    .grade2
+                                                                    .total
+                                                                    ? (surveyProgress
+                                                                          .grade2
+                                                                          .responded /
+                                                                          surveyProgress
+                                                                              .grade2
+                                                                              .total) *
+                                                                      100
+                                                                    : 0
+                                                            }%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <span
+                                                    className={
+                                                        styles.miniBarValue
+                                                    }
+                                                >
+                                                    {surveyProgress.grade2.responded}
+                                                    /{surveyProgress.grade2.total}
+                                                </span>
+                                            </div>
+                                            <div className={styles.miniBarRow}>
+                                                <span
+                                                    className={
+                                                        styles.miniBarLabel
+                                                    }
+                                                >
+                                                    3학년
+                                                </span>
+                                                <div
+                                                    className={
+                                                        styles.miniBarTrack
+                                                    }
+                                                >
+                                                    <div
+                                                        className={
+                                                            styles.miniBarFill
+                                                        }
+                                                        style={{
+                                                            width: `${
+                                                                surveyProgress
+                                                                    .grade3
+                                                                    .total
+                                                                    ? (surveyProgress
+                                                                          .grade3
+                                                                          .responded /
+                                                                          surveyProgress
+                                                                              .grade3
+                                                                              .total) *
+                                                                      100
+                                                                    : 0
+                                                            }%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <span
+                                                    className={
+                                                        styles.miniBarValue
+                                                    }
+                                                >
+                                                    {surveyProgress.grade3.responded}
+                                                    /{surveyProgress.grade3.total}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span className={styles.miniBarValue}>
-                                            {mock.studentStatus.grade2Responded}
-                                            /{mock.studentStatus.grade2Total}
-                                        </span>
-                                    </div>
-                                    <div className={styles.miniBarRow}>
-                                        <span className={styles.miniBarLabel}>
-                                            3학년
-                                        </span>
-                                        <div className={styles.miniBarTrack}>
-                                            <div
-                                                className={styles.miniBarFill}
-                                                style={{
-                                                    width: `${
-                                                        (mock.studentStatus
-                                                            .grade3Responded /
-                                                            mock.studentStatus
-                                                                .grade3Total) *
-                                                        100
-                                                    }%`,
-                                                }}
-                                            />
-                                        </div>
-                                        <span className={styles.miniBarValue}>
-                                            {mock.studentStatus.grade3Responded}
-                                            /{mock.studentStatus.grade3Total}
-                                        </span>
-                                    </div>
-                                </div>
-                                <p className={styles.plainRowMeta}>
-                                    설문 미제출 2학년 {grade2NotResponded}명 ·
-                                    3학년 {grade3NotResponded}명
-                                </p>
+                                        <p className={styles.plainRowMeta}>
+                                            설문 미제출 2학년{" "}
+                                            {grade2NotResponded}명 · 3학년{" "}
+                                            {grade3NotResponded}명
+                                        </p>
+                                    </>
+                                )}
                             </div>
 
                             <div
@@ -483,15 +516,15 @@ const AdminDashboard = () => {
                                         전체보기
                                     </Link>
                                 </div>
-                                {isCapstoneLogTime(currentTime) ? (
+                                {sectionErrors.journal ? (
+                                    <p className={styles.tileDisabledMsg}>
+                                        {sectionErrors.journal}
+                                    </p>
+                                ) : isCapstoneLogTime(currentTime) ? (
                                     <>
-                                        <div
-                                            className={styles.ratioChart}
-                                        >
+                                        <div className={styles.ratioChart}>
                                             <div
-                                                className={
-                                                    styles.ratioTrack
-                                                }
+                                                className={styles.ratioTrack}
                                             >
                                                 <div
                                                     className={
@@ -503,21 +536,13 @@ const AdminDashboard = () => {
                                                 />
                                             </div>
                                             <div
-                                                className={
-                                                    styles.ratioLabel
-                                                }
+                                                className={styles.ratioLabel}
                                             >
-                                                {
-                                                    mock.journalStatus
-                                                        .submittedTeamCount
-                                                }
+                                                {journalStatus.submittedTeamCount}
                                                 <span>
                                                     {" "}
                                                     /{" "}
-                                                    {
-                                                        mock.journalStatus
-                                                            .totalTeamCount
-                                                    }
+                                                    {journalStatus.totalTeamCount}
                                                     팀
                                                 </span>
                                             </div>
@@ -533,7 +558,7 @@ const AdminDashboard = () => {
                                             </b>
                                         </p>
                                         <div className={styles.sectionList}>
-                                            {mock.journalStatus.notSubmittedTeamNames.map(
+                                            {journalStatus.notSubmittedTeamNames.map(
                                                 (teamName) => (
                                                     <div
                                                         key={teamName}
@@ -587,48 +612,53 @@ const AdminDashboard = () => {
                                 </div>
                                 <p className={styles.tileMeta}>
                                     운영 중인 채팅방{" "}
-                                    <b>{mock.chat.activeChatRoomCount}개</b> ·
+                                    <b>{dashboard.activeChatRoomCount}개</b> ·
                                     읽지 않은 메시지 {unreadChatCount}개
                                 </p>
-                                <div className={styles.sectionList}>
-                                    {mock.chat.recentMessages.map(
-                                        (message, index) => (
-                                            <div
-                                                key={index}
-                                                className={styles.plainRow}
-                                            >
-                                                <div>
-                                                    <div
-                                                        className={
-                                                            styles.plainRowTitle
-                                                        }
-                                                    >
-                                                        {message.teamName}
-                                                    </div>
-                                                    <div
-                                                        className={
-                                                            styles.plainRowMeta
-                                                        }
-                                                    >
-                                                        {message.timeText} ·{" "}
-                                                        {message.preview}
+                                {sectionErrors.chat ? (
+                                    <p className={styles.tileDisabledMsg}>
+                                        {sectionErrors.chat}
+                                    </p>
+                                ) : (
+                                    <div className={styles.sectionList}>
+                                        {recentMessages.length === 0 ? (
+                                            <p className={styles.tileMeta}>
+                                                아직 대화가 없습니다.
+                                            </p>
+                                        ) : (
+                                            recentMessages.map((message) => (
+                                                <div
+                                                    key={
+                                                        message.teamName +
+                                                        message.createdAt
+                                                    }
+                                                    className={
+                                                        styles.plainRow
+                                                    }
+                                                >
+                                                    <div>
+                                                        <div
+                                                            className={
+                                                                styles.plainRowTitle
+                                                            }
+                                                        >
+                                                            {message.teamName}
+                                                        </div>
+                                                        <div
+                                                            className={
+                                                                styles.plainRowMeta
+                                                            }
+                                                        >
+                                                            {message.timeText}{" "}
+                                                            ·{" "}
+                                                            {message.preview}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                {message.extraSenderCount >
-                                                    0 && (
-                                                    <span
-                                                        className={styles.tag}
-                                                    >
-                                                        +
-                                                        {
-                                                            message.extraSenderCount
-                                                        }
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )
-                                    )}
-                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -647,10 +677,14 @@ const AdminDashboard = () => {
                                 </Link>
                             </div>
 
-                            {featuredNotice ? (
+                            {sectionErrors.notices ? (
+                                <p className={styles.tileMeta}>
+                                    {sectionErrors.notices}
+                                </p>
+                            ) : featuredNotice ? (
                                 <div className={styles.noticeLayout}>
                                     <Link
-                                        to={`/admin/notice/${featuredNotice.noticeId}`}
+                                        to={`/admin/notice/${featuredNotice.id}`}
                                         className={styles.noticeFeatured}
                                     >
                                         {featuredNotice.important ===
@@ -710,8 +744,8 @@ const AdminDashboard = () => {
                                     <div className={styles.noticeListCompact}>
                                         {restNotices.map((notice) => (
                                             <Link
-                                                key={notice.noticeId}
-                                                to={`/admin/notice/${notice.noticeId}`}
+                                                key={notice.id}
+                                                to={`/admin/notice/${notice.id}`}
                                                 className={
                                                     styles.noticeCompactRow
                                                 }
