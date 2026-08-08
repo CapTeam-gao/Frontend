@@ -47,6 +47,7 @@ const AdminTeamEdit = () => {
     const [compareTab, setCompareTab] = useState("before");
     const [diffData, setDiffData] = useState(null);
     const [isDiffLoading, setIsDiffLoading] = useState(false);
+    const [diffError, setDiffError] = useState(false);
     const isLocked = isStreaming || reviewPending;
     const [selectedMember, setSelectedMember] = useState(null);
     const [highlightedUserIds, setHighlightedUserIds] = useState([]);
@@ -146,6 +147,11 @@ const AdminTeamEdit = () => {
                         }
                     } catch {
                         // ponytail: baseline 조회 실패해도 스트리밍은 계속 진행 — 이 경우 "변경사항" 비교만 못 하게 됨
+                        if (!ignore) {
+                            setMessage(
+                                "이전 결과를 불러오지 못해 변경사항 비교가 제한될 수 있습니다."
+                            );
+                        }
                     }
                 }
 
@@ -327,6 +333,7 @@ const AdminTeamEdit = () => {
     const openChangesModal = async () => {
         setIsChangesModalOpen(true);
         setCompareTab("before");
+        setDiffError(false);
 
         if (!baseVersionId || !pendingVersionId) return;
 
@@ -339,6 +346,7 @@ const AdminTeamEdit = () => {
             setDiffData(diff);
         } catch {
             setDiffData(null);
+            setDiffError(true);
         } finally {
             setIsDiffLoading(false);
         }
@@ -636,6 +644,10 @@ const AdminTeamEdit = () => {
                             {isDiffLoading ? (
                                 <p className={styles.messageText}>
                                     비교 결과를 불러오는 중입니다.
+                                </p>
+                            ) : diffError ? (
+                                <p className={styles.messageText}>
+                                    변경사항을 불러오지 못했습니다. 다시 시도해주세요.
                                 </p>
                             ) : compareTab === "changed" ? (
                                 changedByTeam.length === 0 ? (

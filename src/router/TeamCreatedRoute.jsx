@@ -8,6 +8,8 @@ import { getAdminTeamCreationStatus } from "../utils/teamStatus";
 
 const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
     const [isTeamCreated, setIsTeamCreated] = useState(null);
+    const [loadError, setLoadError] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         let ignore = false;
@@ -30,11 +32,13 @@ const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
                 }
 
                 if (!ignore) {
+                    setLoadError(false);
                     setIsTeamCreated(nextIsTeamCreated);
                 }
             } catch {
                 if (!ignore) {
-                    setIsTeamCreated(false);
+                    setLoadError(true);
+                    setIsTeamCreated(null);
                 }
             }
         };
@@ -44,7 +48,18 @@ const TeamCreatedRoute = ({ children, role, fallbackPath }) => {
         return () => {
             ignore = true;
         };
-    }, [role]);
+    }, [role, retryCount]);
+
+    if (loadError) {
+        return (
+            <div style={{ padding: 40, textAlign: "center" }}>
+                <p>페이지 정보를 불러오지 못했습니다. 네트워크 상태를 확인해주세요.</p>
+                <button type="button" onClick={() => setRetryCount((count) => count + 1)}>
+                    다시 시도
+                </button>
+            </div>
+        );
+    }
 
     if (isTeamCreated === null) {
         return null;

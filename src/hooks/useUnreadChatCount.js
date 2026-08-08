@@ -54,7 +54,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
             setUnreadChatCount(getTotalUnreadCount(channelSummaries));
             lastRefreshTimeRef.current = Date.now();
         } catch {
-            setUnreadChatCount(0);
+            // ponytail: 배지 조회 실패 시 0으로 덮어쓰지 않음 — 마지막 확인된 값 유지
         } finally {
             isRefreshingRef.current = false;
         }
