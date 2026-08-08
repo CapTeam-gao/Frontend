@@ -46,7 +46,6 @@ const UserTeamChat = () => {
         isCreatingChannel,
         messageListRef,
         updateSelectedChannel,
-        updateMyAssignedTask,
         getChannelUnreadCount,
         handleSendMessage,
         handleSendFile,
@@ -238,8 +237,6 @@ const UserTeamChat = () => {
                         members={members}
                         onlineMembers={onlineMembers}
                         offlineMembers={offlineMembers}
-                        currentUserId={currentUserId}
-                        onUpdateAssignedTask={updateMyAssignedTask}
                     />
 
                     {isChannelModalOpen && (

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { requestMyTeam, requestUpdateAssignedTask } from "../api/teamApi";
+import { requestMyTeam } from "../api/teamApi";
 import { requestChatMessages, requestMarkChatAsRead } from "../api/chatApi";
-import authStore from "../store/authStore";
 import useChatMessages from "./useChatMessages";
 import useChatPresence from "./useChatPresence";
 import useChatRoom from "./useChatRoom";
@@ -10,7 +9,6 @@ import useChatSocket from "./useChatSocket";
 let toastIdSeq = 1;
 
 const useUserTeamChat = () => {
-    const currentUserId = authStore((state) => state.user?.userId);
     const [error, setError] = useState("");
     const [toasts, setToasts] = useState([]);
     const [memberRoles, setMemberRoles] = useState({});
@@ -115,7 +113,7 @@ const useUserTeamChat = () => {
         onError: setError,
     });
 
-    // presence 응답엔 희망 직군(studentRole)·담당 업무(assignedTask)가 없어서, 이미 확정된
+    // presence 응답엔 희망 직군(studentRole)이 없어서, 이미 확정된
     // 팀 정보 API(/api/teams/my-team)에서 받아 userId로 합쳐준다.
     const loadMemberDetails = useCallback(() => {
         if (!room?.id) return undefined;
@@ -130,7 +128,6 @@ const useUserTeamChat = () => {
                 (data?.members ?? []).forEach((member) => {
                     detailByUserId[member.userId] = {
                         studentRole: member.studentRole,
-                        assignedTask: member.assignedTask,
                     };
                 });
                 setMemberRoles(detailByUserId);
@@ -148,25 +145,11 @@ const useUserTeamChat = () => {
         memberList.map((member) => ({
             ...member,
             studentRole: memberRoles[member.userId]?.studentRole,
-            assignedTask: memberRoles[member.userId]?.assignedTask,
         }));
 
     const members = withMemberDetails(presenceMembers);
     const onlineMembers = withMemberDetails(presenceOnlineMembers);
     const offlineMembers = withMemberDetails(presenceOfflineMembers);
-
-    const updateMyAssignedTask = async (assignedTask) => {
-        if (!currentUserId) return;
-
-        await requestUpdateAssignedTask(currentUserId, assignedTask);
-        setMemberRoles((prev) => ({
-            ...prev,
-            [currentUserId]: {
-                ...prev[currentUserId],
-                assignedTask,
-            },
-        }));
-    };
 
     useEffect(() => {
         return scrollToBottom({
@@ -203,7 +186,6 @@ const useUserTeamChat = () => {
         isCreatingChannel,
         messageListRef,
         updateSelectedChannel,
-        updateMyAssignedTask,
         getChannelUnreadCount,
         handleSendMessage,
         handleSendFile,

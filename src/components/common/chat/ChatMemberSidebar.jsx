@@ -1,32 +1,8 @@
-import { useState } from "react";
 import { roleLabels } from "../../../constants/student";
 import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
-const MemberItem = ({ member, online, isMe, onUpdateAssignedTask }) => {
+const MemberItem = ({ member, online }) => {
     const roleLabel = roleLabels[member.studentRole];
-    const [isEditing, setIsEditing] = useState(false);
-    const [draftTask, setDraftTask] = useState(member.assignedTask ?? "");
-    const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState("");
-
-    const startEditing = () => {
-        setDraftTask(member.assignedTask ?? "");
-        setError("");
-        setIsEditing(true);
-    };
-
-    const handleSave = async () => {
-        try {
-            setIsSaving(true);
-            setError("");
-            await onUpdateAssignedTask(draftTask.trim());
-            setIsEditing(false);
-        } catch {
-            setError("담당 업무 저장에 실패했습니다.");
-        } finally {
-            setIsSaving(false);
-        }
-    };
 
     return (
         <li
@@ -44,53 +20,6 @@ const MemberItem = ({ member, online, isMe, onUpdateAssignedTask }) => {
                     {member.name}
                     {roleLabel ? ` · ${roleLabel}` : ""}
                 </span>
-
-                {isEditing ? (
-                    <div>
-                        <div className={styles.memberTaskEdit}>
-                            <input
-                                type="text"
-                                value={draftTask}
-                                onChange={(event) =>
-                                    setDraftTask(event.target.value)
-                                }
-                                placeholder="담당 업무를 입력하세요"
-                                disabled={isSaving}
-                                autoFocus
-                            />
-                            <div className={styles.memberTaskEditActions}>
-                                <button
-                                    type="button"
-                                    onClick={handleSave}
-                                    disabled={isSaving}
-                                >
-                                    {isSaving ? "저장 중" : "저장"}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setIsEditing(false)}
-                                    disabled={isSaving}
-                                >
-                                    취소
-                                </button>
-                            </div>
-                        </div>
-                        {error && (
-                            <p className={styles.memberTaskEditError}>
-                                {error}
-                            </p>
-                        )}
-                    </div>
-                ) : (
-                    <span className={styles.memberTask}>
-                        담당 업무: {member.assignedTask || "미입력"}
-                        {isMe && (
-                            <button type="button" onClick={startEditing}>
-                                수정
-                            </button>
-                        )}
-                    </span>
-                )}
             </div>
         </li>
     );
@@ -101,8 +30,6 @@ const ChatMemberSidebar = ({
     members = [],
     onlineMembers = [],
     offlineMembers = [],
-    currentUserId,
-    onUpdateAssignedTask,
 }) => {
     const isInitialPending = !hasPresenceLoaded && members.length === 0;
 
@@ -128,8 +55,6 @@ const ChatMemberSidebar = ({
                                     key={member.userId}
                                     member={member}
                                     online
-                                    isMe={member.userId === currentUserId}
-                                    onUpdateAssignedTask={onUpdateAssignedTask}
                                 />
                             ))}
                         </ul>
@@ -151,10 +76,6 @@ const ChatMemberSidebar = ({
                                         key={member.userId}
                                         member={member}
                                         online={false}
-                                        isMe={member.userId === currentUserId}
-                                        onUpdateAssignedTask={
-                                            onUpdateAssignedTask
-                                        }
                                     />
                                 ))}
                             </ul>
