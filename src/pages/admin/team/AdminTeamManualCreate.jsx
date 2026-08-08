@@ -9,6 +9,7 @@ import {
     getRoleBarSegments,
     getRoleSummary,
 } from "../../../utils/teamRecommendation";
+import { getStudentNumberInfo } from "../../../utils/student";
 import styles from "./AdminTeamManualCreate.module.css";
 
 const MAX_TEAM_SIZE = 5;
@@ -20,7 +21,7 @@ const matchesKeyword = (student, keyword) => {
 
     return (
         student.name.toLowerCase().includes(keyword) ||
-        student.userId.replace("stu", "").includes(keyword) ||
+        getStudentNumberInfo(student.userId).number.includes(keyword) ||
         roleLabel.toLowerCase().includes(keyword)
     );
 };

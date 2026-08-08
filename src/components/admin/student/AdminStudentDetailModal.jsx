@@ -81,9 +81,7 @@ const getStudentTeamKey = (student) => {
     }
 
     const teamName = student?.projectTeamName || student?.teamName;
-    const grade = String(student?.userId || "")
-        .replace("stu", "")
-        .charAt(0);
+    const grade = getStudentNumberInfo(student?.userId || "").number.charAt(0);
 
     return teamName ? `name:${grade}:${teamName}` : "";
 };

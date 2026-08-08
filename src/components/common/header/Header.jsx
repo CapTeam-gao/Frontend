@@ -17,6 +17,7 @@ import {
 } from "../../../utils/adminTeamStatusStorage";
 import { isAdminRole } from "../../../utils/accountRole";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
+import { getStudentNumberInfo } from "../../../utils/student";
 
 const TEAM_STATUS_CACHE_TTL = 1000 * 60 * 5;
 const teamStatusCache = new Map();
@@ -187,7 +188,7 @@ const Header = () => {
         if (!user) return "";
 
         if (user.userId.startsWith("stu")) {
-            return `${user.userId.replace("stu", "")} ${user.name}`;
+            return `${getStudentNumberInfo(user.userId).number} ${user.name}`;
         }
 
         if (user.userId.startsWith("tea")) {

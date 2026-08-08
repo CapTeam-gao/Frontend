@@ -9,6 +9,7 @@ import { roleLabels } from "../../../constants/student";
 import styles from "./UserProfile.module.css";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import { getApiErrorMessage } from "../../../utils/apiError";
+import { getStudentNumberInfo } from "../../../utils/student";
 
 const personalityFields = [
     { key: "ideaPlanning", label: "기획" },
@@ -61,9 +62,7 @@ const UserProfile = () => {
             !isSubmittingPassword
     );
 
-    const studentNumber = profile.userId.startsWith("stu")
-        ? profile.userId.replace("stu", "")
-        : profile.userId;
+    const studentNumber = getStudentNumberInfo(profile.userId).number;
 
     const skillList = useMemo(() => {
         if (Array.isArray(survey?.skill)) return survey.skill;
