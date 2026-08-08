@@ -1,16 +1,10 @@
-import { useEffect } from "react";
+import useToastAutoDismiss from "../../../hooks/useToastAutoDismiss";
 import styles from "./ChatToast.module.css";
 
 const TOAST_DURATION = 4000;
 
 const ChatToast = ({ toasts, onDismiss, onSelect }) => {
-    useEffect(() => {
-        const timers = toasts.map((toast) =>
-            setTimeout(() => onDismiss(toast.id), TOAST_DURATION)
-        );
-
-        return () => timers.forEach((timer) => clearTimeout(timer));
-    }, [toasts, onDismiss]);
+    useToastAutoDismiss(toasts, onDismiss, TOAST_DURATION);
 
     if (!toasts.length) return null;
 
