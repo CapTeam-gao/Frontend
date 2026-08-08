@@ -34,9 +34,14 @@ const STEPS = [
     },
 ];
 
-// ponytail: 백엔드가 배치 단위 진행률(totalBatches/completedBatches)을 아직 안 주기 때문에
-// job.status만으로 대략적인 단계만 표시함 — 배치 스트리밍 API가 생기면 실제 진행률로 교체.
-const getActiveStepIndex = (jobStatus) => {
+// AI가 배치 완료 콜백을 보내기 시작하면(totalBatches > 0) 실제 진행률로 단계를 계산하고,
+// 그 전까지는(AI가 아직 배치 단위로 안 보내는 동안) job.status 기반 대략적인 단계로 대체한다.
+const getActiveStepIndex = (jobStatus, completedBatches, totalBatches) => {
+    if (totalBatches > 0) {
+        const ratio = completedBatches / totalBatches;
+        return Math.min(STEPS.length - 1, Math.floor(ratio * STEPS.length));
+    }
+
     if (jobStatus === "COMPLETING") return 3;
     if (jobStatus === "RUNNING") return 1;
 
@@ -127,9 +132,18 @@ const AdminTeamCreateLoading = () => {
     const [jobStatus, setJobStatus] = useState(
         storedMatchingJob?.status || "QUEUED"
     );
+    const [batchProgress, setBatchProgress] = useState({
+        completedBatches: 0,
+        totalBatches: 0,
+        progressPercent: null,
+    });
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
     const isMatchingInProgress = Boolean(grade) && !error;
-    const activeStepIndex = getActiveStepIndex(jobStatus);
+    const activeStepIndex = getActiveStepIndex(
+        jobStatus,
+        batchProgress.completedBatches,
+        batchProgress.totalBatches
+    );
 
     useEffect(() => {
         if (!isMatchingInProgress) return;
@@ -208,6 +222,11 @@ const AdminTeamCreateLoading = () => {
                     status: currentJob?.status,
                 });
                 setJobStatus(currentJob?.status);
+                setBatchProgress({
+                    completedBatches: currentJob?.completedBatches ?? 0,
+                    totalBatches: currentJob?.totalBatches ?? 0,
+                    progressPercent: currentJob?.progressPercent ?? null,
+                });
 
                 // ponytail: 첫 팀(완료된 배치 1개)만 도착해도 로딩 화면을 벗어나
                 // 팀 에딧 화면으로 넘어간다 — 전체 완료를 기다리게 하지 않기 위함(8/2 결정).
@@ -235,6 +254,11 @@ const AdminTeamCreateLoading = () => {
                         status: currentJob?.status,
                     });
                     setJobStatus(currentJob?.status);
+                setBatchProgress({
+                    completedBatches: currentJob?.completedBatches ?? 0,
+                    totalBatches: currentJob?.totalBatches ?? 0,
+                    progressPercent: currentJob?.progressPercent ?? null,
+                });
 
                     if ((currentJob?.completedBatches ?? 0) >= 1) {
                         clearMatchingJobLock();
@@ -348,6 +372,14 @@ const AdminTeamCreateLoading = () => {
                             {gradeLabels[grade]} 설문 데이터를 분석하고
                             있습니다
                         </p>
+
+                        {batchProgress.progressPercent !== null && (
+                            <p className={styles.loadingSub}>
+                                {batchProgress.completedBatches}/
+                                {batchProgress.totalBatches}팀 완료 (
+                                {batchProgress.progressPercent}%)
+                            </p>
+                        )}
 
                         <div className={styles.stepTracker}>
                             {STEPS.map((step, index) => (
