@@ -105,3 +105,17 @@ export const requestDeleteChatMessage = async (messageId) => {
 
     return getResponseData(response);
 };
+
+export const requestPinChatMessage = async (channelId, messageId) => {
+    const response = await api.post(`/api/chat/channels/${channelId}/pin`, {
+        messageId,
+    });
+
+    return getResponseData(response);
+};
+
+export const requestUnpinChatMessage = async (channelId) => {
+    const response = await api.delete(`/api/chat/channels/${channelId}/pin`);
+
+    return getResponseData(response);
+};

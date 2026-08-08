@@ -3,6 +3,7 @@ import Header from "../../../components/common/header/Header";
 import ChatInput from "../../../components/common/chat/ChatInput";
 import ChatMessageList from "../../../components/common/chat/ChatMessageList";
 import ChatMemberSidebar from "../../../components/common/chat/ChatMemberSidebar";
+import ChatPinnedBar from "../../../components/common/chat/ChatPinnedBar";
 import ChatSidebar from "../../../components/common/chat/ChatSidebar";
 import authStore from "../../../store/authStore";
 import useAdminChatRoom from "../../../hooks/useAdminChatRoom";
@@ -17,7 +18,13 @@ import {
     requestAdminChatMessages,
     requestMarkAdminChatAsRead,
 } from "../../../api/adminChatApi";
+import {
+    requestPinChatMessage,
+    requestUnpinChatMessage,
+} from "../../../api/chatApi";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../../../utils/chat";
+
+const FLASH_DURATION_MS = 1100;
 
 const dispatchChatUnreadChange = () => {
     window.dispatchEvent(new Event(CHAT_UNREAD_CHANGE_EVENT));
@@ -204,7 +211,65 @@ const AdminChatManage = () => {
         clearChannelUnreadCount(channel.id);
     };
 
-    const finalError = error || messageError || socketError;
+    const [flashingMessageId, setFlashingMessageId] = useState(null);
+    const [isPinUpdating, setIsPinUpdating] = useState(false);
+    const [pinError, setPinError] = useState("");
+
+    const pinnedMessageId = selectedChannel?.pinnedMessageId ?? null;
+    const pinnedMessage = messages.find(
+        (message) => message.id === pinnedMessageId
+    );
+
+    const handleTogglePin = async (messageId) => {
+        if (!selectedChannel?.id || isPinUpdating) return;
+
+        try {
+            setIsPinUpdating(true);
+            setPinError("");
+
+            if (pinnedMessageId === messageId) {
+                await requestUnpinChatMessage(selectedChannel.id);
+            } else {
+                await requestPinChatMessage(selectedChannel.id, messageId);
+            }
+        } catch {
+            setPinError("메시지 고정에 실패했습니다.");
+        } finally {
+            setIsPinUpdating(false);
+        }
+    };
+
+    const handleUnpin = async () => {
+        if (!selectedChannel?.id || isPinUpdating) return;
+
+        try {
+            setIsPinUpdating(true);
+            setPinError("");
+            await requestUnpinChatMessage(selectedChannel.id);
+        } catch {
+            setPinError("고정 해제에 실패했습니다.");
+        } finally {
+            setIsPinUpdating(false);
+        }
+    };
+
+    const handleJumpToPinnedMessage = () => {
+        if (!pinnedMessage) return;
+
+        const target = document.getElementById(
+            `chat-message-${pinnedMessage.id}`
+        );
+        target?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        setFlashingMessageId(pinnedMessage.id);
+        window.setTimeout(() => {
+            setFlashingMessageId((current) =>
+                current === pinnedMessage.id ? null : current
+            );
+        }, FLASH_DURATION_MS);
+    };
+
+    const finalError = error || messageError || socketError || pinError;
 
     const showEmptyChannel =
         !isLoading && !isMessageLoading && !selectedChannel;
@@ -265,6 +330,12 @@ const AdminChatManage = () => {
                             </div>
                         )}
 
+                        <ChatPinnedBar
+                            pinnedMessage={pinnedMessage}
+                            onJump={handleJumpToPinnedMessage}
+                            onUnpin={handleUnpin}
+                        />
+
                         {finalError && (
                             <p className={styles.errorText}>{finalError}</p>
                         )}
@@ -307,6 +378,9 @@ const AdminChatManage = () => {
                                     onScroll={handleMessageScroll}
                                     onEditMessage={handleEditMessage}
                                     onDeleteMessage={handleDeleteMessage}
+                                    pinnedMessageId={pinnedMessageId}
+                                    flashingMessageId={flashingMessageId}
+                                    onTogglePin={handleTogglePin}
                                 />
                             )}
                         </div>
