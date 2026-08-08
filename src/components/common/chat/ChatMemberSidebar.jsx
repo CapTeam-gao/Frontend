@@ -58,20 +58,22 @@ const MemberItem = ({ member, online, isMe, onUpdateAssignedTask }) => {
                                 disabled={isSaving}
                                 autoFocus
                             />
-                            <button
-                                type="button"
-                                onClick={handleSave}
-                                disabled={isSaving}
-                            >
-                                {isSaving ? "저장 중" : "저장"}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setIsEditing(false)}
-                                disabled={isSaving}
-                            >
-                                취소
-                            </button>
+                            <div className={styles.memberTaskEditActions}>
+                                <button
+                                    type="button"
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? "저장 중" : "저장"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                    disabled={isSaving}
+                                >
+                                    취소
+                                </button>
+                            </div>
                         </div>
                         {error && (
                             <p className={styles.memberTaskEditError}>
