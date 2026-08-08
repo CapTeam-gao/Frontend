@@ -1,108 +1,52 @@
 // Design/UserDashboard.html 반영.
-// [임시 목데이터] 프로젝트 기획서 / 팀 채팅 미리보기 / 최근 공지는
-// requestUserProjectPlan·requestNoticeList 등 실제 API 대신
-// Design html 목업과 동일한 값을 하드코딩해서 우선 디자인만 맞춘 상태.
-// 백엔드 연동 시 아래 MOCK_* 상수를 실제 API 응답으로 교체할 것.
 // (사용자 요청으로 "내 팀" 위젯은 제거 — 팀 생성 여부와 무관하게 프로젝트 기획서/팀 채팅 2개만 노출)
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import TeamRequiredModal from "../../../components/common/modal/TeamRequiredModal";
 import { requestUserDashboard } from "../../../api/dashboardApi";
+import { requestUserProjectPlan } from "../../../api/projectApi";
+import { requestMyChannelSummaries } from "../../../api/chatApi";
+import { requestNoticeList } from "../../../api/noticeApi";
+import { normalizeProjectPlan } from "../../../utils/projectPlan";
 import {
     formatCountdownTime,
     getCapstoneLogRemainingMs,
     getCapstoneLogUnavailableText,
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
+import { formatChatTime } from "../../../utils/chat";
 import { formatCreatedAt, stripMarkdown, truncateText } from "../../../utils/format";
 import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
 import heroVisualPending from "../../../assets/images/dashboardHeroPuzzle.png";
 import heroVisualDone from "../../../assets/images/dashboardHeroPuzzleUser.png";
 import styles from "./UserDashboard.module.css";
 
-const MOCK_PROJECT_PLAN = {
-    completedCount: 3,
-    totalCount: 4,
-    summaryText: "서비스 소개, 주요 기능까지 작성됨 · 마지막 수정 어제",
-    incompleteItemLabels: ["역할 분담"],
-};
-
-const MOCK_CHAT = {
-    unreadMessageCount: 3,
-    recentMessages: [
-        {
-            senderName: "김도윤",
-            timeText: "10분 전",
-            preview: "오늘 회의는 7시에 할게요",
-            extraSenderCount: 2,
-        },
-        {
-            senderName: "이수아",
-            timeText: "32분 전",
-            preview: "파일 업로드: 기획서_초안.pdf",
-            extraSenderCount: 1,
-        },
-    ],
-};
-
-// Design/UserDashboard.html(팀 생성 완료 상태) 목데이터
-const TEAM_CREATED_NOTICES = [
-    {
-        noticeId: 1,
-        title: "2학년 팀 배정 결과 안내",
-        content:
-            "2학년 4개 팀의 최종 배정 결과와 팀장, 역할 구성을 공지 상세에서 확인할 수 있습니다.",
-        important: "IMPORTANT",
-        writer: "관리자",
-        createdAt: "2026-07-24",
-    },
-    {
-        noticeId: 2,
-        title: "캡스톤 일지 작성 시간 변경 안내",
-        content: "",
-        important: "NORMAL",
-        writer: "관리자",
-        createdAt: "2026-07-22",
-    },
-    {
-        noticeId: 3,
-        title: "3학년 설문 마감 임박 안내(~07.27)",
-        content: "",
-        important: "IMPORTANT",
-        writer: "관리자",
-        createdAt: "2026-07-21",
-    },
+const PROJECT_PLAN_FIELDS = [
+    { key: "teamName", label: "팀명" },
+    { key: "serviceName", label: "서비스명" },
+    { key: "serviceSummary", label: "서비스 소개" },
 ];
 
-// Design/UserDashboardPending.html(팀 생성 전 상태) 목데이터
-const PENDING_NOTICES = [
-    {
-        noticeId: 4,
-        title: "3학년 팀 생성 일정 안내",
-        content:
-            "3학년 팀 생성은 설문 마감 이후 순차적으로 진행됩니다. 결과는 이 화면과 공지에서 바로 확인할 수 있어요.",
-        important: "IMPORTANT",
-        writer: "관리자",
-        createdAt: "2026-07-20",
-    },
-    {
-        noticeId: 5,
-        title: "설문 제출 안내",
-        content: "",
-        important: "NORMAL",
-        writer: "관리자",
-        createdAt: "2026-07-15",
-    },
-    {
-        noticeId: 6,
-        title: "캡스톤 프로젝트 운영 계획 안내",
-        content: "",
-        important: "NORMAL",
-        writer: "관리자",
-        createdAt: "2026-07-10",
-    },
-];
+const buildProjectPlanStatus = (projectPlan) => {
+    const filledFields = PROJECT_PLAN_FIELDS.filter((field) =>
+        projectPlan[field.key].trim()
+    );
+    const hasCoreFeature = projectPlan.coreFeatures.some((feature) =>
+        feature.value.trim()
+    );
+
+    const incompleteItemLabels = PROJECT_PLAN_FIELDS.filter(
+        (field) => !projectPlan[field.key].trim()
+    ).map((field) => field.label);
+    if (!hasCoreFeature) incompleteItemLabels.push("핵심 기능");
+
+    return {
+        completedCount: filledFields.length + (hasCoreFeature ? 1 : 0),
+        totalCount: PROJECT_PLAN_FIELDS.length + 1,
+        incompleteItemLabels,
+    };
+};
 
 const UserDashboard = () => {
     const [dashboard, setDashboard] = useState({
@@ -113,6 +57,10 @@ const UserDashboard = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [error, setError] = useState("");
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
+    const [projectPlanStatus, setProjectPlanStatus] = useState(null);
+    const [recentMessages, setRecentMessages] = useState([]);
+    const [notices, setNotices] = useState([]);
+    const [sectionErrors, setSectionErrors] = useState({});
     const { unreadChatCount } = useUnreadChatCount({
         enabled: dashboard.teamCreated,
     });
@@ -133,6 +81,76 @@ const UserDashboard = () => {
         };
 
         getDashboardData();
+    }, []);
+
+    useEffect(() => {
+        if (!dashboard.teamCreated) return;
+
+        const getSectionData = async () => {
+            const [planResult, chatResult] = await Promise.allSettled([
+                requestUserProjectPlan(),
+                requestMyChannelSummaries(),
+            ]);
+
+            const nextSectionErrors = {};
+
+            if (planResult.status === "fulfilled") {
+                setProjectPlanStatus(
+                    buildProjectPlanStatus(
+                        normalizeProjectPlan(planResult.value)
+                    )
+                );
+            } else {
+                nextSectionErrors.plan = "프로젝트 기획서를 불러오지 못했습니다.";
+            }
+
+            if (chatResult.status === "fulfilled") {
+                const summaries = Array.isArray(chatResult.value)
+                    ? chatResult.value
+                    : [];
+                setRecentMessages(
+                    summaries
+                        .filter((summary) => summary.lastMessage)
+                        .map((summary) => ({
+                            senderName: summary.lastMessage.senderName,
+                            timeText: formatChatTime(
+                                summary.lastMessage.createdAt
+                            ),
+                            preview:
+                                summary.lastMessage.message ??
+                                "파일을 보냈습니다.",
+                            createdAt: summary.lastMessage.createdAt,
+                        }))
+                        .sort(
+                            (a, b) =>
+                                new Date(b.createdAt) - new Date(a.createdAt)
+                        )
+                        .slice(0, 2)
+                );
+            } else {
+                nextSectionErrors.chat = "채팅 미리보기를 불러오지 못했습니다.";
+            }
+
+            setSectionErrors((prev) => ({ ...prev, ...nextSectionErrors }));
+        };
+
+        getSectionData();
+    }, [dashboard.teamCreated]);
+
+    useEffect(() => {
+        const getNoticeData = async () => {
+            try {
+                const noticeList = await requestNoticeList();
+                setNotices(Array.isArray(noticeList) ? noticeList.slice(0, 3) : []);
+            } catch {
+                setSectionErrors((prev) => ({
+                    ...prev,
+                    notices: "공지를 불러오지 못했습니다.",
+                }));
+            }
+        };
+
+        getNoticeData();
     }, []);
 
     useEffect(() => {
@@ -209,9 +227,6 @@ const UserDashboard = () => {
               ctaTo: "/user/log/result",
           };
 
-    const notices = dashboard.teamCreated
-        ? TEAM_CREATED_NOTICES
-        : PENDING_NOTICES;
     const featuredNotice = notices[0];
     const restNotices = notices.slice(1, 3);
 
@@ -347,7 +362,12 @@ const UserDashboard = () => {
                                     </Link>
                                 </div>
 
-                                {dashboard.teamCreated ? (
+                                {sectionErrors.plan ? (
+                                    <p className={styles.tileDisabledMsg}>
+                                        {sectionErrors.plan}
+                                    </p>
+                                ) : dashboard.teamCreated &&
+                                  projectPlanStatus ? (
                                     <>
                                         <div className={styles.ratioChart}>
                                             <div
@@ -359,8 +379,8 @@ const UserDashboard = () => {
                                                     }
                                                     style={{
                                                         width: `${
-                                                            (MOCK_PROJECT_PLAN.completedCount /
-                                                                MOCK_PROJECT_PLAN.totalCount) *
+                                                            (projectPlanStatus.completedCount /
+                                                                projectPlanStatus.totalCount) *
                                                             100
                                                         }%`,
                                                     }}
@@ -370,45 +390,52 @@ const UserDashboard = () => {
                                                 className={styles.ratioLabel}
                                             >
                                                 {
-                                                    MOCK_PROJECT_PLAN.completedCount
+                                                    projectPlanStatus.completedCount
                                                 }
                                                 <span>
                                                     {" "}
                                                     /{" "}
                                                     {
-                                                        MOCK_PROJECT_PLAN.totalCount
+                                                        projectPlanStatus.totalCount
                                                     }
                                                     항목
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <p className={styles.plainRowMeta}>
-                                            {MOCK_PROJECT_PLAN.summaryText}
-                                        </p>
-
                                         <div className={styles.sectionList}>
-                                            {MOCK_PROJECT_PLAN.incompleteItemLabels.map(
-                                                (label) => (
-                                                    <div
-                                                        key={label}
-                                                        className={
-                                                            styles.plainRow
-                                                        }
-                                                    >
+                                            {projectPlanStatus.incompleteItemLabels.length ===
+                                            0 ? (
+                                                <p
+                                                    className={
+                                                        styles.plainRowMeta
+                                                    }
+                                                >
+                                                    모든 항목이 작성됐습니다.
+                                                </p>
+                                            ) : (
+                                                projectPlanStatus.incompleteItemLabels.map(
+                                                    (label) => (
                                                         <div
+                                                            key={label}
                                                             className={
-                                                                styles.plainRowTitle
+                                                                styles.plainRow
                                                             }
                                                         >
-                                                            {label}
+                                                            <div
+                                                                className={
+                                                                    styles.plainRowTitle
+                                                                }
+                                                            >
+                                                                {label}
+                                                            </div>
+                                                            <span
+                                                                className={`${styles.tag} ${styles.tagDanger}`}
+                                                            >
+                                                                미작성
+                                                            </span>
                                                         </div>
-                                                        <span
-                                                            className={`${styles.tag} ${styles.tagDanger}`}
-                                                        >
-                                                            미작성
-                                                        </span>
-                                                    </div>
+                                                    )
                                                 )
                                             )}
                                         </div>
@@ -441,56 +468,64 @@ const UserDashboard = () => {
                                     </Link>
                                 </div>
 
-                                {dashboard.teamCreated ? (
+                                {sectionErrors.chat ? (
+                                    <p className={styles.tileDisabledMsg}>
+                                        {sectionErrors.chat}
+                                    </p>
+                                ) : dashboard.teamCreated ? (
                                     <>
                                         <p className={styles.tileMeta}>
                                             읽지 않은 메시지{" "}
                                             <b>{unreadChatCount}개</b>
                                         </p>
                                         <div className={styles.sectionList}>
-                                            {MOCK_CHAT.recentMessages.map(
-                                                (message, index) => (
-                                                <div
-                                                    key={index}
+                                            {recentMessages.length === 0 ? (
+                                                <p
                                                     className={
-                                                        styles.plainRow
+                                                        styles.tileMeta
                                                     }
                                                 >
-                                                    <div>
+                                                    아직 대화가 없습니다.
+                                                </p>
+                                            ) : (
+                                                recentMessages.map(
+                                                    (message) => (
                                                         <div
+                                                            key={
+                                                                message.createdAt
+                                                            }
                                                             className={
-                                                                styles.plainRowTitle
+                                                                styles.plainRow
                                                             }
                                                         >
-                                                            {
-                                                                message.senderName
-                                                            }
+                                                            <div>
+                                                                <div
+                                                                    className={
+                                                                        styles.plainRowTitle
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        message.senderName
+                                                                    }
+                                                                </div>
+                                                                <div
+                                                                    className={
+                                                                        styles.plainRowMeta
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        message.timeText
+                                                                    }{" "}
+                                                                    ·{" "}
+                                                                    {
+                                                                        message.preview
+                                                                    }
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div
-                                                            className={
-                                                                styles.plainRowMeta
-                                                            }
-                                                        >
-                                                            {message.timeText}{" "}
-                                                            ·{" "}
-                                                            {message.preview}
-                                                        </div>
-                                                    </div>
-                                                    {message.extraSenderCount >
-                                                        0 && (
-                                                        <span
-                                                            className={
-                                                                styles.tag
-                                                            }
-                                                        >
-                                                            +
-                                                            {
-                                                                message.extraSenderCount
-                                                            }
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            ))}
+                                                    )
+                                                )
+                                            )}
                                         </div>
                                     </>
                                 ) : (
@@ -520,7 +555,7 @@ const UserDashboard = () => {
                             {featuredNotice ? (
                                 <div className={styles.noticeLayout}>
                                     <Link
-                                        to={`/user/notice/${featuredNotice.noticeId}`}
+                                        to={`/user/notice/${featuredNotice.id}`}
                                         className={styles.noticeFeatured}
                                     >
                                         {featuredNotice.important ===
@@ -582,8 +617,8 @@ const UserDashboard = () => {
                                     >
                                         {restNotices.map((notice) => (
                                             <Link
-                                                key={notice.noticeId}
-                                                to={`/user/notice/${notice.noticeId}`}
+                                                key={notice.id}
+                                                to={`/user/notice/${notice.id}`}
                                                 className={
                                                     styles.noticeCompactRow
                                                 }
