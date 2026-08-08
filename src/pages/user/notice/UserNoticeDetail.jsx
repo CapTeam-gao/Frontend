@@ -6,7 +6,6 @@ import MDEditor from "@uiw/react-md-editor";
 import { requestNoticeDetail } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
-import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 
 const UserNoticeDetail = () => {
     const { id } = useParams();
@@ -77,9 +76,6 @@ const UserNoticeDetail = () => {
         );
     }
 
-    const isTeamResultNotice =
-        notice.noticeType === "TEAM_RESULT" && notice.teamResult;
-
     return (
         <div className={styles.page}>
             <Header />
@@ -104,21 +100,15 @@ const UserNoticeDetail = () => {
                     </div>
 
                     <div className={styles.contentArea}>
-                        {isTeamResultNotice ? (
-                            <TeamResultNoticeDetail notice={notice} />
-                        ) : (
-                            <>
-                                <MDEditor.Markdown
-                                    className={styles.content}
-                                    source={notice.content}
-                                />
-                                {notice.important === "IMPORTANT" && (
-                                    <p className={styles.importantContent}>
-                                        중요한 공지이므로 내용을 확인한 뒤
-                                        팀원들과 공유해주세요.
-                                    </p>
-                                )}
-                            </>
+                        <MDEditor.Markdown
+                            className={styles.content}
+                            source={notice.content}
+                        />
+                        {notice.important === "IMPORTANT" && (
+                            <p className={styles.importantContent}>
+                                중요한 공지이므로 내용을 확인한 뒤 팀원들과
+                                공유해주세요.
+                            </p>
                         )}
                     </div>
                 </section>
