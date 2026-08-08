@@ -55,26 +55,28 @@ export const swapMembersInTeams = (teams, firstSelected, secondSelected) => {
     return nextTeams;
 };
 
-export const getRoleSummary = (members = []) => {
-    const counts = members.reduce((acc, member) => {
+const countMembersByRole = (members = []) => {
+    return members.reduce((acc, member) => {
         if (!member.studentRole) return acc;
         acc[member.studentRole] = (acc[member.studentRole] || 0) + 1;
         return acc;
     }, {});
+};
 
+const formatRoleCountSummary = (roleCount = {}) => {
     return summaryRoleOrder
-        .filter((role) => counts[role])
-        .map((role) => `${roleLabels[role] || role} : ${counts[role]}명`)
+        .filter((role) => roleCount[role])
+        .map((role) => `${roleLabels[role] || role} : ${roleCount[role]}명`)
         .join(" / ");
+};
+
+export const getRoleSummary = (members = []) => {
+    return formatRoleCountSummary(countMembersByRole(members));
 };
 
 export const getRoleBarSegments = (members = []) => {
     const total = members.length;
-    const counts = members.reduce((acc, member) => {
-        if (!member.studentRole) return acc;
-        acc[member.studentRole] = (acc[member.studentRole] || 0) + 1;
-        return acc;
-    }, {});
+    const counts = countMembersByRole(members);
 
     return summaryRoleOrder
         .filter((role) => counts[role])
@@ -87,16 +89,7 @@ export const getRoleBarSegments = (members = []) => {
 export const getRoleCount = (roleCount = {}, role) => roleCount[role] || 0;
 
 export const getRoleCountSummary = (roleCount = {}) => {
-    return summaryRoleOrder
-        .filter((role) => getRoleCount(roleCount, role))
-        .map(
-            (role) =>
-                `${roleLabels[role] || role} : ${getRoleCount(
-                    roleCount,
-                    role
-                )}명`
-        )
-        .join(" / ");
+    return formatRoleCountSummary(roleCount);
 };
 
 export const hasProjectInfo = (team) => Boolean(team?.serviceName);
