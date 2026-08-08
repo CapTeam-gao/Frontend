@@ -8,18 +8,33 @@ import "@uiw/react-markdown-preview/markdown.css";
 import styles from "./AdminNoticeCreate.module.css";
 import { requestNoticeDetail, requestUpdateNotice } from "../../../api/noticeApi";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import useNoticeForm from "../../../hooks/useNoticeForm";
 
 const AdminNoticeEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [important, setImportant] = useState(false);
-    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const showLoading = useDelayedLoading(isLoading);
+
+    const {
+        title,
+        setTitle,
+        content,
+        setContent,
+        important,
+        setImportant,
+        error,
+        setError,
+        isSubmitting,
+        handleSubmit,
+    } = useNoticeForm({
+        onSubmit: async (payload) => {
+            await requestUpdateNotice(id, payload);
+            navigate(`/admin/notice/${id}`);
+        },
+        submitErrorMessage: "공지 수정에 실패했습니다. 잠시 후 다시 시도해주세요.",
+    });
 
     useEffect(() => {
         const getNoticeDetail = async () => {
@@ -37,40 +52,7 @@ const AdminNoticeEdit = () => {
         };
 
         getNoticeDetail();
-    }, [id]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (isSubmitting) return;
-
-        if (!title.trim()) {
-            setError("제목을 입력해주세요.");
-            return;
-        }
-
-        if (!content.trim()) {
-            setError("내용을 입력해주세요.");
-            return;
-        }
-
-        try {
-            setError("");
-            setIsSubmitting(true);
-
-            await requestUpdateNotice(id, {
-                title,
-                content,
-                important: important ? "IMPORTANT" : "COMMON",
-            });
-
-            navigate(`/admin/notice/${id}`);
-        } catch {
-            setError("공지 수정에 실패했습니다. 잠시 후 다시 시도해주세요.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    }, [id, setTitle, setContent, setImportant, setError]);
 
     return (
         <div className={styles.page}>
