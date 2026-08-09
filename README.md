@@ -4,9 +4,6 @@ CapTeam은 학생 설문 데이터를 기반으로 캡스톤 팀을 자동 추�
 
 프론트엔드는 학생과 관리자가 각각 필요한 기능을 사용할 수 있도록 화면, 라우팅, API 연결, 실시간 채팅 UI를 담당한다.
 
-- 배포 주소: https://cap-team-web-frontend.vercel.app/
-- API 서버: https://api.capteam.n-e.kr
-
 ## 주요 기능
 
 ### 학생
