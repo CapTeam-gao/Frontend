@@ -1,0 +1,222 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.hero {
+    padding: 10px 0 28px;
+    border-bottom: 1px solid #edf0f2;
+    background-color: #ffffff;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.title {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.35;
+}
+
+.description {
+    margin: 14px 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.7;
+}
+
+.guideBox {
+    padding: 0 0 24px;
+    border-bottom: 1px solid #edf0f2;
+    background-color: #ffffff;
+}
+
+.guideTitle {
+    margin: 0 0 12px;
+    color: #000000;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.guideList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-primary);
+}
+
+.guideList li {
+    position: relative;
+    padding-left: 18px;
+    line-height: 1.65;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.guideList li::before {
+    position: absolute;
+    top: 11px;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    content: "";
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.sectionTitle {
+    margin: 0;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.gradeBadge {
+    display: none;
+}
+
+.teamList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.teamCard {
+    padding: 22px 0;
+    border-top: 1px solid #edf0f2;
+    background-color: #ffffff;
+}
+
+.teamCard:first-child {
+    border-top: 0;
+}
+
+.teamTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.teamName {
+    margin: 0 0 8px;
+    color: #000000;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.roleSummary {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+}
+
+.memberRow {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 4px;
+}
+
+.memberChip {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 14px 8px 0;
+    border-right: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.memberChip:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.memberName {
+    font-weight: var(--font-weight-bold);
+}
+
+.leaderBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.dot {
+    color: var(--color-text-secondary);
+}
+
+.memberRole {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.emptyBox {
+    padding: 28px 0;
+    border-top: 1px solid #edf0f2;
+    border-bottom: 1px solid #edf0f2;
+    background-color: #ffffff;
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-weight: var(--font-weight-semibold);
+}
+
+.footerNote {
+    padding-top: 4px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        gap: 18px;
+    }
+
+    .hero {
+        padding: 22px 0;
+    }
+
+    .title {
+        font-size: var(--font-size-xl);
+    }
+
+    .teamName {
+        font-size: var(--font-size-lg);
+    }
+
+    .memberRow {
+        gap: 8px;
+    }
+
+    .memberChip {
+        width: 100%;
+    }
+}

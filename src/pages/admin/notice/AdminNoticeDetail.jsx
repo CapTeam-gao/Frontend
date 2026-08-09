@@ -10,6 +10,8 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 import { formatCreatedAt } from "../../../utils/format";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
+import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
+import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
 
 const AdminNoticeDetail = () => {
     const { id } = useParams();
@@ -99,6 +101,11 @@ const AdminNoticeDetail = () => {
         );
     }
 
+    const teamResultParsed =
+        notice.noticeType === "TEAM_RESULT" && notice.teamResult
+            ? parseTeamResultNoticeContent(notice.content)
+            : null;
+
     return (
         <div className={styles.page}>
             <Header />
@@ -156,15 +163,24 @@ const AdminNoticeDetail = () => {
                     </div>
 
                     <div className={styles.contentArea}>
-                        <MDEditor.Markdown
-                            className={styles.content}
-                            source={notice.content}
-                        />
-                        {notice.important === "IMPORTANT" && (
-                            <p className={styles.important}>
-                                중요한 공지이므로 내용을 확인한 뒤 팀원들과
-                                공유해주세요.
-                            </p>
+                        {teamResultParsed ? (
+                            <TeamResultNoticeDetail
+                                notice={notice}
+                                parsed={teamResultParsed}
+                            />
+                        ) : (
+                            <>
+                                <MDEditor.Markdown
+                                    className={styles.content}
+                                    source={notice.content}
+                                />
+                                {notice.important === "IMPORTANT" && (
+                                    <p className={styles.important}>
+                                        중요한 공지이므로 내용을 확인한 뒤
+                                        팀원들과 공유해주세요.
+                                    </p>
+                                )}
+                            </>
                         )}
                     </div>
                 </section>
