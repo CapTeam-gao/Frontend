@@ -28,15 +28,6 @@ export const requestStartTeamMatchingJob = async (
     return getResponseData(response);
 };
 
-export const requestTeamMatchingVersionList = async (grade) => {
-    const response = await api.get(
-        "/api/admin/team-recommendations/versions",
-        { params: { grade } }
-    );
-
-    return getResponseData(response);
-};
-
 export const requestTeamMatchingVersionDetail = async (versionId) => {
     const response = await api.get(
         `/api/admin/team-recommendations/versions/${versionId}`
