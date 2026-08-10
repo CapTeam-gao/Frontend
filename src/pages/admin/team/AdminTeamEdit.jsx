@@ -140,6 +140,33 @@ const AdminTeamEdit = () => {
         // 이어서 폴링해 도착하는 대로 teams에 추가한다. 다 끝나면(SUCCEEDED)
         // 스왑 등에 필요한 확정 ID를 얻기 위해 한 번 더 정식 조회로 교체한다.
         let ignore = false;
+        let visibleTeamCount = 0;
+
+        // 폴링 한 번에 partialTeams가 여러 개 도착해도 화면에는 한 팀씩
+        // 순서대로 추가한다. 네이버 쇼핑 목록이 한꺼번에 데이터로 와도
+        // 화면에서 순서가 바뀌지 않는 것처럼, 서버 응답 시점과 화면 표시
+        // 시점을 분리해 팀 순서를 보장한다.
+        const revealTeamsInOrder = async (nextTeams, keepStreaming = true) => {
+            const normalizedTeams = Array.isArray(nextTeams)
+                ? normalizeRecommendations(nextTeams)
+                : [];
+
+            while (
+                !ignore &&
+                visibleTeamCount < normalizedTeams.length
+            ) {
+                visibleTeamCount += 1;
+                setTeams(normalizedTeams.slice(0, visibleTeamCount));
+
+                if (visibleTeamCount < normalizedTeams.length) {
+                    await wait(MATCHING_POLL_INTERVAL);
+                }
+            }
+
+            if (!keepStreaming && !ignore) {
+                setStreamingJobStatus("SUCCEEDED");
+            }
+        };
 
         const pollRemainingTeams = async () => {
             try {
@@ -177,7 +204,8 @@ const AdminTeamEdit = () => {
                         ? normalizeRecommendations(currentJob.partialTeams)
                         : [];
 
-                    setTeams(partialTeams);
+                    await revealTeamsInOrder(partialTeams);
+                    if (ignore) return;
                     if (currentJob?.versionId) {
                         setPendingVersionId(currentJob.versionId);
                     }
@@ -192,28 +220,24 @@ const AdminTeamEdit = () => {
 
                 if (ignore) return;
 
-                setStreamingJobStatus(currentJob?.status);
-
                 if (currentJob?.status === "SUCCEEDED") {
                     if (currentJob?.versionId) {
                         const finalTeams = await requestTeamMatchingVersionDetail(
                             currentJob.versionId
                         );
                         if (!ignore) {
-                            setTeams(
-                                Array.isArray(finalTeams)
-                                    ? normalizeRecommendations(finalTeams)
-                                    : []
-                            );
                             setPendingVersionId(currentJob.versionId);
                             setReviewPending(Boolean(baseVersionId));
                             setIsLoading(false);
                         }
+                        await revealTeamsInOrder(finalTeams, false);
                         return;
                     }
 
                     throw new Error("완료된 팀 추천 버전이 없습니다.");
                 }
+
+                setStreamingJobStatus(currentJob?.status);
 
                 setError(
                     currentJob?.errorMessage ||
