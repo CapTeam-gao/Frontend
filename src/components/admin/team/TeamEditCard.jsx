@@ -99,15 +99,21 @@ const TeamEditCard = ({
                     <div className={styles.reasonArea}>
                         <h3 className={styles.reasonTitle}>팀 배정 이유</h3>
                         <div className={styles.reasonList}>
-                            {(team.reasons || []).map((reason) => (
-                                <section
-                                    key={`${team.id}-${reason.title}`}
-                                    className={styles.reasonBox}
-                                >
-                                    <strong>{reason.title}</strong>
-                                    <p>{reason.description}</p>
-                                </section>
-                            ))}
+                            {team.reasons?.length ? (
+                                team.reasons.map((reason) => (
+                                    <section
+                                        key={`${team.id}-${reason.title}`}
+                                        className={styles.reasonBox}
+                                    >
+                                        <strong>{reason.title}</strong>
+                                        <p>{reason.description}</p>
+                                    </section>
+                                ))
+                            ) : (
+                                <p className={styles.reasonEmpty}>
+                                    배정 이유를 생성하지 못했습니다. 팀을 재생성해주세요.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>

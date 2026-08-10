@@ -15,10 +15,20 @@ export const getSortedMembers = (members = []) => {
     });
 };
 
+const getValidReasons = (reasons = []) =>
+    reasons.filter(
+        (reason) =>
+            typeof reason?.title === "string" &&
+            reason.title.trim() &&
+            typeof reason?.description === "string" &&
+            reason.description.trim()
+    );
+
 export const normalizeRecommendations = (recommendations = []) => {
     return recommendations.map((team) => ({
         ...team,
         members: getSortedMembers(team.members),
+        reasons: getValidReasons(team.reasons),
     }));
 };
 

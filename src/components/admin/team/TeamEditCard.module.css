@@ -141,6 +141,13 @@
     background-color: #c9ded4;
 }
 
+.reasonEmpty {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    text-align: center;
+}
+
 .reasonBox {
     padding: 14px 16px;
     border: 1px solid var(--color-primary);
