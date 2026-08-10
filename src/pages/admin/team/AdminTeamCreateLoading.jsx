@@ -120,11 +120,6 @@ const AdminTeamCreateLoading = () => {
     const baseVersionId = location.state?.baseVersionId || null;
     const [error, setError] = useState("");
     const [progressStep, setProgressStep] = useState(0);
-    const [batchProgress, setBatchProgress] = useState({
-        completedBatches: 0,
-        totalBatches: 0,
-        progressPercent: null,
-    });
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
     const hasPartialTeams = (job) =>
         Array.isArray(job?.partialTeams) && job.partialTeams.length > 0;
@@ -219,11 +214,6 @@ const AdminTeamCreateLoading = () => {
                     grade,
                     status: currentJob?.status,
                 });
-                setBatchProgress({
-                    completedBatches: currentJob?.completedBatches ?? 0,
-                    totalBatches: currentJob?.totalBatches ?? 0,
-                    progressPercent: currentJob?.progressPercent ?? null,
-                });
                 await advanceProgressStep(currentJob?.progressStep);
                 if (ignore) return;
 
@@ -256,11 +246,6 @@ const AdminTeamCreateLoading = () => {
                         jobId: currentJob?.jobId,
                         grade,
                         status: currentJob?.status,
-                    });
-                    setBatchProgress({
-                        completedBatches: currentJob?.completedBatches ?? 0,
-                        totalBatches: currentJob?.totalBatches ?? 0,
-                        progressPercent: currentJob?.progressPercent ?? null,
                     });
                     await advanceProgressStep(currentJob?.progressStep);
                     if (ignore) return;
@@ -383,14 +368,6 @@ const AdminTeamCreateLoading = () => {
                             {gradeLabels[grade]} 설문 데이터를 분석하고
                             있습니다
                         </p>
-
-                        {batchProgress.progressPercent !== null && (
-                            <p className={styles.loadingSub}>
-                                {batchProgress.completedBatches}/
-                                {batchProgress.totalBatches}팀 완료 (
-                                {batchProgress.progressPercent}%)
-                            </p>
-                        )}
 
                         <div className={styles.stepTracker}>
                             {STEPS.map((step, index) => (

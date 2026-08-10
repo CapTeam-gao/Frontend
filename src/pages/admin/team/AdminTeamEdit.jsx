@@ -520,12 +520,6 @@ const AdminTeamEdit = () => {
                             있습니다.
                         </p>
                     )}
-                    {reviewPending && !isStreaming && (
-                        <p className={styles.messageText}>
-                            재생성 결과 검토 대기 — 변경사항에서 확인 후 적용
-                            또는 취소
-                        </p>
-                    )}
                     {message && <p className={styles.messageText}>{message}</p>}
                     {error && <p className={styles.messageText}>{error}</p>}
 
