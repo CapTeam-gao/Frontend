@@ -66,6 +66,14 @@ const getSurveySubmitErrorMessage = (error) => {
         return "설문 분석 결과를 저장하는 중 문제가 발생했습니다. 잠시 후 다시 제출해주세요.";
     }
 
+    if (
+        error.response.status === 503 ||
+        serverMessage.includes("AI 학생 분석") ||
+        serverMessage.includes("AI 서버")
+    ) {
+        return "학생 분석에 실패했어요. 설문은 저장되지 않았으니 잠시 후 다시 제출해주세요.";
+    }
+
     if (error.response.status >= 500) {
         return "서버에서 설문을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
     }
