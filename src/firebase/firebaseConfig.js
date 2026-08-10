@@ -1,15 +1,16 @@
-// ponytail: 실제 Firebase 프로젝트 값이 아직 없어서 .env의 플레이스홀더를 그대로 읽음.
-// 팀에서 Firebase 프로젝트를 만들면 .env.development/.env.production에 아래 값들을 채워 넣으면 됨.
+// Firebase 웹 앱 설정값과 VAPID 공개키는 클라이언트에 노출되는 공개 식별값입니다.
+// 서비스워커와 값이 어긋나면 Firebase Installations 단계에서 토큰 발급이 실패하므로 한 프로젝트 값으로 고정합니다.
 export const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    apiKey: "AIzaSyAvDwUmwU4g9t_REPN7ll-RuWbGagS-3lQ",
+    authDomain: "capteam-c0216.firebaseapp.com",
+    projectId: "capteam-c0216",
+    storageBucket: "capteam-c0216.firebasestorage.app",
+    messagingSenderId: "966982679733",
+    appId: "1:966982679733:web:ea31cccb5775f89a1552fc",
 };
 
-export const firebaseVapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+export const firebaseVapidKey =
+    "BH-Eegy8lj3MSLrTKxazoM-DpXXDh8qcQhUbZPasP23NkNELN4m3EbmN-p7MHuD0xAMA9ObRwykykF6wyBql1Yw";
 
 export const isFirebaseConfigured = Boolean(
     firebaseConfig.apiKey && firebaseConfig.projectId && firebaseVapidKey
