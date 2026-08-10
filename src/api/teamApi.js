@@ -36,6 +36,14 @@ export const requestTeamMatchingVersionDetail = async (versionId) => {
     return getResponseData(response);
 };
 
+export const requestLatestTeamMatchingVersion = async (grade) => {
+    const response = await api.get(
+        `/api/admin/team-recommendations/versions/grade/${grade}/latest`
+    );
+
+    return getResponseData(response);
+};
+
 export const requestTeamMatchingVersionDiff = async (
     fromVersionId,
     toVersionId

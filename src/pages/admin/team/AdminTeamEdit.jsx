@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import TeamEditCard from "../../../components/admin/team/TeamEditCard";
 import {
-    requestAcceptAllTeamRecommendations,
     requestApplyTeamMatchingVersion,
     requestDiscardTeamMatchingVersion,
     requestSwapTeamMembers,
     requestTeamMatchingJob,
+    requestLatestTeamMatchingVersion,
     requestTeamMatchingVersionDetail,
     requestTeamMatchingVersionDiff,
-    requestTeamRecommendationsByGrade,
 } from "../../../api/teamApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import styles from "./AdminTeamEdit.module.css";
@@ -97,31 +96,42 @@ const AdminTeamEdit = () => {
             ?.name;
     }, [selectedMember, teams]);
 
-    const getRecommendations = useCallback(
-        async (targetGrade = grade) => {
-            try {
-                setIsLoading(true);
-                setError("");
-
-                const data = await requestTeamRecommendationsByGrade(
-                    targetGrade
-                );
-                setTeams(
-                    Array.isArray(data) ? normalizeRecommendations(data) : []
-                );
-            } catch {
-                setError("팀 추천안을 불러오지 못했습니다.");
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [grade]
-    );
-
     useEffect(() => {
         if (!streamingJobId) {
-            getRecommendations(grade);
-            return undefined;
+            let ignore = false;
+
+            const loadLatestVersion = async () => {
+                try {
+                    setIsLoading(true);
+                    const latestVersion =
+                        await requestLatestTeamMatchingVersion(grade);
+                    const latestTeams =
+                        await requestTeamMatchingVersionDetail(
+                            latestVersion.versionId
+                        );
+
+                    if (ignore) return;
+
+                    setTeams(
+                        Array.isArray(latestTeams)
+                            ? normalizeRecommendations(latestTeams)
+                            : []
+                    );
+                    setPendingVersionId(latestVersion.versionId);
+                    setReviewPending(latestVersion.status === "DRAFT");
+                } catch {
+                    if (!ignore) {
+                        setError("현재 팀 추천안을 불러오지 못했습니다.");
+                    }
+                } finally {
+                    if (!ignore) setIsLoading(false);
+                }
+            };
+
+            loadLatestVersion();
+            return () => {
+                ignore = true;
+            };
         }
 
         // ponytail: 로딩 화면이 첫 팀만 도착하면 넘어오므로, 여기서 나머지 팀을
@@ -180,7 +190,7 @@ const AdminTeamEdit = () => {
                 setStreamingJobStatus(currentJob?.status);
 
                 if (currentJob?.status === "SUCCEEDED") {
-                    if (baseVersionId && currentJob?.versionId) {
+                    if (currentJob?.versionId) {
                         const finalTeams = await requestTeamMatchingVersionDetail(
                             currentJob.versionId
                         );
@@ -191,14 +201,13 @@ const AdminTeamEdit = () => {
                                     : []
                             );
                             setPendingVersionId(currentJob.versionId);
-                            setReviewPending(true);
+                            setReviewPending(Boolean(baseVersionId));
                             setIsLoading(false);
                         }
                         return;
                     }
 
-                    await getRecommendations(grade);
-                    return;
+                    throw new Error("완료된 팀 추천 버전이 없습니다.");
                 }
 
                 setError(
@@ -219,7 +228,7 @@ const AdminTeamEdit = () => {
         return () => {
             ignore = true;
         };
-    }, [streamingJobId, grade, getRecommendations, baseVersionId]);
+    }, [streamingJobId, grade, baseVersionId]);
 
     useEffect(() => {
         const preventUnload = (event) => {
@@ -387,8 +396,13 @@ const AdminTeamEdit = () => {
         }
     };
     const handleApprove = async () => {
+        if (!pendingVersionId) {
+            setMessage("적용할 팀 추천 버전이 없습니다.");
+            return;
+        }
+
         try {
-            await requestAcceptAllTeamRecommendations(grade);
+            await requestApplyTeamMatchingVersion(pendingVersionId);
 
             let teamManageAccessible = false;
 
