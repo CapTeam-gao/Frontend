@@ -182,8 +182,44 @@ const useChatMessages = ({
         }
     };
 
+    const refreshVisibleReadCounts = useCallback(async () => {
+        if (!selectedChannelId) return;
+
+        try {
+            const data = await fetchMessages(selectedChannelId);
+            const readCountByMessageId = new Map(
+                getPageContent(data).map((message) => [
+                    String(message.id),
+                    Number(message.readCount ?? 0),
+                ])
+            );
+
+            setMessages((prevMessages) =>
+                prevMessages.map((message) => {
+                    const nextReadCount = readCountByMessageId.get(
+                        String(message.id)
+                    );
+
+                    return nextReadCount === undefined
+                        ? message
+                        : { ...message, readCount: nextReadCount };
+                })
+            );
+        } catch {
+            // 읽음 수 갱신 실패가 메시지 조회/전송 자체를 막지는 않게 기존 값을 유지한다.
+        }
+    }, [fetchMessages, selectedChannelId]);
+
     const handleMessageEvent = useCallback((event) => {
         if (!event?.type) return;
+
+        if (
+            event.type === "READ_STATUS_UPDATED" &&
+            String(event.channelId) === String(selectedChannelId)
+        ) {
+            refreshVisibleReadCounts();
+            return;
+        }
 
         if (event.type === "MESSAGE_UPDATED" && event.message) {
             setMessages((prevMessages) =>
@@ -205,7 +241,7 @@ const useChatMessages = ({
                 )
             );
         }
-    }, []);
+    }, [refreshVisibleReadCounts, selectedChannelId]);
 
     const handleMessageScroll = async (event) => {
         const messageList = event.currentTarget;

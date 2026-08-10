@@ -25,6 +25,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     const accessToken = authStore((state) => state.accessToken);
     const user = authStore((state) => state.user);
     const [unreadChatCount, setUnreadChatCount] = useState(0);
+    const [lastUnreadEvent, setLastUnreadEvent] = useState(null);
     const isRefreshingRef = useRef(false);
     const lastRefreshTimeRef = useRef(0);
 
@@ -122,6 +123,10 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
                             setUnreadChatCount(
                                 Number(event?.totalUnreadCount ?? 0)
                             );
+                            setLastUnreadEvent({
+                                ...event,
+                                receivedAt: Date.now(),
+                            });
                         }
                     );
                 } catch {
@@ -142,6 +147,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     return {
         unreadChatCount,
         hasUnreadChat: unreadChatCount > 0,
+        lastUnreadEvent,
     };
 };
 

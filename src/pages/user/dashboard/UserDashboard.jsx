@@ -61,7 +61,7 @@ const UserDashboard = () => {
     const [recentMessages, setRecentMessages] = useState([]);
     const [notices, setNotices] = useState([]);
     const [sectionErrors, setSectionErrors] = useState({});
-    const { unreadChatCount } = useUnreadChatCount({
+    const { unreadChatCount, lastUnreadEvent } = useUnreadChatCount({
         enabled: dashboard.teamCreated,
     });
 
@@ -136,6 +136,50 @@ const UserDashboard = () => {
 
         getSectionData();
     }, [dashboard.teamCreated]);
+
+    useEffect(() => {
+        if (!dashboard.teamCreated || !lastUnreadEvent) return;
+
+        let ignore = false;
+
+        requestMyChannelSummaries()
+            .then((summaries) => {
+                if (ignore) return;
+
+                setRecentMessages(
+                    (Array.isArray(summaries) ? summaries : [])
+                        .filter((summary) => summary.lastMessage)
+                        .map((summary) => ({
+                            senderName: summary.lastMessage.senderName,
+                            timeText: formatChatTime(
+                                summary.lastMessage.createdAt
+                            ),
+                            preview:
+                                summary.lastMessage.message ??
+                                "파일을 보냈습니다.",
+                            createdAt: summary.lastMessage.createdAt,
+                        }))
+                        .sort(
+                            (a, b) =>
+                                new Date(b.createdAt) - new Date(a.createdAt)
+                        )
+                        .slice(0, 2)
+                );
+                setSectionErrors((prev) => ({ ...prev, chat: undefined }));
+            })
+            .catch(() => {
+                if (!ignore) {
+                    setSectionErrors((prev) => ({
+                        ...prev,
+                        chat: "채팅 미리보기를 불러오지 못했습니다.",
+                    }));
+                }
+            });
+
+        return () => {
+            ignore = true;
+        };
+    }, [dashboard.teamCreated, lastUnreadEvent]);
 
     useEffect(() => {
         const getNoticeData = async () => {
