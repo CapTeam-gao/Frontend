@@ -134,14 +134,6 @@ export const requestAcceptTeamRecommendation = async (recommendationId) => {
     return getResponseData(response);
 };
 
-export const requestAcceptAllTeamRecommendations = async (grade) => {
-    const response = await api.post(
-        `/api/admin/team-recommendations/accept-all/${grade}`
-    );
-
-    return getResponseData(response);
-};
-
 export const requestAdminTeamList = async () => {
     const response = await api.get("/api/admin/teams");
 
