@@ -262,10 +262,22 @@ const AdminDashboard = () => {
                                             팀을 생성해주세요
                                         </h1>
                                         <p className={styles.heroSub}>
-                                            설문 응답이 {nextGradeSurveyPercent}
-                                            % 모였습니다. 지금 생성하면 AI가
-                                            역할과 실력 균형을 고려해 팀을
-                                            추천합니다.
+                                            {nextGradeSurveyPercent === 100 ? (
+                                                <>
+                                                    설문 응답이 100% 모였습니다.
+                                                    지금 생성하면 AI가 역할과
+                                                    실력 균형을 고려해 팀을
+                                                    추천합니다.
+                                                </>
+                                            ) : (
+                                                <>
+                                                    설문 응답이{" "}
+                                                    {nextGradeSurveyPercent}%
+                                                    모였습니다. 전체 학생이
+                                                    설문을 완료해야 팀을 생성할
+                                                    수 있습니다.
+                                                </>
+                                            )}
                                         </p>
 
                                         <div className={styles.heroProgress}>
