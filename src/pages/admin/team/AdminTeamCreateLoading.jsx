@@ -34,19 +34,9 @@ const STEPS = [
     },
 ];
 
-// AI가 배치 완료 콜백을 보내기 시작하면(totalBatches > 0) 실제 진행률로 단계를 계산하고,
-// 그 전까지는(AI가 아직 배치 단위로 안 보내는 동안) job.status 기반 대략적인 단계로 대체한다.
-const getActiveStepIndex = (jobStatus, completedBatches, totalBatches) => {
-    if (totalBatches > 0) {
-        const ratio = completedBatches / totalBatches;
-        return Math.min(STEPS.length - 1, Math.floor(ratio * STEPS.length));
-    }
-
-    if (jobStatus === "COMPLETING") return 3;
-    if (jobStatus === "RUNNING") return 1;
-
-    return 0;
-};
+// AI가 실제 워크플로우 단계에 진입할 때 백엔드에 저장한 0~3 값을 사용한다.
+const getActiveStepIndex = (progressStep) =>
+    Math.min(STEPS.length - 1, Math.max(0, Number(progressStep) || 0));
 
 const getErrorMessage = (error) => {
     const responseData = error.response?.data;
@@ -129,9 +119,7 @@ const AdminTeamCreateLoading = () => {
     const regenerationPrompt = location.state?.regenerationPrompt || "";
     const baseVersionId = location.state?.baseVersionId || null;
     const [error, setError] = useState("");
-    const [jobStatus, setJobStatus] = useState(
-        storedMatchingJob?.status || "QUEUED"
-    );
+    const [progressStep, setProgressStep] = useState(0);
     const [batchProgress, setBatchProgress] = useState({
         completedBatches: 0,
         totalBatches: 0,
@@ -141,11 +129,7 @@ const AdminTeamCreateLoading = () => {
     const hasPartialTeams = (job) =>
         Array.isArray(job?.partialTeams) && job.partialTeams.length > 0;
     const isMatchingInProgress = Boolean(grade) && !error;
-    const activeStepIndex = getActiveStepIndex(
-        jobStatus,
-        batchProgress.completedBatches,
-        batchProgress.totalBatches
-    );
+    const activeStepIndex = getActiveStepIndex(progressStep);
 
     useEffect(() => {
         if (!isMatchingInProgress) return;
@@ -176,6 +160,19 @@ const AdminTeamCreateLoading = () => {
         } // 하지만 팀 로딩 페이지 이동시 api 호출되는 불상사 막기 위해 학생 선택을 안 했다면 다시 팀 생성 페이지로 이동
 
         let ignore = false;
+        let visibleProgressStep = 0;
+
+        // 폴링 사이에 AI 단계가 여러 칸 진행됐어도 1→2→3→4를 건너뛰지 않고
+        // 화면에 순서대로 보여준 뒤 다음 페이지로 이동한다.
+        const advanceProgressStep = async (targetStep) => {
+            const normalizedTarget = getActiveStepIndex(targetStep);
+
+            while (!ignore && visibleProgressStep < normalizedTarget) {
+                visibleProgressStep += 1;
+                setProgressStep(visibleProgressStep);
+                await wait(700);
+            }
+        };
 
         const createTeamRecommendation = async () => {
             try {
@@ -209,7 +206,6 @@ const AdminTeamCreateLoading = () => {
                         grade,
                         status: "STARTING",
                     });
-                    setJobStatus("STARTING");
 
                     currentJob = await requestStartTeamMatchingJob(
                         grade,
@@ -223,12 +219,13 @@ const AdminTeamCreateLoading = () => {
                     grade,
                     status: currentJob?.status,
                 });
-                setJobStatus(currentJob?.status);
                 setBatchProgress({
                     completedBatches: currentJob?.completedBatches ?? 0,
                     totalBatches: currentJob?.totalBatches ?? 0,
                     progressPercent: currentJob?.progressPercent ?? null,
                 });
+                await advanceProgressStep(currentJob?.progressStep);
+                if (ignore) return;
 
                 // 첫 팀 데이터가 실제로 저장된 경우에만 로딩 화면을 벗어나
                 // 팀 에딧 화면으로 넘어간다 — 전체 완료를 기다리게 하지 않기 위함(8/2 결정).
@@ -260,12 +257,13 @@ const AdminTeamCreateLoading = () => {
                         grade,
                         status: currentJob?.status,
                     });
-                    setJobStatus(currentJob?.status);
-                setBatchProgress({
-                    completedBatches: currentJob?.completedBatches ?? 0,
-                    totalBatches: currentJob?.totalBatches ?? 0,
-                    progressPercent: currentJob?.progressPercent ?? null,
-                });
+                    setBatchProgress({
+                        completedBatches: currentJob?.completedBatches ?? 0,
+                        totalBatches: currentJob?.totalBatches ?? 0,
+                        progressPercent: currentJob?.progressPercent ?? null,
+                    });
+                    await advanceProgressStep(currentJob?.progressStep);
+                    if (ignore) return;
 
                     if (hasPartialTeams(currentJob) && currentJob?.versionId) {
                         clearMatchingJobLock();
