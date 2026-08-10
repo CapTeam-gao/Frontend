@@ -37,8 +37,8 @@ const useFcmNotifications = () => {
                     if (token) return requestRegisterFcmToken(token);
                     return null;
                 })
-                .catch(() => {
-                    // ponytail: 알림 권한 거부/미지원 브라우저는 조용히 무시 — 알림 없이도 서비스는 정상 이용 가능
+                .catch((error) => {
+                    console.error("FCM 토큰 등록에 실패했습니다.", error);
                 });
         }
 
