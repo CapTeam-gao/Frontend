@@ -6,7 +6,8 @@ export const gradeLabels = {
     GRADE_3: "3학년",
 };
 
-export const MATCHING_POLL_INTERVAL = 5000;
+// 첫 팀 partialTeams를 놓치지 않도록 매칭 작업 중에는 1초마다 상태를 확인한다.
+export const MATCHING_POLL_INTERVAL = 1000;
 export const WAITING_JOB_STATUSES = ["QUEUED", "RUNNING", "COMPLETING"];
 
 export const wait = (ms) =>
