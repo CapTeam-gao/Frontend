@@ -74,7 +74,7 @@ const useChatRoom = ({ setError }) => {
         dispatchChatUnreadChange();
     }, []);
 
-    const increaseChannelUnreadCount = useCallback(
+    const updateChannelLastMessage = useCallback(
         (channelId, receivedMessage) => {
             setChannelSummaries((prevSummaries) =>
                 prevSummaries.map((summary) =>
@@ -82,15 +82,29 @@ const useChatRoom = ({ setError }) => {
                         ? {
                               ...summary,
                               lastMessage: receivedMessage,
-                              unreadCount: (summary.unreadCount ?? 0) + 1,
                           }
                         : summary
                 )
             );
-            dispatchChatUnreadChange();
         },
         []
     );
+
+    const applyChannelUnreadEvent = useCallback((event) => {
+        if (!event?.channelId) return;
+
+        setChannelSummaries((prevSummaries) =>
+            prevSummaries.map((summary) =>
+                String(summary.channel?.id) === String(event.channelId)
+                    ? {
+                          ...summary,
+                          unreadCount: Number(event.unreadCount ?? 0),
+                      }
+                    : summary
+            )
+        );
+        dispatchChatUnreadChange();
+    }, []);
 
     const refreshChannelSummaries = useCallback(async () => {
         const summaries = await requestMyChannelSummaries();
@@ -109,29 +123,28 @@ const useChatRoom = ({ setError }) => {
         }
 
         setRoom(roomData);
-        setSelectedChannel((prevSelectedChannel) => {
-            const selectedChannelId =
-                prevSelectedChannel?.id ?? storedChannelId;
-            const nextSelectedChannel = channels.find(
-                (channel) => String(channel.id) === String(selectedChannelId)
+        const nextSelectedChannel = channels.find(
+            (channel) => String(channel.id) === String(storedChannelId)
+        );
+        const nextChannel = nextSelectedChannel ?? channels[0] ?? null;
+
+        if (nextChannel?.id) {
+            localStorage.setItem(
+                SELECTED_CHAT_CHANNEL_STORAGE_KEY,
+                String(nextChannel.id)
             );
-            const firstAvailableChannel = channels[0] ?? null;
-            const nextChannel = nextSelectedChannel ?? firstAvailableChannel;
+        } else {
+            localStorage.removeItem(SELECTED_CHAT_CHANNEL_STORAGE_KEY);
+        }
 
-            if (nextChannel?.id) {
-                localStorage.setItem(
-                    SELECTED_CHAT_CHANNEL_STORAGE_KEY,
-                    String(nextChannel.id)
-                );
-            } else {
-                localStorage.removeItem(SELECTED_CHAT_CHANNEL_STORAGE_KEY);
-            }
-
-            return nextChannel;
-        });
+        setSelectedChannel(nextChannel);
 
         await refreshChannelSummaries();
-    }, [refreshChannelSummaries]);
+
+        if (nextChannel?.id) {
+            clearChannelUnreadCount(nextChannel.id);
+        }
+    }, [clearChannelUnreadCount, refreshChannelSummaries]);
 
     useEffect(() => {
         const getChatRoom = async () => {
@@ -382,7 +395,8 @@ const useChatRoom = ({ setError }) => {
         updateSelectedChannel,
         getChannelUnreadCount,
         clearChannelUnreadCount,
-        increaseChannelUnreadCount,
+        updateChannelLastMessage,
+        applyChannelUnreadEvent,
         handleSubmitChannelModal,
         changeNewChannelName,
         openCreateChannelModal,

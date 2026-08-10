@@ -7,6 +7,7 @@ import {
     subscribeChatChannel,
     subscribeChatChannelEvents,
     subscribeChatRoomChannelEvents,
+    subscribeUserChatUnreadEvents,
 } from "../api/chatSocket";
 
 const useChatSocket = ({
@@ -17,7 +18,8 @@ const useChatSocket = ({
     onMessageEvent,
     onChannelEvent,
     clearChannelUnreadCount,
-    increaseChannelUnreadCount,
+    updateChannelLastMessage,
+    onUnreadEvent,
     onForeignMessage,
     setError,
 }) => {
@@ -25,6 +27,7 @@ const useChatSocket = ({
     const subscriptionRef = useRef(null);
     const messageEventSubscriptionRef = useRef(null);
     const roomChannelEventSubscriptionRef = useRef(null);
+    const unreadEventSubscriptionRef = useRef(null);
     const notificationSubscriptionsRef = useRef([]);
     const selectedChannelRef = useRef(null);
 
@@ -56,18 +59,21 @@ const useChatSocket = ({
                 messageEventSubscriptionRef.current;
             const roomChannelEventSubscription =
                 roomChannelEventSubscriptionRef.current;
+            const unreadEventSubscription = unreadEventSubscriptionRef.current;
             const notificationSubscriptions =
                 notificationSubscriptionsRef.current;
 
             subscriptionRef.current = null;
             messageEventSubscriptionRef.current = null;
             roomChannelEventSubscriptionRef.current = null;
+            unreadEventSubscriptionRef.current = null;
             notificationSubscriptionsRef.current = [];
 
             disconnectChatClient(client, [
                 chatSubscription,
                 messageEventSubscription,
                 roomChannelEventSubscription,
+                unreadEventSubscription,
                 ...notificationSubscriptions,
             ]).catch(() => {
                 client.deactivate();
@@ -103,6 +109,29 @@ const useChatSocket = ({
             roomChannelEventSubscriptionRef.current = null;
         };
     }, [roomId, socketConnected, onChannelEvent]);
+
+    useEffect(() => {
+        const client = chatClientRef.current;
+
+        if (!client?.connected || !socketConnected || !onUnreadEvent) {
+            return undefined;
+        }
+
+        unreadEventSubscriptionRef.current?.unsubscribe();
+
+        try {
+            unreadEventSubscriptionRef.current =
+                subscribeUserChatUnreadEvents(client, onUnreadEvent);
+        } catch {
+            unreadEventSubscriptionRef.current = null;
+            return undefined;
+        }
+
+        return () => {
+            unreadEventSubscriptionRef.current?.unsubscribe();
+            unreadEventSubscriptionRef.current = null;
+        };
+    }, [socketConnected, onUnreadEvent]);
 
     useEffect(() => {
         const client = chatClientRef.current;
@@ -192,7 +221,7 @@ const useChatSocket = ({
                                 return;
                             }
 
-                            increaseChannelUnreadCount(
+                            updateChannelLastMessage(
                                 channel.id,
                                 receivedMessage
                             );
@@ -217,7 +246,7 @@ const useChatSocket = ({
         socketConnected,
         channels,
         selectedChannel?.id,
-        increaseChannelUnreadCount,
+        updateChannelLastMessage,
         onForeignMessage,
     ]);
 

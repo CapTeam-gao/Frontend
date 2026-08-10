@@ -25,7 +25,8 @@ const useUserTeamChat = () => {
         updateSelectedChannel,
         getChannelUnreadCount,
         clearChannelUnreadCount,
-        increaseChannelUnreadCount,
+        updateChannelLastMessage,
+        applyChannelUnreadEvent,
         handleSubmitChannelModal,
         changeNewChannelName,
         openCreateChannelModal,
@@ -69,7 +70,8 @@ const useUserTeamChat = () => {
         onMessageEvent: handleMessageEvent,
         onChannelEvent: handleChannelEvent,
         clearChannelUnreadCount,
-        increaseChannelUnreadCount,
+        updateChannelLastMessage,
+        onUnreadEvent: applyChannelUnreadEvent,
         onForeignMessage: (channel, receivedMessage) => {
             setToasts((prevToasts) => [
                 ...prevToasts,
