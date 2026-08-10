@@ -138,6 +138,8 @@ const AdminTeamCreateLoading = () => {
         progressPercent: null,
     });
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
+    const hasPartialTeams = (job) =>
+        Array.isArray(job?.partialTeams) && job.partialTeams.length > 0;
     const isMatchingInProgress = Boolean(grade) && !error;
     const activeStepIndex = getActiveStepIndex(
         jobStatus,
@@ -228,14 +230,19 @@ const AdminTeamCreateLoading = () => {
                     progressPercent: currentJob?.progressPercent ?? null,
                 });
 
-                // ponytail: 첫 팀(완료된 배치 1개)만 도착해도 로딩 화면을 벗어나
+                // 첫 팀 데이터가 실제로 저장된 경우에만 로딩 화면을 벗어나
                 // 팀 에딧 화면으로 넘어간다 — 전체 완료를 기다리게 하지 않기 위함(8/2 결정).
                 // 나머지 팀은 팀 에딧 화면이 이어서 폴링해 순차적으로 채워 넣는다.
-                if ((currentJob?.completedBatches ?? 0) >= 1) {
+                if (hasPartialTeams(currentJob) && currentJob?.versionId) {
                     clearMatchingJobLock();
                     navigate("/admin/team-edit", {
                         replace: true,
-                        state: { grade, jobId: currentJob.jobId, baseVersionId },
+                        state: {
+                            grade,
+                            jobId: currentJob.jobId,
+                            versionId: currentJob.versionId,
+                            baseVersionId,
+                        },
                     });
                     return;
                 }
@@ -260,11 +267,16 @@ const AdminTeamCreateLoading = () => {
                     progressPercent: currentJob?.progressPercent ?? null,
                 });
 
-                    if ((currentJob?.completedBatches ?? 0) >= 1) {
+                    if (hasPartialTeams(currentJob) && currentJob?.versionId) {
                         clearMatchingJobLock();
                         navigate("/admin/team-edit", {
                             replace: true,
-                            state: { grade, jobId: currentJob.jobId, baseVersionId },
+                            state: {
+                                grade,
+                                jobId: currentJob.jobId,
+                                versionId: currentJob.versionId,
+                                baseVersionId,
+                            },
                         });
                         return;
                     }
@@ -279,6 +291,7 @@ const AdminTeamCreateLoading = () => {
                         state: {
                             grade,
                             jobId: currentJob.jobId,
+                            versionId: currentJob.versionId,
                             baseVersionId,
                         },
                     });

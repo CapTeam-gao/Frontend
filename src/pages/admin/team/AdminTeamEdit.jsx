@@ -33,6 +33,7 @@ const AdminTeamEdit = () => {
     const location = useLocation();
     const grade = location.state?.grade || "GRADE_2";
     const streamingJobId = location.state?.jobId || null;
+    const streamingVersionId = location.state?.versionId || null;
     const baseVersionId = location.state?.baseVersionId || null;
     const [teams, setTeams] = useState([]);
     const [streamingJobStatus, setStreamingJobStatus] = useState(
@@ -103,8 +104,9 @@ const AdminTeamEdit = () => {
             const loadLatestVersion = async () => {
                 try {
                     setIsLoading(true);
-                    const latestVersion =
-                        await requestLatestTeamMatchingVersion(grade);
+                    const latestVersion = streamingVersionId
+                        ? { versionId: streamingVersionId, status: "DRAFT" }
+                        : await requestLatestTeamMatchingVersion(grade);
                     const latestTeams =
                         await requestTeamMatchingVersionDetail(
                             latestVersion.versionId
@@ -176,6 +178,9 @@ const AdminTeamEdit = () => {
                         : [];
 
                     setTeams(partialTeams);
+                    if (currentJob?.versionId) {
+                        setPendingVersionId(currentJob.versionId);
+                    }
                     setStreamingJobStatus(currentJob?.status);
                     setIsLoading(false);
 
@@ -228,7 +233,7 @@ const AdminTeamEdit = () => {
         return () => {
             ignore = true;
         };
-    }, [streamingJobId, grade, baseVersionId]);
+    }, [streamingJobId, streamingVersionId, grade, baseVersionId]);
 
     useEffect(() => {
         const preventUnload = (event) => {
@@ -328,7 +333,8 @@ const AdminTeamEdit = () => {
         setIsRegenerateModalOpen(true);
     };
     const handleRegenerateConfirm = () => {
-        const currentVersionId = teams[0]?.matchingVersionId || null;
+        const currentVersionId =
+            pendingVersionId || teams[0]?.matchingVersionId || null;
 
         navigate("/admin/team-create/loading", {
             state: {
