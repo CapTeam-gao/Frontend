@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ModalCloseContext } from "./modalCloseContext";
 import styles from "./ModalOverlay.module.css";
 
@@ -50,7 +51,10 @@ const ModalOverlay = ({
         };
     }, [handleClose]);
 
-    return (
+    // 헤더의 backdrop-filter 등 transform/filter가 걸린 조상 안에서 렌더되면
+    // position: fixed가 그 조상 기준으로 잡혀 오버레이가 화면 전체를 덮지 못한다.
+    // body로 포털해서 항상 뷰포트 기준으로 고정되게 한다.
+    return createPortal(
         <ModalCloseContext.Provider value={handleClose}>
             <div
                 className={`${overlayClassName} ${styles.overlay} ${
@@ -71,7 +75,8 @@ const ModalOverlay = ({
                     {children}
                 </section>
             </div>
-        </ModalCloseContext.Provider>
+        </ModalCloseContext.Provider>,
+        document.body
     );
 };
 
