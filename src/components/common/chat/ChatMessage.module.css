@@ -132,23 +132,28 @@
     align-items: center;
     gap: 10px;
     max-width: 320px;
-    padding: 0;
+    padding: 10px 14px;
     border: none;
-    background-color: transparent;
-    color: var(--color-primary-dark);
+    border-radius: 16px;
+    background-color: var(--color-bubble);
+    color: var(--color-text-primary);
     font-family: var(--font-family);
-    text-decoration: underline;
-    text-underline-offset: 3px;
     text-align: left;
     cursor: pointer;
+    transition: background-color 0.15s ease;
 }
 
 .mine .fileMessage {
+    background-color: var(--color-primary);
     color: #ffffff;
 }
 
 .fileMessage:hover {
-    color: var(--color-primary);
+    background-color: var(--color-border);
+}
+
+.mine .fileMessage:hover {
+    background-color: var(--color-primary-dark);
 }
 
 .fileIcon {
@@ -159,7 +164,7 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background-color: var(--color-bubble);
+    background-color: #ffffff;
 }
 
 .mine .fileIcon {
@@ -185,8 +190,6 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     text-overflow: ellipsis;
-    text-decoration: underline;
-    text-underline-offset: 3px;
     white-space: nowrap;
 }
 
