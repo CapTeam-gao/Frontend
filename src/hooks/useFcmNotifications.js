@@ -6,12 +6,8 @@ import {
     requestRegisterFcmToken,
     requestRemoveFcmToken,
 } from "../api/notificationApi";
-import {
-    createChatClient,
-    disconnectChatClient,
-    subscribeUserChatNotifications,
-} from "../api/chatSocket";
-import { isAdminRole } from "../utils/accountRole";
+import { subscribeUserChatNotifications } from "../api/chatSocket";
+import { useUserChatSocket } from "./userChatSocketContext";
 
 const USER_CHAT_PAGE_PATH = "/user/chat";
 
@@ -21,7 +17,7 @@ const USER_CHAT_PAGE_PATH = "/user/chat";
 // 여기서는 "채팅 페이지 밖에 있을 때"만 전역 토스트를 띄운다.
 const useFcmNotifications = () => {
     const authStatus = authStore((state) => state.authStatus);
-    const user = authStore((state) => state.user);
+    const { chatClientRef, socketConnected } = useUserChatSocket();
     const wasAuthenticatedRef = useRef(false);
     const [toasts, setToasts] = useState([]);
     const navigate = useNavigate();
@@ -83,54 +79,40 @@ const useFcmNotifications = () => {
     }, [location.pathname]);
 
     useEffect(() => {
-        const shouldConnect =
-            authStatus === "authenticated" &&
-            Boolean(user) &&
-            !isAdminRole(user.accountRole);
+        const client = chatClientRef.current;
 
-        if (!shouldConnect) return undefined;
+        if (!client || !socketConnected) return undefined;
 
         let subscription = null;
 
-        const client = createChatClient({
-            onConnect: (connectedClient) => {
-                try {
-                    subscription = subscribeUserChatNotifications(
-                        connectedClient,
-                        (event) => {
-                            // 채팅 페이지를 보고 있을 땐 그 화면 안 메시지 목록으로 이미 보이므로 토스트 생략
-                            if (locationRef.current === USER_CHAT_PAGE_PATH) {
-                                return;
-                            }
-
-                            setToasts((prev) => [
-                                ...prev,
-                                {
-                                    id: `CHAT_MESSAGE-${Date.now()}`,
-                                    type: "CHAT_MESSAGE",
-                                    title: `${event?.teamName ?? "팀 채팅"} · ${
-                                        event?.senderName ?? ""
-                                    }`,
-                                    body: event?.messagePreview,
-                                    clickUrl: USER_CHAT_PAGE_PATH,
-                                },
-                            ]);
-                        }
-                    );
-                } catch {
-                    subscription = null;
+        try {
+            subscription = subscribeUserChatNotifications(client, (event) => {
+                // 채팅 페이지를 보고 있을 땐 그 화면 안 메시지 목록으로 이미 보이므로 토스트 생략
+                if (locationRef.current === USER_CHAT_PAGE_PATH) {
+                    return;
                 }
-            },
-        });
 
-        client.activate();
+                setToasts((prev) => [
+                    ...prev,
+                    {
+                        id: `CHAT_MESSAGE-${Date.now()}`,
+                        type: "CHAT_MESSAGE",
+                        title: `${event?.teamName ?? "팀 채팅"} · ${
+                            event?.senderName ?? ""
+                        }`,
+                        body: event?.messagePreview,
+                        clickUrl: USER_CHAT_PAGE_PATH,
+                    },
+                ]);
+            });
+        } catch {
+            subscription = null;
+        }
 
         return () => {
-            disconnectChatClient(client, [subscription]).catch(() => {
-                client.deactivate();
-            });
+            subscription?.unsubscribe?.();
         };
-    }, [authStatus, user]);
+    }, [chatClientRef, socketConnected]);
 
     const dismissToast = useCallback((id) => {
         setToasts((prev) => prev.filter((toast) => toast.id !== id));

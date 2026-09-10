@@ -3,11 +3,8 @@ import { requestMyChannelSummaries } from "../api/chatApi";
 import { requestAdminChatUnreadSummary } from "../api/adminChatApi";
 import authStore from "../store/authStore";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../utils/chat";
-import {
-    createChatClient,
-    disconnectChatClient,
-    subscribeUserChatUnreadEvents,
-} from "../api/chatSocket";
+import { subscribeUserChatUnreadEvents } from "../api/chatSocket";
+import { useUserChatSocket } from "./userChatSocketContext";
 import { isAdminRole } from "../utils/accountRole";
 
 const CHAT_UNREAD_REFRESH_INTERVAL = 1000 * 60 * 2;
@@ -24,6 +21,7 @@ const getTotalUnreadCount = (channelSummaries) => {
 const useUnreadChatCount = ({ enabled = true } = {}) => {
     const accessToken = authStore((state) => state.accessToken);
     const user = authStore((state) => state.user);
+    const { chatClientRef, socketConnected } = useUserChatSocket();
     const [unreadChatCount, setUnreadChatCount] = useState(0);
     const [lastUnreadEvent, setLastUnreadEvent] = useState(null);
     const isRefreshingRef = useRef(false);
@@ -116,41 +114,40 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     }, [refreshUnreadChatCount, shouldFetchUnreadCount]);
 
     useEffect(() => {
-        if (!shouldFetchUnreadCount || isAdminRole(user?.accountRole)) {
+        const client = chatClientRef.current;
+
+        if (
+            !shouldFetchUnreadCount ||
+            isAdminRole(user?.accountRole) ||
+            !client ||
+            !socketConnected
+        ) {
             return undefined;
         }
 
         let unreadSubscription = null;
 
-        const client = createChatClient({
-            onConnect: (connectedClient) => {
-                try {
-                    unreadSubscription = subscribeUserChatUnreadEvents(
-                        connectedClient,
-                        (event) => {
-                            setUnreadChatCount(
-                                Number(event?.totalUnreadCount ?? 0)
-                            );
-                            setLastUnreadEvent({
-                                ...event,
-                                receivedAt: Date.now(),
-                            });
-                        }
-                    );
-                } catch {
-                    unreadSubscription = null;
+        try {
+            unreadSubscription = subscribeUserChatUnreadEvents(
+                client,
+                (event) => {
+                    setUnreadChatCount(Number(event?.totalUnreadCount ?? 0));
+                    setLastUnreadEvent({ ...event, receivedAt: Date.now() });
                 }
-            },
-        });
-
-        client.activate();
+            );
+        } catch {
+            unreadSubscription = null;
+        }
 
         return () => {
-            disconnectChatClient(client, [unreadSubscription]).catch(() => {
-                client.deactivate();
-            });
+            unreadSubscription?.unsubscribe?.();
         };
-    }, [shouldFetchUnreadCount, user?.accountRole]);
+    }, [
+        shouldFetchUnreadCount,
+        user?.accountRole,
+        chatClientRef,
+        socketConnected,
+    ]);
 
     return {
         unreadChatCount,

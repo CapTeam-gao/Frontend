@@ -40,20 +40,19 @@ const useChatPresence = ({
         }
     }, [selectedChannelId, teamIdFallback, onError]);
 
+    // 채널이 정해지면 먼저 한 번 불러온다(소켓 연결 전에도 접속 상태를 빠르게 보여주기 위함).
     useEffect(() => {
         refreshPresence();
     }, [refreshPresence]);
 
+    // 소켓이 붙으면, 구독(effect below)이 이후 변화를 받기 직전의 현재 상태로 한 번 더 맞춘다.
+    // 이전엔 여기에 700ms 뒤 재조회가 하나 더 있었는데, 구독이 곧바로 활성화되고
+    // 그 사이 변화는 다음 presence 이벤트가 정정하므로 중복이라 제거했다.
     useEffect(() => {
         if (!selectedChannelId || !socketConnected) return undefined;
 
         refreshPresence();
-
-        const retryTimerId = window.setTimeout(refreshPresence, 700);
-
-        return () => {
-            window.clearTimeout(retryTimerId);
-        };
+        return undefined;
     }, [refreshPresence, selectedChannelId, socketConnected]);
 
     useEffect(() => {
