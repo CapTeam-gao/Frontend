@@ -25,7 +25,7 @@ import { formatCreatedAt } from "../../../utils/format";
 import { gradeLabels } from "../../../constants/team";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
-import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
+import { useUnreadChatCountContext } from "../../../hooks/unreadChatCountContext";
 import styles from "./AdminDashboard.module.css";
 
 const countSurveyProgress = (students, grade) => {
@@ -167,9 +167,7 @@ const AdminDashboard = () => {
 
     const teamStatus = getAdminTeamCreationStatus(dashboard);
     const isTeamManageAccessible = teamStatus.teamManageAccessible;
-    const { unreadChatCount } = useUnreadChatCount({
-        enabled: isTeamManageAccessible,
-    });
+    const { unreadChatCount } = useUnreadChatCountContext();
 
     const revealRef = useInView({ replayKey: isDashboardLoading });
 

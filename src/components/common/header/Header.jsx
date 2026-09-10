@@ -3,7 +3,7 @@ import Logo from "../../../assets/images/logo.png";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import authStore from "../../../store/authStore";
-import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
+import { useUnreadChatCountContext } from "../../../hooks/unreadChatCountContext";
 import TeamRequiredModal from "../modal/TeamRequiredModal";
 import {
     clearDashboardCache,
@@ -66,9 +66,7 @@ const Header = () => {
     const [teamRequiredModal, setTeamRequiredModal] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const { hasUnreadChat } = useUnreadChatCount({
-        enabled: hasUser,
-    });
+    const { hasUnreadChat } = useUnreadChatCountContext();
 
     useEffect(() => {
         if (!isAdmin) return undefined;

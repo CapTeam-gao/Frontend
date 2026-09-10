@@ -2,6 +2,7 @@ import Router from "./router/index";
 import "./styles/global.css";
 import useAuth from "./hooks/useAuth";
 import useFcmNotifications from "./hooks/useFcmNotifications";
+import UnreadChatCountProvider from "./hooks/UnreadChatCountProvider";
 import authStore from "./store/authStore";
 import NotificationToast from "./components/common/notification/NotificationToast";
 
@@ -30,14 +31,14 @@ function App() {
     }
 
     return (
-        <>
+        <UnreadChatCountProvider>
             <Router />
             <NotificationToast
                 toasts={toasts}
                 onDismiss={dismissToast}
                 onSelect={selectToast}
             />
-        </>
+        </UnreadChatCountProvider>
     );
 }
 

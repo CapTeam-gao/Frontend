@@ -19,7 +19,7 @@ import {
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
 import { formatCreatedAt, stripMarkdown, truncateText } from "../../../utils/format";
-import useUnreadChatCount from "../../../hooks/useUnreadChatCount";
+import { useUnreadChatCountContext } from "../../../hooks/unreadChatCountContext";
 import styles from "./UserDashboard.module.css";
 
 const PROJECT_PLAN_FIELDS = [
@@ -103,9 +103,7 @@ const UserDashboard = () => {
     const [projectPlanStatus, setProjectPlanStatus] = useState(null);
     const [notices, setNotices] = useState([]);
     const [sectionErrors, setSectionErrors] = useState({});
-    const { unreadChatCount } = useUnreadChatCount({
-        enabled: dashboard.teamCreated,
-    });
+    const { unreadChatCount } = useUnreadChatCountContext();
 
     // 로딩이 끝나 실제 화면이 붙는 순간부터 "스르륵" 재생
     const revealRef = useInView({ replayKey: isDashboardLoading });

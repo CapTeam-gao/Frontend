@@ -79,8 +79,15 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
             refreshUnreadChatCount();
         }, CHAT_UNREAD_REFRESH_INTERVAL);
 
+        // 채팅방 진입 한 번에 clearChannelUnreadCount·markAsRead 등으로
+        // 이 이벤트가 연달아 여러 번 터진다. 같은 조회를 그때마다 하지 않도록 묶는다.
+        let changeDebounceId = null;
         const refreshUnreadChatCountOnChange = () => {
-            refreshUnreadChatCount({ force: true });
+            window.clearTimeout(changeDebounceId);
+            changeDebounceId = window.setTimeout(
+                () => refreshUnreadChatCount({ force: true }),
+                400
+            );
         };
 
         const refreshUnreadChatCountOnFocus = () => {
@@ -99,6 +106,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
 
         return () => {
             window.clearInterval(intervalId);
+            window.clearTimeout(changeDebounceId);
             window.removeEventListener(
                 CHAT_UNREAD_CHANGE_EVENT,
                 refreshUnreadChatCountOnChange
