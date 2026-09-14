@@ -5,11 +5,10 @@
 }
 
 .body {
-    width: calc(100% - 96px);
-    max-width: 1200px;
+    width: min(calc(100% - 64px), 1280px);
     min-height: calc(100dvh - var(--header-height));
     margin: 0 auto;
-    padding: 36px 0 56px;
+    padding: clamp(56px, 7vh, 88px) 0 72px;
 }
 
 .pageHead {
@@ -17,7 +16,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
 }
 
 .pageEyebrow {
@@ -460,7 +459,7 @@ a.sectionAction:hover {
 @media (max-width: 720px) {
     .body {
         width: calc(100% - 32px);
-        padding: 28px 0 40px;
+        padding: 32px 0 40px;
     }
 
     .pageHead {
