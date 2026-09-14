@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { requestMyChannelSummaries } from "../api/chatApi";
 import { requestAdminChatUnreadSummary } from "../api/adminChatApi";
+import { requestUserDashboard } from "../api/dashboardApi";
 import authStore from "../store/authStore";
 import { CHAT_UNREAD_CHANGE_EVENT } from "../utils/chat";
 import { subscribeUserChatUnreadEvents } from "../api/chatSocket";
@@ -23,12 +24,39 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
     const user = authStore((state) => state.user);
     const { chatClientRef, socketConnected } = useUserChatSocket();
     const [unreadChatCount, setUnreadChatCount] = useState(0);
+    const [studentTeamCreated, setStudentTeamCreated] = useState(null);
     const [lastUnreadEvent, setLastUnreadEvent] = useState(null);
     const isRefreshingRef = useRef(false);
     const lastRefreshTimeRef = useRef(0);
 
-    const shouldFetchUnreadCount =
+    const hasAuthenticatedUser =
         enabled && Boolean(accessToken) && Boolean(user);
+    const isAdmin = isAdminRole(user?.accountRole);
+    const shouldFetchUnreadCount =
+        hasAuthenticatedUser && (isAdmin || studentTeamCreated === true);
+
+    useEffect(() => {
+        if (!hasAuthenticatedUser || isAdmin) {
+            setStudentTeamCreated(null);
+            return undefined;
+        }
+
+        let ignore = false;
+
+        requestUserDashboard()
+            .then((dashboard) => {
+                if (!ignore) {
+                    setStudentTeamCreated(Boolean(dashboard?.teamCreated));
+                }
+            })
+            .catch(() => {
+                if (!ignore) setStudentTeamCreated(false);
+            });
+
+        return () => {
+            ignore = true;
+        };
+    }, [hasAuthenticatedUser, isAdmin]);
 
     const refreshUnreadChatCount = useCallback(async ({ force = false } = {}) => {
         if (!shouldFetchUnreadCount) {
@@ -42,7 +70,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         try {
             isRefreshingRef.current = true;
 
-            if (isAdminRole(user.accountRole)) {
+            if (isAdmin) {
                 const summary = await requestAdminChatUnreadSummary();
                 setUnreadChatCount(Number(summary?.totalUnreadCount ?? 0));
                 lastRefreshTimeRef.current = Date.now();
@@ -57,7 +85,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         } finally {
             isRefreshingRef.current = false;
         }
-    }, [shouldFetchUnreadCount, user?.accountRole]);
+    }, [isAdmin, shouldFetchUnreadCount]);
 
     useEffect(() => {
         const timeoutId = window.setTimeout(
@@ -118,7 +146,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
 
         if (
             !shouldFetchUnreadCount ||
-            isAdminRole(user?.accountRole) ||
+            isAdmin ||
             !client ||
             !socketConnected
         ) {
@@ -144,7 +172,7 @@ const useUnreadChatCount = ({ enabled = true } = {}) => {
         };
     }, [
         shouldFetchUnreadCount,
-        user?.accountRole,
+        isAdmin,
         chatClientRef,
         socketConnected,
     ]);

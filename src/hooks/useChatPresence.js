@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { requestChatPresence } from "../api/chatApi";
 import { subscribeTeamPresence } from "../api/chatSocket";
 
@@ -13,16 +13,35 @@ const useChatPresence = ({
     const [members, setMembers] = useState([]);
     const [presenceTeamId, setPresenceTeamId] = useState(null);
     const [hasPresenceLoaded, setHasPresenceLoaded] = useState(false);
+    const lastRefreshRef = useRef({ channelId: null, refreshedAt: 0 });
 
     const selectedChannelId = selectedChannel?.id;
 
     const refreshPresence = useCallback(async () => {
         if (!selectedChannelId) {
+            lastRefreshRef.current = { channelId: null, refreshedAt: 0 };
             setMembers([]);
             setPresenceTeamId(null);
             setHasPresenceLoaded(false);
             return;
         }
+
+        // 채널 변경 직후 selectedChannel effect와 socketConnected effect가
+        // 연달아 실행될 수 있어 1초 안의 같은 채널 재조회는 건너뛴다.
+        const now = Date.now();
+        const lastRefresh = lastRefreshRef.current;
+
+        if (
+            String(lastRefresh.channelId) === String(selectedChannelId) &&
+            now - lastRefresh.refreshedAt < 1000
+        ) {
+            return;
+        }
+
+        lastRefreshRef.current = {
+            channelId: selectedChannelId,
+            refreshedAt: now,
+        };
 
         try {
             setHasPresenceLoaded(false);
