@@ -76,7 +76,6 @@
 .noticeDetail {
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid var(--color-border);
     font-size: var(--font-size-lg);
     line-height: 1.6;
     color: var(--color-text-secondary);
@@ -137,7 +136,6 @@
     position: sticky;
     top: calc(var(--header-height) + 32px);
     padding-top: 28px;
-    border-top: 1px solid var(--color-border);
 }
 
 .railLabel {
@@ -201,7 +199,6 @@
     gap: 12px;
     margin-top: 28px;
     padding-top: 24px;
-    border-top: 1px solid var(--color-border);
     font-size: 15px;
 }
 

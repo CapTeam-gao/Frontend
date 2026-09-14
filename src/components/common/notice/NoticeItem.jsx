@@ -19,10 +19,10 @@ const NoticeItem = ({ notice }) => {
                     </p>
                 )}
 
-                <p className={styles.meta}>
-                    {notice.writer} · {formatCreatedAt(notice.createdAt)}
-                </p>
             </div>
+
+            <p className={styles.writer}>{notice.writer}</p>
+            <p className={styles.date}>{formatCreatedAt(notice.createdAt)}</p>
 
             <svg
                 className={styles.chevron}

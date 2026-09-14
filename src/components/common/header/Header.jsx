@@ -46,7 +46,7 @@ const setCachedTeamStatus = (cacheKey, value) => {
     });
 };
 
-const Header = () => {
+const Header = ({ fluid = false }) => {
     const location = useLocation();
     const user = authStore((state) => state.user);
 
@@ -303,8 +303,12 @@ const Header = () => {
     );
 
     return (
-        <header className={styles.header}>
-            <div className={styles.inner}>
+        <header
+            className={`${styles.header} ${fluid ? styles.headerFluid : ""}`}
+        >
+            <div
+                className={`${styles.inner} ${fluid ? styles.innerFluid : ""}`}
+            >
                 <Link to={logoPath} className={styles.logoLink}>
                     <img className={styles.logo} src={Logo} alt="로고" />
                 </Link>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { motion, useReducedMotion } from "motion/react";
 import Header from "../../../components/common/header/Header";
 import UserPlanForm from "../../../components/user/project/UserPlanForm";
 import {
@@ -14,12 +15,22 @@ import {
 } from "../../../utils/projectPlan";
 import styles from "./UserProject.module.css";
 
+const contentVariants = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { type: "spring", stiffness: 260, damping: 28 },
+    },
+};
+
 const UserProject = () => {
     const navigate = useNavigate();
     const [projectPlan, setProjectPlan] = useState(emptyProjectPlan);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const shouldReduceMotion = useReducedMotion();
     const hasSavedPlan = Boolean(projectPlan.projectId);
 
     useEffect(() => {
@@ -76,6 +87,15 @@ const UserProject = () => {
         }));
     };
 
+    const scrollToSection = (event, sectionId) => {
+        event.preventDefault();
+
+        document.getElementById(sectionId)?.scrollIntoView({
+            behavior: shouldReduceMotion ? "auto" : "smooth",
+            block: "start",
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -105,42 +125,66 @@ const UserProject = () => {
 
             <main className={styles.body}>
                 <div className={styles.inner}>
-                    <div className={styles.backRow}>
-                        <Link
-                            to="/user/dashboard"
-                            className={styles.backLink}
-                        >
-                            ← 홈으로
-                        </Link>
-                    </div>
+                    <motion.section
+                        className={styles.pageHead}
+                        initial={shouldReduceMotion ? false : "hidden"}
+                        animate="visible"
+                        variants={contentVariants}
+                    >
+                        <h1 className={styles.headline}>프로젝트 기획서</h1>
+                    </motion.section>
 
-                    <section className={styles.pageHead}>
-                        <p className={styles.eyebrow}>프로젝트 기획서</p>
-                        <h1 className={styles.headline}>
-                            우리 팀이 만들 서비스를
-                            <br />
-                            정리해주세요
-                        </h1>
-                        <p className={styles.subline}>
-                            여기에 적은 내용은 팀 관리 화면에서 담당 교사가 함께
-                            봅니다.
-                            <br />
-                            언제든 다시 수정할 수 있어요.
-                        </p>
-                    </section>
+                    <motion.div
+                        className={styles.workspace}
+                        initial={shouldReduceMotion ? false : "hidden"}
+                        animate="visible"
+                        variants={contentVariants}
+                    >
+                        <aside className={styles.guide} aria-label="기획서 항목">
+                            <p className={styles.guideLabel}>작성 항목</p>
+                            <nav className={styles.guideNav}>
+                                <a
+                                    href="#project-basic"
+                                    onClick={(event) =>
+                                        scrollToSection(event, "project-basic")
+                                    }
+                                >
+                                    <span>01</span> 기본 정보
+                                </a>
+                                <a
+                                    href="#project-intro"
+                                    onClick={(event) =>
+                                        scrollToSection(event, "project-intro")
+                                    }
+                                >
+                                    <span>02</span> 서비스 소개
+                                </a>
+                                <a
+                                    href="#project-features"
+                                    onClick={(event) =>
+                                        scrollToSection(event, "project-features")
+                                    }
+                                >
+                                    <span>03</span> 주요 기능
+                                </a>
+                            </nav>
+                        </aside>
 
-                    <UserPlanForm
-                        projectPlan={projectPlan}
-                        hasSavedPlan={hasSavedPlan}
-                        error={error}
-                        isLoading={isLoading}
-                        isSubmitting={isSubmitting}
-                        onSubmit={handleSubmit}
-                        onFieldChange={updateField}
-                        onAddFeature={addCoreFeature}
-                        onFeatureChange={updateCoreFeature}
-                        onRemoveFeature={removeCoreFeature}
-                    />
+                        <div className={styles.formArea}>
+                            <UserPlanForm
+                                projectPlan={projectPlan}
+                                hasSavedPlan={hasSavedPlan}
+                                error={error}
+                                isLoading={isLoading}
+                                isSubmitting={isSubmitting}
+                                onSubmit={handleSubmit}
+                                onFieldChange={updateField}
+                                onAddFeature={addCoreFeature}
+                                onFeatureChange={updateCoreFeature}
+                                onRemoveFeature={removeCoreFeature}
+                            />
+                        </div>
+                    </motion.div>
                 </div>
             </main>
         </div>

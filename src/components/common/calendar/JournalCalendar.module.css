@@ -1,0 +1,81 @@
+.card {
+    width: 100%;
+    padding: 2px;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding-bottom: 8px;
+    margin-bottom: 3px;
+}
+
+.weekday {
+    text-align: center;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: #6b7684;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 34px;
+}
+
+.cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dayNumber {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: #4e5968;
+    line-height: 1;
+}
+
+/* 오늘은 배경 채움 없이 민트 링으로만 */
+.today .dayNumber {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px var(--color-primary);
+    color: var(--color-primary-text);
+    font-weight: var(--font-weight-bold);
+}
+
+/* 제출 표시는 날짜 아래 작은 민트 점 */
+.dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
+.dot[data-level="0"] {
+    background-color: var(--color-danger);
+    opacity: 0.45;
+}
+
+.dot[data-level="1"] {
+    opacity: 0.4;
+}
+
+.dot[data-level="2"] {
+    opacity: 0.7;
+}
+
+.dot[data-level="3"] {
+    opacity: 1;
+}

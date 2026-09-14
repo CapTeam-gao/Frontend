@@ -29,20 +29,6 @@
 .accountMain {
     display: flex;
     align-items: center;
-    gap: 20px;
-}
-
-.avatar {
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: var(--color-primary-bg);
-    font-size: 28px;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary-text);
 }
 
 .accountRole {
@@ -89,7 +75,6 @@
     grid-template-columns: minmax(0, 1fr) 360px;
     gap: 56px;
     padding-top: 40px;
-    border-top: 1px solid var(--color-border);
 }
 
 .infoColumn {
@@ -106,6 +91,8 @@
 }
 
 .infoRows {
+    display: grid;
+    gap: 4px;
     margin-top: 8px;
 }
 
@@ -115,11 +102,6 @@
     justify-content: space-between;
     gap: 16px;
     padding: 16px 0;
-    border-top: 1px solid var(--color-border);
-}
-
-.infoRow:last-child {
-    border-bottom: 1px solid var(--color-border);
 }
 
 .infoRow span {
@@ -161,7 +143,6 @@
     justify-content: space-between;
     gap: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
 }
 
 .chartNote {
@@ -405,12 +386,6 @@
         font-size: 26px;
     }
 
-    .avatar {
-        width: 64px;
-        height: 64px;
-        font-size: 24px;
-    }
-
     .chartGroups {
         grid-template-columns: minmax(0, 1fr);
     }
@@ -425,17 +400,12 @@
     gap: 16px;
     padding: 18px 12px;
     margin: 0 -12px;
-    border-top: 1px solid var(--color-border);
     border-radius: 12px;
     transition: background-color 0.15s ease;
 }
 
 .statusRow:hover {
     background-color: var(--color-bg-secondary);
-}
-
-.infoRows > .statusRow:last-child {
-    border-bottom: 1px solid var(--color-border);
 }
 
 .statusLabel {

@@ -21,15 +21,43 @@ const TeamRequiredModal = ({
             modalClassName={styles.modal}
             ariaLabelledby="team-required-modal-title"
         >
-            <div className={styles.content}>
+            <div className={styles.modalHeader}>
                 <span className={styles.label}>{label}</span>
+                <button
+                    type="button"
+                    className={styles.closeButton}
+                    aria-label="닫기"
+                    onClick={onClose}
+                >
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        aria-hidden="true"
+                    >
+                        <path d="m6 6 12 12M18 6 6 18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div className={styles.content}>
                 <h2 id="team-required-modal-title">{title}</h2>
                 <p>{message}</p>
             </div>
 
-            <button type="button" onClick={handleAction}>
-                {actionText}
-            </button>
+            <div className={styles.actions}>
+                <button
+                    type="button"
+                    className={styles.actionButton}
+                    onClick={handleAction}
+                >
+                    {actionText}
+                </button>
+            </div>
         </ModalOverlay>
     );
 };

@@ -162,8 +162,7 @@ const UserLogResult = () => {
                                             <span
                                                 className={styles.statusBadge}
                                             >
-                                                제출 완료 {entryCount}/
-                                                {entryCount}명
+                                                {entryCount}명 작성 완료
                                             </span>
                                             <span className={styles.dateText}>
                                                 {formatFullDate(

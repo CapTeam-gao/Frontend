@@ -1,162 +1,169 @@
 .page {
     min-height: 100dvh;
-    background-color: var(--color-bg);
+    color: #191f28;
+    background: #ffffff;
 }
 
 .body {
-    max-width: var(--max-width);
+    width: calc(100% - 96px);
+    max-width: 1200px;
     min-height: calc(100dvh - var(--header-height));
     margin: 0 auto;
-    padding: 0 var(--page-padding) 96px;
+    padding: 40px 0 56px;
 }
 
-/* ── 지금 해야 할 한 가지 ─────────────────────────── */
-
-.hero {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 64px;
-    padding: 96px 0;
+.today {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+    padding: 0 0 40px;
 }
 
-.heroMain {
+.todayCopy {
     min-width: 0;
+    flex: 1;
 }
 
-.eyebrow {
-    font-size: 15px;
+.greeting {
+    color: #8b95a1;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary-text);
 }
 
 .headline {
-    margin-top: 12px;
-    font-size: 44px;
+    margin-top: 8px;
+    font-size: clamp(28px, 3vw, 38px);
     font-weight: var(--font-weight-bold);
     line-height: 1.25;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.04em;
+}
+
+.todayTitle {
+    margin-top: 26px;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
 }
 
 .subline {
-    max-width: 30rem;
-    margin-top: 20px;
-    font-size: 19px;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
+    max-width: 680px;
+    margin-top: 7px;
+    color: #4e5968;
+    font-size: var(--font-size-lg);
+    line-height: 1.55;
 }
 
-.heroActions {
+.actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
-    margin-top: 32px;
+    gap: 10px;
+    justify-content: flex-end;
+    margin: 0 0 2px auto;
+    flex: 0 0 auto;
 }
 
-.primaryCta {
-    display: inline-flex;
-    align-items: center;
-    height: 48px;
-    padding: 0 28px;
-    border-radius: 8px;
-    background-color: var(--color-primary);
-    color: #ffffff;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    transition: background-color 0.15s ease, transform 0.1s ease;
-}
-
-.primaryCta:hover {
-    background-color: var(--color-primary-dark);
-}
-
-.primaryCta:active {
-    transform: scale(0.98);
-}
-
+.primaryCta,
 .secondaryCta {
     display: inline-flex;
     align-items: center;
-    height: 48px;
+    justify-content: center;
+    min-height: 48px;
     padding: 0 20px;
-    border-radius: 8px;
-    font-size: 15px;
+    border-radius: 14px;
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    transition: background-color 0.15s ease;
+    transition: background-color 0.16s ease, transform 0.12s ease;
+}
+
+.primaryCta {
+    color: #ffffff;
+    background: var(--color-primary);
+}
+
+.primaryCta:hover {
+    background: var(--color-primary-dark);
+}
+
+.secondaryCta {
+    color: #ffffff;
+    background: var(--color-primary);
 }
 
 .secondaryCta:hover {
-    background-color: var(--color-bg-secondary);
+    background: var(--color-primary-dark);
 }
 
-/* 배경색 없이, 오른쪽 안쪽으로 들여서 */
-.statusPanel {
-    justify-self: end;
-    margin-right: 64px;
-    text-align: right;
+.primaryCta:active,
+.secondaryCta:active {
+    transform: scale(0.98);
 }
 
-.statusLabel {
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-muted);
+.deadline {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-left: 4px;
+    color: #8b95a1;
+    font-size: var(--font-size-md);
 }
 
-.countdown {
-    margin-top: 4px;
-    font-size: 52px;
+.deadlineValue {
+    color: #191f28;
     font-weight: var(--font-weight-bold);
-    line-height: 1;
     font-variant-numeric: tabular-nums;
 }
 
-/* ── 내 캡스톤 / 공지 ─────────────────────────────── */
-
-.columns {
+.grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 56px 80px;
-    padding-top: 64px;
-    border-top: 1px solid var(--color-border);
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+    gap: 48px;
+    margin-top: 40px;
 }
 
-/* 한 섹션만 남을 때(팀 생성 전) 공지가 절반만 차지하지 않도록 */
-.columns > section:only-child {
-    grid-column: 1 / -1;
-    max-width: 720px;
+.grid > section {
+    min-width: 0;
 }
 
-.sectionHeader {
+.grid > aside {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #f2f4f6;
+    border-radius: 18px;
+    background: #ffffff;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.sectionHead {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    min-height: 28px;
 }
 
 .sectionTitle {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
 }
 
 .sectionAction {
-    font-size: var(--font-size-md);
+    color: var(--color-primary-text);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-muted);
-    transition: color 0.15s ease;
+    transition: color 0.16s ease;
 }
 
 .sectionAction:hover {
-    color: var(--color-text-secondary);
+    color: var(--color-primary-dark);
 }
 
 .rows {
-    margin: 8px -12px 0;
-}
-
-.rows > * + * {
-    border-top: 1px solid var(--color-border);
+    margin-top: 10px;
 }
 
 .row {
@@ -164,17 +171,28 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 20px 12px;
+    min-height: 64px;
+    margin: 0 -12px;
+    padding: 14px 12px;
     border-radius: 12px;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .row:hover {
-    background-color: var(--color-bg-secondary);
+    background: #f2f4f6;
+}
+
+.rows > :last-child {
+    border-bottom: 0;
+}
+
+.row:hover .rowValue,
+.row:hover .chevron {
+    color: var(--color-primary-text);
 }
 
 .rowLabel {
-    font-size: 17px;
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
 }
 
@@ -182,104 +200,192 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 15px;
-    color: var(--color-text-secondary);
+    color: #4e5968;
+    font-size: var(--font-size-md);
 }
 
 .valueStrong {
+    color: var(--color-primary-text);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
 }
 
 .valueWarning {
+    color: #e42939;
     font-weight: var(--font-weight-semibold);
-    color: var(--color-danger);
 }
 
 .chevron {
-    color: var(--color-text-muted);
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    color: #8b95a1;
+}
+
+.notices {
+    margin-top: 56px;
 }
 
 .noticeRow {
-    display: block;
-    padding: 20px 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-height: 60px;
+    margin-right: -12px;
+    margin-left: -12px;
+    padding: 14px 12px;
     border-radius: 12px;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.noticeRow:first-child {
+    margin-top: 10px;
 }
 
 .noticeRow:hover {
-    background-color: var(--color-bg-secondary);
+    background: #f2f4f6;
 }
 
-.badge {
-    display: inline-block;
-    margin-bottom: 6px;
-    padding: 2px 6px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
+.noticeRow:hover .noticeTitle {
     color: var(--color-primary-text);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+}
+
+.noticeDot {
+    width: 7px;
+    height: 7px;
+    margin-top: 7px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--color-primary);
+}
+
+.noticeDotImportant {
+    background: #e42939;
+}
+
+.noticeBody {
+    min-width: 0;
+    flex: 1;
 }
 
 .noticeTitle {
-    font-size: 17px;
-    font-weight: var(--font-weight-semibold);
+    display: block;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
     line-height: 1.4;
 }
 
+.noticeTitleImportant {
+    font-weight: var(--font-weight-bold);
+}
+
 .noticeExcerpt {
-    margin-top: 4px;
-    font-size: var(--font-size-md);
-    color: var(--color-text-muted);
-    overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    margin-top: 4px;
+    overflow: hidden;
+    color: #8b95a1;
+    font-size: var(--font-size-md);
+    line-height: 1.45;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
 }
 
 .noticeMeta {
-    margin-top: 8px;
+    flex: 0 0 auto;
+    color: #8b95a1;
     font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
 }
 
-/* ── 반응형 ───────────────────────────────────────── */
+.emptyLine {
+    margin-top: 10px;
+    padding: 18px 0;
+    color: #8b95a1;
+    font-size: var(--font-size-md);
+    line-height: 1.55;
+}
+
+.page :is(a, button):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
 
 @media (max-width: 900px) {
+    .grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+}
+
+@media (max-width: 720px) {
     .body {
-        padding: 0 20px 64px;
+        width: calc(100% - 32px);
+        padding: 30px 0 44px;
     }
 
-    .hero {
-        grid-template-columns: minmax(0, 1fr);
-        align-items: start;
-        gap: 32px;
-        padding: 56px 0;
+    .today {
+        display: block;
+        padding-bottom: 32px;
     }
 
     .headline {
-        font-size: 32px;
+        font-size: 28px;
+    }
+
+    .todayTitle {
+        margin-top: 24px;
+        font-size: var(--font-size-lg);
     }
 
     .subline {
-        font-size: 17px;
+        font-size: var(--font-size-md);
     }
 
-    .statusPanel {
-        justify-self: start;
-        margin-right: 0;
-        text-align: left;
+    .actions {
+        align-items: stretch;
+        justify-content: flex-start;
+        margin: 20px 0 0;
     }
 
-    .countdown {
-        font-size: 40px;
+    .primaryCta,
+    .secondaryCta {
+        flex: 1 1 auto;
+        min-height: 52px;
     }
 
-    .columns {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 40px;
-        padding-top: 48px;
+    .deadline {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .grid {
+        margin-top: 32px;
+    }
+
+    .grid > aside {
+        padding: 18px;
+    }
+
+    .notices {
+        margin-top: 36px;
+    }
+
+    .row {
+        align-items: flex-start;
+    }
+
+    .rowValue {
+        max-width: 52%;
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+    .noticeMeta {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .primaryCta,
+    .secondaryCta {
+        width: 100%;
+        flex-basis: 100%;
     }
 }

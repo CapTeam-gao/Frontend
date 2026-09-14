@@ -12,12 +12,13 @@
 
 /* 폭은 넓게 쓰되 본문 줄 길이는 읽기 좋게 유지 */
 .inner {
-    max-width: 1120px;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
 .backRow {
     padding-top: 40px;
+    margin-left: 120px;
 }
 
 .backLink {
@@ -33,17 +34,17 @@
 
 .columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 272px;
-    gap: 56px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 880px) 240px;
+    column-gap: 40px;
 }
 
 .article {
+    grid-column: 2;
     min-width: 0;
 }
 
 .articleHead {
     padding: 32px 0;
-    border-bottom: 1px solid var(--color-border);
 }
 
 .badgeRow {
@@ -55,21 +56,32 @@
 }
 
 .importantBadge {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-danger);
+}
+
+.typeBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
-.typeBadge {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-secondary);
+.importantBadge::before,
+.typeBadge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
 }
 
 .title {
@@ -134,12 +146,12 @@
     margin: 24px 0 !important;
     padding: 12px 20px !important;
     border-left: 3px solid var(--color-primary) !important;
-    background-color: var(--color-bg-secondary) !important;
+    background-color: transparent !important;
     color: var(--color-text-secondary) !important;
 }
 
 .markdown code {
-    background-color: var(--color-bg-secondary) !important;
+    background-color: transparent !important;
     color: var(--color-text-primary) !important;
 }
 
@@ -149,9 +161,8 @@
 
 .importantNote {
     margin-top: 40px;
-    padding: 16px 20px;
-    border-radius: 12px;
-    background-color: var(--color-primary-bg);
+    padding: 2px 0 2px 14px;
+    border-left: 2px solid var(--color-danger);
     font-size: 15px;
     font-weight: var(--font-weight-semibold);
     line-height: 1.6;
@@ -161,6 +172,7 @@
 /* ── 메타 레일 ───────────────────────────────────── */
 
 .metaRail {
+    grid-column: 3;
     min-width: 0;
 }
 
@@ -169,7 +181,6 @@
     top: calc(var(--header-height) + 32px);
     margin-top: 32px;
     padding-top: 28px;
-    border-top: 1px solid var(--color-border);
 }
 
 .railLabel {
@@ -191,9 +202,8 @@
 
 .railImportant {
     margin-top: 28px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    background-color: var(--color-primary-bg);
+    padding-left: 12px;
+    border-left: 2px solid var(--color-danger);
 }
 
 .railImportantTitle {
@@ -238,6 +248,14 @@
 
     .metaRail {
         display: none;
+    }
+
+    .article {
+        grid-column: auto;
+    }
+
+    .backRow {
+        margin-left: 0;
     }
 }
 

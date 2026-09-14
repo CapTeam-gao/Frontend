@@ -3,13 +3,7 @@
 .list {
     display: flex;
     flex-direction: column;
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-}
-
-/* 로우끼리만 구분선을 둔다 — 마지막 줄 아래에 선이 두 겹으로 겹치지 않게 */
-.list > * + * {
-    border-top: 1px solid var(--color-border);
+    gap: 4px;
 }
 
 .row {

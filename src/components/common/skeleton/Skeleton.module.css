@@ -1,4 +1,5 @@
 .skeleton {
+    max-width: 100%;
     background-color: var(--color-bg-secondary);
     background-image: linear-gradient(
         90deg,

@@ -10,59 +10,69 @@
     padding: 0 var(--page-padding) 96px;
 }
 
-.pageHead {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 64px;
-    padding: 80px 0;
+.boardHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 56px 0 28px;
 }
 
-.eyebrow {
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary-text);
+.titleLine {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
 }
 
-.headline {
-    margin-top: 12px;
-    font-size: 44px;
+.title {
+    color: var(--color-text-primary);
+    font-size: 34px;
     font-weight: var(--font-weight-bold);
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
 }
 
-.subline {
-    max-width: 32rem;
-    margin-top: 20px;
-    font-size: 19px;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-}
-
-.statusPanel {
-    justify-self: end;
-    margin-right: 64px;
-    text-align: right;
-}
-
-.statusLabel {
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+.totalCount {
     color: var(--color-text-muted);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
 }
 
-.statusValue {
-    margin-top: 4px;
-    font-size: 52px;
-    font-weight: var(--font-weight-bold);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+.importantSummary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
+}
+
+.importantSummary span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-danger);
+}
+
+.board {
+    overflow: hidden;
+}
+
+.listHead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px 116px 24px;
+    gap: 20px;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 18px;
+    background: var(--color-bg);
     color: var(--color-primary-text);
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
 }
 
 .list {
-    border-top: 1px solid var(--color-border);
+    display: grid;
+    gap: 4px;
     list-style: none;
 }
 
@@ -71,28 +81,20 @@
         padding: 0 20px 64px;
     }
 
-    .pageHead {
-        grid-template-columns: minmax(0, 1fr);
-        align-items: start;
-        gap: 24px;
-        padding: 56px 0;
+    .boardHead {
+        align-items: flex-start;
+        padding: 40px 0 20px;
     }
 
-    .headline {
-        font-size: 32px;
+    .title {
+        font-size: 28px;
     }
 
-    .subline {
-        font-size: 17px;
+    .listHead {
+        display: none;
     }
 
-    .statusPanel {
-        justify-self: start;
-        margin-right: 0;
-        text-align: left;
-    }
-
-    .statusValue {
-        font-size: 36px;
+    .board {
+        overflow: visible;
     }
 }

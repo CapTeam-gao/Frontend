@@ -168,7 +168,6 @@ const UserProfile = () => {
     };
 
     const contentRef = useInView();
-    const initial = profile.name?.trim().charAt(0) ?? "";
 
     return (
         <div className={styles.page}>
@@ -178,9 +177,6 @@ const UserProfile = () => {
                 <div className={styles.inner}>
                     <section className={styles.accountHead}>
                         <div className={styles.accountMain}>
-                            <span data-reveal className={styles.avatar}>
-                                {initial}
-                            </span>
                             <div>
                                 <p data-reveal className={styles.accountRole}>
                                     학생 계정

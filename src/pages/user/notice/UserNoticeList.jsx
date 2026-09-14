@@ -79,28 +79,20 @@ const UserNoticeList = () => {
             <Header />
 
             <main className={styles.body}>
-                <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>공지</p>
-                        <h1 className={styles.headline}>
-                            캡스톤 진행에 필요한
-                            <br />
-                            소식을 모았어요
-                        </h1>
-                        <p className={styles.subline}>
-                            일정 변경과 제출 안내는 이곳에 먼저 올라와요.
-                            <br />
-                            중요 표시가 붙은 공지는 꼭 확인해주세요.
-                        </p>
+                <section className={styles.boardHead}>
+                    <div className={styles.titleLine}>
+                        <h1 className={styles.title}>공지</h1>
+                        {!isLoading && (
+                            <span className={styles.totalCount}>
+                                전체 {notices.length}건
+                            </span>
+                        )}
                     </div>
-
                     {!isLoading && importantCount > 0 && (
-                        <div className={styles.statusPanel}>
-                            <p className={styles.statusLabel}>중요 공지</p>
-                            <p className={styles.statusValue}>
-                                {importantCount}
-                            </p>
-                        </div>
+                        <p className={styles.importantSummary}>
+                            <span aria-hidden="true" />
+                            확인할 중요 공지 {importantCount}건
+                        </p>
                     )}
                 </section>
 
@@ -119,17 +111,25 @@ const UserNoticeList = () => {
                     />
                 ) : (
                     <>
-                        <ul className={styles.list} ref={listRef}>
-                            {currentNotices.map((notice) => (
-                                <Link
-                                    key={notice.id}
-                                    to={`/user/notice/${notice.id}`}
-                                    data-reveal
-                                >
-                                    <NoticeItem notice={notice} />
-                                </Link>
-                            ))}
-                        </ul>
+                        <section className={styles.board}>
+                            <div className={styles.listHead} aria-hidden="true">
+                                <span>공지 제목</span>
+                                <span>작성자</span>
+                                <span>등록일</span>
+                                <span />
+                            </div>
+                            <ul className={styles.list} ref={listRef}>
+                                {currentNotices.map((notice) => (
+                                    <Link
+                                        key={notice.id}
+                                        to={`/user/notice/${notice.id}`}
+                                        data-reveal
+                                    >
+                                        <NoticeItem notice={notice} />
+                                    </Link>
+                                ))}
+                            </ul>
+                        </section>
 
                         <Pagination
                             currentPage={currentPage}

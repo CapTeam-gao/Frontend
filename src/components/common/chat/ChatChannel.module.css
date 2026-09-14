@@ -84,3 +84,14 @@
     background-color: var(--color-border);
     color: var(--color-text-primary);
 }
+
+@media (hover: none) and (pointer: coarse) {
+    .channelActions {
+        display: flex;
+    }
+
+    .channelActions button {
+        min-height: 36px;
+        padding: 6px 8px;
+    }
+}

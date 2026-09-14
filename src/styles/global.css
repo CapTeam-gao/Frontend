@@ -1,9 +1,9 @@
 :root {
-    --color-primary: #60c49b;
-    --color-primary-dark: #5aa889;
-    --color-primary-bg: #e8f5ee;
-    /* 브랜드 색 "글자" 전용. #60c49b는 흰 배경 대비 2.1:1이라 작은 글자에 못 씀 */
-    --color-primary-text: #2e7d5b;
+    /* 로고의 결은 유지하되, 화면에서는 더 맑고 선명하게 보이는 그린 */
+    --color-primary: #078b57;
+    --color-primary-dark: #056f45;
+    --color-primary-bg: #eefaf4;
+    --color-primary-text: #086c45;
 
     --color-text-primary: #191f28;
     --color-text-secondary: #4e5968;
@@ -37,7 +37,7 @@
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
 
-    --header-height: 84px;
+    --header-height: 96px;
     --page-padding: 32px;
     --max-width: 1360px;
     --max-width-wide: 1680px;
