@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { levelLabels, roleLabels } from "../../../constants/student";
 import { getStudentNumberInfo } from "../../../utils/student";
@@ -133,9 +134,22 @@ const SurveyReliabilityCard = ({ student }) => {
 };
 
 const StudentRadarChart = ({ title, data }) => {
+    const [chartReady, setChartReady] = useState(false);
     const hasData = data.every(
         (item) => item.score !== null && item.score !== undefined
     );
+
+    useEffect(() => {
+        // 모달 등장 모션 중에는 부모 너비가 아직 측정되지 않을 수 있어
+        // ResponsiveContainer를 모달 전환이 끝난 뒤 마운트한다.
+        const chartTimerId = window.setTimeout(() => {
+            setChartReady(true);
+        }, 360);
+
+        return () => {
+            window.clearTimeout(chartTimerId);
+        };
+    }, []);
 
     return (
         <article data-reveal className={styles.chartCard}>
@@ -143,33 +157,41 @@ const StudentRadarChart = ({ title, data }) => {
 
             {hasData ? (
                 <div className={styles.chartBox}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart data={data} outerRadius="70%">
-                            <PolarGrid />
-                            <PolarAngleAxis
-                                dataKey="label"
-                                tick={{
-                                    fill: "#4e5968",
-                                    fontSize: 13,
-                                    fontWeight: 600,
-                                }}
-                            />
-                            <PolarRadiusAxis
-                                domain={[0, 5]}
-                                tickCount={6}
-                                tick={false}
-                                axisLine={false}
-                            />
-                            <Radar
-                                dataKey="score"
-                                stroke="var(--color-primary)"
-                                fill="var(--color-primary)"
-                                fillOpacity={0.14}
-                                strokeWidth={2}
-                                dot={false}
-                            />
-                        </RadarChart>
-                    </ResponsiveContainer>
+                    {chartReady && (
+                        <ResponsiveContainer
+                            width="100%"
+                            height="100%"
+                            minWidth={240}
+                            minHeight={180}
+                            initialDimension={{ width: 320, height: 240 }}
+                        >
+                            <RadarChart data={data} outerRadius="70%">
+                                <PolarGrid />
+                                <PolarAngleAxis
+                                    dataKey="label"
+                                    tick={{
+                                        fill: "#4e5968",
+                                        fontSize: 13,
+                                        fontWeight: 600,
+                                    }}
+                                />
+                                <PolarRadiusAxis
+                                    domain={[0, 5]}
+                                    tickCount={6}
+                                    tick={false}
+                                    axisLine={false}
+                                />
+                                <Radar
+                                    dataKey="score"
+                                    stroke="var(--color-primary)"
+                                    fill="var(--color-primary)"
+                                    fillOpacity={0.14}
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
+                            </RadarChart>
+                        </ResponsiveContainer>
+                    )}
                 </div>
             ) : (
                 <p className={styles.emptyChartText}>

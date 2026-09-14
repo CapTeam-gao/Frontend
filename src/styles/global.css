@@ -106,6 +106,16 @@ textarea {
     resize: none !important;
 }
 
+.routeLoading {
+    display: grid;
+    min-height: 50vh;
+    place-items: center;
+    padding: 32px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+}
+
 /* 진입 모션. useInView 훅이 data-reveal 요소에 .isVisible을 붙인다 */
 [data-reveal] {
     opacity: 0;

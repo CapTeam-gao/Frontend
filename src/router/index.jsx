@@ -1,39 +1,47 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import TeamCreatedRoute from "./TeamCreatedRoute";
 import authStore from "../store/authStore";
 
-import Login from "../pages/auth/Login";
-
-import AdminDashboard from "../pages/admin/dashboard/AdminDashboard";
-import AdminTeamCreate from "../pages/admin/team/AdminTeamCreate";
-import AdminTeamCreateLoading from "../pages/admin/team/AdminTeamCreateLoading";
-import AdminTeamEdit from "../pages/admin/team/AdminTeamEdit";
-import AdminTeamManage from "../pages/admin/team/AdminTeamManage";
-import AdminTeamManualCreate from "../pages/admin/team/AdminTeamManualCreate";
-import AdminLogList from "../pages/admin/log/AdminLogList";
-import AdminLogDetail from "../pages/admin/log/AdminLogDetail";
-import AdminStudentManage from "../pages/admin/student/AdminStudentManage";
-import AdminNoticeList from "../pages/admin/notice/AdminNoticeList";
-import AdminNoticeDetail from "../pages/admin/notice/AdminNoticeDetail";
-import AdminNoticeCreate from "../pages/admin/notice/AdminNoticeCreate";
-import AdminNoticeEdit from "../pages/admin/notice/AdminNoticeEdit";
-import AdminProfile from "../pages/admin/profile/AdminProfile";
-import AdminChatManage from "../pages/admin/chat/AdminChatManage";
-import AdminChatList from "../pages/admin/chat/AdminChatList";
-
-import UserDashboard from "../pages/user/dashboard/UserDashboard";
-import UserLogWrite from "../pages/user/log/UserLogWrite";
-import UserLogResult from "../pages/user/log/UserLogResult";
-import UserProject from "../pages/user/project/UserProject";
-import UserNoticeList from "../pages/user/notice/UserNoticeList";
-import UserNoticeDetail from "../pages/user/notice/UserNoticeDetail";
-import UserProfile from "../pages/user/profile/UserProfile";
-import UserTeamChat from "../pages/user/chat/UserTeamChat";
-import UserSurvey from "../pages/user/survey/UserSurvey";
-import UserSurveyIntro from "../pages/user/survey/UserSurveyIntro";
-import UserLogCountdown from "../pages/user/log/UserLogCountdown";
 import { isSurveyCompleted } from "../utils/survey";
+
+const Login = lazy(() => import("../pages/auth/Login"));
+
+const AdminDashboard = lazy(() => import("../pages/admin/dashboard/AdminDashboard"));
+const AdminTeamCreate = lazy(() => import("../pages/admin/team/AdminTeamCreate"));
+const AdminTeamCreateLoading = lazy(() => import("../pages/admin/team/AdminTeamCreateLoading"));
+const AdminTeamEdit = lazy(() => import("../pages/admin/team/AdminTeamEdit"));
+const AdminTeamManage = lazy(() => import("../pages/admin/team/AdminTeamManage"));
+const AdminTeamManualCreate = lazy(() => import("../pages/admin/team/AdminTeamManualCreate"));
+const AdminLogList = lazy(() => import("../pages/admin/log/AdminLogList"));
+const AdminLogDetail = lazy(() => import("../pages/admin/log/AdminLogDetail"));
+const AdminStudentManage = lazy(() => import("../pages/admin/student/AdminStudentManage"));
+const AdminNoticeList = lazy(() => import("../pages/admin/notice/AdminNoticeList"));
+const AdminNoticeDetail = lazy(() => import("../pages/admin/notice/AdminNoticeDetail"));
+const AdminNoticeCreate = lazy(() => import("../pages/admin/notice/AdminNoticeCreate"));
+const AdminNoticeEdit = lazy(() => import("../pages/admin/notice/AdminNoticeEdit"));
+const AdminProfile = lazy(() => import("../pages/admin/profile/AdminProfile"));
+const AdminChatManage = lazy(() => import("../pages/admin/chat/AdminChatManage"));
+const AdminChatList = lazy(() => import("../pages/admin/chat/AdminChatList"));
+
+const UserDashboard = lazy(() => import("../pages/user/dashboard/UserDashboard"));
+const UserLogWrite = lazy(() => import("../pages/user/log/UserLogWrite"));
+const UserLogResult = lazy(() => import("../pages/user/log/UserLogResult"));
+const UserProject = lazy(() => import("../pages/user/project/UserProject"));
+const UserNoticeList = lazy(() => import("../pages/user/notice/UserNoticeList"));
+const UserNoticeDetail = lazy(() => import("../pages/user/notice/UserNoticeDetail"));
+const UserProfile = lazy(() => import("../pages/user/profile/UserProfile"));
+const UserTeamChat = lazy(() => import("../pages/user/chat/UserTeamChat"));
+const UserSurvey = lazy(() => import("../pages/user/survey/UserSurvey"));
+const UserSurveyIntro = lazy(() => import("../pages/user/survey/UserSurveyIntro"));
+const UserLogCountdown = lazy(() => import("../pages/user/log/UserLogCountdown"));
+
+const RouteLoading = () => (
+    <main className="routeLoading" aria-live="polite">
+        화면을 불러오는 중입니다.
+    </main>
+);
 
 const Router = () => {
     const user = authStore((state) => state.user);
@@ -74,6 +82,7 @@ const Router = () => {
     );
 
     return (
+        <Suspense fallback={<RouteLoading />}>
         <Routes>
             <Route path="/login" element={<Login />} />
 
@@ -246,6 +255,7 @@ const Router = () => {
 
             <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+        </Suspense>
     );
 };
 
