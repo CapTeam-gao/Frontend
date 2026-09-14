@@ -392,7 +392,6 @@ const AdminTeamManualCreate = () => {
                                     return (
                                         <div
                                             key={team.id}
-                                            data-reveal
                                             className={`${styles.team} ${
                                                 dragOverTeamId === team.id
                                                     ? isFull

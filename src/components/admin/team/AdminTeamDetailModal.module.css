@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1120px;
+    max-width: 1360px;
     max-height: 90dvh;
     overflow: hidden;
     border-radius: var(--border-radius-lg);
@@ -28,8 +28,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    padding: 28px 40px;
-    border-bottom: 1px solid var(--color-border);
+    padding: 32px 56px;
 }
 
 .headerMain {
@@ -50,12 +49,10 @@
 }
 
 .gradeBadge {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
-    color: var(--color-text-muted);
+    color: var(--color-primary-text);
 }
 
 .subRow {
@@ -79,12 +76,16 @@
 }
 
 .roleChip {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
+    padding: 0;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
+}
+
+.roleChip + .roleChip::before {
+    content: "·";
+    margin-right: 6px;
+    color: var(--color-primary);
 }
 
 .closeButton {
@@ -112,13 +113,13 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 32px 40px;
+    padding: 40px 56px 56px;
 }
 
 .columns {
     display: grid;
     grid-template-columns: 1.02fr 0.98fr;
-    gap: 48px 56px;
+    gap: 64px 72px;
 }
 
 .sectionHead {
@@ -127,27 +128,34 @@
     justify-content: space-between;
     gap: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
 }
 
 .sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 19px;
     font-weight: var(--font-weight-bold);
 }
 
+.sectionTitle::before,
+.insightTitle::before {
+    content: "";
+    width: 3px;
+    height: 16px;
+    border-radius: 2px;
+    background-color: var(--color-primary);
+}
+
 .planDoneBadge {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
 .planPendingBadge {
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--color-text-muted);
@@ -160,7 +168,7 @@
 }
 
 .planBlock {
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 .fieldLabel {
@@ -176,6 +184,9 @@
 }
 
 .featureList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     margin-top: 8px;
 }
 
@@ -184,7 +195,6 @@
     align-items: flex-start;
     gap: 12px;
     padding: 14px 0;
-    border-top: 1px solid var(--color-border);
 }
 
 .featureIndex {
@@ -211,7 +221,7 @@
 /* ── 팀원 ─────────────────────────────────────────── */
 
 .memberList {
-    margin-top: 12px;
+    margin-top: 16px;
 }
 
 .memberRow {
@@ -287,12 +297,10 @@
 }
 
 .roleBadge {
-    padding: 4px 10px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
+    padding: 0;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-text);
 }
 
 .chevron {
@@ -313,12 +321,14 @@
 /* ── 팀 분석 ──────────────────────────────────────── */
 
 .insightSection {
-    margin-top: 48px;
+    margin-top: 64px;
 }
 
 .insightTitle {
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
     font-size: 19px;
     font-weight: var(--font-weight-bold);
 }
@@ -326,38 +336,50 @@
 .insightGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 20px;
+    gap: 48px;
+    margin-top: 16px;
 }
 
 .strengthCard {
-    padding: 24px;
-    border-radius: 12px;
-    background-color: var(--color-primary-bg);
+    padding: 18px 0 8px;
 }
 
 .weaknessCard {
-    padding: 24px;
-    border-radius: 12px;
-    background-color: var(--color-bg-secondary);
+    padding: 18px 0 8px;
 }
 
 .strengthLabel {
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
 .weaknessLabel {
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--color-text-secondary);
 }
 
+.strengthLabel::before,
+.weaknessLabel::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
 .insightText {
-    margin-top: 10px;
-    font-size: var(--font-size-lg);
-    line-height: 1.6;
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
 }
 
 /* ── 반응형 ───────────────────────────────────────── */
@@ -390,6 +412,16 @@
 
     .insightGrid {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .strengthCard,
+    .weaknessCard {
+        padding: 18px 0;
+    }
+
+    .strengthCard {
+        border-right: 0;
+        padding-bottom: 28px;
     }
 
     .insightSection {

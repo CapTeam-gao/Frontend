@@ -63,34 +63,29 @@ const AdminNoticeList = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>공지</p>
-                        <h1 className={styles.headline}>
-                            캡스톤 진행에 필요한
-                            <br />
-                            소식을 알려주세요
-                        </h1>
-                        <p className={styles.subline}>
-                            일정 변경과 제출 안내는 이곳에 먼저 올려주세요.
-                            <br />
-                            중요 표시를 붙이면 학생 홈에서도 눈에 띄어요.
-                        </p>
+                    <div className={styles.titleGroup}>
+                        <div className={styles.titleLine}>
+                            <h1 className={styles.headline}>공지 관리</h1>
+                            {!isLoading && (
+                                <span className={styles.totalCount}>
+                                    전체 {notices.length}건
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     <div className={styles.headActions}>
                         {!isLoading && importantCount > 0 && (
-                            <div className={styles.statusPanel}>
-                                <p className={styles.statusLabel}>중요 공지</p>
-                                <p className={styles.statusValue}>
-                                    {importantCount}
-                                </p>
-                            </div>
+                            <p className={styles.importantStatus}>
+                                <span aria-hidden="true" />
+                                중요 공지 <strong>{importantCount}건</strong>
+                            </p>
                         )}
                         <Link
                             to="/admin/notice/create"
                             className={styles.writeButton}
                         >
-                            새 공지 작성
+                            공지 작성
                         </Link>
                     </div>
                 </section>
@@ -111,14 +106,22 @@ const AdminNoticeList = () => {
                 ) : (
                     <>
                         <ul className={styles.list} ref={listRef}>
+                            <li className={styles.listHead} aria-hidden="true">
+                                <span>공지 제목</span>
+                                <span>작성자</span>
+                                <span>등록일</span>
+                                <span />
+                            </li>
                             {currentNotices.map((notice) => (
-                                <Link
-                                    key={notice.id}
-                                    to={`/admin/notice/${notice.id}`}
-                                    data-reveal
-                                >
-                                    <NoticeItem notice={notice} />
-                                </Link>
+                                <li key={notice.id}>
+                                    <Link
+                                        to={`/admin/notice/${notice.id}`}
+                                        data-reveal
+                                        className={styles.noticeLink}
+                                    >
+                                        <NoticeItem notice={notice} />
+                                    </Link>
+                                </li>
                             ))}
                         </ul>
 

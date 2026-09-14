@@ -99,8 +99,6 @@ const AdminProfile = () => {
     };
 
     const contentRef = useInView({ replayKey: Boolean(dashboard) });
-    const initial = profile.name?.trim().charAt(0) ?? "";
-
     const statusItems = dashboard
         ? [
               {
@@ -139,9 +137,6 @@ const AdminProfile = () => {
                 <div className={styles.inner}>
                     <section className={styles.accountHead}>
                         <div className={styles.accountMain}>
-                            <span data-reveal className={styles.avatar}>
-                                {initial}
-                            </span>
                             <div>
                                 <p data-reveal className={styles.accountRole}>
                                     관리자 계정

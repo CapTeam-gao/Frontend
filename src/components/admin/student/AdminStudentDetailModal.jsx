@@ -162,8 +162,8 @@ const StudentRadarChart = ({ title, data }) => {
                             />
                             <Radar
                                 dataKey="score"
-                                stroke="#60c49b"
-                                fill="#60c49b"
+                                stroke="var(--color-primary)"
+                                fill="var(--color-primary)"
                                 fillOpacity={0.14}
                                 strokeWidth={2}
                                 dot={false}

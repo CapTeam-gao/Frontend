@@ -107,8 +107,8 @@ const AdminLogDetail = () => {
                                     </h1>
                                     <div className={styles.titleMeta}>
                                         <span className={styles.statusBadge}>
-                                            제출 완료 {entries.length}/
-                                            {memberNames.length}명
+                                            {entries.length}/
+                                            {memberNames.length}명 제출
                                         </span>
                                         <span className={styles.dateText}>
                                             {formatLogDate(log.date)}

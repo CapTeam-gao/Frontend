@@ -20,18 +20,14 @@ const AdminLogItem = ({ log }) => {
                     <span className={styles.gradeBadge}>
                         {getLogGradeLabel(log.grade)}
                     </span>
-                    <span
-                        className={`${styles.statusBadge} ${
-                            submitted ? styles.submitted : styles.pending
-                        }`}
-                    >
-                        {submitted ? "제출완료" : "미제출"}
-                    </span>
                 </div>
                 <p className={styles.logService}>
                     {log.serviceName || "프로젝트 정보가 입력되지 않았습니다."}
                 </p>
-                <span
+            </div>
+
+            <div className={styles.submitInfo}>
+                <strong
                     className={`${styles.logSubmitText} ${
                         submitted ? styles.submitted : styles.pending
                     }`}
@@ -39,10 +35,26 @@ const AdminLogItem = ({ log }) => {
                     {submitted
                         ? `${log.submittedMemberCount}/${log.totalMemberCount}명 제출`
                         : `${log.notSubmittedMemberCount}명 미제출`}
-                </span>
+                </strong>
             </div>
 
             <time className={styles.dateText}>{formatLogDate(log.date)}</time>
+            {canOpenDetail && (
+                <svg
+                    className={styles.chevron}
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            )}
         </>
     );
 

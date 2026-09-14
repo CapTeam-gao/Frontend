@@ -151,27 +151,20 @@ const AdminTeamManage = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>팀 관리</p>
-                        <h1 className={styles.headline}>
-                            확정된 팀을
-                            <br />한눈에 확인해요
-                        </h1>
-                        <p className={styles.subline}>
-                            팀을 누르면 프로젝트 기획서, 팀원 구성, AI 팀 분석을
-                            함께 볼 수 있어요.
-                        </p>
+                    <div className={styles.titleBlock}>
+                        <h1 className={styles.headline}>팀 관리</h1>
+                        {!isLoading && teams.length > 0 && (
+                            <p className={styles.teamContext}>
+                                현재 운영 중인 팀 {teams.length}개
+                            </p>
+                        )}
                     </div>
 
                     {!isLoading && teams.length > 0 && (
-                        <div className={styles.statusPanel}>
-                            <p className={styles.statusLabel}>
-                                기획서 작성 완료
-                            </p>
-                            <p className={styles.statusValue}>
-                                {planWrittenCount}{" "}
-                                <span>/ {teams.length}팀</span>
-                            </p>
+                        <div className={styles.planProgress}>
+                            <p>기획서 작성</p>
+                            <strong>{planWrittenCount}</strong>
+                            <span>/ {teams.length}팀</span>
                         </div>
                     )}
                 </section>

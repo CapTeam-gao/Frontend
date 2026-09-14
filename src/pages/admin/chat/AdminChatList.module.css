@@ -15,36 +15,48 @@
 .pageHead {
     display: grid;
     grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 64px;
-    padding: 80px 0;
+    align-items: center;
+    gap: 48px;
+    padding: 56px 0 32px;
 }
 
 .eyebrow {
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
+.eyebrow::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    content: "";
+}
+
 .headline {
-    margin-top: 12px;
-    font-size: 44px;
+    margin-top: 8px;
+    font-size: 36px;
     font-weight: var(--font-weight-bold);
     line-height: 1.25;
     letter-spacing: -0.01em;
 }
 
 .subline {
-    max-width: 32rem;
-    margin-top: 20px;
-    font-size: 19px;
+    max-width: 38rem;
+    margin-top: 12px;
+    font-size: var(--font-size-lg);
     line-height: 1.6;
     color: var(--color-text-secondary);
 }
 
 .statusPanel {
     justify-self: end;
-    margin-right: 64px;
+    min-width: 168px;
+    padding: 18px 0 0 28px;
     text-align: right;
 }
 
@@ -56,7 +68,8 @@
 
 .statusValue {
     margin-top: 4px;
-    font-size: 52px;
+    color: var(--color-primary-text);
+    font-size: 34px;
     font-weight: var(--font-weight-bold);
     line-height: 1;
     font-variant-numeric: tabular-nums;
@@ -74,24 +87,23 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding-top: 32px;
-    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
 }
 
 .segments {
     display: inline-flex;
+    flex-wrap: wrap;
     gap: 4px;
-    padding: 4px;
-    border-radius: 12px;
-    background-color: var(--color-bg-secondary);
+    padding: 0;
 }
 
 .segment {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 44px;
-    padding: 0 20px;
+    height: 40px;
+    padding: 0 14px;
     border: none;
     border-radius: 8px;
     background: none;
@@ -99,19 +111,43 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: color 0.15s ease;
+}
+
+.segment::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    transform: translateY(-50%) scale(0);
+    transition: transform 0.15s ease;
+}
+
+.segment:hover {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-primary-text);
 }
 
 .segmentOn {
-    background-color: var(--color-bg);
     color: var(--color-primary-text);
-    box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+.segmentOn::after {
+    transform: translateY(-50%) scale(1);
 }
 
 .segmentCount {
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--color-text-muted);
+}
+
+.segmentOn .segmentCount {
+    color: var(--color-primary);
 }
 
 .searchBox {
@@ -152,11 +188,13 @@
 
 .list {
     margin-top: 16px;
-    border-bottom: 1px solid var(--color-border);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
 }
 
 .list > * {
-    border-top: 1px solid var(--color-border);
+    border: 0;
 }
 
 .skeletonRow {
@@ -169,7 +207,9 @@
     justify-content: space-between;
     gap: 24px;
     width: 100%;
+    min-width: 0;
     padding: 24px 12px;
+    border-radius: var(--border-radius-md);
     border-left: none;
     border-right: none;
     border-bottom: none;
@@ -185,7 +225,9 @@
 }
 
 .rowMain {
+    flex: 1;
     min-width: 0;
+    overflow: hidden;
 }
 
 .rowTitleLine {
@@ -201,12 +243,10 @@
 }
 
 .gradeBadge {
-    padding: 2px 8px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-bg-secondary);
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
-    color: var(--color-text-muted);
+    color: var(--color-primary-text);
 }
 
 .unreadDot {
@@ -218,9 +258,10 @@
 
 .rowPreview {
     display: block;
-    margin-top: 8px;
+    margin-top: 10px;
     overflow: hidden;
     font-size: 15px;
+    line-height: 1.55;
     color: var(--color-text-secondary);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -299,6 +340,7 @@
     .statusPanel {
         justify-self: start;
         margin-right: 0;
+        padding: 18px 0 0;
         text-align: left;
     }
 
@@ -311,7 +353,8 @@
     }
 
     .row {
-        padding: 20px 12px;
+        gap: 16px;
+        padding: 22px 12px;
     }
 
     .rowTeam {

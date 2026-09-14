@@ -159,27 +159,23 @@ const AdminStudentManage = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>학생 관리</p>
-                        <h1 className={styles.headline}>
-                            학생별 설문 결과와
-                            <br />
-                            성향을 확인해요
-                        </h1>
-                        <p className={styles.subline}>
-                            학생을 누르면 기술 스택, 실행·협업 성향 점수, AI 분석
-                            결과를 함께 볼 수 있어요.
-                        </p>
+                    <div className={styles.titleBlock}>
+                        <div className={styles.titleLine}>
+                            <h1 className={styles.headline}>학생 관리</h1>
+                            {!isLoading && summaryCounts.all > 0 && (
+                                <span className={styles.totalCount}>
+                                    전체 {summaryCounts.all}명
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     {!isLoading && summaryCounts.all > 0 && (
-                        <div className={styles.statusPanel}>
-                            <p className={styles.statusLabel}>설문 미제출</p>
-                            <p className={styles.statusValue}>
-                                {summaryCounts.surveyPending}{" "}
-                                <span>/ {summaryCounts.all}명</span>
-                            </p>
-                        </div>
+                        <p className={styles.surveyStatus}>
+                            <span aria-hidden="true" />
+                            설문 미제출
+                            <strong>{summaryCounts.surveyPending}명</strong>
+                        </p>
                     )}
                 </section>
 

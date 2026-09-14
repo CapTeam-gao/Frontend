@@ -92,12 +92,21 @@
 }
 
 .countBadge {
-    padding: 2px 6px;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-primary-bg);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
+}
+
+.countBadge::before {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    content: "";
 }
 
 .primaryButton {
@@ -139,8 +148,6 @@
     justify-content: space-between;
     gap: 12px;
     padding: 16px 0;
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
 }
@@ -175,7 +182,6 @@
 
 .teamSkeleton {
     padding: 28px 0;
-    border-bottom: 1px solid var(--color-border);
 }
 
 .skeletonMembers {
@@ -385,8 +391,7 @@
 }
 
 .diffCard {
-    padding-top: 16px;
-    border-top: 1px solid var(--color-border);
+    padding-top: 24px;
 }
 
 .diffHeader {
@@ -417,7 +422,6 @@
     justify-content: space-between;
     gap: 12px;
     padding: 10px 0;
-    border-top: 1px solid var(--color-border);
 }
 
 .diffMemberChanged {

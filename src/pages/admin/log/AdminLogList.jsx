@@ -80,28 +80,34 @@ const AdminLogList = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>캡스톤 일지 관리</p>
-                        <h1 className={styles.headline}>
-                            팀별 일지 제출 현황을
-                            <br />
-                            확인해요
-                        </h1>
-                        <p className={styles.subline}>
-                            일지는 매주 수요일 15:40 ~ 18:10에 작성돼요.
-                            <br />
-                            미제출 팀에게는 마감 30분 전에 자동으로 알림이
-                            발송됩니다.
+                    <div className={styles.titleBlock}>
+                        <h1 className={styles.headline}>캡스톤 일지</h1>
+                        <p className={styles.schedule}>
+                            <span aria-hidden="true" />
+                            매주 수요일 15:40–18:10
                         </p>
                     </div>
 
                     {!isLoading && summary.all > 0 && (
                         <div className={styles.statusPanel}>
-                            <p className={styles.statusLabel}>오늘 미제출</p>
-                            <p className={styles.statusValue}>
-                                {summary.pending}{" "}
-                                <span>/ {summary.all}팀</span>
-                            </p>
+                            <p className={styles.statusLabel}>오늘 제출 현황</p>
+                            <div className={styles.statusLine}>
+                                <p className={styles.statusValue}>
+                                    {summary.submitted}
+                                    <span>/ {summary.all}팀</span>
+                                </p>
+                                <span
+                                    className={`${styles.pendingSummary} ${
+                                        summary.pending === 0
+                                            ? styles.pendingSummaryDone
+                                            : ""
+                                    }`}
+                                >
+                                    {summary.pending === 0
+                                        ? "모두 제출"
+                                        : `${summary.pending}팀 확인 필요`}
+                                </span>
+                            </div>
                         </div>
                     )}
                 </section>
@@ -219,6 +225,12 @@ const AdminLogList = () => {
                     />
                 ) : (
                     <div className={styles.list} ref={listRef}>
+                        <div className={styles.listHead} aria-hidden="true">
+                            <span>팀 / 프로젝트</span>
+                            <span>제출 현황</span>
+                            <span>작성일</span>
+                            <span />
+                        </div>
                         {filteredLogs.map((log) => (
                             <AdminLogItem
                                 key={

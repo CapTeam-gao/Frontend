@@ -1,4 +1,5 @@
 // Design/team-edit.html 반영. 카드 뒤집기 → 세로 리스트 + 배정 이유 인라인 펼치기.
+import { useEffect, useRef } from "react";
 import { levelLabels, roleLabels } from "../../../constants/team";
 import { getRoleSummary } from "../../../utils/teamRecommendation";
 import styles from "./TeamEditCard.module.css";
@@ -12,6 +13,21 @@ const TeamEditCard = ({
     onMemberClick,
     onHeaderDoubleClick,
 }) => {
+    const reasonRef = useRef(null);
+
+    useEffect(() => {
+        if (!flipped) return undefined;
+
+        const scrollTimer = window.setTimeout(() => {
+            reasonRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        }, 80);
+
+        return () => window.clearTimeout(scrollTimer);
+    }, [flipped]);
+
     return (
         <section className={styles.team}>
             <div data-reveal className={styles.teamHead}>
@@ -85,6 +101,7 @@ const TeamEditCard = ({
 
             {/* 높이 애니메이션을 위해 grid-template-rows 0fr → 1fr */}
             <div
+                ref={reasonRef}
                 className={`${styles.reasonWrap} ${
                     flipped ? styles.reasonOpen : ""
                 }`}

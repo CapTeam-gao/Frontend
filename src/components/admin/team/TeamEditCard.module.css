@@ -1,35 +1,45 @@
 .team {
     padding: 28px 0;
-    border-bottom: 1px solid var(--color-border);
 }
 
 .teamHead {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
 .teamName {
+    display: flex;
+    align-items: baseline;
+    flex: 1;
+    min-width: 0;
     font-size: 20px;
     font-weight: var(--font-weight-bold);
+    white-space: nowrap;
 }
 
 .teamSummary {
+    min-width: 0;
     margin-left: 8px;
+    overflow: hidden;
     font-size: 15px;
     font-weight: var(--font-weight-medium);
     color: var(--color-text-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .reasonToggle {
+    flex-shrink: 0;
     border: none;
     background: none;
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
+    white-space: nowrap;
     transition: color 0.15s ease;
 }
 
@@ -55,6 +65,7 @@
     font-family: var(--font-family);
     text-align: left;
     color: inherit;
+    outline: none;
     transition: border-color 0.15s ease, background-color 0.15s ease,
         transform 0.1s ease;
 }
@@ -63,13 +74,19 @@
     border-color: var(--color-primary);
 }
 
+.member:focus-visible {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(7, 139, 87, 0.12);
+}
+
 .member:disabled {
     cursor: default;
 }
 
 .memberSelected {
     border-color: var(--color-primary);
-    background-color: var(--color-primary-bg);
+    background-color: var(--color-bg);
+    box-shadow: inset 0 0 0 1px var(--color-primary);
 }
 
 /* 교환 직후 잠깐 강조 */
@@ -94,11 +111,17 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
 }
 
 .memberName {
+    min-width: 0;
+    overflow: hidden;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .leaderBadge {
@@ -115,6 +138,9 @@
     margin-top: 4px;
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .memberSkill {
@@ -147,9 +173,13 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-height: min(56dvh, 560px);
     margin-top: 20px;
-    padding-left: 20px;
+    padding: 2px 20px 8px;
     border-left: 2px solid var(--color-primary);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .reasonTitle {
@@ -168,5 +198,15 @@
 @media (max-width: 900px) {
     .member {
         width: calc(50% - 5px);
+    }
+}
+
+@media (max-width: 480px) {
+    .teamHead {
+        align-items: flex-start;
+    }
+
+    .member {
+        width: 100%;
     }
 }
