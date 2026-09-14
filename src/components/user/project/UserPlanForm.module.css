@@ -3,32 +3,17 @@
     flex-direction: column;
 }
 
-.savedNote {
-    margin-top: 32px;
-    padding: 14px 18px;
-    border-radius: 12px;
-    background-color: var(--color-primary-bg);
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.6;
-    color: var(--color-primary-text);
+.planSection + .planSection {
+    margin-top: 58px;
 }
 
-/* ── 섹션 ─────────────────────────────────────────── */
+.planSection {
+    scroll-margin-top: calc(var(--header-height) + 24px);
+}
 
 .sectionHead {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-top: 48px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.sectionIndex {
-    font-size: 15px;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary-text);
+    align-items: flex-start;
 }
 
 .sectionTitle {
@@ -41,13 +26,13 @@
 .fieldGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-    margin-top: 24px;
+    gap: 20px;
+    margin-top: 28px;
 }
 
 .field {
     display: block;
-    margin-top: 32px;
+    margin-top: 28px;
 }
 
 .fieldGrid .field {
@@ -56,21 +41,22 @@
 
 .field > span {
     display: block;
-    font-size: 17px;
-    font-weight: var(--font-weight-bold);
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
 }
 
 .field input,
 .field textarea {
     width: 100%;
-    margin-top: 12px;
-    padding: 14px 16px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+    margin-top: 10px;
+    padding: 13px 15px;
+    border: 1px solid #c9d0d8;
+    border-radius: 10px;
     font-family: var(--font-family);
     font-size: var(--font-size-lg);
     line-height: 1.7;
     color: var(--color-text-primary);
+    background-color: var(--color-bg);
     transition: border-color 0.15s ease;
 }
 
@@ -86,6 +72,7 @@
 .field input:focus,
 .field textarea:focus {
     border-color: var(--color-primary);
+    box-shadow: none;
 }
 
 .field small {
@@ -106,54 +93,52 @@
 }
 
 .addFeatureButton {
-    height: 36px;
-    padding: 0 14px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: none;
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
     font-family: var(--font-family);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    transition: border-color 0.15s ease, color 0.15s ease;
+    color: var(--color-primary-text);
+    transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
 .addFeatureButton:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary-text);
+    background-color: #f2f4f6;
+}
+
+.addFeatureButton:active {
+    transform: scale(0.97);
 }
 
 .featureList {
-    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
 }
 
 .featureRow {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-top: 1px solid var(--color-border);
-}
-
-.featureRow:last-child {
-    border-bottom: 1px solid var(--color-border);
-}
-
-.featureIndex {
-    flex-shrink: 0;
-    font-size: 15px;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary-text);
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
 }
 
 .featureRow input {
     flex: 1;
     min-width: 0;
     margin-top: 0;
-    padding: 10px 14px;
-    border: 1px solid transparent;
+    padding: 11px 13px;
+    border: 1px solid #c9d0d8;
     border-radius: 10px;
-    background-color: var(--color-bg-secondary);
+    background-color: transparent;
     font-family: var(--font-family);
     font-size: var(--font-size-lg);
     transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -161,7 +146,7 @@
 
 .featureRow input:focus {
     border-color: var(--color-primary);
-    background-color: var(--color-bg);
+    box-shadow: none;
 }
 
 .removeFeature {
@@ -190,10 +175,9 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: 16px;
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--color-border);
+    gap: 18px;
+    margin-top: 58px;
+    padding: 0;
 }
 
 .actionHint {
@@ -212,10 +196,10 @@
 }
 
 .submitButton {
-    height: 56px;
-    padding: 0 36px;
-    border: none;
-    border-radius: 8px;
+    height: 50px;
+    padding: 0 28px;
+    border: 0;
+    border-radius: 10px;
     background-color: var(--color-primary);
     font-family: var(--font-family);
     font-size: 17px;

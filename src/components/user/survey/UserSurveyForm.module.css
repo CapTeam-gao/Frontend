@@ -1,6 +1,5 @@
 .questionItem {
     padding: 28px 0;
-    border-top: 1px solid var(--color-border);
 }
 
 .questionItem:first-child {
