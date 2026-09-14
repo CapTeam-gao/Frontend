@@ -4,6 +4,7 @@ import Header from "../../../components/common/header/Header";
 import {
     requestAdminChannelSummaries,
     requestAdminChatRooms,
+    requestAdminChatRoomSummaries,
 } from "../../../api/adminChatApi";
 import { requestAdminTeamList } from "../../../api/teamApi";
 import { gradeLabels } from "../../../utils/matchingJobLock";
@@ -29,12 +30,7 @@ const sortRoomsByLatestMessage = (roomList) => {
     );
 };
 
-const getRoomPreview = async (room) => {
-    if (!room.id || !room.channels?.length) {
-        return { lastMessage: null, unreadCount: 0 };
-    }
-
-    const channelSummaries = await requestAdminChannelSummaries(room.id);
+const getRoomPreviewFromSummaries = (channelSummaries) => {
     const summaries = Array.isArray(channelSummaries) ? channelSummaries : [];
     const lastMessage = summaries.reduce((latestMessage, summary) => {
         const nextMessage = summary?.lastMessage;
@@ -49,11 +45,20 @@ const getRoomPreview = async (room) => {
         return latestMessage;
     }, null);
     const unreadCount = summaries.reduce(
-        (total, summary) => total + Number(summary.unreadCount ?? 0),
+        (total, summary) => total + Number(summary?.unreadCount ?? 0),
         0
     );
 
     return { lastMessage, unreadCount };
+};
+
+const getRoomPreview = async (room) => {
+    if (!room.id || !room.channels?.length) {
+        return { lastMessage: null, unreadCount: 0 };
+    }
+
+    const channelSummaries = await requestAdminChannelSummaries(room.id);
+    return getRoomPreviewFromSummaries(channelSummaries);
 };
 
 const AdminChatList = () => {
@@ -119,9 +124,12 @@ const AdminChatList = () => {
             }
             setError("");
 
-            const [roomList, teamList] = await Promise.all([
+            const [roomList, teamList, roomSummaryList] = await Promise.all([
                 requestAdminChatRooms(),
                 requestAdminTeamList().catch(() => []),
+                // 구버전 백엔드에서는 아직 이 일괄 API가 없을 수 있어
+                // null이면 아래에서 기존 방별 조회로 안전하게 폴백한다.
+                requestAdminChatRoomSummaries().catch(() => null),
             ]);
 
             if (loadSequence !== loadSequenceRef.current) return;
@@ -133,22 +141,41 @@ const AdminChatList = () => {
                     team,
                 ])
             );
+            const summariesByRoomId = new Map(
+                (Array.isArray(roomSummaryList) ? roomSummaryList : []).map(
+                    (roomSummary) => [
+                        String(roomSummary.roomId),
+                        roomSummary.channelSummaries,
+                    ]
+                )
+            );
 
             const joinedRooms = await Promise.all(
                 normalizedRooms.map(async (room) => {
                     const team = teamsById.get(String(room.teamId));
-                    const { lastMessage, unreadCount } =
-                        await getCachedRoomPreview(room).catch(() => ({
-                            lastMessage: null,
-                            unreadCount: 0,
-                        }));
+                    const hasBatchSummary = summariesByRoomId.has(String(room.id));
+                    const preview = hasBatchSummary
+                        ? getRoomPreviewFromSummaries(
+                              summariesByRoomId.get(String(room.id))
+                          )
+                        : await getCachedRoomPreview(room).catch(() => ({
+                              lastMessage: null,
+                              unreadCount: 0,
+                          }));
+
+                    if (hasBatchSummary) {
+                        roomPreviewCacheRef.current.set(String(room.id), {
+                            value: preview,
+                            savedAt: Date.now(),
+                        });
+                    }
 
                     return {
                         ...room,
                         grade: team?.grade ?? "",
                         memberCount: team?.members?.length ?? 0,
-                        lastMessage,
-                        unreadCount,
+                        lastMessage: preview.lastMessage,
+                        unreadCount: preview.unreadCount,
                     };
                 })
             );

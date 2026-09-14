@@ -7,6 +7,11 @@ export const requestAdminChatRooms = async () => {
     return getResponseData(response);
 };
 
+export const requestAdminChatRoomSummaries = async () => {
+    const response = await api.get("/api/admin/chat/room-summaries");
+    return getResponseData(response);
+};
+
 export const requestAdminChatRoom = async (roomId) => {
     const response = await api.get(`/api/admin/chat/rooms/${roomId}`);
     return getResponseData(response);
