@@ -16,6 +16,7 @@ import styles from "./AdminChatList.module.css";
 
 const GRADE_ORDER = ["GRADE_2", "GRADE_3"];
 const ROOM_REFRESH_DELAY = 150;
+const ROOM_PREVIEW_CACHE_TTL = 1000 * 15;
 
 const getMessageTimestamp = (message) =>
     parseChatDate(message?.createdAt)?.getTime() ?? 0;
@@ -65,6 +66,48 @@ const AdminChatList = () => {
     const loadSequenceRef = useRef(0);
     const roomRefreshSequenceRef = useRef(new Map());
     const roomRefreshTimersRef = useRef(new Map());
+    const roomPreviewCacheRef = useRef(new Map());
+
+    const getCachedRoomPreview = useCallback(async (room, { force = false } = {}) => {
+        const roomKey = String(room.id);
+        const cached = roomPreviewCacheRef.current.get(roomKey);
+        const isFresh =
+            cached?.value &&
+            Date.now() - cached.savedAt < ROOM_PREVIEW_CACHE_TTL;
+
+        if (!force && isFresh) return cached.value;
+        if (cached?.promise) return cached.promise;
+
+        const request = getRoomPreview(room)
+            .then((value) => {
+                roomPreviewCacheRef.current.set(roomKey, {
+                    value,
+                    savedAt: Date.now(),
+                });
+                return value;
+            })
+            .finally(() => {
+                const current = roomPreviewCacheRef.current.get(roomKey);
+
+                if (current?.promise !== request) return;
+
+                if (current.value) {
+                    roomPreviewCacheRef.current.set(roomKey, {
+                        value: current.value,
+                        savedAt: current.savedAt,
+                    });
+                } else {
+                    roomPreviewCacheRef.current.delete(roomKey);
+                }
+            });
+
+        roomPreviewCacheRef.current.set(roomKey, {
+            ...(cached?.value ? cached : {}),
+            promise: request,
+        });
+
+        return request;
+    }, []);
 
     const loadRooms = useCallback(async ({ showLoading = false } = {}) => {
         const loadSequence = loadSequenceRef.current + 1;
@@ -95,7 +138,7 @@ const AdminChatList = () => {
                 normalizedRooms.map(async (room) => {
                     const team = teamsById.get(String(room.teamId));
                     const { lastMessage, unreadCount } =
-                        await getRoomPreview(room).catch(() => ({
+                        await getCachedRoomPreview(room).catch(() => ({
                             lastMessage: null,
                             unreadCount: 0,
                         }));
@@ -138,7 +181,7 @@ const AdminChatList = () => {
                 setIsLoading(false);
             }
         }
-    }, []);
+    }, [getCachedRoomPreview]);
 
     const refreshRoomPreview = useCallback(async (roomId) => {
         const roomKey = String(roomId);
@@ -153,7 +196,7 @@ const AdminChatList = () => {
 
             if (!room) return;
 
-            const preview = await getRoomPreview(room);
+            const preview = await getCachedRoomPreview(room, { force: true });
 
             if (
                 roomRefreshSequenceRef.current.get(roomKey) !==
@@ -174,7 +217,7 @@ const AdminChatList = () => {
         } catch {
             // 일시적인 갱신 실패 시 현재 목록을 유지하고 다음 이벤트나 focus 재조회를 기다린다.
         }
-    }, [rooms]);
+    }, [getCachedRoomPreview, rooms]);
 
     const scheduleRoomRefresh = useCallback(
         (roomId) => {
@@ -224,12 +267,14 @@ const AdminChatList = () => {
 
     useEffect(() => {
         const refreshTimers = roomRefreshTimersRef.current;
+        const roomPreviewCache = roomPreviewCacheRef.current;
 
         return () => {
             refreshTimers.forEach((timerId) => {
                 window.clearTimeout(timerId);
             });
             refreshTimers.clear();
+            roomPreviewCache.clear();
         };
     }, []);
 
