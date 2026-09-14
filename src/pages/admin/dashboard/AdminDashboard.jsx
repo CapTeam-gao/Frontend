@@ -179,21 +179,17 @@ const AdminDashboard = () => {
         getDashboardData();
     }, []);
 
+    // 학생·공지 섹션은 팀 생성 전에도 대시보드에 필요해서 항상 한 번만 불러온다.
     useEffect(() => {
-        const getSectionData = async () => {
-            const [
-                studentsResult,
-                logsResult,
-                noticesResult,
-                calendarResult,
-            ] = await Promise.allSettled([
+        let ignore = false;
+
+        const getStudentAndNoticeData = async () => {
+            const [studentsResult, noticesResult] = await Promise.allSettled([
                 requestAdminStudentList(),
-                requestAdminLogList(),
                 requestNoticeList(),
-                requestAdminJournalCalendar(),
             ]);
 
-            const nextSectionErrors = {};
+            if (ignore) return;
 
             if (studentsResult.status === "fulfilled") {
                 const students = studentsResult.value?.students ?? [];
@@ -201,9 +197,63 @@ const AdminDashboard = () => {
                     grade2: countSurveyProgress(students, "GRADE_2"),
                     grade3: countSurveyProgress(students, "GRADE_3"),
                 });
-            } else {
-                nextSectionErrors.students = "학생 현황을 불러오지 못했습니다.";
             }
+
+            if (noticesResult.status === "fulfilled") {
+                setNotices(
+                    Array.isArray(noticesResult.value)
+                        ? noticesResult.value.slice(0, 3)
+                        : []
+                );
+            }
+
+            setSectionErrors((previousErrors) => {
+                const nextErrors = { ...previousErrors };
+
+                if (studentsResult.status === "fulfilled") {
+                    delete nextErrors.students;
+                } else {
+                    nextErrors.students = "학생 현황을 불러오지 못했습니다.";
+                }
+
+                if (noticesResult.status === "fulfilled") {
+                    delete nextErrors.notices;
+                } else {
+                    nextErrors.notices = "공지를 불러오지 못했습니다.";
+                }
+
+                return nextErrors;
+            });
+        };
+
+        getStudentAndNoticeData();
+
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
+    // 팀이 확정된 뒤에만 일지·캘린더를 불러온다. 팀 생성 전에는 두 호출을 건너뛴다.
+    useEffect(() => {
+        if (!isTeamManageAccessible) {
+            setJournalStatus({
+                submittedTeamCount: 0,
+                totalTeamCount: 0,
+                notSubmittedTeamNames: [],
+            });
+            setCalendarDays([]);
+            return undefined;
+        }
+
+        let ignore = false;
+
+        const getJournalData = async () => {
+            const [logsResult, calendarResult] = await Promise.allSettled([
+                requestAdminLogList(),
+                requestAdminJournalCalendar(),
+            ]);
+
+            if (ignore) return;
 
             if (logsResult.status === "fulfilled") {
                 const logData = logsResult.value;
@@ -222,18 +272,6 @@ const AdminDashboard = () => {
                                 }`
                         ),
                 });
-            } else {
-                nextSectionErrors.journal = "일지 제출 현황을 불러오지 못했습니다.";
-            }
-
-            if (noticesResult.status === "fulfilled") {
-                setNotices(
-                    Array.isArray(noticesResult.value)
-                        ? noticesResult.value.slice(0, 3)
-                        : []
-                );
-            } else {
-                nextSectionErrors.notices = "공지를 불러오지 못했습니다.";
             }
 
             if (calendarResult.status === "fulfilled") {
@@ -248,16 +286,33 @@ const AdminDashboard = () => {
                             : null,
                     }))
                 );
-            } else {
-                nextSectionErrors.calendar =
-                    "캘린더를 불러오지 못했습니다.";
             }
 
-            setSectionErrors(nextSectionErrors);
+            setSectionErrors((previousErrors) => {
+                const nextErrors = { ...previousErrors };
+
+                if (logsResult.status === "fulfilled") {
+                    delete nextErrors.journal;
+                } else {
+                    nextErrors.journal = "일지 제출 현황을 불러오지 못했습니다.";
+                }
+
+                if (calendarResult.status === "fulfilled") {
+                    delete nextErrors.calendar;
+                } else {
+                    nextErrors.calendar = "캘린더를 불러오지 못했습니다.";
+                }
+
+                return nextErrors;
+            });
         };
 
-        getSectionData();
-    }, []);
+        getJournalData();
+
+        return () => {
+            ignore = true;
+        };
+    }, [isTeamManageAccessible]);
 
     useEffect(() => {
         const timerId = setInterval(() => {

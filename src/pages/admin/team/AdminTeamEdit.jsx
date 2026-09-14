@@ -11,6 +11,7 @@ import {
     requestTeamMatchingVersionDiff,
 } from "../../../api/teamApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
+import { clearAdminStudentListCache } from "../../../api/studentApi";
 import styles from "./AdminTeamEdit.module.css";
 import {
     getRoleSummary,
@@ -410,6 +411,7 @@ const AdminTeamEdit = () => {
 
         try {
             await requestApplyTeamMatchingVersion(pendingVersionId);
+            clearAdminStudentListCache();
 
             let teamManageAccessible = false;
 

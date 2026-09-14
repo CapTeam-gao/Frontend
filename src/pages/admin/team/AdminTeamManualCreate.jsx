@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
-import { requestAdminStudentList } from "../../../api/studentApi";
+import {
+    clearAdminStudentListCache,
+    requestAdminStudentList,
+} from "../../../api/studentApi";
 import { requestCreateManualTeams } from "../../../api/teamApi";
 import { roleLabels, gradeLabels } from "../../../constants/team";
 import { getApiErrorMessage } from "../../../utils/apiError";
@@ -190,6 +193,7 @@ const AdminTeamManualCreate = () => {
             setIsSubmitting(true);
             setError("");
             await requestCreateManualTeams(grade, buildTeamsPayload());
+            clearAdminStudentListCache();
             navigate("/admin/team-manage");
         } catch (e) {
             setError(getApiErrorMessage(e, "팀 구성 저장에 실패했습니다."));
