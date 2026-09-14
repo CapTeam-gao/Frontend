@@ -697,150 +697,152 @@ const UserSurvey = () => {
                                 </button>
                             </div>
 
-                            <div className={styles.formSection}>
-                                <div className={styles.sectionTitleArea}>
-                                    <h3>선호 팀원</h3>
-                                    <p>
-                                        함께 팀을 하고 싶은 학생을 검색해서
-                                        최대 3명까지 선택할 수 있습니다.
-                                    </p>
-                                </div>
-
-                                {preferredTeammates.length > 0 && (
-                                    <div className={styles.preferredChipList}>
-                                        {preferredTeammates.map((member) => (
-                                            <span
-                                                key={member.userId}
-                                                className={styles.preferredChip}
-                                            >
-                                                {member.name}
-                                                <button
-                                                    type="button"
-                                                    aria-label={`${member.name} 선택 해제`}
-                                                    onClick={() =>
-                                                        removePreferredTeammate(
-                                                            member.userId
-                                                        )
-                                                    }
-                                                >
-                                                    ×
-                                                </button>
-                                            </span>
-                                        ))}
+                            <div className={styles.preferenceRow}>
+                                <div className={styles.formSection}>
+                                    <div className={styles.sectionTitleArea}>
+                                        <h3>선호 팀원</h3>
+                                        <p>
+                                            함께 팀을 하고 싶은 학생을 검색해서
+                                            최대 3명까지 선택할 수 있습니다.
+                                        </p>
                                     </div>
-                                )}
 
-                                {preferredTeammates.length < 3 && (
-                                    <div
-                                        className={styles.preferredSearchArea}
-                                    >
-                                        <input
-                                            type="text"
-                                            className={styles.preferredSearchInput}
-                                            value={preferredKeyword}
-                                            placeholder="이름 또는 학번으로 검색"
-                                            onChange={(e) =>
-                                                setPreferredKeyword(
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-
-                                        {preferredKeyword.trim() && (
-                                            <ul
-                                                className={
-                                                    styles.preferredResultList
-                                                }
-                                            >
-                                                {isSearchingPreferred && (
-                                                    <li
-                                                        className={
-                                                            styles.preferredResultEmpty
+                                    {preferredTeammates.length > 0 && (
+                                        <div className={styles.preferredChipList}>
+                                            {preferredTeammates.map((member) => (
+                                                <span
+                                                    key={member.userId}
+                                                    className={styles.preferredChip}
+                                                >
+                                                    {member.name}
+                                                    <button
+                                                        type="button"
+                                                        aria-label={`${member.name} 선택 해제`}
+                                                        onClick={() =>
+                                                            removePreferredTeammate(
+                                                                member.userId
+                                                            )
                                                         }
                                                     >
-                                                        검색하는 중입니다.
-                                                    </li>
-                                                )}
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
 
-                                                {!isSearchingPreferred &&
-                                                    preferredResults.length ===
-                                                        0 && (
+                                    {preferredTeammates.length < 3 && (
+                                        <div
+                                            className={styles.preferredSearchArea}
+                                        >
+                                            <input
+                                                type="text"
+                                                className={styles.preferredSearchInput}
+                                                value={preferredKeyword}
+                                                placeholder="이름 또는 학번으로 검색"
+                                                onChange={(e) =>
+                                                    setPreferredKeyword(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+
+                                            {preferredKeyword.trim() && (
+                                                <ul
+                                                    className={
+                                                        styles.preferredResultList
+                                                    }
+                                                >
+                                                    {isSearchingPreferred && (
                                                         <li
                                                             className={
                                                                 styles.preferredResultEmpty
                                                             }
                                                         >
-                                                            검색 결과가
-                                                            없습니다.
+                                                            검색하는 중입니다.
                                                         </li>
                                                     )}
 
-                                                {preferredResults.map(
-                                                    (student) => (
-                                                        <li
-                                                            key={
-                                                                student.userId
-                                                            }
-                                                        >
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    selectPreferredTeammate(
-                                                                        student
-                                                                    )
+                                                    {!isSearchingPreferred &&
+                                                        preferredResults.length ===
+                                                            0 && (
+                                                            <li
+                                                                className={
+                                                                    styles.preferredResultEmpty
                                                                 }
                                                             >
-                                                                <strong>
-                                                                    {
-                                                                        student.name
-                                                                    }
-                                                                </strong>
-                                                                <span>
-                                                                    {student.grade
-                                                                        ? `${gradeLabels[student.grade] ?? student.grade} `
-                                                                        : ""}
-                                                                    {roleLabels[
-                                                                        student.studentRole
-                                                                    ] ?? ""}
-                                                                </span>
-                                                            </button>
-                                                        </li>
-                                                    )
-                                                )}
-                                            </ul>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                                                                검색 결과가
+                                                                없습니다.
+                                                            </li>
+                                                        )}
 
-                            <div
-                                ref={leaderSectionRef}
-                                className={styles.formSection}
-                            >
-                                <div className={styles.sectionTitleArea}>
-                                    <h3>팀장 선호 여부</h3>
-                                    <p>팀장 역할을 맡고 싶은지 선택해주세요.</p>
+                                                    {preferredResults.map(
+                                                        (student) => (
+                                                            <li
+                                                                key={
+                                                                    student.userId
+                                                                }
+                                                            >
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        selectPreferredTeammate(
+                                                                            student
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <strong>
+                                                                        {
+                                                                            student.name
+                                                                        }
+                                                                    </strong>
+                                                                    <span>
+                                                                        {student.grade
+                                                                            ? `${gradeLabels[student.grade] ?? student.grade} `
+                                                                            : ""}
+                                                                        {roleLabels[
+                                                                            student.studentRole
+                                                                        ] ?? ""}
+                                                                    </span>
+                                                                </button>
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div className={styles.binaryGroup}>
-                                    {["O", "X"].map((value) => (
-                                        <button
-                                            key={value}
-                                            type="button"
-                                            className={`${
-                                                styles.binaryButton
-                                            } ${
-                                                leaderPreference === value
-                                                    ? styles.selectedOption
-                                                    : ""
-                                            }`}
-                                            onClick={() =>
-                                                setLeaderPreference(value)
-                                            }
-                                        >
-                                            {value}
-                                        </button>
-                                    ))}
+                                <div
+                                    ref={leaderSectionRef}
+                                    className={styles.formSection}
+                                >
+                                    <div className={styles.sectionTitleArea}>
+                                        <h3>팀장 선호 여부</h3>
+                                        <p>팀장 역할을 맡고 싶은지 선택해주세요.</p>
+                                    </div>
+
+                                    <div className={styles.binaryGroup}>
+                                        {["O", "X"].map((value) => (
+                                            <button
+                                                key={value}
+                                                type="button"
+                                                className={`${
+                                                    styles.binaryButton
+                                                } ${
+                                                    leaderPreference === value
+                                                        ? styles.selectedOption
+                                                        : ""
+                                                }`}
+                                                onClick={() =>
+                                                    setLeaderPreference(value)
+                                                }
+                                            >
+                                                {value}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </section>

@@ -18,7 +18,8 @@
     position: sticky;
     top: 0;
     z-index: 30;
-    padding: 20px 0 16px;
+    padding: 20px 0 18px;
+    border-bottom: 1px solid var(--color-border);
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
 }
@@ -99,50 +100,62 @@
 
 .layout {
     width: 100%;
-    max-width: 1320px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 .card {
-    padding: 64px 0;
+    padding: 48px 0;
 }
 
 .cardHeader span {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
 .cardHeader h2 {
-    margin-top: 8px;
-    font-size: 30px;
+    margin-top: 6px;
+    font-size: 34px;
     font-weight: var(--font-weight-bold);
     letter-spacing: -0.01em;
 }
 
 .cardHeader p {
     max-width: 36rem;
-    margin-top: 12px;
-    font-size: 17px;
+    margin-top: 10px;
+    font-size: 18px;
     line-height: 1.6;
     color: var(--color-text-secondary);
 }
 
 .formSection {
-    margin-top: 48px;
+    margin-top: 36px;
+}
+
+.preferenceRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+    align-items: start;
+    gap: clamp(32px, 5vw, 64px);
+    margin-top: 36px;
+}
+
+.preferenceRow > .formSection {
+    margin-top: 0;
 }
 
 .sectionTitleArea h3 {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 19px;
+    font-size: 21px;
     font-weight: var(--font-weight-bold);
 }
 
@@ -156,8 +169,8 @@
 }
 
 .sectionTitleArea p {
-    margin-top: 6px;
-    font-size: 15px;
+    margin-top: 4px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--color-text-secondary);
 }
@@ -167,62 +180,70 @@
 .roleList {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 .optionButton {
-    height: 44px;
-    padding: 0 18px;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
+    min-height: 46px;
+    padding: 9px 3px 8px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
     background: none;
     font-family: var(--font-family);
-    font-size: 15px;
+    font-size: 18px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.optionButton:hover {
-    border-color: var(--color-primary);
+.optionButton:hover:not(.selectedOption) {
+    border-bottom-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
     color: var(--color-primary-text);
 }
 
 .selectedOption {
-    border-color: var(--color-primary);
-    background-color: var(--color-primary);
-    color: #ffffff;
+    border-color: transparent;
+    background: none;
+    color: var(--color-primary-text);
+}
+
+.optionButton.selectedOption {
+    border-bottom-color: var(--color-primary);
 }
 
 .binaryGroup {
     display: flex;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 14px;
+    margin-top: 12px;
 }
 
 .binaryButton {
+    min-width: 68px;
     height: 48px;
-    padding: 0 28px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    padding: 9px 14px 8px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
     background: none;
     font-family: var(--font-family);
-    font-size: var(--font-size-lg);
+    font-size: 20px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.binaryButton:hover {
-    border-color: var(--color-primary);
+.binaryButton:hover:not(.selectedOption) {
+    border-bottom-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
     color: var(--color-primary-text);
 }
 
 .binaryButton.selectedOption {
-    border-color: var(--color-primary);
-    background-color: var(--color-primary);
-    color: #ffffff;
+    border-color: transparent;
+    border-bottom-color: var(--color-primary);
+    background: none;
+    color: var(--color-primary-text);
 }
 
 /* ── 입력 ─────────────────────────────────────────── */
@@ -251,14 +272,13 @@
 .dynamicList {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-top: 16px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 .dynamicItem {
-    padding: 16px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+    padding: 8px 0 0;
+    border: none;
 }
 
 .itemHeader {
@@ -269,7 +289,7 @@
 }
 
 .itemHeader strong {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: var(--font-weight-bold);
 }
 
@@ -305,14 +325,14 @@
 }
 
 .addButton {
-    height: 44px;
-    margin-top: 12px;
+    height: 48px;
+    margin-top: 10px;
     padding: 0 18px;
     border: 1px dashed var(--color-border);
     border-radius: 8px;
     background: none;
     font-family: var(--font-family);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     transition: border-color 0.15s ease, color 0.15s ease;
@@ -328,16 +348,16 @@
 .preferredSearchArea {
     position: relative;
     max-width: 26rem;
-    margin-top: 16px;
+    margin-top: 12px;
 }
 
 .preferredSearchInput {
     width: 100%;
-    height: 48px;
+    height: 52px;
     padding: 0 16px;
     border: 1px solid var(--color-border);
     border-radius: 10px;
-    font-size: var(--font-size-lg);
+    font-size: 17px;
     transition: border-color 0.15s ease;
 }
 
@@ -590,7 +610,13 @@
     }
 
     .card {
-        padding: 40px 0;
+        padding: 36px 0;
+    }
+
+    .preferenceRow {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+        margin-top: 32px;
     }
 
     .cardHeader h2 {

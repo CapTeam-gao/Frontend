@@ -1,5 +1,5 @@
 .questionItem {
-    padding: 36px 0;
+    padding: 22px 0;
 }
 
 .questionItem:first-child {
@@ -7,13 +7,13 @@
 }
 
 .questionText {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: var(--font-weight-semibold);
     line-height: 1.5;
 }
 
 .scaleArea {
-    margin-top: 20px;
+    margin-top: 14px;
 }
 
 .scaleLabels {
@@ -21,7 +21,7 @@
     justify-content: space-between;
     width: 100%;
     max-width: none;
-    font-size: var(--font-size-sm);
+    font-size: 16px;
     color: var(--color-text-muted);
 }
 
@@ -48,8 +48,8 @@
 .scaleOption span {
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     border: 2px solid var(--color-border);
     border-radius: 50%;
     font-size: var(--font-size-lg);
@@ -78,7 +78,7 @@
 
 @media (max-width: 900px) {
     .questionText {
-        font-size: var(--font-size-lg);
+        font-size: 18px;
     }
 
     .scaleGroup {
@@ -91,15 +91,15 @@
     }
 
     .scaleOption span {
-        width: 44px;
-        height: 44px;
-        font-size: var(--font-size-md);
+        width: 50px;
+        height: 50px;
+        font-size: var(--font-size-lg);
     }
 }
 
 @media (max-width: 520px) {
     .questionItem {
-        padding: 28px 0;
+        padding: 18px 0;
     }
 
     .scaleGroup {
@@ -107,8 +107,8 @@
     }
 
     .scaleOption span {
-        width: 40px;
-        height: 40px;
-        font-size: var(--font-size-sm);
+        width: 46px;
+        height: 46px;
+        font-size: var(--font-size-md);
     }
 }
