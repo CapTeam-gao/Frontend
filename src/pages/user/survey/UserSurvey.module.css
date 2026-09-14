@@ -7,9 +7,9 @@
 }
 
 .body {
-    max-width: 1440px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 0 clamp(20px, 4vw, 56px) 112px;
+    padding: 0 clamp(20px, 3vw, 48px) 112px;
 }
 
 /* ── 진행률 바 ───────────────────────────────────── */
@@ -62,7 +62,6 @@
 }
 
 .logoutButton:hover {
-    background-color: var(--color-bg-secondary);
     color: var(--color-text-primary);
 }
 
@@ -100,7 +99,7 @@
 
 .layout {
     width: 100%;
-    max-width: 1120px;
+    max-width: 1320px;
     margin: 0 auto;
 }
 
@@ -112,22 +111,6 @@
 
 .card {
     padding: 64px 0;
-}
-
-.cardHeader {
-    position: relative;
-    padding-left: 18px;
-}
-
-.cardHeader::before {
-    content: "";
-    position: absolute;
-    top: 5px;
-    bottom: 5px;
-    left: 0;
-    width: 4px;
-    border-radius: 4px;
-    background: var(--color-primary);
 }
 
 .cardHeader span {
@@ -198,26 +181,17 @@
     font-size: 15px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
-    transition: border-color 0.15s ease, background-color 0.15s ease,
-        color 0.15s ease;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .optionButton:hover {
     border-color: var(--color-primary);
-    background-color: var(--color-primary-bg);
     color: var(--color-primary-text);
 }
 
 .selectedOption {
     border-color: var(--color-primary);
     background-color: var(--color-primary);
-    color: #ffffff;
-    box-shadow: 0 0 0 3px var(--color-primary-bg);
-}
-
-.optionButton.selectedOption:hover {
-    border-color: var(--color-primary-dark);
-    background-color: var(--color-primary-dark);
     color: #ffffff;
 }
 
@@ -237,25 +211,17 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
-    transition: border-color 0.15s ease, background-color 0.15s ease,
-        color 0.15s ease;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .binaryButton:hover {
     border-color: var(--color-primary);
-    background-color: var(--color-primary-bg);
     color: var(--color-primary-text);
 }
 
 .binaryButton.selectedOption {
     border-color: var(--color-primary);
     background-color: var(--color-primary);
-    color: #ffffff;
-}
-
-.binaryButton.selectedOption:hover {
-    border-color: var(--color-primary-dark);
-    background-color: var(--color-primary-dark);
     color: #ffffff;
 }
 
@@ -280,7 +246,6 @@
 
 .stackTextarea:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary-bg);
 }
 
 .dynamicList {
@@ -382,7 +347,6 @@
 
 .preferredSearchInput:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary-bg);
 }
 
 /* 검색 결과 — ul 기본 불릿과 들여쓰기를 반드시 지운다 */
@@ -411,11 +375,7 @@
     font-family: var(--font-family);
     text-align: left;
     color: inherit;
-    transition: background-color 0.15s ease;
-}
-
-.preferredResultList button:hover {
-    background-color: var(--color-bg-secondary);
+    transition: color 0.15s ease;
 }
 
 .preferredResultList button strong {
@@ -447,8 +407,9 @@
     align-items: center;
     gap: 4px;
     padding: 6px 8px 6px 14px;
+    border: 1px solid var(--color-primary);
     border-radius: 999px;
-    background-color: var(--color-primary-bg);
+    background: none;
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--color-primary-text);
@@ -466,11 +427,11 @@
     font-size: 15px;
     line-height: 1;
     color: var(--color-primary-text);
-    transition: background-color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .preferredChip button:hover {
-    background-color: #dcefe4;
+    color: var(--color-primary-dark);
 }
 
 /* ── 문항 ─────────────────────────────────────────── */
@@ -630,10 +591,6 @@
 
     .card {
         padding: 40px 0;
-    }
-
-    .cardHeader {
-        padding-left: 14px;
     }
 
     .cardHeader h2 {

@@ -20,7 +20,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 820px;
+    max-width: none;
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
 }
@@ -30,7 +30,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 820px;
+    max-width: none;
     margin-top: 10px;
 }
 
@@ -61,7 +61,6 @@
 
 .scaleOption:hover span {
     border-color: var(--color-primary);
-    background-color: var(--color-primary-bg);
     color: var(--color-primary-text);
 }
 
@@ -69,7 +68,6 @@
     border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: #ffffff;
-    box-shadow: 0 0 0 4px var(--color-primary-bg);
     transform: translateY(-1px);
 }
 
