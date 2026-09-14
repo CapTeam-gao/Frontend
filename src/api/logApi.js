@@ -14,6 +14,15 @@ export const requestAdminLogDetail = async (journalId) => {
     return getResponseData(response);
 };
 
+// month: "yyyy-MM" (생략하면 서버가 오늘이 속한 달을 내려줌)
+export const requestAdminJournalCalendar = async (month) => {
+    const response = await api.get("/api/admin/journals/calendar", {
+        params: month ? { month } : undefined,
+    });
+
+    return getResponseData(response);
+};
+
 export const requestUserLogDetail = async (journalId) => {
     const response = await api.get(`/api/journals/${journalId}`);
 
