@@ -146,8 +146,3 @@ src/
 - 불필요한 구분선과 텍스트 배경을 줄이고 충분한 여백 유지
 - 모바일에서도 가로 넘침 없이 콘텐츠 우선순위가 유지되는 반응형 레이아웃
 - `prefers-reduced-motion`을 고려한 접근 가능한 모션
-
-## 참고 문서
-
-- [프론트엔드 요구사항](./Frontend_Requirement.md)
-- [프로젝트 이슈 및 작업 목록](https://github.com/CapTeam-gao/Frontend/issues)
