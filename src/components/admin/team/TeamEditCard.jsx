@@ -109,8 +109,10 @@ const TeamEditCard = ({
                 <div className={styles.reasonInner}>
                     <div className={styles.reasonList}>
                         {team.reasons?.length ? (
-                            team.reasons.map((reason) => (
-                                <div key={`${team.id}-${reason.title}`}>
+                            team.reasons.map((reason, reasonIndex) => (
+                                <div
+                                    key={`${team.id}-${reason.title}-${reasonIndex}`}
+                                >
                                     <strong className={styles.reasonTitle}>
                                         {reason.title}
                                     </strong>

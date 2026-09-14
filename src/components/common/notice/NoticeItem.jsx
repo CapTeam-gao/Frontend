@@ -4,7 +4,7 @@ import styles from "./NoticeItem.module.css";
 
 const NoticeItem = ({ notice }) => {
     return (
-        <li className={styles.item}>
+        <div className={styles.item}>
             <div className={styles.main}>
                 <div className={styles.titleRow}>
                     {notice.important === "IMPORTANT" && (
@@ -38,7 +38,7 @@ const NoticeItem = ({ notice }) => {
             >
                 <path d="m9 18 6-6-6-6" />
             </svg>
-        </li>
+        </div>
     );
 };
 

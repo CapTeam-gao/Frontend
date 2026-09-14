@@ -120,13 +120,14 @@ const UserNoticeList = () => {
                             </div>
                             <ul className={styles.list} ref={listRef}>
                                 {currentNotices.map((notice) => (
-                                    <Link
-                                        key={notice.id}
-                                        to={`/user/notice/${notice.id}`}
-                                        data-reveal
-                                    >
-                                        <NoticeItem notice={notice} />
-                                    </Link>
+                                    <li key={notice.id}>
+                                        <Link
+                                            to={`/user/notice/${notice.id}`}
+                                            data-reveal
+                                        >
+                                            <NoticeItem notice={notice} />
+                                        </Link>
+                                    </li>
                                 ))}
                             </ul>
                         </section>
