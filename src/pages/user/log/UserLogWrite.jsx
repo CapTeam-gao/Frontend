@@ -13,6 +13,7 @@ import {
     formatCountdownTime,
     getCapstoneLogRemainingMs,
     getCapstoneLogUnavailableText,
+    isDemoLogTimerEnabled,
     isCapstoneLogTime,
 } from "../../../utils/capstoneLogTime";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
@@ -92,6 +93,7 @@ const UserLogWrite = () => {
     const teamName = myTeam?.project?.teamName || myTeam?.teamName || "";
     const isLeader = myTeam?.myMember?.leaderRole === "LEADER";
     const canWriteLog = isCapstoneLogTime(currentTime);
+    const isDemoLogTimer = isDemoLogTimerEnabled();
     const logUnavailableText = getCapstoneLogUnavailableText(currentTime);
     const fields = getLogFields(isLeader);
     const filledCount = getFilledFieldCount(formData, fields);
@@ -327,7 +329,9 @@ const UserLogWrite = () => {
                                         )}
                                     </p>
                                     <p className={styles.railNote}>
-                                        오늘 18:10에 마감돼요
+                                        {isDemoLogTimer
+                                            ? "시연용 카운트다운이 실행 중이에요"
+                                            : "오늘 18:10에 마감돼요"}
                                     </p>
 
                                     <div className={styles.progressBlock}>
