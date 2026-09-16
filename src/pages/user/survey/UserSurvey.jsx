@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSubmitSurvey } from "../../../api/surveyApi";
 import { requestStudentSearch } from "../../../api/studentApi";
@@ -135,6 +135,12 @@ const UserSurvey = () => {
     const [answers, setAnswers] = useState(() => storedDraft?.answers ?? {});
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // 인트로 화면의 하단에서 진입해도 설문은 항상 첫 문항부터 시작한다.
+    // useLayoutEffect는 화면이 그려지기 전에 실행돼 이전 스크롤 위치가 보이는 깜빡임도 막는다.
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const cleanSkills = useMemo(
         () => getSkillsFromText(stackText),
