@@ -24,7 +24,7 @@ const getRoleLabel = (role) => {
     }
 };
 
-const TeamResultNoticeDetail = ({ notice, parsed }) => {
+const TeamResultNoticeDetail = ({ notice, parsed, currentUserId }) => {
     const teamResult = notice?.teamResult;
     const teams = teamResult?.teams ?? [];
 
@@ -77,33 +77,60 @@ const TeamResultNoticeDetail = ({ notice, parsed }) => {
                                 </div>
 
                                 <div className={styles.memberRow}>
-                                    {sortedMembers.map((member) => (
-                                        <div
-                                            key={member.userId ?? member.name}
-                                            className={styles.memberChip}
-                                        >
-                                            <span className={styles.memberName}>
-                                                {member.name}
-                                            </span>
-                                            {member.leader && (
+                                    {sortedMembers.map((member) => {
+                                        const isCurrentUser =
+                                            Boolean(currentUserId) &&
+                                            member.userId === currentUserId;
+
+                                        return (
+                                            <div
+                                                key={
+                                                    member.userId ?? member.name
+                                                }
+                                                className={`${styles.memberChip} ${
+                                                    isCurrentUser
+                                                        ? styles.memberChipMine
+                                                        : ""
+                                                }`}
+                                            >
+                                                <span
+                                                    className={styles.memberName}
+                                                >
+                                                    {member.name}
+                                                </span>
+                                                {isCurrentUser && (
+                                                    <span
+                                                        className={
+                                                            styles.myBadge
+                                                        }
+                                                    >
+                                                        내 배정
+                                                    </span>
+                                                )}
+                                                {member.leader && (
+                                                    <span
+                                                        className={
+                                                            styles.leaderBadge
+                                                        }
+                                                    >
+                                                        팀장
+                                                    </span>
+                                                )}
+                                                <span className={styles.dot}>
+                                                    ·
+                                                </span>
                                                 <span
                                                     className={
-                                                        styles.leaderBadge
+                                                        styles.memberRole
                                                     }
                                                 >
-                                                    팀장
+                                                    {getRoleLabel(
+                                                        member.studentRole
+                                                    )}
                                                 </span>
-                                            )}
-                                            <span className={styles.dot}>
-                                                ·
-                                            </span>
-                                            <span className={styles.memberRole}>
-                                                {getRoleLabel(
-                                                    member.studentRole
-                                                )}
-                                            </span>
-                                        </div>
-                                    ))}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </article>
                         );

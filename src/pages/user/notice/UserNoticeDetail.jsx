@@ -11,6 +11,7 @@ import { requestNoticeDetail } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
 import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
+import authStore from "../../../store/authStore";
 
 export const NoticeDetailSkeleton = () => (
     <div>
@@ -28,6 +29,7 @@ export const NoticeDetailSkeleton = () => (
 
 const UserNoticeDetail = () => {
     const { id } = useParams();
+    const currentUserId = authStore((state) => state.user?.userId);
 
     const [notice, setNotice] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -126,6 +128,7 @@ const UserNoticeDetail = () => {
                                         <TeamResultNoticeDetail
                                             notice={notice}
                                             parsed={teamResultParsed}
+                                            currentUserId={currentUserId}
                                         />
                                     ) : (
                                         <>

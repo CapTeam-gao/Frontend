@@ -149,7 +149,31 @@
     padding-right: 0;
 }
 
+.memberChipMine {
+    padding: 7px 11px;
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+}
+
+.memberChipMine:first-child {
+    padding-left: 11px;
+}
+
+.memberChipMine:last-child {
+    padding-right: 11px;
+}
+
 .memberName {
+    font-weight: var(--font-weight-bold);
+}
+
+.memberChipMine .memberName {
+    color: var(--color-primary-dark);
+}
+
+.myBadge {
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
 }
 
