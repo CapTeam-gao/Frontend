@@ -3,14 +3,7 @@ const CAPSTONE_LOG_START_HOUR = 15;
 const CAPSTONE_LOG_START_MINUTE = 40;
 const CAPSTONE_LOG_END_HOUR = 18;
 const CAPSTONE_LOG_END_MINUTE = 10;
-const DEMO_LOG_DURATION_MS = 20 * 60 * 1000;
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
-
-// 시연 촬영 때만 VITE_DEMO_LOG_TIMER=true를 설정한다.
-// 실제 운영 규칙은 그대로 두고, 로컬 시연에서만 20분짜리 실시간 카운트다운을 보여준다.
-const demoLogStartedAt = new Date();
-export const isDemoLogTimerEnabled = () =>
-    import.meta.env.VITE_DEMO_LOG_TIMER === "true";
 
 const createDateWithTime = (baseDate, hour, minute) => {
     const date = new Date(baseDate);
@@ -20,13 +13,6 @@ const createDateWithTime = (baseDate, hour, minute) => {
 };
 
 export const getTodayCapstoneLogWindow = (baseDate = new Date()) => {
-    if (isDemoLogTimerEnabled()) {
-        return {
-            startAt: demoLogStartedAt,
-            endAt: new Date(demoLogStartedAt.getTime() + DEMO_LOG_DURATION_MS),
-        };
-    }
-
     return {
         startAt: createDateWithTime(
             baseDate,
@@ -43,14 +29,6 @@ export const getTodayCapstoneLogWindow = (baseDate = new Date()) => {
 
 export const isCapstoneLogTime = (baseDate = new Date()) => {
     const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
-
-    if (isDemoLogTimerEnabled()) {
-        return (
-            baseDate.getTime() >= startAt.getTime() &&
-            baseDate.getTime() <= endAt.getTime()
-        );
-    }
-
     const isCapstoneDay = baseDate.getDay() === CAPSTONE_LOG_DAY;
 
     return (
@@ -67,23 +45,6 @@ export const getCapstoneLogRemainingMs = (baseDate = new Date()) => {
 };
 
 export const getNextCapstoneLogWindow = (baseDate = new Date()) => {
-    if (isDemoLogTimerEnabled()) {
-        const { startAt, endAt } = getTodayCapstoneLogWindow(baseDate);
-
-        if (baseDate.getTime() <= endAt.getTime()) {
-            return { startAt, endAt };
-        }
-
-        const nextStartAt = new Date(
-            baseDate.getTime() + DEMO_LOG_DURATION_MS
-        );
-
-        return {
-            startAt: nextStartAt,
-            endAt: new Date(nextStartAt.getTime() + DEMO_LOG_DURATION_MS),
-        };
-    }
-
     const currentDay = baseDate.getDay();
     const daysUntilCapstoneDay =
         (CAPSTONE_LOG_DAY - currentDay + 7) % 7;
