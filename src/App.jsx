@@ -1,3 +1,5 @@
+import { useLayoutEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Router from "./router/index";
 import "./styles/global.css";
 import useAuth from "./hooks/useAuth";
@@ -9,11 +11,32 @@ import NotificationToast from "./components/common/notification/NotificationToas
 
 // 전역 STOMP 연결(UserChatSocketProvider) 안에서 실행돼야 하는 부분.
 // useFcmNotifications가 그 연결을 받아 새 메시지 토스트를 구독한다.
+function ScrollToTop() {
+    const location = useLocation();
+
+    useLayoutEffect(() => {
+        const targetId = decodeURIComponent(location.hash.slice(1));
+        const hashTarget = targetId
+            ? document.getElementById(targetId)
+            : null;
+
+        if (hashTarget) {
+            hashTarget.scrollIntoView();
+            return;
+        }
+
+        window.scrollTo({ top: 0, left: 0 });
+    }, [location.key, location.hash]);
+
+    return null;
+}
+
 function AppShell() {
     const { toasts, dismissToast, selectToast } = useFcmNotifications();
 
     return (
         <>
+            <ScrollToTop />
             <Router />
             <NotificationToast
                 toasts={toasts}
