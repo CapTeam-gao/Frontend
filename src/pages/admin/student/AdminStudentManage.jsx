@@ -1,10 +1,9 @@
-// Design/student-manage.html 반영. 카드 격자 → 세로 리스트.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import AdminStudentDetailModal from "../../../components/admin/student/AdminStudentDetailModal";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
-import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import {
     requestAdminStudentDetail,
@@ -17,20 +16,26 @@ import {
     normalizeSearchText,
 } from "../../../utils/student";
 import { getApiErrorMessage } from "../../../utils/apiError";
+import { isSurveyCompleted } from "../../../utils/survey";
 import studentTitleImage from "../../../assets/images/adminStudentTitleV3.webp";
 import studentEmptyImage from "../../../assets/images/adminStudentEmptyV3.webp";
 import styles from "./AdminStudentManage.module.css";
 
 const ListSkeleton = () => (
-    <div className={styles.list}>
+    <div className={styles.grid}>
         {[0, 1, 2].map((index) => (
-            <div key={index} className={styles.skeletonRow}>
+            <div key={index} className={styles.skeletonTile}>
                 <Skeleton width={160} height={24} />
                 <Skeleton width={288} height={20} style={{ marginTop: 12 }} />
             </div>
         ))}
     </div>
 );
+
+const roleColors = {
+    FRONTEND: "#4c9be8", BACKEND: "#f07c5c", AI: "#8b7cf6", APP: "#e8a04a",
+    DESIGN: "#e86fa6", GAME: "#f29a3a", DEVOPS: "#2bb3a8", SECURITY: "#6573c3", FULLSTACK: "#22b573",
+};
 
 const AdminStudentManage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -46,16 +51,25 @@ const AdminStudentManage = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [error, setError] = useState("");
     const [modalError, setModalError] = useState("");
+    const [detailLoading, setDetailLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const targetUserId = searchParams.get("userId");
     const openedQueryUserIdRef = useRef(null);
+    const detailRequestRef = useRef(0);
 
-    useEffect(() => {
-        const getStudents = async () => {
+    const loadStudents = useCallback(async () => {
             try {
                 setIsLoading(true);
+                setError("");
                 const data = await requestAdminStudentList();
-                setStudents(Array.isArray(data.students) ? data.students : []);
+                setStudents(
+                    (Array.isArray(data.students) ? data.students : []).map(
+                        (student) => ({
+                            ...student,
+                            surveyCompleted: isSurveyCompleted(student.surveyCompleted),
+                        })
+                    )
+                );
                 setSummaryCounts({
                     all: data.totalStudentCount || 0,
                     grade2: data.grade2StudentCount || 0,
@@ -69,10 +83,9 @@ const AdminStudentManage = () => {
             } finally {
                 setIsLoading(false);
             }
-        };
-
-        getStudents();
     }, []);
+
+    useEffect(() => { loadStudents(); }, [loadStudents]);
 
     useEffect(() => {
         if (isLoading || !targetUserId || selectedStudent) return;
@@ -107,7 +120,7 @@ const AdminStudentManage = () => {
                 (activeSummaryFilter === "grade3" &&
                     student.grade === "GRADE_3") ||
                 (activeSummaryFilter === "surveyPending" &&
-                    !student.surveyCompleted);
+                    !isSurveyCompleted(student.surveyCompleted));
 
             return matchesKeyword && matchesSummary;
         });
@@ -119,28 +132,39 @@ const AdminStudentManage = () => {
     });
 
     const handleOpenStudent = async (student) => {
-        if (!student.surveyCompleted) {
-            setSelectedStudent(student);
+        const requestId = ++detailRequestRef.current;
+        setModalError("");
+        setSelectedStudent(student);
+        setDetailLoading(false);
+        if (!isSurveyCompleted(student.surveyCompleted)) {
             return;
         }
 
         try {
-            setModalError("");
+            setDetailLoading(true);
             const detail = await requestAdminStudentDetail(student.userId);
+            if (detailRequestRef.current !== requestId) return;
             setSelectedStudent({
                 ...student,
                 ...detail,
                 surveyCompleted: student.surveyCompleted,
             });
         } catch (e) {
-            setSelectedStudent(student);
+            if (detailRequestRef.current !== requestId) return;
             setModalError(
                 getApiErrorMessage(e, "학생 상세 정보를 불러오지 못했습니다.")
             );
+        } finally {
+            if (detailRequestRef.current === requestId) setDetailLoading(false);
         }
     };
 
+    const retryStudentDetail = () => {
+        if (selectedStudent) handleOpenStudent(selectedStudent);
+    };
+
     const handleCloseStudentModal = () => {
+        detailRequestRef.current += 1;
         if (targetUserId) {
             const nextSearchParams = new URLSearchParams(searchParams);
             nextSearchParams.delete("userId");
@@ -249,14 +273,30 @@ const AdminStudentManage = () => {
                     </div>
                 </div>
 
+                {!isLoading && !error && summaryCounts.all > 0 && (
+                    <div className={styles.listMeta}>
+                        <p><strong>{filteredStudents.length}</strong>명</p>
+                        <p className={styles.legend}>
+                            <span><span className={styles.legendMeter}><i className={styles.levelOn} /><i className={styles.levelOn} /><i className={styles.levelOn} /><i /><i /></span>실력</span>
+                            <span><span className={styles.legendPending}>설문 미제출</span></span>
+                        </p>
+                    </div>
+                )}
+
                 {isLoading ? (
                     <ListSkeleton />
                 ) : error ? (
-                    <EmptyState
-                        variant="error"
-                        title="학생 정보를 불러오지 못했어요"
-                        description={error}
-                    />
+                    <div className={styles.emptyState}>
+                        <h2>학생 정보를 불러오지 못했어요</h2>
+                        <p>{error}</p>
+                        <button type="button" className={styles.resetButton} onClick={loadStudents}>다시 시도</button>
+                    </div>
+                ) : summaryCounts.all === 0 && !searchKeyword && activeSummaryFilter === "all" ? (
+                    <div className={styles.emptyState}>
+                        <img src={studentEmptyImage} alt="" aria-hidden="true" />
+                        <h2>아직 등록된 학생이 없어요</h2>
+                        <p>학생이 가입하면 여기에 표시돼요.</p>
+                    </div>
                 ) : filteredStudents.length === 0 ? (
                     <div className={styles.emptyState}>
                         <img src={studentEmptyImage} alt="" aria-hidden="true" />
@@ -271,97 +311,48 @@ const AdminStudentManage = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className={styles.list} ref={listRef}>
-                        {filteredStudents.map((student) => {
+                    <div className={styles.grid} ref={listRef}>
+                        {filteredStudents.map((student, index) => {
                             const numberInfo = getStudentNumberInfo(
                                 student.userId
                             );
-                            const teamName =
-                                student.projectTeamName ||
-                                student.teamName ||
-                                "미배정";
-                            const summaryParts = [
-                                roleLabels[student.studentRole] ||
-                                    student.studentRole,
-                                teamName,
-                                student.leaderRole === "LEADER" ? "팀장" : null,
-                            ].filter(Boolean);
                             const levelLabel = levelLabels[student.studentLevel];
+                            const levelValue = { UPPER: 5, UPPER_MIDDLE: 4, MIDDLE: 3, LOWER_MIDDLE: 2, LOWER: 1 }[student.studentLevel] || 0;
+                            const roleLabel = roleLabels[student.studentRole];
+                            const teamName = student.projectTeamName || student.teamName || "미배정";
 
                             return (
                                 <button
                                     key={student.userId}
                                     type="button"
                                     data-reveal
-                                    className={styles.row}
+                                    className={styles.tile}
+                                    style={{ "--tile-index": Math.min(index, 12) }}
                                     onClick={() => handleOpenStudent(student)}
                                 >
-                                    <span className={styles.rowMain}>
-                                        <span className={styles.rowTitleLine}>
-                                            <span className={styles.rowName}>
-                                                {student.name}
-                                            </span>
-                                            <span className={styles.rowClass}>
-                                                {numberInfo.classText}
-                                            </span>
-                                            {!student.surveyCompleted && (
-                                                <span
-                                                    className={
-                                                        styles.pendingBadge
-                                                    }
-                                                >
-                                                    설문 미제출
-                                                </span>
-                                            )}
+                                    <span className={styles.tileTop}>
+                                        <span className={`${styles.tileRole} ${roleLabel ? "" : styles.tileRoleMuted}`} style={{ "--role-color": roleColors[student.studentRole] || "#c9d1cd" }}>
+                                            {roleLabel || "희망 직군 미입력"}
                                         </span>
-
-                                        {student.surveyCompleted ? (
-                                            <>
-                                                <span
-                                                    className={styles.rowSummary}
-                                                >
-                                                    {summaryParts.join(" · ")}
-                                                    {levelLabel && (
-                                                        <span className={styles.level}>
-                                                            {summaryParts.length > 0 && " · "}
-                                                            실력 {levelLabel}
-                                                        </span>
-                                                    )}
-                                                </span>
-                                                {student.skill?.length > 0 && (
-                                                    <span
-                                                        className={
-                                                            styles.rowSkills
-                                                        }
-                                                    >
-                                                        {student.skill.join(
-                                                            " · "
-                                                        )}
-                                                    </span>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <span className={styles.rowSkills}>
-                                                설문을 제출하면 성향 분석과 기술
-                                                스택을 볼 수 있어요.
-                                            </span>
-                                        )}
+                                        {student.leaderRole === "LEADER" && <span className={styles.tileLeader}>팀장</span>}
                                     </span>
-
-                                    <svg
-                                        className={styles.chevron}
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        aria-hidden="true"
-                                    >
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
+                                    <span className={styles.tileWho}>
+                                        <strong className={styles.tileName}>{student.name}</strong>
+                                        <span className={styles.tileClass}>{numberInfo.classText}</span>
+                                    </span>
+                                    <span className={`${styles.tileSkills} ${!student.surveyCompleted ? styles.tileSkillsWait : ""}`}>
+                                        {student.surveyCompleted ? (student.skill?.length ? student.skill.join(" · ") : "기술 스택 미입력") : "설문 응답을 기다리고 있어요"}
+                                    </span>
+                                    <span className={styles.tileFoot}>
+                                        {student.surveyCompleted ? <>
+                                            {levelLabel && <span className={styles.tileLevel} aria-label={`실력 ${levelLabel}`}>
+                                                <span className={styles.levelMeter} aria-hidden="true">{[1, 2, 3, 4, 5].map((step) => <i key={step} className={step <= levelValue ? styles.levelOn : ""} />)}</span>
+                                                실력 <b>{levelLabel}</b>
+                                            </span>}
+                                            <span className={styles.tileTeam}>팀 {teamName}</span>
+                                        </> : <span className={styles.pendingBadge}>설문 미제출</span>}
+                                        <span className={styles.chevron} aria-hidden="true">→</span>
+                                    </span>
                                 </button>
                             );
                         })}
@@ -369,11 +360,15 @@ const AdminStudentManage = () => {
                 )}
             </main>
 
+            <AppFooter role="admin" />
+
             {selectedStudent && (
                 <AdminStudentDetailModal
                     student={selectedStudent}
                     students={students}
                     modalError={modalError}
+                    detailLoading={detailLoading}
+                    onRetry={retryStudentDetail}
                     onOpenStudent={handleOpenStudent}
                     onClose={handleCloseStudentModal}
                 />

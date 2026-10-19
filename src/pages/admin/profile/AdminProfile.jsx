@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import authStore from "../../../store/authStore";
 import { getApiErrorMessage } from "../../../utils/apiError";
+import {
+    formatCapstoneLogDateTime,
+    getNextCapstoneLogWindow,
+    isCapstoneLogTime,
+} from "../../../utils/capstoneLogTime";
 import useInView from "../../../hooks/useInView";
 import styles from "../../user/profile/UserProfile.module.css";
 
@@ -13,6 +19,9 @@ const AdminProfile = () => {
     const user = authStore((state) => state.user);
     const logout = authStore((state) => state.logout);
     const [dashboard, setDashboard] = useState(null);
+    const [dashboardError, setDashboardError] = useState(false);
+    const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,17 +39,26 @@ const AdminProfile = () => {
         currentPassword && newPassword && confirmPassword && !isSubmittingPassword
     );
 
-    useEffect(() => {
-        const getDashboard = async () => {
-            try {
-                const data = await requestAdminDashboard();
-                setDashboard(data);
-            } catch {
-                // 관리 현황은 프로필 화면의 부가 정보라 실패해도 전체 에러로 띄우지 않는다.
-            }
-        };
+    const loadDashboard = useCallback(async () => {
+        setIsDashboardLoading(true);
+        setDashboardError(false);
+        try {
+            const data = await requestAdminDashboard({ force: true });
+            setDashboard(data);
+        } catch {
+            setDashboardError(true);
+        } finally {
+            setIsDashboardLoading(false);
+        }
+    }, []);
 
-        getDashboard();
+    useEffect(() => {
+        loadDashboard();
+    }, [loadDashboard]);
+
+    useEffect(() => {
+        const timer = window.setInterval(() => setCurrentTime(new Date()), 15_000);
+        return () => window.clearInterval(timer);
     }, []);
 
     const handleLogout = async () => {
@@ -99,30 +117,41 @@ const AdminProfile = () => {
     };
 
     const contentRef = useInView({ replayKey: Boolean(dashboard) });
+    const isLogTime = isCapstoneLogTime(currentTime);
+    const nextLogTime = formatCapstoneLogDateTime(
+        getNextCapstoneLogWindow(currentTime).startAt
+    );
     const statusItems = dashboard
         ? [
               {
                   label: "등록 학생",
-                  value: `${dashboard.totalStudentCount}명`,
+                  value: `${dashboard.totalStudentCount ?? 0}명`,
                   to: "/admin/student",
                   linkText: "학생 관리",
               },
               {
                   label: "확정 팀",
-                  value: `${dashboard.totalTeamCount}팀`,
+                  value: `${dashboard.totalTeamCount ?? 0}팀`,
                   to: "/admin/team-manage",
                   linkText: "팀 관리",
               },
               {
                   label: "캡스톤 일지 미제출",
-                  value: `${dashboard.journalNotSubmittedTeamCount}팀`,
-                  warn: dashboard.journalNotSubmittedTeamCount > 0,
+                  value: isLogTime
+                      ? `${dashboard.journalNotSubmittedTeamCount ?? 0}팀`
+                      : "—",
+                  note: isLogTime
+                      ? "오늘 15:40~18:10 기준"
+                      : `다음 작성일 ${nextLogTime}`,
+                  warn:
+                      isLogTime &&
+                      (dashboard.journalNotSubmittedTeamCount ?? 0) > 0,
                   to: "/admin/log",
                   linkText: "일지 관리",
               },
               {
                   label: "활성 채팅방",
-                  value: `${dashboard.activeChatRoomCount}개`,
+                  value: `${dashboard.activeChatRoomCount ?? 0}개`,
                   to: "/admin/chat",
                   linkText: "채팅 관리",
               },
@@ -166,42 +195,74 @@ const AdminProfile = () => {
                                 <h2 data-reveal className={styles.sectionTitle}>
                                     관리 현황
                                 </h2>
-                                <div className={styles.infoRows}>
-                                    {statusItems.map((item) => (
-                                        <Link
-                                            key={item.label}
-                                            to={item.to}
-                                            data-reveal
-                                            className={styles.statusRow}
+                                {dashboardError ? (
+                                    <div
+                                        className={styles.statusError}
+                                        role="alert"
+                                    >
+                                        <p>관리 현황을 불러오지 못했어요.</p>
+                                        <button
+                                            type="button"
+                                            className={styles.statusRetry}
+                                            onClick={loadDashboard}
                                         >
-                                            <span
-                                                className={styles.statusLabel}
+                                            다시 시도
+                                        </button>
+                                    </div>
+                                ) : isDashboardLoading ? (
+                                    <p
+                                        className={styles.statusLoading}
+                                        aria-live="polite"
+                                    >
+                                        관리 현황을 불러오고 있어요.
+                                    </p>
+                                ) : (
+                                    <div className={styles.infoRows}>
+                                        {statusItems.map((item) => (
+                                            <Link
+                                                key={item.label}
+                                                to={item.to}
+                                                data-reveal
+                                                className={styles.statusRow}
                                             >
-                                                {item.label}
-                                            </span>
-                                            <span
-                                                className={styles.statusRight}
-                                            >
-                                                <strong
-                                                    className={
-                                                        item.warn
-                                                            ? styles.statusValueWarn
-                                                            : styles.statusValue
-                                                    }
-                                                >
-                                                    {item.value}
-                                                </strong>
                                                 <span
-                                                    className={
-                                                        styles.statusLink
-                                                    }
+                                                    className={styles.statusLabel}
                                                 >
-                                                    {item.linkText} →
+                                                    {item.label}
+                                                    {item.note && (
+                                                        <small
+                                                            className={
+                                                                styles.statusNote
+                                                            }
+                                                        >
+                                                            {item.note}
+                                                        </small>
+                                                    )}
                                                 </span>
-                                            </span>
-                                        </Link>
-                                    ))}
-                                </div>
+                                                <span
+                                                    className={styles.statusRight}
+                                                >
+                                                    <strong
+                                                        className={
+                                                            item.warn
+                                                                ? styles.statusValueWarn
+                                                                : styles.statusValue
+                                                        }
+                                                    >
+                                                        {item.value}
+                                                    </strong>
+                                                    <span
+                                                        className={
+                                                            styles.statusLink
+                                                        }
+                                                    >
+                                                        {item.linkText} →
+                                                    </span>
+                                                </span>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
                             </section>
                         </div>
 
@@ -329,6 +390,7 @@ const AdminProfile = () => {
                     </div>
                 </div>
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };

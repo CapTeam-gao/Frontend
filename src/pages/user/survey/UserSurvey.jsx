@@ -527,6 +527,7 @@ const UserSurvey = () => {
     return (
         <div className={styles.page}>
             <main className={styles.body}>
+                <h1 className={styles.visuallyHidden}>캡스톤 팀 매칭 설문</h1>
                 <section className={styles.surveyNav}>
                     <div className={styles.navTop}>
                         <div className={styles.navBrand}>
@@ -645,8 +646,8 @@ const UserSurvey = () => {
                                 className={styles.formSection}
                             >
                                 <div className={styles.sectionTitleArea}>
-                                    <h3>사용 가능한 기술 스택</h3>
-                                    <p>
+                                    <h3 id="survey-stack-title">사용 가능한 기술 스택</h3>
+                                    <p id="survey-stack-description">
                                         사용할 수 있는 기술을 쉼표로 구분해서
                                         작성해주세요.
                                     </p>
@@ -654,6 +655,8 @@ const UserSurvey = () => {
 
                                 <textarea
                                     className={styles.stackTextarea}
+                                    aria-labelledby="survey-stack-title"
+                                    aria-describedby="survey-stack-description"
                                     value={stackText}
                                     placeholder="예: React, JavaScript, Spring, MySQL 또는 React/JavaScript/MySQL"
                                     onChange={(e) =>
@@ -667,8 +670,8 @@ const UserSurvey = () => {
                                 className={styles.formSection}
                             >
                                 <div className={styles.sectionTitleArea}>
-                                    <h3>구현 경험</h3>
-                                    <p>
+                                    <h3 id="survey-experience-title">구현 경험</h3>
+                                    <p id="survey-experience-description">
                                         구현한 기능과 사용한 기술, 맡았던 로직을
                                         한 줄로 정리해주세요.
                                     </p>
@@ -681,7 +684,7 @@ const UserSurvey = () => {
                                             className={styles.dynamicItem}
                                         >
                                             <div className={styles.itemHeader}>
-                                                <strong>
+                                                    <strong id={`survey-experience-${experience.id}-title`}>
                                                     경험 {index + 1}
                                                 </strong>
                                                 {experiences.length > 1 && (
@@ -699,6 +702,8 @@ const UserSurvey = () => {
                                             </div>
                                             <textarea
                                                 value={experience.value}
+                                                aria-labelledby={`survey-experience-${experience.id}-title`}
+                                                aria-describedby="survey-experience-description"
                                                 placeholder="예: 로그인 기능 구현 - axios를 이용한 API 호출 및 zustand를 사용한 토큰 전역 관리"
                                                 onChange={(e) =>
                                                     updateExperience(
@@ -723,8 +728,8 @@ const UserSurvey = () => {
                             <div className={styles.preferenceRow}>
                                 <div className={styles.formSection}>
                                     <div className={styles.sectionTitleArea}>
-                                        <h3>선호 팀원</h3>
-                                        <p>
+                                        <h3 id="preferred-teammate-title">선호 팀원</h3>
+                                        <p id="preferred-teammate-description">
                                             함께 팀을 하고 싶은 학생을 검색해서
                                             최대 3명까지 선택할 수 있습니다.
                                         </p>
@@ -761,6 +766,8 @@ const UserSurvey = () => {
                                             <input
                                                 type="text"
                                                 className={styles.preferredSearchInput}
+                                                aria-labelledby="preferred-teammate-title"
+                                                aria-describedby="preferred-teammate-description"
                                                 value={preferredKeyword}
                                                 placeholder="이름 또는 학번으로 검색"
                                                 onChange={(e) =>
@@ -846,7 +853,8 @@ const UserSurvey = () => {
                                         <p>팀장 역할을 맡고 싶은지 선택해주세요.</p>
                                     </div>
 
-                                    <div className={styles.binaryGroup}>
+                                    <div className={styles.binaryGroup} role="group" aria-labelledby="leader-preference-title">
+                                        <span id="leader-preference-title" className={styles.visuallyHidden}>팀장 선호 여부</span>
                                         {["O", "X"].map((value) => (
                                             <button
                                                 key={value}
@@ -861,7 +869,8 @@ const UserSurvey = () => {
                                                 onClick={() =>
                                                     setLeaderPreference(value)
                                                 }
-                                                    aria-pressed={leaderPreference === value}
+                                                aria-label={value === "O" ? "팀장 역할을 맡고 싶어요" : "팀장 역할을 맡고 싶지 않아요"}
+                                                aria-pressed={leaderPreference === value}
                                             >
                                                 {value}
                                             </button>
@@ -945,7 +954,7 @@ const UserSurvey = () => {
                             ref={submitAreaRef}
                             className={styles.submitArea}
                         >
-                            <p className={error ? styles.errorText : ""}>
+                            <p className={error ? styles.errorText : ""} role={error ? "alert" : undefined}>
                                 {error ||
                                     (isSurveyReady
                                         ? "필수 항목이 모두 입력되었습니다. 제출 전 내용을 한 번만 확인해주세요."

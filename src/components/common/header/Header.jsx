@@ -309,8 +309,12 @@ const Header = ({ fluid = false }) => {
             <div
                 className={`${styles.inner} ${fluid ? styles.innerFluid : ""}`}
             >
-                <Link to={logoPath} className={styles.logoLink}>
-                    <img className={styles.logo} src={Logo} alt="로고" />
+                <Link
+                    to={logoPath}
+                    className={styles.logoLink}
+                    aria-label="CapTeam 홈"
+                >
+                    <img className={styles.logo} src={Logo} alt="" aria-hidden="true" />
                 </Link>
 
                 <nav className={styles.nav}>

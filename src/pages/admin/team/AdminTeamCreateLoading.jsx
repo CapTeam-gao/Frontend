@@ -14,7 +14,9 @@ import {
     wait,
 } from "../../../utils/matchingJobLock";
 import useInView from "../../../hooks/useInView";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import styles from "./AdminTeamCreateLoading.module.css";
+import runningIcon from "../../../assets/images/adminTeamLoadingV3.webp";
 
 const STEPS = [
     {
@@ -121,6 +123,7 @@ const AdminTeamCreateLoading = () => {
     const baseVersionId = location.state?.baseVersionId || null;
     const [error, setError] = useState("");
     const [progressStep, setProgressStep] = useState(0);
+    const [progressPercent, setProgressPercent] = useState(null);
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
     const hasPartialTeams = (job) =>
         Array.isArray(job?.partialTeams) && job.partialTeams.length > 0;
@@ -172,6 +175,14 @@ const AdminTeamCreateLoading = () => {
 
         const createTeamRecommendation = async () => {
             try {
+                const updateJobProgress = (job) => {
+                    const value = job?.progressPercent;
+                    setProgressPercent(
+                        Number.isFinite(value)
+                            ? Math.min(100, Math.max(0, value))
+                            : null
+                    );
+                };
                 const activeLock = getActiveMatchingJobLock();
                 const shouldStartNewJob = Boolean(regenerationPrompt);
                 let currentJob;
@@ -215,6 +226,7 @@ const AdminTeamCreateLoading = () => {
                     grade,
                     status: currentJob?.status,
                 });
+                updateJobProgress(currentJob);
                 await advanceProgressStep(currentJob?.progressStep);
                 if (ignore) return;
 
@@ -248,6 +260,7 @@ const AdminTeamCreateLoading = () => {
                         grade,
                         status: currentJob?.status,
                     });
+                    updateJobProgress(currentJob);
                     await advanceProgressStep(currentJob?.progressStep);
                     if (ignore) return;
 
@@ -398,6 +411,7 @@ const AdminTeamCreateLoading = () => {
                 ) : (
                     <section className={styles.running}>
                         <div className={styles.runningMain}>
+                            <img className={styles.runningIcon} src={runningIcon} alt="" />
                             <p data-reveal className={styles.runningEyebrow}>
                                 {gradeLabels[grade]} ·{" "}
                                 {regenerationPrompt
@@ -405,31 +419,44 @@ const AdminTeamCreateLoading = () => {
                                     : "AI 자동 배정"}
                             </p>
                             <h1 data-reveal className={styles.title}>
-                                팀을 만들고 있어요
+                                {regenerationPrompt
+                                    ? "팀을 다시 만들고 있어요"
+                                    : "팀을 만들고 있어요"}
                             </h1>
-                            <p data-reveal className={styles.sub}>
-                                설문 데이터를 분석하는 중이에요. 보통 1~2분 정도
-                                걸려요.
-                            </p>
-
-                            <div data-reveal className={styles.flowBar} />
-
                             {regenerationPrompt && (
                                 <div data-reveal className={styles.promptBlock}>
-                                    <p className={styles.promptLabel}>
-                                        적용한 조건
-                                    </p>
-                                    <p className={styles.promptText}>
-                                        {regenerationPrompt}
-                                    </p>
+                                    <p className={styles.promptLabel}>적용한 조건</p>
+                                    <p className={styles.promptText}>{regenerationPrompt}</p>
                                 </div>
                             )}
-
-                            <p data-reveal className={styles.runNote}>
-                                창을 닫거나 뒤로 가면 생성이 중단될 수 있어요.
-                                <br />
-                                첫 팀이 만들어지면 바로 검토 화면으로 넘어가요.
+                            <p data-reveal className={styles.sub}>
+                                {regenerationPrompt
+                                    ? "이 조건을 반영해 팀을 다시 만들고 있어요. 보통 1~2분 정도 걸려요."
+                                    : "설문 데이터를 분석하고 있어요. 보통 1~2분 정도 걸려요."}
                             </p>
+
+                            <div className={styles.progressMeta}>
+                                <span>
+                                    {progressPercent === null
+                                        ? "AI가 진행률을 계산하고 있어요"
+                                        : "팀 생성 진행률"}
+                                </span>
+                                {progressPercent !== null && <strong>{progressPercent}%</strong>}
+                            </div>
+                            <div
+                                className={styles.progressTrack}
+                                role="progressbar"
+                                aria-label="팀 생성 진행률"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                aria-valuenow={progressPercent ?? undefined}
+                                aria-valuetext={progressPercent === null ? "진행률 계산 중" : `${progressPercent}%`}
+                            >
+                                <span
+                                    className={progressPercent === null ? styles.progressIndeterminate : styles.progressFill}
+                                    style={progressPercent === null ? undefined : { width: `${progressPercent}%` }}
+                                />
+                            </div>
                         </div>
 
                         <ol className={styles.steps}>
@@ -449,7 +476,7 @@ const AdminTeamCreateLoading = () => {
                                             ? "✓"
                                             : index + 1}
                                     </span>
-                                    <span>
+                                    <span className={styles.stepCopy}>
                                         <span className={styles.stepTitle}>
                                             {step.title}
                                         </span>
@@ -463,6 +490,7 @@ const AdminTeamCreateLoading = () => {
                     </section>
                 )}
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };

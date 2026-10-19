@@ -5,10 +5,12 @@ import styles from "./UserNoticeList.module.css";
 import NoticeItem from "../../../components/common/notice/NoticeItem";
 import Pagination from "../../../components/common/pagination/Pagination";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestNoticeList } from "../../../api/noticeApi";
+import noticeIcon from "../../../assets/images/dashboardNoticeIcon.webp";
 
 const NOTICE_PER_PAGE = 6;
 
@@ -80,13 +82,19 @@ const UserNoticeList = () => {
 
             <main className={styles.body}>
                 <section className={styles.boardHead}>
-                    <div className={styles.titleLine}>
-                        <h1 className={styles.title}>공지</h1>
-                        {!isLoading && (
-                            <span className={styles.totalCount}>
-                                전체 {notices.length}건
-                            </span>
-                        )}
+                    <div className={styles.titleWrap}>
+                        <img className={styles.titleIcon} src={noticeIcon} alt="" aria-hidden="true" />
+                        <div>
+                            <div className={styles.titleLine}>
+                                <h1 className={styles.title}>공지사항</h1>
+                                {!isLoading && (
+                                    <span className={styles.totalCount}>
+                                        전체 {notices.length}건
+                                    </span>
+                                )}
+                            </div>
+                            <p className={styles.lead}>팀 배정, 발표, 일지 일정을 여기에서 확인해요</p>
+                        </div>
                     </div>
                     {!isLoading && importantCount > 0 && (
                         <p className={styles.importantSummary}>
@@ -105,10 +113,11 @@ const UserNoticeList = () => {
                         description={error}
                     />
                 ) : notices.length === 0 ? (
-                    <EmptyState
-                        title="아직 올라온 공지가 없어요"
-                        description="새 소식이 등록되면 여기에서 바로 확인할 수 있어요."
-                    />
+                    <div className={styles.emptyState}>
+                        <img src={noticeIcon} alt="" aria-hidden="true" />
+                        <h2>아직 등록된 공지가 없어요</h2>
+                        <p>새 공지가 올라오면 여기에 보여요.</p>
+                    </div>
                 ) : (
                     <>
                         <section className={styles.board}>
@@ -140,6 +149,7 @@ const UserNoticeList = () => {
                     </>
                 )}
             </main>
+            <AppFooter />
         </div>
     );
 };

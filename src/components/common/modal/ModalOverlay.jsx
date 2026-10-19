@@ -15,6 +15,8 @@ const ModalOverlay = ({
 }) => {
     const [isClosing, setIsClosing] = useState(false);
     const closeTimerRef = useRef(null);
+    const panelRef = useRef(null);
+    const previousFocusRef = useRef(null);
 
     useEffect(() => {
         return () => clearTimeout(closeTimerRef.current);
@@ -28,17 +30,66 @@ const ModalOverlay = ({
     }, [onClose]);
 
     useEffect(() => {
-        const closeOnEscape = (event) => {
-            if (event.key === "Escape") handleClose();
+        previousFocusRef.current = document.activeElement;
+        const panel = panelRef.current;
+        const focusableSelector =
+            'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+        const getFocusableElements = () =>
+            Array.from(panel?.querySelectorAll(focusableSelector) || []).filter(
+                (element) =>
+                    !element.closest('[aria-hidden="true"]') &&
+                    getComputedStyle(element).visibility !== "hidden" &&
+                    element.getClientRects().length > 0
+            );
+
+        (getFocusableElements()[0] || panel)?.focus();
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                handleClose();
+                return;
+            }
+
+            if (event.key !== "Tab") return;
+
+            const focusableElements = getFocusableElements();
+            if (focusableElements.length === 0) {
+                event.preventDefault();
+                panel?.focus();
+                return;
+            }
+
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            } else if (
+                !event.shiftKey &&
+                document.activeElement === lastElement
+            ) {
+                event.preventDefault();
+                firstElement.focus();
+            }
         };
 
-        document.addEventListener("keydown", closeOnEscape);
+        document.addEventListener("keydown", handleKeyDown);
         const previousOverflow = document.body.style.overflow;
+        const previousHtmlOverflow = document.documentElement.style.overflow;
+        const previousScrollbarGutter = document.documentElement.style.scrollbarGutter;
         document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+        document.documentElement.style.scrollbarGutter = "stable";
 
         return () => {
-            document.removeEventListener("keydown", closeOnEscape);
+            document.removeEventListener("keydown", handleKeyDown);
             document.body.style.overflow = previousOverflow;
+            document.documentElement.style.overflow = previousHtmlOverflow;
+            document.documentElement.style.scrollbarGutter = previousScrollbarGutter;
+            if (previousFocusRef.current instanceof HTMLElement) {
+                previousFocusRef.current.focus();
+            }
         };
     }, [handleClose]);
 
@@ -55,10 +106,12 @@ const ModalOverlay = ({
                 onClick={handleClose}
             >
                 <section
+                    ref={panelRef}
                     className={`${modalClassName} ${styles.panel} ${isClosing ? styles.panelClosing : ""}`}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby={ariaLabelledby}
+                    tabIndex={-1}
                     onClick={(event) => event.stopPropagation()}
                 >
                     {children}

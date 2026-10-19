@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import authStore from "../../../store/authStore";
 import { requestMySurvey } from "../../../api/surveyApi";
 import { requestMyTeam } from "../../../api/teamApi";
@@ -457,6 +458,7 @@ const UserProfile = () => {
                     </div>
                 </div>
             </main>
+            <AppFooter />
         </div>
     );
 };

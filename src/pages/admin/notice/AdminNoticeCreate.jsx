@@ -5,6 +5,7 @@ import MDEditor from "@uiw/react-md-editor";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import NoticeForm from "../../../components/common/notice/NoticeForm";
 import styles from "./AdminNoticeCreate.module.css";
 import { requestCreateNotice } from "../../../api/noticeApi";
@@ -48,6 +49,7 @@ const AdminNoticeCreate = () => {
                     />
                 </div>
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };

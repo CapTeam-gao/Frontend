@@ -52,7 +52,9 @@ function App() {
 
     useAuth();
 
-    if (authStatus === "checking") {
+    const isPublicLanding = window.location.pathname === "/";
+
+    if (authStatus === "checking" && !isPublicLanding) {
         return (
             <main
                 style={{

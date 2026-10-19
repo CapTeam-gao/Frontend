@@ -1,7 +1,8 @@
-// Design/team-manage.html 반영. 카드 격자 → 세로 리스트.
+// Design/team-manage-v3.html의 팀 카드 그리드와 정보 위계를 반영한다.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import AdminTeamDetailModal from "../../../components/admin/team/AdminTeamDetailModal";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
@@ -10,19 +11,21 @@ import {
     requestAdminTeamDetail,
     requestAdminTeamList,
 } from "../../../api/teamApi";
-import { gradeLabels } from "../../../constants/team";
+import { gradeLabels, roleLabels, summaryRoleOrder } from "../../../constants/team";
 import {
-    getRoleCountSummary,
     getTeamDisplayName,
     hasProjectInfo,
 } from "../../../utils/teamRecommendation";
 import styles from "./AdminTeamManage.module.css";
+import teamManageTitleImage from "../../../assets/images/adminTeamManageTitleV3.webp";
 
 const GRADE_FILTERS = [
     { key: "all", label: "전체 팀" },
     { key: "GRADE_2", label: "2학년" },
     { key: "GRADE_3", label: "3학년" },
 ];
+
+const ROLE_COLORS = ["#0e9f62", "#3cbf83", "#86d9b0", "#bfe9d2", "#d5f3e1"];
 
 const ListSkeleton = () => (
     <div className={styles.list}>
@@ -152,12 +155,18 @@ const AdminTeamManage = () => {
             <main className={styles.body}>
                 <section className={styles.pageHead}>
                     <div className={styles.titleBlock}>
-                        <h1 className={styles.headline}>팀 관리</h1>
-                        {!isLoading && teams.length > 0 && (
-                            <p className={styles.teamContext}>
-                                현재 운영 중인 팀 {teams.length}개
-                            </p>
-                        )}
+                        <img className={styles.titleImage} src={teamManageTitleImage} alt="" />
+                        <div>
+                            <div className={styles.titleLine}>
+                                <h1 className={styles.headline}>팀 관리</h1>
+                                {!isLoading && teams.length > 0 && (
+                                    <span className={styles.teamContext}>
+                                        현재 운영 중인 팀 {teams.length}개
+                                    </span>
+                                )}
+                            </div>
+                            <p className={styles.lead}>팀별 기획서와 팀원 구성을 확인해요</p>
+                        </div>
                     </div>
 
                     {!isLoading && teams.length > 0 && (
@@ -165,6 +174,9 @@ const AdminTeamManage = () => {
                             <p>기획서 작성</p>
                             <strong>{planWrittenCount}</strong>
                             <span>/ {teams.length}팀</span>
+                            <div className={styles.planTrack} aria-label={`기획서 ${teams.length ? Math.round((planWrittenCount / teams.length) * 100) : 0}% 작성 완료`}>
+                                <i style={{ width: `${teams.length ? (planWrittenCount / teams.length) * 100 : 0}%` }} />
+                            </div>
                         </div>
                     )}
                 </section>
@@ -241,75 +253,96 @@ const AdminTeamManage = () => {
                         }
                     />
                 ) : (
+                    <>
+                    <div className={styles.listMeta}>
+                        <p><strong>{filteredTeams.length}</strong>팀</p>
+                    </div>
                     <div className={styles.list} ref={listRef}>
                         {filteredTeams.map((team) => {
                             const projectWritten = hasProjectInfo(team);
-                            const memberCount = team.members?.length ?? 0;
+                            const members = team.members || [];
+                            const memberCount = members.length;
+                            const roleCounts = team.roleCount || members.reduce((counts, member) => {
+                                if (member.studentRole) {
+                                    counts[member.studentRole] = (counts[member.studentRole] || 0) + 1;
+                                }
+                                return counts;
+                            }, {});
+                            const roles = summaryRoleOrder
+                                .filter((role) => roleCounts[role])
+                                .map((role, index) => ({
+                                    role,
+                                    count: roleCounts[role],
+                                    color: ROLE_COLORS[index % ROLE_COLORS.length],
+                                }));
+                            const roleSummary = roles
+                                .map(({ role, count }) => `${roleLabels[role] || role} ${count}`)
+                                .join(" · ");
+                            const teamLeader = members.find((member) => member.leaderRole === "LEADER");
+                            const otherMemberNames = members
+                                .filter((member) => member !== teamLeader && member.name)
+                                .map((member) => member.name)
+                                .join(" · ");
 
                             return (
                                 <button
                                     key={team.teamId}
                                     type="button"
                                     data-reveal
-                                    className={styles.row}
+                                    className={`${styles.row} ${styles.teamCard}`}
                                     onClick={() => handleOpenTeam(team.teamId)}
                                 >
-                                    <span className={styles.rowMain}>
-                                        <span className={styles.rowTitleLine}>
-                                            <span className={styles.rowTitle}>
-                                                {getTeamDisplayName(
-                                                    team,
-                                                    projectWritten
-                                                )}
-                                            </span>
-                                            <span
-                                                className={styles.gradeBadge}
-                                            >
-                                                {gradeLabels[team.grade] ||
-                                                    team.grade}
-                                            </span>
-                                            <span
-                                                className={
-                                                    projectWritten
-                                                        ? styles.planDone
-                                                        : styles.planPending
-                                                }
-                                            >
-                                                {projectWritten
-                                                    ? "기획서 작성 완료"
-                                                    : "기획서 작성 전"}
-                                            </span>
+                                    <span className={styles.cardTop}>
+                                        <span className={styles.gradeBadge}>
+                                            {gradeLabels[team.grade] || team.grade}
                                         </span>
-                                        <span className={styles.rowRoles}>
-                                            {getRoleCountSummary(
-                                                team.roleCount
-                                            )}
-                                        </span>
-                                        <span className={styles.rowMeta}>
-                                            {projectWritten
-                                                ? `${team.teamName} · 팀원 ${memberCount}명`
-                                                : `팀원 ${memberCount}명`}
+                                        <span className={projectWritten ? styles.planDone : styles.planPending}>
+                                            기획서 작성 {projectWritten ? "완료" : "전"}
                                         </span>
                                     </span>
-
-                                    <svg
-                                        className={styles.chevron}
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        aria-hidden="true"
-                                    >
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
+                                    <span className={styles.cardNameBlock}>
+                                        <span className={styles.rowTitle}>
+                                            {getTeamDisplayName(team, projectWritten)}
+                                        </span>
+                                        <span className={`${styles.rowMeta} ${!projectWritten ? styles.planMissing : ""}`}>
+                                            {projectWritten
+                                                ? `${team.teamName} · ${team.serviceName}`
+                                                : "기획서를 아직 작성하지 않았어요"}
+                                        </span>
+                                    </span>
+                                    <span className={styles.roleSummary}>
+                                        <span className={styles.roleBar} aria-label={`역할 구성: ${roleSummary || "정보 없음"}`}>
+                                            {roles.map(({ role, count, color }) => (
+                                                <i key={role} style={{ flex: count, backgroundColor: color }} />
+                                            ))}
+                                        </span>
+                                        <span className={styles.roleLabels}>
+                                            {roles.length > 0
+                                                ? roles.map(({ role, count, color }, index) => (
+                                                    <span className={styles.roleItem} key={role}>
+                                                        {index > 0 && <span aria-hidden="true">·</span>}
+                                                        <i style={{ backgroundColor: color }} />
+                                                        {roleLabels[role] || role} {count}
+                                                    </span>
+                                                ))
+                                                : <span>역할 정보 없음</span>}
+                                        </span>
+                                    </span>
+                                    <span className={styles.cardFooter}>
+                                        <span className={styles.memberSummary}>
+                                            {teamLeader && <span className={styles.leaderName}>{teamLeader.name}<b>팀장</b></span>}
+                                            {otherMemberNames && <span>{teamLeader ? " · " : ""}{otherMemberNames}</span>}
+                                            {memberCount > 0 && <span className={styles.memberCount}> · {memberCount}명</span>}
+                                        </span>
+                                        <svg className={styles.chevron} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                            <path d="m9 18 6-6-6-6" />
+                                        </svg>
+                                    </span>
                                 </button>
                             );
                         })}
                     </div>
+                    </>
                 )}
             </main>
 
@@ -321,6 +354,7 @@ const AdminTeamManage = () => {
                     onClose={handleCloseModal}
                 />
             )}
+            <AppFooter role="admin" />
         </div>
     );
 };

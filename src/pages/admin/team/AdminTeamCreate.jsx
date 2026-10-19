@@ -2,8 +2,9 @@
 // 흐름: 두 학년 모두 생성 완료 → 이 화면에 머물지 않고 팀 관리로 보낸다.
 //       선택 학년만 생성 완료 → 남은 학년으로 넘어가는 안내만 보여준다.
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
@@ -18,7 +19,11 @@ import {
     getActiveMatchingJobLock,
     gradeLabels,
 } from "../../../utils/matchingJobLock";
+import { isSurveyCompleted } from "../../../utils/survey";
 import styles from "./AdminTeamCreate.module.css";
+import teamCreateHeroIcon from "../../../assets/images/adminTeamCreateHeroV3.webp";
+import aiModeIcon from "../../../assets/images/adminTeamCreateAiV3.webp";
+import manualModeIcon from "../../../assets/images/adminTeamCreateManualV3.webp";
 
 const AI_CRITERIA = [
     {
@@ -185,14 +190,17 @@ const AdminTeamCreate = () => {
         (student) => student.grade === selectedGrade
     );
     const respondedCount = gradeStudents.filter(
-        (student) => student.surveyCompleted
+        (student) => isSurveyCompleted(student.surveyCompleted)
     ).length;
     const notRespondedCount = gradeStudents.length - respondedCount;
     const surveyPercent = gradeStudents.length
         ? Math.round((respondedCount / gradeStudents.length) * 100)
         : 0;
     // 전원이 설문을 마쳐야 AI 생성을 시작할 수 있다
-    const isAiBlocked = selectedMode === "AI_AUTO" && notRespondedCount > 0;
+    const isAiBlocked =
+        selectedMode === "AI_AUTO" &&
+        (gradeStudents.length === 0 || notRespondedCount > 0);
+    const surveyReady = gradeStudents.length > 0 && notRespondedCount === 0;
 
     const remainingGrade =
         selectedGrade === "GRADE_2" ? "GRADE_3" : "GRADE_2";
@@ -231,63 +239,84 @@ const AdminTeamCreate = () => {
                                 </p>
                             </div>
 
-                            {!isSelectedGradeCreated &&
-                                gradeStudents.length > 0 && (
-                                    <div
-                                        data-reveal
-                                        className={styles.statusPanel}
-                                    >
+                            {!isSelectedGradeCreated && (
+                                <div data-reveal className={styles.heroSide}>
+                                    <img src={teamCreateHeroIcon} alt="" />
+                                    <div className={styles.statusPanel}>
                                         <p className={styles.statusLabel}>
                                             {selectedGradeLabel} 설문 완료
                                         </p>
                                         <p className={styles.statusValue}>
                                             {respondedCount}{" "}
-                                            <span>
-                                                / {gradeStudents.length}명
-                                            </span>
+                                            <span>/ {gradeStudents.length}명</span>
+                                        </p>
+                                        <p
+                                            className={`${styles.statusState} ${surveyReady ? styles.statusReady : styles.statusPending}`}
+                                        >
+                                            <i aria-hidden="true" />
+                                            {surveyReady
+                                                ? "AI 생성 준비 완료"
+                                                : gradeStudents.length === 0
+                                                  ? "학생 등록 후 시작할 수 있어요"
+                                                  : `설문 미완료 ${notRespondedCount}명`}
                                         </p>
                                     </div>
-                                )}
+                                </div>
+                            )}
                         </section>
 
-                        <div className={styles.section}>
-                            <h2 data-reveal className={styles.sectionTitle}>
-                                어느 학년의 팀을 만들까요?
-                            </h2>
-                            <div data-reveal className={styles.segments}>
-                                {["GRADE_2", "GRADE_3"].map((grade) => (
-                                    <button
-                                        key={grade}
-                                        type="button"
-                                        className={`${styles.segment} ${
-                                            selectedGrade === grade
-                                                ? styles.segmentOn
-                                                : ""
-                                        }`}
-                                        onClick={() => handleGradeChange(grade)}
-                                        aria-pressed={selectedGrade === grade}
-                                    >
-                                        {gradeLabels[grade]}
-                                        <span
-                                            className={
-                                                isGradeTeamCreated(
-                                                    teamStatus,
-                                                    grade
-                                                )
-                                                    ? styles.segmentDone
-                                                    : styles.segmentPending
-                                            }
-                                        >
-                                            {isGradeTeamCreated(
-                                                teamStatus,
-                                                grade
-                                            )
-                                                ? "생성 완료"
-                                                : "생성 전"}
+                        <div className={styles.setupRow}>
+                            <section className={styles.section}>
+                                <span className={styles.stepLabel}>STEP 1</span>
+                                <h2 data-reveal className={styles.sectionTitle}>
+                                    어느 학년의 팀을 만들까요?
+                                </h2>
+                                <div data-reveal className={styles.segments}>
+                                    {["GRADE_2", "GRADE_3"].map((grade) => {
+                                        const created = isGradeTeamCreated(teamStatus, grade);
+                                        return (
+                                            <button
+                                                key={grade}
+                                                type="button"
+                                                className={`${styles.segment} ${selectedGrade === grade ? styles.segmentOn : ""}`}
+                                                onClick={() => handleGradeChange(grade)}
+                                                aria-pressed={selectedGrade === grade}
+                                            >
+                                                {gradeLabels[grade]}
+                                                <span className={created ? styles.segmentDone : styles.segmentPending}>
+                                                    <i aria-hidden="true" />
+                                                    {created ? "생성 완료" : "생성 전"}
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+
+                            {!isSelectedGradeCreated && (
+                                <section className={`${styles.section} ${styles.progressSection}`}>
+                                    <span className={styles.stepLabel}>응답 현황</span>
+                                    <div className={styles.progressHead}>
+                                        <span className={styles.progressLabel}>{selectedGradeLabel} 설문 응답</span>
+                                        <span className={styles.progressValue}>
+                                            <strong>{respondedCount}</strong> / {gradeStudents.length}명 · {surveyPercent}%
                                         </span>
-                                    </button>
-                                ))}
-                            </div>
+                                    </div>
+                                    <div className={styles.progressTrack} role="progressbar" aria-label={`${selectedGradeLabel} 설문 응답`} aria-valuemin="0" aria-valuemax={gradeStudents.length} aria-valuenow={respondedCount}>
+                                        <div className={styles.progressFill} style={{ width: `${surveyPercent}%` }} />
+                                    </div>
+                                    {notRespondedCount > 0 ? (
+                                        <p className={styles.progressWarning}>
+                                            설문 미완료 학생이 {notRespondedCount}명 있어요.
+                                            <Link to="/admin/student">학생 관리에서 보기 <span aria-hidden="true">→</span></Link>
+                                        </p>
+                                    ) : gradeStudents.length > 0 ? (
+                                        <p className={styles.progressComplete}>모든 학생이 설문을 마쳤어요.</p>
+                                    ) : (
+                                        <p className={styles.progressWarning}>등록된 학생이 없어요. <Link to="/admin/student">학생 관리에서 확인 <span aria-hidden="true">→</span></Link></p>
+                                    )}
+                                </section>
+                            )}
                         </div>
 
                         {isSelectedGradeCreated ? (
@@ -325,37 +354,8 @@ const AdminTeamCreate = () => {
                             </div>
                         ) : (
                             <>
-                                <div
-                                    data-reveal
-                                    className={styles.surveyProgress}
-                                >
-                                    <div className={styles.progressHead}>
-                                        <span className={styles.progressLabel}>
-                                            설문 응답
-                                        </span>
-                                        <span className={styles.progressValue}>
-                                            {respondedCount} /{" "}
-                                            {gradeStudents.length}명 ·{" "}
-                                            {surveyPercent}%
-                                        </span>
-                                    </div>
-                                    <div className={styles.progressTrack}>
-                                        <div
-                                            className={styles.progressFill}
-                                            style={{
-                                                width: `${surveyPercent}%`,
-                                            }}
-                                        />
-                                    </div>
-                                    {notRespondedCount > 0 && (
-                                        <p className={styles.progressWarning}>
-                                            설문 미완료 학생이{" "}
-                                            {notRespondedCount}명 있어요.
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className={styles.section}>
+                                <div className={`${styles.section} ${styles.modeSection}`}>
+                                    <span className={styles.stepLabel}>STEP 2</span>
                                     <h2
                                         data-reveal
                                         className={styles.sectionTitle}
@@ -369,11 +369,13 @@ const AdminTeamCreate = () => {
                                                 mode: "AI_AUTO",
                                                 title: "AI 자동 배정",
                                                 desc: "설문 데이터를 기반으로 AI가 팀 구성을 추천해요.",
+                                                icon: aiModeIcon,
                                             },
                                             {
                                                 mode: "MANUAL",
                                                 title: "직접 팀 구성",
                                                 desc: "AI 추천 없이 학생 명단에서 직접 팀을 짜요.",
+                                                icon: manualModeIcon,
                                             },
                                         ].map((option) => (
                                             <button
@@ -392,10 +394,8 @@ const AdminTeamCreate = () => {
                                                     selectedMode === option.mode
                                                 }
                                             >
-                                                <span
-                                                    className={styles.modeDot}
-                                                />
-                                                <span>
+                                                <img className={styles.modeIcon} src={option.icon} alt="" />
+                                                <span className={styles.modeCopy}>
                                                     <span
                                                         className={
                                                             styles.modeTitle
@@ -403,14 +403,11 @@ const AdminTeamCreate = () => {
                                                     >
                                                         {option.title}
                                                     </span>
-                                                    <span
-                                                        className={
-                                                            styles.modeDesc
-                                                        }
-                                                    >
+                                                    <span className={styles.modeDesc}>
                                                         {option.desc}
                                                     </span>
                                                 </span>
+                                                <span className={styles.modeRadio} aria-hidden="true" />
                                             </button>
                                         ))}
                                     </div>
@@ -428,10 +425,11 @@ const AdminTeamCreate = () => {
                                             >
                                                 {AI_CRITERIA.map(
                                                     (criterion) => (
-                                                        <div
+                                                            <div
                                                             key={
                                                                 criterion.index
                                                             }
+                                                                className={styles.criteriaItem}
                                                             data-reveal
                                                         >
                                                             <p
@@ -478,12 +476,26 @@ const AdminTeamCreate = () => {
                                     )}
                                 </div>
 
-                                <div className={styles.section}>
+                                <div className={`${styles.section} ${styles.executionRow}`}>
+                                    <div className={styles.executionCopy}>
                                     <p className={styles.createNote}>
                                         {selectedMode === "AI_AUTO"
                                             ? "생성에는 약 1~2분이 걸려요."
                                             : "AI 생성 없이 바로 팀 구성 화면으로 이동해요."}
                                     </p>
+                                    {isAiBlocked && (
+                                        <p className={styles.blockNote}>
+                                            {gradeStudents.length === 0
+                                                ? "학생 정보가 등록된 뒤 팀을 만들 수 있어요."
+                                                : "설문 미완료 학생이 있어 AI 생성은 아직 시작할 수 없어요."}
+                                        </p>
+                                    )}
+                                    {error && (
+                                        <p className={styles.blockNote}>
+                                            {error}
+                                        </p>
+                                    )}
+                                    </div>
                                     <button
                                         type="button"
                                         data-reveal
@@ -495,23 +507,13 @@ const AdminTeamCreate = () => {
                                             ? `${selectedGradeLabel} 팀 생성하기`
                                             : `${selectedGradeLabel} 팀 직접 구성하기`}
                                     </button>
-                                    {isAiBlocked && (
-                                        <p className={styles.blockNote}>
-                                            설문 미완료 학생이 있어 AI 생성은
-                                            아직 시작할 수 없어요.
-                                        </p>
-                                    )}
-                                    {error && (
-                                        <p className={styles.blockNote}>
-                                            {error}
-                                        </p>
-                                    )}
                                 </div>
                             </>
                         )}
                     </>
                 )}
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };

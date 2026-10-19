@@ -5,6 +5,7 @@ import MDEditor from "@uiw/react-md-editor";
 import styles from "../../user/notice/UserNoticeDetail.module.css";
 import adminStyles from "./AdminNoticeDetail.module.css";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import ModalOverlay from "../../../components/common/modal/ModalOverlay";
 import useInView from "../../../hooks/useInView";
@@ -245,9 +246,10 @@ const AdminNoticeDetail = () => {
                     onClose={() => setIsDeleteModalOpen(false)}
                     overlayClassName={adminStyles.modalOverlay}
                     modalClassName={adminStyles.modalBox}
+                    ariaLabelledby="admin-notice-delete-title"
                 >
                     <>
-                        <h2 className={adminStyles.modalTitle}>
+                        <h2 id="admin-notice-delete-title" className={adminStyles.modalTitle}>
                             이 공지를 삭제할까요?
                         </h2>
                         <p className={adminStyles.modalText}>
@@ -281,6 +283,7 @@ const AdminNoticeDetail = () => {
                     </>
                 </ModalOverlay>
             )}
+            <AppFooter role="admin" />
         </div>
     );
 };

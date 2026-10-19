@@ -18,10 +18,12 @@ import {
 import { formatCreatedAt, stripMarkdown, truncateText } from "../../../utils/format";
 import { gradeLabels } from "../../../constants/team";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
+import { isSurveyCompleted } from "../../../utils/survey";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
 import { useUnreadChatCountContext } from "../../../hooks/unreadChatCountContext";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import styles from "./AdminDashboard.module.css";
+import logoImage from "../../../assets/images/logo.png";
 
 import heroImage from "../../../assets/images/adminDashboardHeroV3.webp";
 import waitingHeroImage from "../../../assets/images/adminWaitingHeroV3.webp";
@@ -35,7 +37,7 @@ import grade3Icon from "../../../assets/images/adminGrade3Icon.webp";
 const countProgress = (students, grade) => {
     const gradeStudents = students.filter((student) => student.grade === grade);
     return {
-        responded: gradeStudents.filter((student) => student.surveyCompleted).length,
+        responded: gradeStudents.filter((student) => isSurveyCompleted(student.surveyCompleted)).length,
         total: gradeStudents.length,
     };
 };
@@ -255,13 +257,16 @@ const AdminDashboard = () => {
                 </>}
             </main>
             <footer className={styles.footer}>
-                <div><Link to="/admin/dashboard" className={styles.footerBrand}>CapTeam</Link><p>AI가 캡스톤 팀을 만들고,<br />팀이 끝까지 함께 갈 수 있도록 돕는 서비스</p></div>
+                <div><Link to="/admin/dashboard" className={styles.footerBrand}><img src={logoImage} alt="" aria-hidden="true" />CapTeam</Link><p>AI가 캡스톤 팀을 만들고,<br />팀이 끝까지 함께 갈 수 있도록 돕는 서비스</p></div>
                 <nav className={styles.footerLinks} aria-label="관리자 바로가기">
                     <div className={styles.footerGroup}><strong>팀 관리</strong><Link to="/admin/team-create">팀 생성</Link><Link to="/admin/student">학생 관리</Link></div>
                     <div className={styles.footerGroup}><strong>서비스 운영</strong><Link to="/admin/chat">채팅 관리</Link><Link to="/admin/log">캡스톤 일지</Link><Link to="/admin/notice">공지</Link></div>
                     <div className={styles.footerGroup}><strong>내 계정</strong><Link to="/admin/profile">내 프로필</Link></div>
                 </nav>
-                <small>© 2026 CapTeam. All rights reserved.</small>
+                <div className={styles.footerBottom}>
+                    <small>© 2026 CapTeam. All rights reserved.</small>
+                    <a href="#admin-dashboard-main" onClick={(event) => { event.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>맨 위로 ↑</a>
+                </div>
             </footer>
         </div>
     );

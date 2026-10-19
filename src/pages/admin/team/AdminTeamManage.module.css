@@ -274,6 +274,193 @@
     transform: translateX(2px);
 }
 
+/* Design/team-manage-v3.html: 데이터가 들어가는 팀 카드 3열 그리드 */
+.list {
+    margin-top: 28px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.list > * {
+    border: 1px solid var(--color-border);
+}
+
+.row.teamCard {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: 100%;
+    min-height: 278px;
+    padding: 24px 26px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 22px;
+    background: var(--color-bg);
+    text-align: left;
+    transition: border-color 0.18s ease, transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.row.teamCard:hover {
+    border-color: #bfe3cf;
+    background: var(--color-bg);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -18px rgba(14, 80, 50, 0.35);
+}
+
+.cardTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 22px;
+}
+
+.gradeBadge {
+    font-size: 14px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+}
+
+.planDone,
+.planPending {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: var(--font-weight-bold);
+}
+
+.planDone {
+    color: var(--color-primary-text);
+}
+
+.planPending {
+    color: var(--color-text-muted);
+}
+
+.planDone::before,
+.planPending::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+}
+
+.cardNameBlock {
+    display: block;
+    min-width: 0;
+    margin-top: 22px;
+}
+
+.rowTitle {
+    display: block;
+    overflow: hidden;
+    font-size: 26px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.row.teamCard:hover .rowTitle,
+.row.teamCard:hover .chevron {
+    color: var(--color-primary-text);
+}
+
+.rowMeta {
+    display: block;
+    overflow: hidden;
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rowMeta.planMissing {
+    color: var(--color-text-muted);
+}
+
+.roleSummary {
+    display: block;
+    margin-top: 22px;
+}
+
+.roleBar {
+    display: flex;
+    overflow: hidden;
+    height: 8px;
+    border-radius: 999px;
+    background: #eef3f0;
+}
+
+.roleBar i {
+    display: block;
+    min-width: 0;
+    height: 100%;
+}
+
+.roleLabels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 7px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+}
+
+.roleItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.roleItem i {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+}
+
+.cardFooter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-border);
+}
+
+.memberSummary {
+    overflow: hidden;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leaderName {
+    color: var(--color-text-secondary);
+}
+
+.leaderName b {
+    margin-left: 4px;
+    font-size: 12px;
+    color: var(--color-primary-text);
+}
+
+.memberCount {
+    color: var(--color-text-muted);
+}
+
 .resetButton {
     height: 48px;
     padding: 0 20px;
@@ -325,5 +512,170 @@
 
     .rowTitle {
         font-size: 18px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 960px) {
+    .list {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .row.teamCard {
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border-radius: 18px;
+    }
+
+    .cardNameBlock {
+        margin-top: 16px;
+    }
+
+    .rowTitle {
+        font-size: 22px;
+    }
+
+    .roleSummary {
+        margin-top: 16px;
+    }
+
+    .memberSummary {
+        font-size: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .row.teamCard {
+        transition: none;
+    }
+
+    .row.teamCard:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.titleBlock {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 20px;
+}
+
+.titleImage {
+    width: 80px;
+    height: 80px;
+    flex: none;
+    object-fit: contain;
+}
+
+.titleLine {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.teamContext {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--color-text-muted);
+    font-size: 15px;
+    font-weight: var(--font-weight-semibold);
+}
+
+.lead {
+    margin-top: 6px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
+}
+
+.planProgress {
+    min-width: 240px;
+    padding-left: 0;
+}
+
+.planProgress p {
+    font-size: 15px;
+    font-weight: var(--font-weight-semibold);
+}
+
+.planProgress strong {
+    color: var(--color-text-primary);
+    font-size: 32px;
+    letter-spacing: -0.04em;
+}
+
+.planProgress span {
+    font-size: 16px;
+    font-weight: var(--font-weight-bold);
+}
+
+.planTrack {
+    grid-column: 1 / -1;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: #e8eeeb;
+}
+
+.planTrack i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--g500);
+}
+
+.listMeta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: 36px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 15px;
+}
+
+.listMeta strong {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-extrabold);
+}
+
+.list {
+    margin-top: 16px;
+}
+
+@media (max-width: 960px) {
+    .titleBlock {
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .titleImage {
+        width: 60px;
+        height: 60px;
+    }
+
+    .lead {
+        font-size: 15px;
+    }
+
+    .planProgress {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .listMeta {
+        margin-top: 24px;
     }
 }

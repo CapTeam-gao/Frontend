@@ -5,10 +5,12 @@ import styles from "./AdminNoticeList.module.css";
 import NoticeItem from "../../../components/common/notice/NoticeItem";
 import Pagination from "../../../components/common/pagination/Pagination";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { NoticeListSkeleton } from "../../user/notice/UserNoticeList";
 import { requestNoticeList } from "../../../api/noticeApi";
+import noticeIcon from "../../../assets/images/adminNoticeIcon.webp";
 
 const NOTICE_PER_PAGE = 6;
 
@@ -63,14 +65,18 @@ const AdminNoticeList = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div className={styles.titleGroup}>
-                        <div className={styles.titleLine}>
-                            <h1 className={styles.headline}>공지 관리</h1>
-                            {!isLoading && (
-                                <span className={styles.totalCount}>
-                                    전체 {notices.length}건
-                                </span>
-                            )}
+                    <div className={styles.titleWrap}>
+                        <img className={styles.titleIcon} src={noticeIcon} alt="" aria-hidden="true" />
+                        <div className={styles.titleGroup}>
+                            <div className={styles.titleLine}>
+                                <h1 className={styles.headline}>공지 관리</h1>
+                                {!isLoading && (
+                                    <span className={styles.totalCount}>
+                                        전체 {notices.length}건
+                                    </span>
+                                )}
+                            </div>
+                            <p className={styles.lead}>등록한 공지는 학생 홈과 공지 목록에 바로 보여요</p>
                         </div>
                     </div>
 
@@ -99,10 +105,11 @@ const AdminNoticeList = () => {
                         description={error}
                     />
                 ) : notices.length === 0 ? (
-                    <EmptyState
-                        title="아직 작성한 공지가 없어요"
-                        description="첫 공지를 작성하면 학생 화면에 바로 보여요."
-                    />
+                    <div className={styles.emptyState}>
+                        <img src={noticeIcon} alt="" aria-hidden="true" />
+                        <h2>아직 작성한 공지가 없어요</h2>
+                        <p>첫 공지를 작성하면 학생 화면에 바로 보여요.</p>
+                    </div>
                 ) : (
                     <>
                         <ul className={styles.list} ref={listRef}>
@@ -133,6 +140,7 @@ const AdminNoticeList = () => {
                     </>
                 )}
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };

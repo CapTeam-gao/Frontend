@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import styles from "./UserNoticeDetail.module.css";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
@@ -205,6 +206,7 @@ const UserNoticeDetail = () => {
                     )}
                 </div>
             </main>
+            <AppFooter />
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import TeamEditCard from "../../../components/admin/team/TeamEditCard";
 import {
     requestApplyTeamMatchingVersion,
@@ -24,6 +25,7 @@ import useInView from "../../../hooks/useInView";
 import ModalOverlay from "../../../components/common/modal/ModalOverlay";
 import { getAdminTeamCreationStatus } from "../../../utils/teamStatus";
 import { setStoredAdminTeamCreated } from "../../../utils/adminTeamStatusStorage";
+import teamEditTitleImage from "../../../assets/images/adminTeamEditTitleV3.webp";
 import {
     MATCHING_POLL_INTERVAL,
     WAITING_JOB_STATUSES,
@@ -454,9 +456,10 @@ const AdminTeamEdit = () => {
                             <p className={styles.eyebrow}>
                                 {gradeLabels[grade]} · AI 자동 배정
                             </p>
-                            <h1 className={styles.headline}>
-                                팀 구성을 검토해주세요
-                            </h1>
+                            <div className={styles.titleLine}>
+                                <img src={teamEditTitleImage} alt="" aria-hidden="true" />
+                                <h1 className={styles.headline}>팀 구성을 검토해주세요</h1>
+                            </div>
                             <p className={styles.subline}>
                                 학생을 클릭한 뒤 다른 팀의 학생을 클릭하면 두
                                 사람의 팀이 서로 바뀌어요.
@@ -575,11 +578,12 @@ const AdminTeamEdit = () => {
                     onClose={() => setIsRegenerateModalOpen(false)}
                     overlayClassName={styles.modalOverlay}
                     modalClassName={styles.regenerateModal}
+                    ariaLabelledby="team-regenerate-modal-title"
                 >
                     <>
                         <div className={styles.modalHeader}>
                             <div>
-                                <h2 className={styles.modalTitle}>
+                                <h2 id="team-regenerate-modal-title" className={styles.modalTitle}>
                                     팀 재생성 조건 입력
                                 </h2>
                                 <p className={styles.modalDescription}>
@@ -591,6 +595,7 @@ const AdminTeamEdit = () => {
                             <button
                                 type="button"
                                 className={styles.modalCloseButton}
+                                aria-label="모달 닫기"
                                 onClick={() => setIsRegenerateModalOpen(false)}
                             >
                                 ×
@@ -599,6 +604,7 @@ const AdminTeamEdit = () => {
 
                         <textarea
                             className={styles.promptTextarea}
+                            aria-label="팀 재생성 요청사항"
                             value={regenerationPrompt}
                             onChange={(event) =>
                                 setRegenerationPrompt(event.target.value)
@@ -636,15 +642,17 @@ const AdminTeamEdit = () => {
                     onClose={closeChangesModal}
                     overlayClassName={styles.modalOverlay}
                     modalClassName={styles.changesModal}
+                    ariaLabelledby="team-changes-modal-title"
                 >
                     <>
                         <div className={styles.modalHeader}>
-                            <h2 className={styles.modalTitle}>
+                            <h2 id="team-changes-modal-title" className={styles.modalTitle}>
                                 재생성 전·후 비교
                             </h2>
                             <button
                                 type="button"
                                 className={styles.modalCloseButton}
+                                aria-label="모달 닫기"
                                 onClick={closeChangesModal}
                             >
                                 ×
@@ -885,6 +893,7 @@ const AdminTeamEdit = () => {
                     </>
                 </ModalOverlay>
             )}
+            <AppFooter role="admin" />
         </div>
     );
 };

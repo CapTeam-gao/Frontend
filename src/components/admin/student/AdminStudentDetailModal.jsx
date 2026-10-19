@@ -127,7 +127,7 @@ const SurveyReliabilityCard = ({ student }) => {
                 </>
             ) : (
                 <p className={styles.reliabilityEmptyText}>
-                    응답 신뢰도 정보를 아직 조회할 수 없습니다.
+                    —
                 </p>
             )}
         </article>
@@ -138,7 +138,7 @@ const StudentRadarChart = ({ title, data }) => {
     const [chartReady, setChartReady] = useState(false);
     const hasData = data.every(
         (item) => item.score !== null && item.score !== undefined
-    );
+    ) && !data.every((item) => Number(item.score) === 0);
 
     useEffect(() => {
         // 모달 등장 모션 중에는 부모 너비가 아직 측정되지 않을 수 있어
@@ -222,6 +222,8 @@ const AdminStudentDetailModal = ({
     student,
     students = [],
     modalError,
+    detailLoading = false,
+    onRetry,
     onOpenStudent,
     onClose,
 }) => {
@@ -269,30 +271,30 @@ const AdminStudentDetailModal = ({
         >
                 <header className={styles.modalHeader}>
                     <div className={styles.meta}>
-                        <div className={styles.titleRow}>
-                            <h2 id="student-modal-title">{student.name}</h2>
-                            <span
-                                className={
-                                    !student.surveyCompleted ||
-                                    analysisDisplay.isFailed
-                                        ? styles.levelBadgeFailed
-                                        : styles.levelBadge
-                                }
-                            >
-                                {student.surveyCompleted
-                                    ? analysisDisplay.levelText
-                                    : "설문 미제출"}
-                            </span>
-                        </div>
-                        <p className={styles.metaLine}>
-                            {numberInfo.classText} · {student.userId}
-                        </p>
+                        {student.surveyCompleted ? (
+                            <>
+                                <p className={styles.drawerRole}>
+                                    <span className={student.studentRole ? styles.roleDot : styles.roleDotMuted} aria-hidden="true" />
+                                    {roleLabels[student.studentRole] || "희망 직군 미입력"}
+                                </p>
+                                <h2 id="student-modal-title">{student.name}</h2>
+                                <p className={styles.metaLine}>{numberInfo.classText} · {student.userId}</p>
+                            </>
+                        ) : (
+                            <>
+                                <div className={styles.titleRow}>
+                                    <h2 id="student-modal-title">{student.name}</h2>
+                                    <span className={styles.levelBadgeFailed}>설문 미제출</span>
+                                </div>
+                                <p className={styles.metaLine}>{numberInfo.classText} · {student.userId}</p>
+                            </>
+                        )}
                     </div>
 
                     <CloseButton />
                 </header>
 
-                {modalError && <p className={styles.errorText}>{modalError}</p>}
+                {modalError && <div className={styles.errorText} role="alert"><span>{modalError}</span><button type="button" onClick={onRetry}>다시 시도</button></div>}
 
                 {!student.surveyCompleted ? (
                     <div className={styles.emptySurveyMessage}>
@@ -315,21 +317,12 @@ const AdminStudentDetailModal = ({
                         </div>
                     </div>
                 ) : (
-                    <div className={styles.modalContent} ref={contentRef}>
+                    <div className={`${styles.modalContent} ${detailLoading ? styles.modalContentLoading : ""} ${modalError ? styles.modalContentError : ""}`} ref={contentRef}>
                         <div className={styles.infoColumn}>
-                            <section data-reveal className={styles.profileStrip}>
+                            <section data-reveal className={styles.facts}>
                                 <div>
-                                    <span>학년/반/번호</span>
-                                    <strong>{numberInfo.classText}</strong>
-                                </div>
-
-                                <div>
-                                    <span>희망 직군</span>
-                                    <strong>
-                                        {roleLabels[student.studentRole] ||
-                                            student.studentRole ||
-                                            "-"}
-                                    </strong>
+                                    <span>실력</span>
+                                    <strong>{levelLabels[student.studentLevel] || "—"}</strong>
                                 </div>
 
                                 <div>
@@ -358,49 +351,42 @@ const AdminStudentDetailModal = ({
                                             ? isLeader
                                                 ? "팀장"
                                                 : "팀원"
+                                            : student.wantsLeader == null
+                                            ? "—"
                                             : student.wantsLeader
                                             ? "O"
                                             : "X"}
                                     </strong>
                                 </div>
+
+                                <div>
+                                    <span>응답 신뢰도</span>
+                                    <strong>{detailLoading ? "불러오는 중" : student.responseReliability ? reliabilityLabels[student.responseReliability] || student.responseReliability : "—"}</strong>
+                                </div>
                             </section>
 
-                            <section data-reveal className={styles.trackSection}>
+                            {detailLoading && <p className={styles.detailLoading} role="status">상세 정보를 불러오고 있어요…</p>}
+
+                            <section data-reveal className={`${styles.trackSection} ${styles.detailSection}`}>
                                 <div className={styles.sectionHeader}>
                                     <h3>기술 스택 · 구현 경험</h3>
                                 </div>
 
-                                <div className={styles.chipRow}>
-                                    {(student.skill || []).length > 0 ? (
-                                        student.skill.map((skill) => (
-                                            <span
-                                                key={skill}
-                                                className={styles.chip}
-                                            >
-                                                {skill}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span className={styles.emptyInlineText}>
-                                            기술 스택 없음
-                                        </span>
-                                    )}
+                                <div>
+                                    <p className={styles.skillText}>
+                                        {(student.skill || []).length > 0 ? student.skill.join(" · ") : "기술 스택 없음"}
+                                    </p>
+                                    <ul className={styles.timelineList}>
+                                        {(student.experience || []).length > 0 ? (
+                                            student.experience.map((experience) => <li key={experience}>{experience}</li>)
+                                        ) : (
+                                            <li>구현 경험이 아직 없습니다.</li>
+                                        )}
+                                    </ul>
                                 </div>
-
-                                <ul className={styles.timelineList}>
-                                    {(student.experience || []).length > 0 ? (
-                                        student.experience.map((experience) => (
-                                            <li key={experience}>
-                                                {experience}
-                                            </li>
-                                        ))
-                                    ) : (
-                                        <li>구현 경험이 아직 없습니다.</li>
-                                    )}
-                                </ul>
                             </section>
 
-                            <section data-reveal className={styles.compactSection}>
+                            <section data-reveal className={`${styles.compactSection} ${styles.memberSection} ${styles.detailSection}`}>
                                 <h3>팀원 명단</h3>
 
                                 {isAssignedTeam ? (
@@ -456,7 +442,7 @@ const AdminStudentDetailModal = ({
                                 )}
                             </section>
 
-                            <section data-reveal className={styles.compactSection}>
+                            <section data-reveal className={`${styles.compactSection} ${styles.preferredSection} ${styles.detailSection}`}>
                                 <h3>선호 팀원</h3>
 
                                 <div className={styles.chipRow}>
@@ -483,7 +469,7 @@ const AdminStudentDetailModal = ({
                                 </div>
                             </section>
 
-                            <section data-reveal className={styles.analysisSection}>
+                            <section data-reveal className={`${styles.analysisSection} ${styles.detailSection}`}>
                                 <h3>학생 분석 결과</h3>
                                 <p
                                     className={

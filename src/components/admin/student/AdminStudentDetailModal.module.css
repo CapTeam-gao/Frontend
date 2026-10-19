@@ -83,6 +83,8 @@
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
 }
+.roleDot, .roleDotMuted { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--g600); }
+.roleDotMuted { background: #aab3bb; }
 
 .closeButton {
     display: grid;
@@ -429,28 +431,56 @@
     margin-top: 12px;
 }
 
+.detailLoading { margin-top: 28px; padding: 20px 0; color: var(--color-text-muted); }
+.errorText { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 32px 0; }
+.errorText button { flex: none; padding: 8px 14px; border: 1px solid var(--color-border); border-radius: 999px; background: #fff; color: var(--g700); font: inherit; font-weight: var(--font-weight-bold); }
+.modalContentLoading .trackSection, .modalContentLoading .compactSection, .modalContentLoading .analysisSection, .modalContentLoading .chartColumn { display: none; }
+.modalContentError .analysisSection, .modalContentError .compactSection, .modalContentError .chartColumn, .modalContentError .timelineList, .modalContentError .profileStrip > div:nth-child(n + 3) { display: none; }
+.modalContentError .profileStrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
 /* Design v3 학생 상세 모달 */
 .modalOverlay {
-    padding: 24px;
+    justify-content: flex-end;
+    padding: 0;
     background: rgba(25, 31, 40, 0.45);
 }
 
 .modal {
-    max-width: 1040px;
-    max-height: min(860px, calc(100dvh - 48px));
-    border-radius: 28px;
-    box-shadow: 0 30px 60px -20px rgba(25, 31, 40, 0.35);
+    width: min(880px, 100%);
+    max-width: 880px;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 24px 0 0 24px;
+    box-shadow: -20px 0 60px -24px rgba(25, 31, 40, 0.35);
+    animation: studentDrawerIn 300ms cubic-bezier(.2,.8,.2,1) both;
 }
 
+@keyframes studentDrawerIn { from { opacity: .7; transform: translateX(36px); } to { opacity: 1; transform: translateX(0); } }
+
 .modalHeader {
-    padding: 28px 40px 0;
+    flex: none;
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .modalContent {
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 40px 48px;
-    padding: 28px 40px 40px;
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 28px 32px 36px;
 }
+
+.profileStrip { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+.chartColumn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
+.chartCard + .chartCard, .reliabilityCard { margin-top: 0; }
+.reliabilityCard { grid-column: 1 / -1; }
+.infoColumn { display: contents; }
+.analysisSection { order: 2; }
+.chartColumn { order: 3; }
+.trackSection { order: 4; }
+.compactSection { order: 5; }
+.analysisSection, .trackSection, .compactSection, .chartColumn { margin-top: 28px; }
+.modalContent { display: flex; flex-direction: column; }
 
 .emptySurveyMessage {
     padding: 24px 40px 40px;
@@ -493,21 +523,10 @@
 
 /* ── 반응형 ───────────────────────────────────────── */
 
-@media (max-width: 1024px) {
-    .modalContent {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    .modalOverlay {
-        padding: 12px;
-    }
-
-    .modal {
-        max-height: calc(100dvh - 24px);
-        border-radius: 24px;
-    }
+@media (max-width: 960px) {
+    .modalOverlay { align-items: flex-end; }
+    .modal { width: 100%; max-width: none; height: 88dvh; max-height: 88dvh; border-radius: 24px 24px 0 0; box-shadow: 0 -18px 50px -24px rgba(25,31,40,.35); animation-name: studentSheetIn; }
+    @keyframes studentSheetIn { from { opacity: .7; transform: translateY(36px); } to { opacity: 1; transform: translateY(0); } }
 
     .modalHeader {
         padding: 20px;
@@ -533,4 +552,75 @@
     .profileStrip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    .chartColumn { grid-template-columns: minmax(0, 1fr); }
 }
+
+@media (prefers-reduced-motion: reduce) { .modal { animation: none; } }
+
+/* student-manage-v3.html 상세 서랍의 실제 폭·여백·섹션 순서를 적용 */
+.modalOverlay { background: rgba(25, 31, 40, .32); }
+.modal { width: min(880px, calc(100% - 120px)); max-width: 880px; }
+.modalHeader { padding: 44px 56px 32px; }
+.titleRow { gap: 0; }
+.titleRow h2 { margin-top: 14px; font-size: 40px; letter-spacing: -.03em; }
+.modalHeader .meta > h2 { margin-top: 14px; font-size: 40px; font-weight: var(--font-weight-extrabold); letter-spacing: -.03em; }
+.drawerRole { display: flex; align-items: center; gap: 0; color: var(--color-text-secondary); font-size: 14px; font-weight: var(--font-weight-bold); }
+.drawerRole .roleDot, .drawerRole .roleDotMuted { margin-right: 8px; }
+.levelBadge, .levelBadgeFailed { display: none; }
+.titleRow .levelBadgeFailed { display: inline-flex; margin-top: 18px; color: var(--color-danger); }
+.metaLine { margin-top: 0; }
+.modalContent { display: flex; flex-direction: column; gap: 0; padding: 0 56px 64px; }
+.infoColumn { display: contents; }
+.facts { display: grid; order: 1; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+.facts > div { min-width: 0; padding: 22px 0; }
+.facts > div + div { padding-left: 24px; border-left: 1px solid var(--color-border); }
+.facts span { display: block; color: var(--color-text-muted); font-size: 14px; }
+.facts strong, .facts .teamLinkButton { display: block; margin-top: 6px; font-size: 22px; font-weight: var(--font-weight-extrabold); }
+.facts > div:first-child strong, .facts > div:last-child strong { color: var(--g700); }
+.analysisSection, .chartColumn, .trackSection, .memberSection, .preferredSection { order: 2; }
+.analysisSection { order: 2; }
+.chartColumn { order: 3; }
+.trackSection { order: 4; }
+.memberSection { order: 5; }
+.preferredSection { order: 6; }
+.detailSection { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-border); }
+.detailSection > h3, .detailSection > .sectionHeader { padding-top: 3px; color: var(--color-text-muted); font-size: 14px; font-weight: var(--font-weight-bold); }
+.detailSection > .sectionHeader h3 { color: inherit; font-size: inherit; }
+.detailSection h3::before, .detailSection .sectionHeader h3::before { display: none; }
+.analysisSection p { margin: 0; padding-left: 20px; border-left: 3px solid var(--g500); font-size: 18px; line-height: 1.8; }
+.chartColumn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 40px 0; border-bottom: 1px solid var(--color-border); }
+.chartCard { min-width: 0; }
+.chartCard h3 { font-size: 15px; }
+.chartBox { max-width: 320px; height: 262px; margin: 4px auto 0; }
+.reliabilityCard { grid-column: 1 / -1; margin: 0; padding-top: 4px; }
+.skillText { margin-top: 0; font-size: 18px; font-weight: var(--font-weight-bold); }
+.timelineList { gap: 10px; margin-top: 16px; }
+.timelineList li { padding: 0 0 0 14px; font-size: 16px; line-height: 1.65; }
+.memberList { margin-top: 0; }
+.memberButton { padding: 10px 0; border-radius: 0; }
+.chipRow { margin-top: 0; }
+.chip { padding: 0; font-size: 18px; font-weight: var(--font-weight-bold); }
+.chip::before { display: none; }
+.emptyInlineText { color: var(--color-text-muted); }
+.modalContentError .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.modalContentError .facts > div:nth-child(n + 3) { display: none; }
+.errorText { margin: 0 56px 20px; padding: 12px 14px; border-radius: 10px; background: #fff4f2; color: var(--color-danger); }
+.errorText button { border-color: #e8c6bf; background: transparent; }
+.detailLoading { order: 2; padding: 18px 0; }
+@media (max-width: 960px) {
+    .modal { width: 100%; }
+    .modalHeader { padding: 28px 20px 20px; }
+    .titleRow h2 { margin-top: 10px; font-size: 30px; }
+    .modalHeader .meta > h2 { margin-top: 10px; font-size: 30px; }
+    .modalContent { padding: 0 20px 40px; }
+    .facts > div { padding: 18px 0; }
+    .facts > div + div { padding-left: 12px; }
+    .facts > div:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--color-border); }
+    .facts > div:nth-child(4) { border-top: 1px solid var(--color-border); }
+    .facts strong, .facts .teamLinkButton { font-size: 19px; }
+    .detailSection { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 28px 0; }
+    .analysisSection p { padding-left: 16px; font-size: 17px; }
+    .chartColumn { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .errorText { margin: 0 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .tile { animation: none; } }

@@ -248,14 +248,14 @@ const AdminTeamManualCreate = () => {
                     <div className={styles.summaryRow}>
                         <div className={styles.stat}>
                             <p className={styles.statLabel}>배정 완료</p>
-                            <p className={styles.statValue}>
+                            <p className={styles.statValue} aria-live="polite" aria-atomic="true">
                                 {assignedCount}{" "}
                                 <span>/ {students.length}명</span>
                             </p>
                         </div>
                         <div className={styles.stat}>
                             <p className={styles.statLabel}>만든 팀</p>
-                            <p className={styles.statValue}>
+                            <p className={styles.statValue} aria-live="polite" aria-atomic="true">
                                 {teams.length}
                                 <span>팀</span>
                             </p>
@@ -285,7 +285,7 @@ const AdminTeamManualCreate = () => {
                             최소 한 팀 이상 학생을 배정해야 완료할 수 있어요.
                         </p>
                     )}
-                    {error && <p className={styles.errorText}>{error}</p>}
+                    {error && <p className={styles.errorText} role="alert">{error}</p>}
                 </div>
 
                 {isLoading ? (
@@ -303,19 +303,19 @@ const AdminTeamManualCreate = () => {
                     </div>
                 ) : (
                     <div className={styles.board} ref={boardRef}>
-                        <aside className={styles.poolColumn}>
+                        <aside className={styles.poolColumn} aria-labelledby="unassigned-students-title">
                             <div className={styles.poolSticky}>
                                 <div className={styles.poolHeader}>
-                                    <h2 className={styles.poolTitle}>
+                                    <h2 id="unassigned-students-title" className={styles.poolTitle}>
                                         미배정 학생
                                     </h2>
-                                    <span className={styles.poolCount}>
+                                    <span className={styles.poolCount} aria-live="polite" aria-atomic="true">
                                         {unassignedStudents.length}명
                                     </span>
                                 </div>
 
                                 <p className={styles.poolHint}>
-                                    학생을 팀으로 끌어다 놓으면 바로 배정돼요.
+                                    학생을 끌어다 놓거나 각 팀의 검색창에서 추가할 수 있어요.
                                 </p>
 
                                 <div className={styles.poolList}>
@@ -386,6 +386,7 @@ const AdminTeamManualCreate = () => {
                                     const members = team.memberUserIds.map(
                                         (userId) => findStudent(userId)
                                     );
+                                    const roleSummary = getRoleSummary(members);
                                     const isFull =
                                         team.memberUserIds.length >=
                                         MAX_TEAM_SIZE;
@@ -396,6 +397,8 @@ const AdminTeamManualCreate = () => {
                                     return (
                                         <div
                                             key={team.id}
+                                            role="group"
+                                            aria-labelledby={`manual-team-title-${team.id}`}
                                             className={`${styles.team} ${
                                                 dragOverTeamId === team.id
                                                     ? isFull
@@ -429,7 +432,7 @@ const AdminTeamManualCreate = () => {
                                             }
                                         >
                                             <div className={styles.teamHead}>
-                                                <h3 className={styles.teamName}>
+                                                <h3 id={`manual-team-title-${team.id}`} className={styles.teamName}>
                                                     {index + 1}팀
                                                     <span
                                                         className={
@@ -443,8 +446,8 @@ const AdminTeamManualCreate = () => {
                                                                 .length
                                                         }
                                                         /{MAX_TEAM_SIZE}명
-                                                        {members.length > 0 &&
-                                                            ` · ${getRoleSummary(members)}`}
+                                                        {roleSummary &&
+                                                            ` · ${roleSummary}`}
                                                     </span>
                                                 </h3>
                                                 <button
@@ -452,6 +455,7 @@ const AdminTeamManualCreate = () => {
                                                     className={
                                                         styles.removeTeamButton
                                                     }
+                                                    aria-label={`${index + 1}팀 삭제`}
                                                     onClick={() =>
                                                         handleRemoveTeam(
                                                             team.id
@@ -463,7 +467,7 @@ const AdminTeamManualCreate = () => {
                                             </div>
 
                                             {members.length > 0 && (
-                                                <div className={styles.roleBar}>
+                                                <div className={styles.roleBar} aria-hidden="true">
                                                     {getRoleBarSegments(
                                                         members
                                                     ).map((segment) => (
@@ -493,6 +497,9 @@ const AdminTeamManualCreate = () => {
                                                         className={
                                                             styles.search
                                                         }
+                                                        aria-label={`${index + 1}팀에 추가할 학생 검색`}
+                                                        aria-expanded={openResultsTeamId === team.id}
+                                                        aria-controls={`manual-team-search-results-${team.id}`}
                                                         placeholder="이름, 학번, 역할로 검색해서 추가"
                                                         autoComplete="off"
                                                         value={
@@ -511,6 +518,9 @@ const AdminTeamManualCreate = () => {
                                                     {openResultsTeamId ===
                                                         team.id && (
                                                         <div
+                                                            id={`manual-team-search-results-${team.id}`}
+                                                            role="listbox"
+                                                            aria-label={`${index + 1}팀 학생 검색 결과`}
                                                             className={
                                                                 styles.searchResults
                                                             }
@@ -525,6 +535,8 @@ const AdminTeamManualCreate = () => {
                                                                                 student.userId
                                                                             }
                                                                             type="button"
+                                                                            role="option"
+                                                                            aria-selected="false"
                                                                             className={
                                                                                 styles.searchResult
                                                                             }
@@ -556,6 +568,7 @@ const AdminTeamManualCreate = () => {
                                                                 )
                                                             ) : (
                                                                 <p
+                                                                    role="status"
                                                                     className={
                                                                         styles.searchEmpty
                                                                     }
@@ -628,6 +641,7 @@ const AdminTeamManualCreate = () => {
                                                                         className={
                                                                             styles.textButton
                                                                         }
+                                                                        aria-label={`${member.name} 팀장 지정`}
                                                                         onClick={() =>
                                                                             handleSetLeader(
                                                                                 team.id,
@@ -644,6 +658,7 @@ const AdminTeamManualCreate = () => {
                                                                     className={
                                                                         styles.dangerTextButton
                                                                     }
+                                                                    aria-label={`${member.name} 팀에서 제외`}
                                                                     onClick={() =>
                                                                         handleRemoveMember(
                                                                             team.id,
@@ -681,9 +696,10 @@ const AdminTeamManualCreate = () => {
                     onClose={() => setIsConfirmModalOpen(false)}
                     overlayClassName={styles.modalOverlay}
                     modalClassName={styles.confirmModal}
+                    ariaLabelledby="manual-team-confirm-title"
                 >
                     <>
-                        <h2 className={styles.confirmTitle}>
+                        <h2 id="manual-team-confirm-title" className={styles.confirmTitle}>
                             배정되지 않은 학생이 있어요
                         </h2>
                         <p className={styles.confirmText}>

@@ -7,14 +7,15 @@ export const RatingRow = forwardRef(function RatingRow(
 ) {
     return (
         <li ref={ref} className={styles.questionItem}>
-            <p className={styles.questionText}>
+            <p id={`survey-question-${number}`} className={styles.questionText}>
                 <b>{number}.</b> {question.text}
             </p>
 
             <div className={styles.scaleArea}>
                 <div
                     className={styles.scaleGroup}
-                    aria-label={`${number}번 점수`}
+                    role="radiogroup"
+                    aria-labelledby={`survey-question-${number}`}
                 >
                     {[1, 2, 3, 4, 5].map((score) => (
                         <label key={score} className={styles.scaleOption}>

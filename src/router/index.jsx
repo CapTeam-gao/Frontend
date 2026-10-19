@@ -7,6 +7,7 @@ import authStore from "../store/authStore";
 import { isSurveyCompleted } from "../utils/survey";
 
 const Login = lazy(() => import("../pages/auth/Login"));
+const LandingPage = lazy(() => import("../pages/landing/LandingPage"));
 
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard/AdminDashboard"));
 const AdminTeamCreate = lazy(() => import("../pages/admin/team/AdminTeamCreate"));
@@ -86,7 +87,7 @@ const Router = () => {
         <Routes>
             <Route path="/login" element={<Login />} />
 
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<LandingPage />} />
 
             <Route
                 path="/admin/dashboard"

@@ -21,6 +21,7 @@ import { formatCreatedAt, stripMarkdown, truncateText } from "../../../utils/for
 import { useUnreadChatCountContext } from "../../../hooks/unreadChatCountContext";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import styles from "./UserDashboard.module.css";
+import logoImage from "../../../assets/images/logo.png";
 
 import heroImage from "../../../assets/images/dashboardHeroV3.webp";
 import waitingHeroImage from "../../../assets/images/dashboardWaitingHeroV3.webp";
@@ -269,7 +270,7 @@ const UserDashboard = () => {
                 </>}
             </main>
             <footer className={styles.footer}>
-                <div><Link className={styles.footerBrand} to="/user/dashboard">CapTeam</Link><p>AI가 캡스톤 팀을 만들고,<br />팀이 끝까지 함께 갈 수 있도록 돕는 서비스</p></div>
+                <div><Link className={styles.footerBrand} to="/user/dashboard"><img src={logoImage} alt="" aria-hidden="true" />CapTeam</Link><p>AI가 캡스톤 팀을 만들고,<br />팀이 끝까지 함께 갈 수 있도록 돕는 서비스</p></div>
                 <nav className={styles.footerLinks} aria-label="학생 바로가기">
                     <div className={styles.footerGroup}><strong>캡스톤 일지</strong><Link to="/user/log">일지 작성</Link><Link to="/user/log/result">지난 일지</Link></div>
                     <div className={styles.footerGroup}><strong>프로젝트</strong><Link to="/user/project">프로젝트 기획서</Link></div>
@@ -277,7 +278,10 @@ const UserDashboard = () => {
                     <div className={styles.footerGroup}><strong>공지</strong><Link to="/user/notice">공지 목록</Link></div>
                     <div className={styles.footerGroup}><strong>내 계정</strong><Link to="/user/profile">내 프로필</Link></div>
                 </nav>
-                <small>© 2026 CapTeam. All rights reserved.</small>
+                <div className={styles.footerBottom}>
+                    <small>© 2026 CapTeam. All rights reserved.</small>
+                    <a href="#dashboard-main" onClick={(event) => { event.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>맨 위로 ↑</a>
+                </div>
             </footer>
         </div>
     );

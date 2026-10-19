@@ -25,6 +25,13 @@
     color: var(--color-text-primary);
 }
 
+.page a:focus-visible,
+.page button:focus-visible,
+.search:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
 .pageHead {
     padding-top: 16px;
 }
@@ -391,6 +398,10 @@
     border-color: var(--color-primary);
 }
 
+.search:focus-visible {
+    border-color: var(--color-primary);
+}
+
 .searchResults {
     position: absolute;
     top: calc(100% + 4px);
@@ -603,5 +614,24 @@
 
     .summaryActions button {
         flex: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .backLink,
+    .outlineButton,
+    .primaryButton,
+    .poolItem,
+    .team,
+    .removeTeamButton,
+    .search,
+    .searchResult,
+    .textButton,
+    .dangerTextButton {
+        transition: none;
+    }
+
+    .primaryButton:active:not(:disabled) {
+        transform: none;
     }
 }

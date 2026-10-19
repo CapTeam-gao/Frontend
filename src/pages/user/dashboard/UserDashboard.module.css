@@ -139,15 +139,18 @@
 .skeletonSection { display: grid; gap: 16px; }
 .skeletonCards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-.footer { display: grid; grid-template-columns: 1fr 1.4fr; gap: 26px 50px; padding: 32px 0 32px; border-top: 1px solid var(--line); }
-.footerBrand { color: var(--ink); font-size: 21px; font-weight: 800; }
+.footer { display: grid; grid-template-columns: 1fr 1.4fr; gap: 26px 50px; padding: 32px 0 0; border-top: 1px solid var(--line); }
+.footerBrand { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size: 21px; font-weight: 800; }
+.footerBrand img { width: 26px; height: 26px; object-fit: contain; }
 .footer p { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .footerLinks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-content: start; gap: 24px; }
 .footerGroup { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 10px; }
 .footerGroup strong { color: var(--ink); font-size: 14px; font-weight: 700; }
 .footerGroup a { color: var(--sub); font-size: 14px; line-height: 1.4; transition: color .16s ease; }
 .footerGroup a:hover { color: var(--g700); }
-.footer small { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+.footerBottom { display: flex; grid-column: 1 / -1; align-items: center; gap: 16px; padding: 14px 0 18px; border-top: 1px solid var(--line); }
+.footerBottom small { color: var(--muted); font-size: 12px; }
+.footerBottom a { margin-left: auto; color: var(--g700); font-size: 13px; font-weight: 700; }
 
 @media (max-width: 960px) {
     .body, .footer { width: calc(100% - 40px); }

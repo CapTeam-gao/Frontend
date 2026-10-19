@@ -350,6 +350,117 @@
     transform: translateY(2px);
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.skeletonTile { min-height: 210px; padding: 22px 18px; border: 1px solid var(--color-border); border-radius: 18px; }
+
+.tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: 210px;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: #fff;
+    color: var(--color-text-primary);
+    font: inherit;
+    text-align: left;
+    transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.tile:hover {
+    transform: translateY(-3px);
+    border-color: #b9ddca;
+    background: #fbfefc;
+}
+
+.tileRole {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+}
+
+.tileRole i { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--g600); }
+.tileRole .roleDotMuted { background: #aab3bb; }
+.tileRole em { color: var(--g700); font-style: normal; }
+
+.tileNameLine { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-top: 18px; }
+.tileNameLine strong { font-size: 19px; font-weight: var(--font-weight-bold); }
+.tileNameLine > span { color: var(--color-text-muted); font-size: 13px; }
+.pendingBadge { color: var(--color-danger); font-size: 12px; font-style: normal; font-weight: var(--font-weight-bold); }
+.tileTeam { margin-top: 8px; color: var(--color-text-secondary); font-size: 14px; }
+.levelMeter { display: flex; gap: 4px; width: 100%; margin-top: auto; padding-top: 18px; }
+.levelMeter i { height: 5px; flex: 1; border-radius: 99px; background: #e8eeeb; }
+.levelMeter .levelOn { background: var(--g600); }
+.tileSkills { display: block; overflow: hidden; width: 100%; margin-top: 12px; color: var(--color-text-muted); font-size: 13px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
+.tile .chevron { position: absolute; top: 18px; right: 16px; }
+
+@media (max-width: 1200px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 960px) { .grid { grid-template-columns: minmax(0, 1fr); } .tile { min-height: 184px; } }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } }
+
+/* student-manage-v3.html의 타일·메타 레이아웃을 그대로 적용 */
+.grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 0; }
+.tile { height: 100%; min-height: 0; padding: 22px 22px 18px; border-radius: 22px; animation: studentTileIn 320ms cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--tile-index, 0) * 28ms); }
+@keyframes studentTileIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.tile:hover { border-color: #bfe3cf; box-shadow: 0 14px 28px -18px rgba(14,80,50,.35); }
+.tile:hover .tileName, .tile:hover .chevron { color: var(--g700); }
+.tileTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 22px; }
+.tileRole { display: inline-flex; align-items: center; gap: 8px; min-width: 0; color: var(--color-text-secondary); font-size: 14px; font-weight: var(--font-weight-bold); }
+.tileRole::before { width: 9px; height: 9px; flex: none; border-radius: 50%; background: var(--role-color); content: ""; }
+.tileRoleMuted { color: var(--color-text-muted); font-weight: var(--font-weight-semibold); }
+.tileLeader { flex: none; color: var(--g700); font-size: 13px; font-weight: var(--font-weight-bold); }
+.tileWho { display: block; margin-top: 22px; }
+.tileName { display: block; font-size: 24px; font-weight: var(--font-weight-extrabold); letter-spacing: -.02em; transition: color 150ms ease; }
+.tileClass { display: block; margin-top: 4px; color: var(--color-text-muted); font-size: 14px; font-weight: var(--font-weight-semibold); }
+.tileSkills { display: block; overflow: hidden; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--color-border); color: var(--color-text-primary); font-size: 15px; font-weight: var(--font-weight-semibold); text-overflow: ellipsis; white-space: nowrap; }
+.tileSkillsWait { color: var(--color-text-muted); font-weight: var(--font-weight-medium); }
+.tileFoot { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 16px; color: var(--color-text-muted); font-size: 14px; font-weight: var(--font-weight-semibold); }
+.tileLevel { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tileLevel b { color: var(--g700); font-weight: var(--font-weight-extrabold); }
+.levelMeter { display: inline-flex; gap: 3px; flex: none; width: auto; margin: 0; padding: 0; }
+.levelMeter i { width: 5px; height: 14px; flex: none; border-radius: 3px; background: #e1e8e4; }
+.levelMeter .levelOn { background: var(--g500); }
+.tileTeam { position: relative; overflow: hidden; padding-left: 14px; color: var(--color-text-muted); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.tileTeam::before { position: absolute; top: 50%; left: 0; width: 1px; height: 12px; background: var(--color-border); content: ""; transform: translateY(-50%); }
+.pendingBadge { display: inline-flex; align-items: center; gap: 7px; color: var(--color-danger); font-size: 14px; font-weight: var(--font-weight-bold); white-space: nowrap; }
+.pendingBadge::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ""; }
+.chevron { flex: none; margin-left: auto; color: #a3adb8; font-size: 20px; transition: transform 180ms ease, color 180ms ease; }
+.tile:hover .chevron { transform: translateX(4px); }
+.tile .chevron { position: static; top: auto; right: auto; margin-left: auto; }
+.listMeta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 36px; padding-bottom: 14px; border-bottom: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 15px; }
+.listMeta strong { color: var(--color-text-primary); font-weight: var(--font-weight-extrabold); }
+.legend { display: flex; gap: 16px; font-size: 13px; font-weight: var(--font-weight-semibold); }
+.legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.legendMeter { display: inline-flex; gap: 3px; }
+.legendMeter i { width: 4px; height: 10px; border-radius: 3px; background: #e1e8e4; }
+.legendMeter .levelOn { background: var(--g500); }
+.legendPending { color: var(--color-danger); }
+@media (max-width: 1200px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 960px) {
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+    .tile { min-height: 0; padding: 18px 18px 16px; border-radius: 18px; }
+    .tileWho { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+    .tileName { font-size: 20px; }
+    .tileClass { margin-top: 0; }
+    .tileSkills { margin-top: 12px; padding-top: 12px; }
+    .listMeta { margin-top: 24px; }
+    .legend { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .tile { animation: none; } .tile:hover .chevron { transform: none; } }
+
 @media (max-width: 960px) {
     .body {
         padding: 0 16px 64px;

@@ -15,7 +15,27 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 56px 0 28px;
+    padding: 48px 0 32px;
+}
+
+.titleWrap {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 20px;
+}
+
+.titleIcon {
+    width: 80px;
+    height: 80px;
+    flex: none;
+    object-fit: contain;
+}
+
+.lead {
+    margin-top: 6px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
 }
 
 .titleLine {
@@ -104,6 +124,34 @@
     display: block;
 }
 
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 16px 96px;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.emptyState img {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 20px;
+    object-fit: contain;
+}
+
+.emptyState h2 {
+    color: var(--color-text-primary);
+    font-size: 20px;
+    font-weight: var(--font-weight-extrabold);
+}
+
+.emptyState p {
+    margin-top: 6px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+}
+
 @media (max-width: 900px) {
     .body {
         padding: 0 20px 64px;
@@ -114,9 +162,13 @@
     }
 
     .pageHead {
-        align-items: flex-start;
-        padding: 40px 0 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        padding: 28px 0 20px;
     }
+
+    .titleIcon { width: 60px; height: 60px; }
 
     .headline {
         font-size: 28px;

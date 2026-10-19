@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import NoticeForm from "../../../components/common/notice/NoticeForm";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import MDEditor from "@uiw/react-md-editor";
@@ -103,6 +104,7 @@ const AdminNoticeEdit = () => {
                     )}
                 </div>
             </main>
+            <AppFooter role="admin" />
         </div>
     );
 };
