@@ -1,23 +1,38 @@
 .page {
     min-height: 100dvh;
-    background-color: var(--color-bg);
+    background: var(--color-bg);
 }
 
 .body {
-    max-width: var(--max-width);
+    width: min(100%, var(--max-width));
     min-height: calc(100dvh - var(--header-height));
     margin: 0 auto;
     padding: 0 var(--page-padding) 96px;
 }
-
-/* ── 제목 ─────────────────────────────────────────── */
 
 .pageHead {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 56px 0 32px;
+    padding: 48px 0 24px;
+}
+
+.titleWrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.titleImage {
+    width: 80px;
+    height: 80px;
+    flex: none;
+    object-fit: contain;
+}
+
+.titleBlock {
+    min-width: 0;
 }
 
 .titleLine {
@@ -29,38 +44,43 @@
 
 .headline {
     font-size: 34px;
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-extrabold);
     letter-spacing: -0.03em;
 }
 
 .totalCount {
-    font-size: var(--font-size-sm);
+    font-size: 15px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
+}
+
+.lead {
+    margin-top: 6px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
 }
 
 .surveyStatus {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
+    gap: 8px;
+    flex: none;
     color: var(--color-text-muted);
+    font-size: 15px;
+    font-weight: var(--font-weight-semibold);
 }
 
 .surveyStatus > span {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background-color: var(--color-danger);
+    background: var(--color-danger);
 }
 
 .surveyStatus strong {
     color: var(--color-danger);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-extrabold);
 }
-
-/* ── 필터 + 검색 ─────────────────────────────────── */
 
 .controls {
     display: flex;
@@ -68,14 +88,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding-top: 24px;
+    padding-top: 16px;
 }
 
 .segments {
     display: inline-flex;
     flex-wrap: wrap;
     gap: 4px;
-    padding: 0;
 }
 
 .segment {
@@ -83,52 +102,59 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 40px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 8px;
-    background: none;
-    font-family: var(--font-family);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    height: 44px;
+    padding: 0 14px 0 18px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
     color: var(--color-text-secondary);
-    transition: color 0.15s ease;
+    font: inherit;
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    transition: color 150ms ease, background-color 150ms ease;
 }
 
-.segment::after {
-    content: "";
+.segment::before {
     position: absolute;
     top: 50%;
-    left: 2px;
-    width: 5px;
-    height: 5px;
+    left: 6px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background-color: var(--color-primary);
+    background: var(--g600);
+    content: "";
     transform: translateY(-50%) scale(0);
-    transition: transform 0.15s ease;
+    transition: transform 150ms ease;
 }
 
 .segment:hover {
-    background-color: var(--color-bg-secondary);
-    color: var(--color-primary-text);
+    background: var(--color-bg-secondary);
+    color: var(--g700);
 }
 
 .segmentOn {
-    color: var(--color-primary-text);
+    color: var(--g700);
+    font-weight: var(--font-weight-bold);
 }
 
-.segmentOn::after {
+.segmentOn::before {
     transform: translateY(-50%) scale(1);
 }
 
 .segmentCount {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
     color: var(--color-text-muted);
+    font-size: 14px;
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
 }
 
 .segmentOn .segmentCount {
-    color: var(--color-primary);
+    color: var(--g600);
+}
+
+.segmentCountDanger {
+    color: var(--color-danger);
 }
 
 .searchBox {
@@ -139,47 +165,41 @@
 
 .searchIcon {
     position: absolute;
-    left: 16px;
     top: 50%;
-    transform: translateY(-50%);
+    left: 16px;
     color: var(--color-text-muted);
     pointer-events: none;
+    transform: translateY(-50%);
 }
 
 .search {
     width: 100%;
     height: 48px;
     padding: 0 16px 0 44px;
-    border: 1px solid var(--color-border);
+    border: 1px solid #d3ddd8;
     border-radius: 12px;
-    font-size: var(--font-size-lg);
+    background: #fff;
     color: var(--color-text-primary);
-    transition: border-color 0.15s ease;
+    font-size: 16px;
+    transition: border-color 150ms ease;
 }
 
 .search::placeholder {
-    color: var(--color-text-muted);
+    color: #8b95a1;
 }
 
 .search:focus {
-    border-color: var(--color-primary);
+    border-color: var(--g600);
 }
-
-/* ── 목록 ─────────────────────────────────────────── */
 
 .list {
-    margin-top: 24px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
     gap: 4px;
-}
-
-.list > * {
-    border: 0;
+    margin-top: 20px;
 }
 
 .skeletonRow {
-    padding: 24px 12px;
+    padding: 26px 16px;
 }
 
 .row {
@@ -188,33 +208,28 @@
     justify-content: space-between;
     gap: 24px;
     width: 100%;
-    min-width: 0;
-    padding: 28px 16px;
-    border-radius: var(--border-radius-md);
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    background: none;
-    text-align: left;
-    font-family: var(--font-family);
+    padding: 26px 16px;
+    border: 0;
+    border-radius: 16px;
+    background: transparent;
     color: inherit;
-    transition: background-color 0.15s ease;
+    font: inherit;
+    text-align: left;
+    transition: background-color 150ms ease;
 }
 
 .row:hover {
-    background-color: #f5f8f6;
+    background: var(--color-bg-secondary);
 }
 
 .row:hover .rowName,
-.row:hover .rowClass,
 .row:hover .chevron {
-    color: var(--color-primary-text);
+    color: var(--g700);
 }
 
 .rowMain {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
 }
 
 .rowTitleLine {
@@ -230,96 +245,157 @@
 }
 
 .rowClass {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
 }
 
 .pendingBadge {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 0;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
+    gap: 6px;
     color: var(--color-danger);
+    font-size: 13px;
+    font-weight: var(--font-weight-bold);
 }
 
 .pendingBadge::before {
-    content: "";
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background-color: currentColor;
+    background: currentColor;
+    content: "";
 }
 
 .rowSummary {
     display: block;
     margin-top: 10px;
+    color: var(--color-text-secondary);
     font-size: 15px;
     line-height: 1.55;
-    color: var(--color-text-secondary);
+}
+
+.level {
+    color: var(--g700);
+    font-weight: var(--font-weight-bold);
 }
 
 .rowSkills {
     display: block;
-    margin-top: 6px;
     overflow: hidden;
+    margin-top: 6px;
+    color: var(--color-text-muted);
     font-size: 15px;
     line-height: 1.5;
-    color: var(--color-text-muted);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.segmentCountDanger {
-    color: var(--color-danger);
-}
-
 .chevron {
-    flex-shrink: 0;
+    flex: none;
     color: var(--color-text-muted);
-    transition: transform 0.15s ease;
+    transition: color 150ms ease, transform 150ms ease;
 }
 
 .row:hover .chevron {
-    transform: translateX(2px);
+    transform: translateX(3px);
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 16px 24px;
+    text-align: center;
+}
+
+.emptyState img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.emptyState h2 {
+    margin-top: 16px;
+    font-size: 20px;
+    font-weight: var(--font-weight-extrabold);
+}
+
+.emptyState p {
+    margin-top: 6px;
+    color: var(--color-text-muted);
+    font-size: 15px;
 }
 
 .resetButton {
-    height: 48px;
-    padding: 0 20px;
+    min-height: 40px;
+    margin-top: 20px;
+    padding: 0 16px;
     border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: none;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 #edf2ef;
+    color: var(--g700);
     font-family: var(--font-family);
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    transition: border-color 0.15s ease, color 0.15s ease;
+    font-size: 14px;
+    font-weight: var(--font-weight-bold);
+    transition: transform 120ms ease, background-color 120ms ease;
 }
 
 .resetButton:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary-text);
+    background: var(--color-bg-secondary);
 }
 
-/* ── 반응형 ───────────────────────────────────────── */
+.resetButton:active {
+    transform: translateY(2px);
+}
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
     .body {
-        padding: 0 20px 64px;
+        padding: 0 16px 64px;
     }
 
     .pageHead {
         align-items: flex-start;
         flex-direction: column;
         gap: 14px;
-        padding: 40px 0 24px;
+        padding: 28px 0 16px;
+    }
+
+    .titleWrap {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .titleImage {
+        width: 60px;
+        height: 60px;
     }
 
     .headline {
         font-size: 28px;
+    }
+
+    .lead {
+        font-size: 15px;
+    }
+
+    .segments {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: calc(100% + 32px);
+        margin: 0 -16px;
+        padding: 0 10px;
+        scrollbar-width: none;
+    }
+
+    .segments::-webkit-scrollbar {
+        display: none;
+    }
+
+    .segment {
+        flex: none;
     }
 
     .searchBox {
@@ -328,10 +404,14 @@
 
     .row {
         gap: 16px;
-        padding: 22px 12px;
+        padding: 20px 8px;
     }
 
     .rowName {
         font-size: 18px;
+    }
+
+    .rowSkills {
+        white-space: normal;
     }
 }

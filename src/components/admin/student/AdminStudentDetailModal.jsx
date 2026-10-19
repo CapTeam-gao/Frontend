@@ -6,6 +6,7 @@ import ModalOverlay from "../../common/modal/ModalOverlay";
 import { useModalClose } from "../../common/modal/modalCloseContext";
 import useInView from "../../../hooks/useInView";
 import styles from "./AdminStudentDetailModal.module.css";
+import surveyPendingImage from "../../../assets/images/adminStudentSurveyPendingV3.webp";
 import {
     PolarAngleAxis,
     PolarGrid,
@@ -295,6 +296,12 @@ const AdminStudentDetailModal = ({
 
                 {!student.surveyCompleted ? (
                     <div className={styles.emptySurveyMessage}>
+                        <img
+                            className={styles.pendingIllustration}
+                            src={surveyPendingImage}
+                            alt=""
+                            aria-hidden="true"
+                        />
                         <strong>아직 설문을 제출하지 않았어요</strong>
                         <p>
                             설문을 제출하면 기술 스택, 실행·협업 성향 점수, AI

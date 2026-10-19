@@ -17,6 +17,8 @@ import {
     normalizeSearchText,
 } from "../../../utils/student";
 import { getApiErrorMessage } from "../../../utils/apiError";
+import studentTitleImage from "../../../assets/images/adminStudentTitleV3.webp";
+import studentEmptyImage from "../../../assets/images/adminStudentEmptyV3.webp";
 import styles from "./AdminStudentManage.module.css";
 
 const ListSkeleton = () => (
@@ -159,7 +161,14 @@ const AdminStudentManage = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div className={styles.titleBlock}>
+                    <div className={styles.titleWrap}>
+                        <img
+                            className={styles.titleImage}
+                            src={studentTitleImage}
+                            alt=""
+                            aria-hidden="true"
+                        />
+                        <div className={styles.titleBlock}>
                         <div className={styles.titleLine}>
                             <h1 className={styles.headline}>학생 관리</h1>
                             {!isLoading && summaryCounts.all > 0 && (
@@ -167,6 +176,10 @@ const AdminStudentManage = () => {
                                     전체 {summaryCounts.all}명
                                 </span>
                             )}
+                        </div>
+                        <p className={styles.lead}>
+                            학생 정보와 설문 응답을 확인하고 관리해요
+                        </p>
                         </div>
                     </div>
 
@@ -245,19 +258,18 @@ const AdminStudentManage = () => {
                         description={error}
                     />
                 ) : filteredStudents.length === 0 ? (
-                    <EmptyState
-                        title="조건에 맞는 학생이 없어요"
-                        description="검색어를 지우거나 다른 필터를 골라보세요."
-                        action={
-                            <button
-                                type="button"
-                                className={styles.resetButton}
-                                onClick={resetFilters}
-                            >
-                                필터 초기화
-                            </button>
-                        }
-                    />
+                    <div className={styles.emptyState}>
+                        <img src={studentEmptyImage} alt="" aria-hidden="true" />
+                        <h2>조건에 맞는 학생이 없어요</h2>
+                        <p>검색어나 필터를 바꾸면 학생을 다시 확인할 수 있어요.</p>
+                        <button
+                            type="button"
+                            className={styles.resetButton}
+                            onClick={resetFilters}
+                        >
+                            필터 초기화
+                        </button>
+                    </div>
                 ) : (
                     <div className={styles.list} ref={listRef}>
                         {filteredStudents.map((student) => {
@@ -273,10 +285,8 @@ const AdminStudentManage = () => {
                                     student.studentRole,
                                 teamName,
                                 student.leaderRole === "LEADER" ? "팀장" : null,
-                                levelLabels[student.studentLevel]
-                                    ? `실력 ${levelLabels[student.studentLevel]}`
-                                    : null,
                             ].filter(Boolean);
+                            const levelLabel = levelLabels[student.studentLevel];
 
                             return (
                                 <button
@@ -311,6 +321,12 @@ const AdminStudentManage = () => {
                                                     className={styles.rowSummary}
                                                 >
                                                     {summaryParts.join(" · ")}
+                                                    {levelLabel && (
+                                                        <span className={styles.level}>
+                                                            {summaryParts.length > 0 && " · "}
+                                                            실력 {levelLabel}
+                                                        </span>
+                                                    )}
                                                 </span>
                                                 {student.skill?.length > 0 && (
                                                     <span

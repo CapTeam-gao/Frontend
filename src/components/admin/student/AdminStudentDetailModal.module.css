@@ -429,6 +429,68 @@
     margin-top: 12px;
 }
 
+/* Design v3 학생 상세 모달 */
+.modalOverlay {
+    padding: 24px;
+    background: rgba(25, 31, 40, 0.45);
+}
+
+.modal {
+    max-width: 1040px;
+    max-height: min(860px, calc(100dvh - 48px));
+    border-radius: 28px;
+    box-shadow: 0 30px 60px -20px rgba(25, 31, 40, 0.35);
+}
+
+.modalHeader {
+    padding: 28px 40px 0;
+}
+
+.modalContent {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 40px 48px;
+    padding: 28px 40px 40px;
+}
+
+.emptySurveyMessage {
+    padding: 24px 40px 40px;
+}
+
+.pendingIllustration {
+    display: block;
+    width: 112px;
+    height: 112px;
+    margin-bottom: 16px;
+    object-fit: contain;
+}
+
+.levelBadge,
+.levelBadgeFailed,
+.reliabilityBadge {
+    padding: 0;
+    background: none;
+}
+
+.sectionHeader h3::before,
+.compactSection h3::before,
+.analysisSection h3::before,
+.trackSection h3::before {
+    background: var(--g600);
+}
+
+.teamLinkButton {
+    color: var(--g700);
+}
+
+.chip::before {
+    background: var(--g600);
+}
+
+.analysisSection p,
+.reliabilityCard p {
+    color: var(--color-text-secondary);
+}
+
 /* ── 반응형 ───────────────────────────────────────── */
 
 @media (max-width: 1024px) {
@@ -443,7 +505,8 @@
     }
 
     .modal {
-        max-height: 94dvh;
+        max-height: calc(100dvh - 24px);
+        border-radius: 24px;
     }
 
     .modalHeader {
@@ -460,6 +523,11 @@
 
     .emptySurveyMessage {
         padding: 24px 20px 40px;
+    }
+
+    .pendingIllustration {
+        width: 96px;
+        height: 96px;
     }
 
     .profileStrip {
