@@ -156,6 +156,7 @@ const AdminDashboard = () => {
     const nextGradeProgress = nextGrade ? surveyProgress[nextGrade] : null;
     const nextGradeRemaining = nextGradeProgress ? Math.max(nextGradeProgress.total - nextGradeProgress.responded, 0) : 0;
     const nextGradeReady = Boolean(nextGradeProgress?.total && nextGradeRemaining === 0);
+    const nextGradeHasStudents = Boolean(nextGradeProgress?.total);
     const userName = user?.name ? `${user.name} 선생님` : "선생님";
 
     const noticeItems = notices.map((notice) => ({
@@ -173,10 +174,10 @@ const AdminDashboard = () => {
                         <section className={styles.setupHero}>
                             <div className={styles.setupCopy}>
                                 <p className={styles.eyebrow}>{userName}, 안녕하세요</p>
-                                <h1>{nextGradeReady ? <>{gradeLabels[nextGrade]} 설문 응답이<br />모두 모였어요</> : <>{gradeLabels[nextGrade]} 설문 응답을<br />확인해 주세요</>}</h1>
-                                <p className={styles.heroDescription}>{nextGradeReady ? <>지금 AI 추천으로 팀을 만들 수 있어요.<br />두 학년 팀이 모두 만들어지면<br />캡스톤 일지와 채팅 관리가 열려요.</> : <>설문 응답을 모아 팀을 만들 준비를 해요.<br />두 학년 팀이 모두 만들어지면<br />캡스톤 일지와 채팅 관리가 열려요.</>}</p>
+                                <h1>{nextGradeReady ? <>{gradeLabels[nextGrade]} 설문 응답이<br />모두 모였어요</> : nextGradeHasStudents ? <>{gradeLabels[nextGrade]} 설문 응답을<br />확인해 주세요</> : <>{gradeLabels[nextGrade]} 학생 정보를<br />등록해 주세요</>}</h1>
+                                <p className={styles.heroDescription}>{nextGradeReady ? <>지금 AI 추천으로 팀을 만들 수 있어요.<br />두 학년 팀이 모두 만들어지면<br />캡스톤 일지와 채팅 관리가 열려요.</> : nextGradeHasStudents ? <>설문 응답을 모아 팀을 만들 준비를 해요.<br />두 학년 팀이 모두 만들어지면<br />캡스톤 일지와 채팅 관리가 열려요.</> : <>학생 정보를 등록하고 설문 응답을 모아 주세요.<br />두 학년 팀이 모두 만들어지면<br />캡스톤 일지와 채팅 관리가 열려요.</>}</p>
                                 <div className={styles.heroActions}>
-                                    <Link className={styles.primaryButton} to={nextGradeReady ? "/admin/team-create" : "/admin/student"}>{nextGradeReady ? `${gradeLabels[nextGrade]} 팀 생성하기` : "미응답 학생 보기"}</Link>
+                                    <Link className={styles.primaryButton} to={nextGradeReady ? "/admin/team-create" : "/admin/student"}>{nextGradeReady ? `${gradeLabels[nextGrade]} 팀 생성하기` : nextGradeRemaining > 0 ? "미응답 학생 보기" : "학생 관리"}</Link>
                                     <Link className={styles.ghostButton} to="/admin/student">학생 관리</Link>
                                 </div>
                             </div>
@@ -209,7 +210,6 @@ const AdminDashboard = () => {
                                 const progress = surveyProgress[grade];
                                 const created = grade === "GRADE_2" ? teamStatus.grade2TeamCreated : teamStatus.grade3TeamCreated;
                                 const ready = progress.total > 0 && progress.responded === progress.total;
-                                const isCurrent = grade === nextGrade;
                                 const remaining = Math.max(progress.total - progress.responded, 0);
                                 return <article key={grade} className={`${styles.gradeCard} ${ready && !created ? styles.gradeReady : ""}`}>
                                     <img src={index === 0 ? grade2Icon : grade3Icon} alt="" />
@@ -217,7 +217,7 @@ const AdminDashboard = () => {
                                     <h3>{gradeLabels[grade]}</h3>
                                     <p>{progress.responded} / {progress.total}명 응답{remaining > 0 && ` · ${remaining}명 미응답`}</p>
                                     <div className={styles.progressTrack} role="progressbar" aria-label={`${gradeLabels[grade]} 설문 응답`} aria-valuemin="0" aria-valuemax={progress.total} aria-valuenow={progress.responded}><span style={{ width: `${progress.total ? (progress.responded / progress.total) * 100 : 0}%` }} /></div>
-                                    {created ? <span className={styles.createdValue}>{dashboard[grade === "GRADE_2" ? "grade2TeamCount" : "grade3TeamCount"] ?? 0}팀 배정 완료</span> : isCurrent && ready ? <Link className={styles.primaryButton} to="/admin/team-create">{gradeLabels[grade]} 팀 생성하기</Link> : <Link className={styles.ghostButton} to="/admin/student">미응답 학생 보기</Link>}
+                                    {created ? <span className={styles.createdValue}>{dashboard[grade === "GRADE_2" ? "grade2TeamCount" : "grade3TeamCount"] ?? 0}팀 배정 완료</span> : ready ? <Link className={styles.primaryButton} to="/admin/team-create" state={{ grade }}>{gradeLabels[grade]} 팀 생성하기</Link> : remaining > 0 ? <Link className={styles.ghostButton} to="/admin/student">미응답 학생 보기</Link> : <Link className={styles.ghostButton} to="/admin/student">학생 정보 확인하기</Link>}
                                 </article>;
                             })}
                         </div>}

@@ -2,7 +2,7 @@
 // 흐름: 두 학년 모두 생성 완료 → 이 화면에 머물지 않고 팀 관리로 보낸다.
 //       선택 학년만 생성 완료 → 남은 학년으로 넘어가는 안내만 보여준다.
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
@@ -62,8 +62,11 @@ const CreateSkeleton = () => (
 
 const AdminTeamCreate = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedGrade, setSelectedGrade] = useState(
-        DEFAULT_TEAM_CREATE_GRADE
+        ["GRADE_2", "GRADE_3"].includes(location.state?.grade)
+            ? location.state.grade
+            : DEFAULT_TEAM_CREATE_GRADE
     );
     const [selectedMode, setSelectedMode] = useState("AI_AUTO");
     const [teamStatus, setTeamStatus] = useState({
