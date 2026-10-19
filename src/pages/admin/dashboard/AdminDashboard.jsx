@@ -256,7 +256,11 @@ const AdminDashboard = () => {
             </main>
             <footer className={styles.footer}>
                 <div><Link to="/admin/dashboard" className={styles.footerBrand}>CapTeam</Link><p>AI가 캡스톤 팀을 만들고,<br />팀이 끝까지 함께 갈 수 있도록 돕는 서비스</p></div>
-                <nav className={styles.footerLinks} aria-label="관리자 바로가기"><span>팀</span><Link to="/admin/team-create">팀 생성</Link><span>운영</span><Link to="/admin/chat">채팅 관리</Link><Link to="/admin/log">캡스톤 일지</Link><span>학생</span><Link to="/admin/student">학생 관리</Link><span>내 계정</span><Link to="/admin/profile">내 프로필</Link><Link to="/admin/notice">공지</Link></nav>
+                <nav className={styles.footerLinks} aria-label="관리자 바로가기">
+                    <div className={styles.footerGroup}><strong>팀 관리</strong><Link to="/admin/team-create">팀 생성</Link><Link to="/admin/student">학생 관리</Link></div>
+                    <div className={styles.footerGroup}><strong>서비스 운영</strong><Link to="/admin/chat">채팅 관리</Link><Link to="/admin/log">캡스톤 일지</Link><Link to="/admin/notice">공지</Link></div>
+                    <div className={styles.footerGroup}><strong>내 계정</strong><Link to="/admin/profile">내 프로필</Link></div>
+                </nav>
                 <small>© 2026 CapTeam. All rights reserved.</small>
             </footer>
         </div>

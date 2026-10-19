@@ -114,8 +114,11 @@
 .footer { display: grid; width: min(1280px, calc(100% - 64px)); grid-template-columns: 1fr 1.4fr; gap: 26px 50px; margin: 0 auto; padding: 32px 0 32px; border-top: 1px solid var(--line); }
 .footerBrand { color: var(--ink); font-size: 21px; font-weight: 800; }
 .footer > div > p { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
-.footerLinks { display: grid; grid-template-columns: repeat(4, auto); align-content: start; gap: 10px 20px; color: var(--sub); font-size: 13px; }
-.footerLinks span { color: var(--ink); font-weight: 700; }
+.footerLinks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start; gap: 24px; }
+.footerGroup { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 10px; }
+.footerGroup strong { color: var(--ink); font-size: 14px; font-weight: 700; }
+.footerGroup a { color: var(--sub); font-size: 14px; line-height: 1.4; transition: color .16s ease; }
+.footerGroup a:hover { color: var(--g700); }
 .footer > small { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
 
 @media (max-width: 960px) {
@@ -149,7 +152,7 @@
     .noticePill:nth-child(2) { margin-left: 0; }
     .noticePill > img { width: 42px; height: 42px; }
     .noticePill time { font-size: 11px; }
-    .footerLinks { grid-template-columns: repeat(3, auto); justify-content: start; }
+    .footerLinks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 600px) {
@@ -167,7 +170,7 @@
     .noticePill > img { width: 36px; height: 36px; }
     .noticePill time { max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .body, .footer { width: calc(100% - 32px); }
-    .footerLinks { grid-template-columns: repeat(2, auto); }
+    .footerLinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
