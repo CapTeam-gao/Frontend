@@ -9,7 +9,7 @@
 .body {
     max-width: 1600px;
     margin: 0 auto;
-    padding: 0 clamp(20px, 3vw, 48px) 112px;
+    padding: 0 clamp(20px, 2vw, 32px) 72px;
 }
 
 /* ── 진행률 바 ───────────────────────────────────── */
@@ -117,7 +117,7 @@
 
 .layout {
     width: 100%;
-    max-width: 1040px;
+    max-width: 1320px;
     margin: 0 auto;
 }
 
@@ -131,22 +131,40 @@
     padding: 48px 0;
 }
 
-.cardHeader span {
+.cardHeader {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 24px;
+}
+
+.cardHeader > img {
+    grid-row: 1;
+    width: 104px;
+    height: 104px;
+    border-radius: 22px;
+    object-fit: contain;
+}
+
+.cardHeading {
+    grid-column: 2;
+}
+
+.cardHeading span {
+    display: block;
     font-size: 16px;
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
-.cardHeader > img { width: 104px; height: 104px; flex: none; border-radius: 22px; object-fit: contain; }
-
-.cardHeader h2 {
+.cardHeading h2 {
     margin-top: 6px;
     font-size: 34px;
     font-weight: var(--font-weight-bold);
     letter-spacing: -0.01em;
 }
 
-.cardHeader p {
+.cardHeading p {
     max-width: 36rem;
     margin-top: 10px;
     font-size: 18px;
@@ -501,7 +519,7 @@
     align-items: center;
     justify-content: flex-end;
     gap: 16px;
-    padding: 48px 0;
+    padding: 36px 0;
     border-top: 1px solid var(--color-border);
 }
 
@@ -631,7 +649,7 @@
 
 @media (max-width: 900px) {
     .body {
-        padding: 0 20px 80px;
+        padding: 0 20px 64px;
     }
 
     .progressSummary {
@@ -653,11 +671,32 @@
         margin-top: 32px;
     }
 
-    .cardHeader h2 { font-size: 26px; }
+    .cardHeader {
+        grid-template-columns: 80px minmax(0, 1fr);
+        column-gap: 16px;
+    }
+
     .cardHeader > img { width: 80px; height: 80px; border-radius: 18px; }
+    .cardHeading h2 { font-size: 26px; }
+    .cardHeading p { font-size: 16px; }
 
     .submitArea button {
         width: 100%;
         padding: 0 24px;
     }
+}
+
+@media (max-width: 520px) {
+    .cardHeader {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 12px;
+    }
+
+    .cardHeader > img {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+    }
+
+    .cardHeading { grid-column: 1; }
 }

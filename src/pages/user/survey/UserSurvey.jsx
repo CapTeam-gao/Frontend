@@ -600,12 +600,14 @@ const UserSurvey = () => {
                         <section className={styles.card}>
                             <div className={styles.cardHeader}>
                                 <img src={technicalIcon} alt="" />
-                                <span>STEP 1</span>
-                                <h2>기술 정보</h2>
-                                <p>
-                                    캡스톤 팀 매칭에 사용할 희망 역할, 기술
-                                    스택, 구현 경험을 입력해주세요.
-                                </p>
+                                <div className={styles.cardHeading}>
+                                    <span>STEP 1</span>
+                                    <h2>기술 정보</h2>
+                                    <p>
+                                        캡스톤 팀 매칭에 사용할 희망 역할, 기술
+                                        스택, 구현 경험을 입력해주세요.
+                                    </p>
+                                </div>
                             </div>
 
                             <div
@@ -875,12 +877,14 @@ const UserSurvey = () => {
                         >
                             <div className={styles.cardHeader}>
                                 <img src={collaborationIcon} alt="" />
-                                <span>STEP 2</span>
-                                <h2>캡스톤 협업 성향</h2>
-                                <p>
-                                    아이디어 정리, 소통, 역할 유연성, 일정 압박
-                                    대응, 집중 유지 성향을 확인해요.
-                                </p>
+                                <div className={styles.cardHeading}>
+                                    <span>STEP 2</span>
+                                    <h2>캡스톤 협업 성향</h2>
+                                    <p>
+                                        아이디어 정리, 소통, 역할 유연성, 일정 압박
+                                        대응, 집중 유지 성향을 확인해요.
+                                    </p>
+                                </div>
                             </div>
 
                             <ul className={styles.questionList}>
@@ -908,12 +912,14 @@ const UserSurvey = () => {
                         >
                             <div className={styles.cardHeader}>
                                 <img src={executionIcon} alt="" />
-                                <span>STEP 3</span>
-                                <h2>캡스톤 실행 성향</h2>
-                                <p>
-                                    개발 실행력, 문제 해결, 완성도, 발표, 리더십
-                                    성향을 확인해요.
-                                </p>
+                                <div className={styles.cardHeading}>
+                                    <span>STEP 3</span>
+                                    <h2>캡스톤 실행 성향</h2>
+                                    <p>
+                                        개발 실행력, 문제 해결, 완성도, 발표, 리더십
+                                        성향을 확인해요.
+                                    </p>
+                                </div>
                             </div>
 
                             <ul className={styles.questionList}>
