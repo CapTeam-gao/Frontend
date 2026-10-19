@@ -1,4 +1,4 @@
-// Design/notice-list.html 반영. 카드 → 구분선 리스트 로우.
+// Design/notice-list-v3.html의 공지 행 구조.
 import { formatCreatedAt, stripMarkdown, truncateText } from "../../../utils/format";
 import styles from "./NoticeItem.module.css";
 
@@ -10,6 +10,9 @@ const NoticeItem = ({ notice }) => {
                     {notice.important === "IMPORTANT" && (
                         <span className={styles.tag}>중요</span>
                     )}
+                    {notice.noticeType === "TEAM_RESULT" && (
+                        <span className={styles.typeTag}>팀 배정 결과</span>
+                    )}
                     <h3 className={styles.title}>{notice.title}</h3>
                 </div>
 
@@ -18,26 +21,16 @@ const NoticeItem = ({ notice }) => {
                         {truncateText(stripMarkdown(notice.content), 100)}
                     </p>
                 )}
-
+                <p className={styles.meta}>
+                    <span>{notice.writer}</span>
+                    <i aria-hidden="true">·</i>
+                    <time dateTime={notice.createdAt || undefined}>
+                        {formatCreatedAt(notice.createdAt)}
+                    </time>
+                </p>
             </div>
 
-            <p className={styles.writer}>{notice.writer}</p>
-            <p className={styles.date}>{formatCreatedAt(notice.createdAt)}</p>
-
-            <svg
-                className={styles.chevron}
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-            >
-                <path d="m9 18 6-6-6-6" />
-            </svg>
+            <span className={styles.chevron} aria-hidden="true">→</span>
         </div>
     );
 };

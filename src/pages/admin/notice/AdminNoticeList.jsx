@@ -1,4 +1,4 @@
-// Design/notice-list.html 반영. 학생 목록과 같은 구조 + 새 공지 작성 버튼.
+// Design/notice-list-v3.html 공지 행 구성에 관리자 액션을 연결한다.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./AdminNoticeList.module.css";
@@ -113,12 +113,6 @@ const AdminNoticeList = () => {
                 ) : (
                     <>
                         <ul className={styles.list} ref={listRef}>
-                            <li className={styles.listHead} aria-hidden="true">
-                                <span>공지 제목</span>
-                                <span>작성자</span>
-                                <span>등록일</span>
-                                <span />
-                            </li>
                             {currentNotices.map((notice) => (
                                 <li key={notice.id}>
                                     <Link

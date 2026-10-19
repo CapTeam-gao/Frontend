@@ -1,4 +1,4 @@
-// Design/notice-detail.html 반영. 학생 상세와 같은 구조 + 수정·삭제 액션.
+// Design/notice-detail-v3.html 단일 본문 구성에 관리자 액션을 연결한다.
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
@@ -131,8 +131,13 @@ const AdminNoticeDetail = () => {
                                         className={adminStyles.metaRow}
                                     >
                                         <p className={styles.metaLine}>
-                                            {notice.writer} ·{" "}
-                                            {formatCreatedAt(notice.createdAt)}
+                                            <span>{notice.writer}</span>
+                                            <i aria-hidden="true">·</i>
+                                            <time dateTime={notice.createdAt || undefined}>
+                                                {formatCreatedAt(notice.createdAt)}
+                                            </time>
+                                            <i aria-hidden="true">·</i>
+                                            <span>{teamResultParsed ? "팀 배정 결과" : "일반 공지"}</span>
                                         </p>
 
                                         <div className={adminStyles.actions}>
@@ -190,52 +195,11 @@ const AdminNoticeDetail = () => {
                                 </div>
                             </article>
 
-                            <aside className={styles.metaRail}>
-                                <div className={styles.metaRailInner}>
-                                    <p className={styles.railLabel}>작성자</p>
-                                    <p className={styles.railValue}>
-                                        {notice.writer}
-                                    </p>
-
-                                    <p className={styles.railLabel}>작성일</p>
-                                    <p className={styles.railValue}>
-                                        {formatCreatedAt(notice.createdAt)}
-                                    </p>
-
-                                    <p className={styles.railLabel}>분류</p>
-                                    <p className={styles.railValue}>
-                                        {teamResultParsed
-                                            ? "팀 배정 결과"
-                                            : "일반 공지"}
-                                    </p>
-
-                                    {isImportant && (
-                                        <div className={styles.railImportant}>
-                                            <p
-                                                className={
-                                                    styles.railImportantTitle
-                                                }
-                                            >
-                                                중요 공지
-                                            </p>
-                                            <p
-                                                className={
-                                                    styles.railImportantText
-                                                }
-                                            >
-                                                학생 홈에서도 눈에 띄게 보여요.
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    <Link
-                                        to="/admin/notice"
-                                        className={styles.railButton}
-                                    >
-                                        공지 목록으로
-                                    </Link>
-                                </div>
-                            </aside>
+                            <div className={styles.articleFooter}>
+                                <Link to="/admin/notice" className={styles.footerLink}>
+                                    ← 공지 목록으로
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>

@@ -1,4 +1,4 @@
-// Design/notice-list.html 반영.
+// Design/notice-list-v3.html 공지 행 구성을 학생 화면에 연결한다.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./UserNoticeList.module.css";
@@ -27,7 +27,7 @@ const sortNoticesByLatest = (notices) =>
 export const NoticeListSkeleton = ({ className }) => (
     <div className={className}>
         {[0, 1, 2].map((index) => (
-            <div key={index} style={{ padding: "28px 12px" }}>
+            <div key={index} className={styles.skeletonRow}>
                 <Skeleton width={288} height={24} />
                 <Skeleton
                     width="min(640px, 100%)"
@@ -121,12 +121,6 @@ const UserNoticeList = () => {
                 ) : (
                     <>
                         <section className={styles.board}>
-                            <div className={styles.listHead} aria-hidden="true">
-                                <span>공지 제목</span>
-                                <span>작성자</span>
-                                <span>등록일</span>
-                                <span />
-                            </div>
                             <ul className={styles.list} ref={listRef}>
                                 {currentNotices.map((notice) => (
                                     <li key={notice.id}>

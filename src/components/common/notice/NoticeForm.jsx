@@ -44,7 +44,7 @@ const NoticeForm = ({
 
             <div className={styles.field}>
                 <div className={styles.labelRow}>
-                    <span className={styles.label}>내용</span>
+                    <label htmlFor="content" className={styles.label}>내용</label>
                     <span className={styles.labelHint}>
                         마크다운을 쓸 수 있고, 오른쪽에서 바로 미리 볼 수 있어요
                     </span>
@@ -55,7 +55,7 @@ const NoticeForm = ({
                         className={styles.markdownEditor}
                         value={content}
                         onChange={(value) => setContent(value || "")}
-                        height={560}
+                        height={460}
                         visibleDragbar={false}
                         textareaProps={{
                             id: "content",
@@ -98,7 +98,7 @@ const NoticeForm = ({
                 </span>
             </label>
 
-            {error && <p className={styles.errorText}>{error}</p>}
+            {error && <p className={styles.errorText} role="alert">{error}</p>}
 
             <div className={styles.actions}>
                 <button

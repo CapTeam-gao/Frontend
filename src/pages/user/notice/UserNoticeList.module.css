@@ -93,8 +93,13 @@
 .list {
     display: grid;
     gap: 4px;
+    margin-top: 20px;
     padding: 0;
     list-style: none;
+}
+
+.skeletonRow {
+    padding: 30px 28px;
 }
 
 .emptyState {
@@ -102,15 +107,14 @@
     flex-direction: column;
     align-items: center;
     padding: 72px 16px 96px;
-    border-top: 1px solid var(--color-border);
     text-align: center;
 }
 
-.emptyState img { width: 96px; height: 96px; margin-bottom: 20px; object-fit: contain; }
+.emptyState img { width: 132px; height: 132px; margin-bottom: 20px; object-fit: contain; }
 .emptyState h2 { color: var(--color-text-primary); font-size: 20px; font-weight: var(--font-weight-extrabold); }
 .emptyState p { margin-top: 6px; color: var(--color-text-muted); font-size: 15px; }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
     .body {
         padding: 0 20px 64px;
     }
@@ -128,9 +132,7 @@
         font-size: 28px;
     }
 
-    .listHead {
-        display: none;
-    }
+    .skeletonRow { padding: 22px 12px; }
 
     .board {
         overflow: visible;

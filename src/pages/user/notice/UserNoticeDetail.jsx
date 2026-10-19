@@ -1,4 +1,4 @@
-// Design/notice-detail.html 반영. 본문 + 우측 메타 레일 2단.
+// Design/notice-detail-v3.html의 단일 본문 레이아웃을 사용한다.
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
@@ -119,8 +119,13 @@ const UserNoticeDetail = () => {
                                     </h1>
 
                                     <p data-reveal className={styles.metaLine}>
-                                        {notice.writer} ·{" "}
-                                        {formatCreatedAt(notice.createdAt)}
+                                        <span>{notice.writer}</span>
+                                        <i aria-hidden="true">·</i>
+                                        <time dateTime={notice.createdAt || undefined}>
+                                            {formatCreatedAt(notice.createdAt)}
+                                        </time>
+                                        <i aria-hidden="true">·</i>
+                                        <span>{teamResultParsed ? "팀 배정 결과" : "일반 공지"}</span>
                                     </p>
                                 </header>
 
@@ -156,52 +161,11 @@ const UserNoticeDetail = () => {
                                 </div>
                             </article>
 
-                            <aside className={styles.metaRail}>
-                                <div className={styles.metaRailInner}>
-                                    <p className={styles.railLabel}>작성자</p>
-                                    <p className={styles.railValue}>
-                                        {notice.writer}
-                                    </p>
-
-                                    <p className={styles.railLabel}>작성일</p>
-                                    <p className={styles.railValue}>
-                                        {formatCreatedAt(notice.createdAt)}
-                                    </p>
-
-                                    <p className={styles.railLabel}>분류</p>
-                                    <p className={styles.railValue}>
-                                        {teamResultParsed
-                                            ? "팀 배정 결과"
-                                            : "일반 공지"}
-                                    </p>
-
-                                    {isImportant && (
-                                        <div className={styles.railImportant}>
-                                            <p
-                                                className={
-                                                    styles.railImportantTitle
-                                                }
-                                            >
-                                                중요 공지
-                                            </p>
-                                            <p
-                                                className={
-                                                    styles.railImportantText
-                                                }
-                                            >
-                                                확인 후 팀원과 공유해주세요.
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    <Link
-                                        to="/user/notice"
-                                        className={styles.railButton}
-                                    >
-                                        공지 목록으로
-                                    </Link>
-                                </div>
-                            </aside>
+                            <div className={styles.articleFooter}>
+                                <Link to="/user/notice" className={styles.footerLink}>
+                                    ← 공지 목록으로
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>
