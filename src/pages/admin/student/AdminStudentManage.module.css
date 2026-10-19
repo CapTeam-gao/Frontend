@@ -412,7 +412,7 @@
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } }
 
 /* student-manage-v3.html의 타일·메타 레이아웃을 그대로 적용 */
-.grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 0; }
+.grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
 .tile { height: 100%; min-height: 0; padding: 22px 22px 18px; border-radius: 22px; animation: studentTileIn 320ms cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--tile-index, 0) * 28ms); }
 @keyframes studentTileIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 .tile:hover { border-color: #bfe3cf; box-shadow: 0 14px 28px -18px rgba(14,80,50,.35); }
@@ -450,7 +450,7 @@
 .legendPending { color: var(--color-danger); }
 @media (max-width: 1200px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 960px) {
-    .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 20px; }
     .tile { min-height: 0; padding: 18px 18px 16px; border-radius: 18px; }
     .tileWho { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
     .tileName { font-size: 20px; }
