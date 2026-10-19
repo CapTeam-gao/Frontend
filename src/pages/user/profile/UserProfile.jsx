@@ -8,6 +8,7 @@ import { requestMyTeam } from "../../../api/teamApi";
 import { roleLabels } from "../../../constants/student";
 import useInView from "../../../hooks/useInView";
 import styles from "./UserProfile.module.css";
+import profileIcon from "../../../assets/images/userProfileIcon.webp";
 import { requestChangePassword, requestLogout } from "../../../api/authApi";
 import { getApiErrorMessage } from "../../../utils/apiError";
 import { getStudentNumberInfo } from "../../../utils/student";
@@ -178,6 +179,11 @@ const UserProfile = () => {
                 <div className={styles.inner}>
                     <section className={styles.accountHead}>
                         <div className={styles.accountMain}>
+                            <img
+                                className={styles.accountIcon}
+                                src={profileIcon}
+                                alt=""
+                            />
                             <div>
                                 <p data-reveal className={styles.accountRole}>
                                     학생 계정

@@ -104,7 +104,7 @@
     min-height: 52px;
     margin-top: 4px;
     border: 1px solid var(--g650);
-    border-radius: 999px;
+    border-radius: 12px;
     color: #fff;
     background: var(--g600);
     font-family: var(--font-family);

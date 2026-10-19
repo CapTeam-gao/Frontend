@@ -13,6 +13,7 @@ import {
 } from "../../../utils/capstoneLogTime";
 import useInView from "../../../hooks/useInView";
 import styles from "../../user/profile/UserProfile.module.css";
+import profileIcon from "../../../assets/images/adminProfileIcon.webp";
 
 const AdminProfile = () => {
     const navigate = useNavigate();
@@ -166,6 +167,11 @@ const AdminProfile = () => {
                 <div className={styles.inner}>
                     <section className={styles.accountHead}>
                         <div className={styles.accountMain}>
+                            <img
+                                className={styles.accountIcon}
+                                src={profileIcon}
+                                alt=""
+                            />
                             <div>
                                 <p data-reveal className={styles.accountRole}>
                                     관리자 계정
@@ -217,7 +223,9 @@ const AdminProfile = () => {
                                         관리 현황을 불러오고 있어요.
                                     </p>
                                 ) : (
-                                    <div className={styles.infoRows}>
+                                    <div
+                                        className={`${styles.infoRows} ${styles.adminStatusRows}`}
+                                    >
                                         {statusItems.map((item) => (
                                             <Link
                                                 key={item.label}
