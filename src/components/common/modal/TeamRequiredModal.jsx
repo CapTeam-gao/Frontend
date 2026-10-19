@@ -1,5 +1,6 @@
 import ModalOverlay from "./ModalOverlay";
 import styles from "./TeamRequiredModal.module.css";
+import teamRequiredIcon from "../../../assets/images/dashboardTeamModalIcon.webp";
 
 const TeamRequiredModal = ({
     label = "이용 안내",
@@ -9,6 +10,8 @@ const TeamRequiredModal = ({
     onClose,
     onAction,
 }) => {
+    const messageParts = message.split("되면 ");
+
     const handleAction = () => {
         onAction?.();
         onClose?.();
@@ -45,8 +48,16 @@ const TeamRequiredModal = ({
             </div>
 
             <div className={styles.content}>
+                <img className={styles.icon} src={teamRequiredIcon} alt="" />
                 <h2 id="team-required-modal-title">{title}</h2>
-                <p>{message}</p>
+                <p>
+                    {messageParts.length > 1 ? (
+                        <>
+                            {messageParts[0]}되면<br />
+                            {messageParts.slice(1).join("되면 ")}
+                        </>
+                    ) : message}
+                </p>
             </div>
 
             <div className={styles.actions}>

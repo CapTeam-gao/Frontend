@@ -4,7 +4,7 @@ import { ModalCloseContext } from "./modalCloseContext";
 import styles from "./ModalOverlay.module.css";
 
 // 퇴장 모션이 끝난 뒤에 onClose를 부른다 — 부모가 바로 언마운트하면 나가는 모션이 안 보인다
-const CLOSE_DURATION = 240;
+const CLOSE_DURATION = 300;
 
 const ModalOverlay = ({
     onClose,
@@ -13,17 +13,8 @@ const ModalOverlay = ({
     ariaLabelledby,
     children,
 }) => {
-    const [isShown, setIsShown] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const closeTimerRef = useRef(null);
-
-    // 마운트된 다음 프레임에 클래스를 붙여야 transition이 시작점부터 실행된다
-    useEffect(() => {
-        const frameId = requestAnimationFrame(() =>
-            requestAnimationFrame(() => setIsShown(true))
-        );
-
-        return () => cancelAnimationFrame(frameId);
-    }, []);
 
     useEffect(() => {
         return () => clearTimeout(closeTimerRef.current);
@@ -32,7 +23,7 @@ const ModalOverlay = ({
     const handleClose = useCallback(() => {
         if (closeTimerRef.current) return;
 
-        setIsShown(false);
+        setIsClosing(true);
         closeTimerRef.current = setTimeout(onClose, CLOSE_DURATION);
     }, [onClose]);
 
@@ -58,15 +49,13 @@ const ModalOverlay = ({
         <ModalCloseContext.Provider value={handleClose}>
             <div
                 className={`${overlayClassName} ${styles.overlay} ${
-                    isShown ? styles.overlayShown : ""
+                    isClosing ? styles.overlayClosing : ""
                 }`}
                 role="presentation"
                 onClick={handleClose}
             >
                 <section
-                    className={`${modalClassName} ${styles.panel} ${
-                        isShown ? styles.panelShown : ""
-                    }`}
+                    className={`${modalClassName} ${styles.panel} ${isClosing ? styles.panelClosing : ""}`}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby={ariaLabelledby}

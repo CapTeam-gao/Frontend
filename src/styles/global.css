@@ -1,23 +1,32 @@
 :root {
-    /* 로고의 결은 유지하되, 화면에서는 더 맑고 선명하게 보이는 그린 */
-    --color-primary: #078b57;
-    --color-primary-dark: #056f45;
-    --color-primary-bg: #eefaf4;
-    --color-primary-text: #086c45;
+    /* Design v3 로고 팔레트. 초록 글자에는 대비가 충분한 g700만 사용한다. */
+    --g50: #effaf3;
+    --g100: #d5f3e1;
+    --g500: #22b573;
+    --g600: #0e9f62;
+    --g650: #0b8f58;
+    --g700: #0a7f4f;
+    --g900: #0b3d27;
+
+    /* 기존 화면에서 쓰는 이름은 남겨 두고 새 팔레트에 연결한다. */
+    --color-primary: var(--g600);
+    --color-primary-dark: var(--g650);
+    --color-primary-bg: var(--g50);
+    --color-primary-text: var(--g700);
 
     --color-text-primary: #191f28;
     --color-text-secondary: #4e5968;
-    --color-text-muted: #8b95a1;
+    --color-text-muted: #6b7684;
 
     --color-bg: #ffffff;
-    --color-bg-secondary: #f2f4f6;
-    --color-bg-hover: #f2f4f6;
+    --color-bg-secondary: #f5f8f6;
+    --color-bg-hover: #f5f8f6;
 
-    --color-border: #e5e8eb;
-    --color-bubble: #f2f4f6;
+    --color-border: #e5ebe8;
+    --color-bubble: #f5f8f6;
 
-    --color-danger: #e42939;
-    --color-danger-dark: #c81e2c;
+    --color-danger: #c63a20;
+    --color-danger-dark: #a52e19;
 
     --font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
         sans-serif;
@@ -36,6 +45,7 @@
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
 
     --header-height: 96px;
     --page-padding: 32px;
@@ -63,6 +73,10 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+html {
+    overscroll-behavior-y: none;
 }
 
 body {
@@ -104,6 +118,22 @@ textarea {
 
 textarea {
     resize: none !important;
+}
+
+main {
+    animation: pageEnter 240ms var(--ease-out) both;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 .routeLoading {

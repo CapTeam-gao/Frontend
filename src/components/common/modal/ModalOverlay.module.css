@@ -1,22 +1,59 @@
-/* 등장·퇴장 모션. 배경·크기는 각 모달이 넘기는 className이 맡는다. */
-
 .overlay {
-    opacity: 0;
-    transition: opacity var(--duration-overlay) ease;
+    animation: overlayEnter var(--duration-overlay) ease both;
 }
 
-.overlayShown {
-    opacity: 1;
+.overlayClosing {
+    animation: overlayExit var(--duration-overlay) ease both;
 }
 
 .panel {
-    opacity: 0;
-    transform: translateY(16px) scale(0.99);
-    transition: opacity var(--duration-modal) var(--ease-out),
-        transform var(--duration-modal) var(--ease-out);
+    animation: modalEnter var(--duration-modal) var(--ease-out) both;
 }
 
-.panelShown {
-    opacity: 1;
-    transform: none;
+.panelClosing {
+    animation: modalExit var(--duration-modal) var(--ease-out) both;
+}
+
+@keyframes overlayEnter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayExit {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes modalExit {
+    from {
+        opacity: 1;
+        transform: none;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
 }
