@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import Button from "../../components/common/button/Button";
 import { requestLogin, requestMyInfo } from "../../api/authApi";
 import authStore from "../../store/authStore";
 import { isAdminRole } from "../../utils/accountRole";
@@ -106,6 +105,7 @@ const Login = () => {
                         id="userId"
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}
+                        aria-invalid={Boolean(error)}
                     />
                 </div>
                 <div className={styles.field}>
@@ -116,17 +116,13 @@ const Login = () => {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        aria-invalid={Boolean(error)}
                     />
                 </div>
-                {error && <p className={styles.error}>{error}</p>}
-                <Button
-                    type="submit"
-                    buttonSize="large"
-                    buttonColor="primary"
-                    disabled={isDisabled}
-                >
+                {error && <p className={styles.error} role="alert">{error}</p>}
+                <button className={styles.submitButton} type="submit" disabled={isDisabled}>
                     {isLoading ? "로그인 중..." : "로그인"}
-                </Button>
+                </button>
             </form>
         </main>
     );

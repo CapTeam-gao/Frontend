@@ -22,6 +22,11 @@ import {
 } from "../../../utils/survey";
 
 import { RatingRow } from "../../../components/user/survey/UserSurveyForm";
+import brandImage from "../../../assets/images/surveyBrandV3.webp";
+import technicalIcon from "../../../assets/images/surveyTechnicalIcon.webp";
+import collaborationIcon from "../../../assets/images/surveyCollaborationIcon.webp";
+import executionIcon from "../../../assets/images/surveyExecutionIcon.webp";
+import analysisIcon from "../../../assets/images/surveyAnalysisIcon.webp";
 
 const personalityQuestions = flattenQuestions(personalityGroups, "personality");
 const developmentQuestions = flattenQuestions(developmentGroups, "development");
@@ -500,6 +505,7 @@ const UserSurvey = () => {
             <div className={styles.page}>
                 <main className={styles.analysisPage}>
                     <div className={styles.analysisBox} aria-live="polite">
+                        <img className={styles.analysisIcon} src={analysisIcon} alt="" />
                         <p className={styles.analysisEyebrow}>설문 분석 중</p>
                         <h1 className={styles.analysisTitle}>
                             설문을 분석하고 있어요
@@ -523,12 +529,15 @@ const UserSurvey = () => {
             <main className={styles.body}>
                 <section className={styles.surveyNav}>
                     <div className={styles.navTop}>
-                        <div className={styles.progressSummary}>
+                        <div className={styles.navBrand}>
+                            <img src={brandImage} alt="" />
+                            <div className={styles.progressSummary}>
                             <strong>설문 진행률 {progressPercent}%</strong>
                             <span>
                                 필수 항목 {completedRequiredCount}/
                                 {totalRequiredCount}개 완료
                             </span>
+                            </div>
                         </div>
                         <button
                             type="button"
@@ -540,7 +549,11 @@ const UserSurvey = () => {
                     </div>
                     <div
                         className={styles.progressBar}
+                        role="progressbar"
                         aria-label={`설문 진행률 ${progressPercent}%`}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow={progressPercent}
                     >
                         <span style={{ width: `${progressPercent}%` }} />
                     </div>
@@ -586,6 +599,7 @@ const UserSurvey = () => {
                     <form className={styles.form} onSubmit={handleSubmit}>
                         <section className={styles.card}>
                             <div className={styles.cardHeader}>
+                                <img src={technicalIcon} alt="" />
                                 <span>STEP 1</span>
                                 <h2>기술 정보</h2>
                                 <p>
@@ -616,6 +630,7 @@ const UserSurvey = () => {
                                                     : ""
                                             }`}
                                             onClick={() => selectRole(role)}
+                                            aria-pressed={selectedRole === role}
                                         >
                                             {role}
                                         </button>
@@ -844,6 +859,7 @@ const UserSurvey = () => {
                                                 onClick={() =>
                                                     setLeaderPreference(value)
                                                 }
+                                                    aria-pressed={leaderPreference === value}
                                             >
                                                 {value}
                                             </button>
@@ -858,11 +874,12 @@ const UserSurvey = () => {
                             className={styles.card}
                         >
                             <div className={styles.cardHeader}>
+                                <img src={collaborationIcon} alt="" />
                                 <span>STEP 2</span>
                                 <h2>캡스톤 협업 성향</h2>
                                 <p>
                                     아이디어 정리, 소통, 역할 유연성, 일정 압박
-                                    대응, 집중 유지 성향을 확인합니다.
+                                    대응, 집중 유지 성향을 확인해요.
                                 </p>
                             </div>
 
@@ -890,11 +907,12 @@ const UserSurvey = () => {
                             className={styles.card}
                         >
                             <div className={styles.cardHeader}>
+                                <img src={executionIcon} alt="" />
                                 <span>STEP 3</span>
                                 <h2>캡스톤 실행 성향</h2>
                                 <p>
                                     개발 실행력, 문제 해결, 완성도, 발표, 리더십
-                                    정리 성향을 선택해주세요.
+                                    성향을 확인해요.
                                 </p>
                             </div>
 

@@ -8,15 +8,10 @@ export const RatingRow = forwardRef(function RatingRow(
     return (
         <li ref={ref} className={styles.questionItem}>
             <p className={styles.questionText}>
-                {number}. {question.text}
+                <b>{number}.</b> {question.text}
             </p>
 
             <div className={styles.scaleArea}>
-                <div className={styles.scaleLabels}>
-                    <span>전혀 그렇지 않다</span>
-                    <span>매우 그렇다</span>
-                </div>
-
                 <div
                     className={styles.scaleGroup}
                     aria-label={`${number}번 점수`}
@@ -33,6 +28,10 @@ export const RatingRow = forwardRef(function RatingRow(
                             <span>{score}</span>
                         </label>
                     ))}
+                </div>
+                <div className={styles.scaleLabels}>
+                    <span>전혀 그렇지 않다</span>
+                    <span>매우 그렇다</span>
                 </div>
             </div>
         </li>
