@@ -13,6 +13,7 @@ import {
     getRoleSummary,
 } from "../../../utils/teamRecommendation";
 import { getStudentNumberInfo } from "../../../utils/student";
+import { isSurveyCompleted } from "../../../utils/survey";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import ModalOverlay from "../../../components/common/modal/ModalOverlay";
@@ -88,6 +89,10 @@ const AdminTeamManualCreate = () => {
     const unassignedStudents = students.filter(
         (student) => !assignedUserIds.has(student.userId)
     );
+    const incompleteSurveyCount = students.filter(
+        (student) => !isSurveyCompleted(student.surveyCompleted)
+    ).length;
+    const hasIncompleteSurveys = incompleteSurveyCount > 0;
 
     const findStudent = (userId) =>
         students.find((student) => student.userId === userId);
@@ -189,6 +194,13 @@ const AdminTeamManualCreate = () => {
             }));
 
     const submitTeams = async () => {
+        if (hasIncompleteSurveys) {
+            setError(
+                `설문 미응답 학생 ${incompleteSurveyCount}명이 있어 팀을 생성할 수 없습니다.`
+            );
+            return;
+        }
+
         try {
             setIsSubmitting(true);
             setError("");
@@ -203,6 +215,8 @@ const AdminTeamManualCreate = () => {
     };
 
     const handleSubmitClick = () => {
+        if (hasIncompleteSurveys) return;
+
         if (unassignedStudents.length > 0) {
             setIsConfirmModalOpen(true);
             return;
@@ -215,7 +229,12 @@ const AdminTeamManualCreate = () => {
     const filledTeamCount = teams.filter(
         (team) => team.memberUserIds.length > 0
     ).length;
-    const canSubmit = filledTeamCount > 0 && !isSubmitting;
+    const canSubmit =
+        filledTeamCount > 0 &&
+        students.length > 0 &&
+        !isLoading &&
+        !hasIncompleteSurveys &&
+        !isSubmitting;
     const boardRef = useInView({ replayKey: `${isLoading}-${teams.length}` });
 
     return (
@@ -280,7 +299,11 @@ const AdminTeamManualCreate = () => {
                         </div>
                     </div>
 
-                    {!canSubmit && !isSubmitting && (
+                    {hasIncompleteSurveys && !isLoading ? (
+                        <p className={styles.submitHint} role="status">
+                            설문 미응답 학생 {incompleteSurveyCount}명이 있어 팀 생성이 잠겨 있어요. 모든 학생이 설문을 제출한 뒤 진행해주세요.
+                        </p>
+                    ) : !canSubmit && !isSubmitting && (
                         <p className={styles.submitHint}>
                             최소 한 팀 이상 학생을 배정해야 완료할 수 있어요.
                         </p>
