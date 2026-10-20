@@ -282,10 +282,12 @@ const AdminStudentDetailModal = ({
                             </>
                         ) : (
                             <>
-                                <div className={styles.titleRow}>
-                                    <h2 id="student-modal-title">{student.name}</h2>
-                                    <span className={styles.levelBadgeFailed}>설문 미제출</span>
-                                </div>
+                                {/* 제출한 학생의 직군 줄과 같은 자리에 상태를 둬서 이름과 붙지 않게 한다 */}
+                                <p className={`${styles.drawerRole} ${styles.drawerRolePending}`}>
+                                    <span className={styles.pendingDot} aria-hidden="true" />
+                                    설문 미제출
+                                </p>
+                                <h2 id="student-modal-title">{student.name}</h2>
                                 <p className={styles.metaLine}>{numberInfo.classText} · {student.userId}</p>
                             </>
                         )}

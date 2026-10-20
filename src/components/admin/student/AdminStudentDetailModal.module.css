@@ -566,6 +566,8 @@
 .modalHeader .meta > h2 { margin-top: 14px; font-size: 40px; font-weight: var(--font-weight-extrabold); letter-spacing: -.03em; }
 .drawerRole { display: flex; align-items: center; gap: 0; color: var(--color-text-secondary); font-size: 14px; font-weight: var(--font-weight-bold); }
 .drawerRole .roleDot, .drawerRole .roleDotMuted { margin-right: 8px; }
+.drawerRolePending { color: var(--color-danger); }
+.pendingDot { width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--color-danger); }
 .levelBadge, .levelBadgeFailed { display: none; }
 .titleRow .levelBadgeFailed { display: inline-flex; margin-top: 18px; color: var(--color-danger); }
 .metaLine { margin-top: 0; }
