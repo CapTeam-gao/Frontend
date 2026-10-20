@@ -129,15 +129,26 @@
 .markdownEditor :global(.w-md-editor-toolbar) {
     padding: 8px 10px !important;
     border-bottom: 1px solid var(--color-border) !important;
-    background-color: var(--color-bg-secondary) !important;
+    background-color: #ffffff !important;
+}
+
+.markdownEditor :global(.w-md-editor-toolbar li > button) {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+}
+.markdownEditor :global(.w-md-editor-toolbar li > button:hover) {
+    color: var(--color-primary-text);
+    background: transparent;
 }
 
 .markdownEditor :global(.w-md-editor-text) {
     height: 100% !important;
     min-height: 100% !important;
     font-family: var(--font-family) !important;
-    font-size: 17px !important;
-    line-height: 1.7 !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
 }
 
 .markdownEditor :global(.w-md-editor-preview) {
@@ -148,8 +159,8 @@
 .markdownEditor :global(.wmde-markdown) {
     background-color: transparent !important;
     font-family: var(--font-family) !important;
-    font-size: 17px !important;
-    line-height: 1.7 !important;
+    font-size: 16px !important;
+    line-height: 1.8 !important;
 }
 
 /* ── 중요 공지 ───────────────────────────────────── */
@@ -228,7 +239,7 @@
 
 .checkboxDesc b {
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    color: var(--color-danger);
 }
 
 /* ── 액션 ─────────────────────────────────────────── */
@@ -240,21 +251,22 @@
     color: var(--color-danger);
 }
 
-/* 안내는 왼쪽, 실행 버튼은 오른쪽 */
+/* 디자인 HTML처럼 버튼 다음에 안내 문구를 배치한다. */
 .actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
+    justify-content: flex-start;
+    gap: 10px;
     margin-top: 40px;
     padding-top: 32px;
 }
 
 .submitHint {
-    flex: 1;
-    min-width: 240px;
-    order: -1;
+    flex: none;
+    min-width: 0;
+    order: 0;
+    margin-left: 8px;
 }
 
 .submitButton {
@@ -350,4 +362,5 @@
         flex: 1;
         padding: 0 20px;
     }
+    .submitHint { flex-basis: 100%; margin: 4px 0 0; }
 }

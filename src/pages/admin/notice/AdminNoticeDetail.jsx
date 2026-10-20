@@ -15,6 +15,8 @@ import {
     requestNoticeDetail,
 } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
+import ChatAvatar from "../../../components/common/chat/ChatAvatar";
+import noticeIcon from "../../../assets/images/adminNoticeIcon.webp";
 import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
 
@@ -98,11 +100,16 @@ const AdminNoticeDetail = () => {
                         <div className={styles.columns}>
                             <article className={styles.article}>
                                 <header className={styles.articleHead}>
-                                    {(isImportant || teamResultParsed) && (
+                                    <div className={styles.headMain}>
                                         <div
                                             data-reveal
                                             className={styles.badgeRow}
                                         >
+                                            <span className={styles.typeBadge}>
+                                                {teamResultParsed
+                                                    ? "팀 배정 결과"
+                                                    : "일반 공지"}
+                                            </span>
                                             {isImportant && (
                                                 <span
                                                     className={
@@ -112,56 +119,53 @@ const AdminNoticeDetail = () => {
                                                     중요
                                                 </span>
                                             )}
-                                            {teamResultParsed && (
-                                                <span
-                                                    className={styles.typeBadge}
-                                                >
-                                                    팀 배정 결과
-                                                </span>
-                                            )}
                                         </div>
-                                    )}
-
-                                    <h1 data-reveal className={styles.title}>
-                                        {notice.title}
-                                    </h1>
-
-                                    <div
-                                        data-reveal
-                                        className={adminStyles.metaRow}
-                                    >
-                                        <p className={styles.metaLine}>
-                                            <span>{notice.writer}</span>
-                                            <i aria-hidden="true">·</i>
-                                            <time dateTime={notice.createdAt || undefined}>
-                                                {formatCreatedAt(notice.createdAt)}
-                                            </time>
-                                            <i aria-hidden="true">·</i>
-                                            <span>{teamResultParsed ? "팀 배정 결과" : "일반 공지"}</span>
-                                        </p>
-
-                                        <div className={adminStyles.actions}>
-                                            <Link
-                                                to={`/admin/notice/${id}/edit`}
-                                                className={
-                                                    adminStyles.outlineButton
-                                                }
-                                            >
-                                                수정
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                className={
-                                                    adminStyles.dangerButton
-                                                }
-                                                onClick={() =>
-                                                    setIsDeleteModalOpen(true)
-                                                }
-                                            >
-                                                삭제
-                                            </button>
+    
+                                        <h1 data-reveal className={styles.title}>
+                                            {notice.title}
+                                        </h1>
+    
+                                        <div
+                                            data-reveal
+                                            className={adminStyles.metaRow}
+                                        >
+                                            <p className={styles.metaLine}>
+                                                <ChatAvatar name={notice.writer} size={36} />
+                                                <b>{notice.writer}</b>
+                                                <i aria-hidden="true">·</i>
+                                                <time dateTime={notice.createdAt || undefined}>
+                                                    {formatCreatedAt(notice.createdAt)}
+                                                </time>
+                                            </p>
+    
+                                            <div className={adminStyles.actions}>
+                                                <Link
+                                                    to={`/admin/notice/${id}/edit`}
+                                                    className={
+                                                        adminStyles.outlineButton
+                                                    }
+                                                >
+                                                    수정
+                                                </Link>
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        adminStyles.dangerButton
+                                                    }
+                                                    onClick={() =>
+                                                        setIsDeleteModalOpen(true)
+                                                    }
+                                                >
+                                                    삭제
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    <img
+                                        className={styles.headIcon}
+                                        src={noticeIcon}
+                                        alt=""
+                                    />
                                 </header>
 
                                 <div className={styles.contentArea}>

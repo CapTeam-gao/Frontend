@@ -10,6 +10,8 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestNoticeDetail } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
+import ChatAvatar from "../../../components/common/chat/ChatAvatar";
+import noticeIcon from "../../../assets/images/dashboardNoticeIcon.webp";
 import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
 import authStore from "../../../store/authStore";
@@ -90,11 +92,16 @@ const UserNoticeDetail = () => {
                         <div className={styles.columns}>
                             <article className={styles.article}>
                                 <header className={styles.articleHead}>
-                                    {(isImportant || teamResultParsed) && (
+                                    <div className={styles.headMain}>
                                         <div
                                             data-reveal
                                             className={styles.badgeRow}
                                         >
+                                            <span className={styles.typeBadge}>
+                                                {teamResultParsed
+                                                    ? "팀 배정 결과"
+                                                    : "일반 공지"}
+                                            </span>
                                             {isImportant && (
                                                 <span
                                                     className={
@@ -104,29 +111,26 @@ const UserNoticeDetail = () => {
                                                     중요
                                                 </span>
                                             )}
-                                            {teamResultParsed && (
-                                                <span
-                                                    className={styles.typeBadge}
-                                                >
-                                                    팀 배정 결과
-                                                </span>
-                                            )}
                                         </div>
-                                    )}
-
-                                    <h1 data-reveal className={styles.title}>
-                                        {notice.title}
-                                    </h1>
-
-                                    <p data-reveal className={styles.metaLine}>
-                                        <span>{notice.writer}</span>
-                                        <i aria-hidden="true">·</i>
-                                        <time dateTime={notice.createdAt || undefined}>
-                                            {formatCreatedAt(notice.createdAt)}
-                                        </time>
-                                        <i aria-hidden="true">·</i>
-                                        <span>{teamResultParsed ? "팀 배정 결과" : "일반 공지"}</span>
-                                    </p>
+    
+                                        <h1 data-reveal className={styles.title}>
+                                            {notice.title}
+                                        </h1>
+    
+                                        <p data-reveal className={styles.metaLine}>
+                                            <ChatAvatar name={notice.writer} size={36} />
+                                            <b>{notice.writer}</b>
+                                            <i aria-hidden="true">·</i>
+                                            <time dateTime={notice.createdAt || undefined}>
+                                                {formatCreatedAt(notice.createdAt)}
+                                            </time>
+                                        </p>
+                                    </div>
+                                    <img
+                                        className={styles.headIcon}
+                                        src={noticeIcon}
+                                        alt=""
+                                    />
                                 </header>
 
                                 <div className={styles.contentArea}>

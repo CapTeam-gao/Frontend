@@ -10,9 +10,9 @@
     padding: 0 var(--page-padding) 112px;
 }
 
-/* 폭은 넓게 쓰되 본문 줄 길이는 읽기 좋게 유지 */
+/* 1120px: 한글 18px 기준 한 줄 55자 안팎이라 넓게 써도 읽기 편하다 */
 .inner {
-    max-width: 880px;
+    max-width: 1120px;
     margin: 0 auto;
 }
 
@@ -39,24 +39,42 @@
     min-width: 0;
 }
 
+/* 머리: 왼쪽 종류·제목·작성자, 오른쪽 공지 아이콘 */
 .articleHead {
-    padding: 28px 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 28px 0 32px;
+}
+
+.headMain {
+    flex: 1;
+    min-width: 0;
+}
+
+.headIcon {
+    flex-shrink: 0;
+    width: 136px;
+    height: 136px;
+    margin-right: 8px;
+    object-fit: contain;
 }
 
 .badgeRow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 8px 16px;
+    margin-bottom: 14px;
 }
 
 .importantBadge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     padding: 0;
-    font-size: var(--font-size-sm);
+    font-size: 15px;
     font-weight: var(--font-weight-bold);
     color: var(--color-danger);
 }
@@ -64,9 +82,9 @@
 .typeBadge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     padding: 0;
-    font-size: var(--font-size-sm);
+    font-size: 15px;
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
@@ -74,8 +92,8 @@
 .importantBadge::before,
 .typeBadge::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: currentColor;
 }
@@ -85,18 +103,24 @@
     font-weight: var(--font-weight-extrabold);
     line-height: 1.35;
     letter-spacing: -0.03em;
+    word-break: keep-all;
 }
 
 .metaLine {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: 20px;
     font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
+}
+
+.metaLine b {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
 }
 
 .metaLine i {
@@ -104,32 +128,46 @@
     font-style: normal;
 }
 
+/* 본문 카드: 흰 바탕 + 옅은 테두리 */
 .contentArea {
-    padding: 36px 0 0;
+    padding: 48px 56px 52px;
+    border: 1px solid #e3ece7;
+    border-radius: 28px;
+    background-color: #ffffff;
 }
 
 .articleFooter {
-    margin-top: 64px;
-    padding-top: 32px;
-    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
 }
 
+/* 흰 볼록 버튼 */
 .footerLink {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 40px;
-    padding: 0 16px;
-    border: 1px solid var(--color-border);
+    min-height: 48px;
+    padding: 0 22px;
+    border: 1px solid #dfe6e2;
     border-radius: 999px;
-    color: var(--color-primary-text);
-    font-size: 14px;
+    background-color: #ffffff;
+    color: var(--color-text-primary);
+    font-size: 15px;
     font-weight: var(--font-weight-bold);
-    box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 #edf2ef;
+    box-shadow: inset 0 1px 0 #ffffff, inset 0 -3px 0 #edf2ef;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .footerLink:hover {
-    background: var(--color-bg-secondary);
+    border-color: #b9dcc8;
+    color: var(--color-primary-text);
+}
+
+.footerLink:active {
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* MDEditor 마크다운 본문 */
@@ -137,8 +175,8 @@
     background-color: transparent !important;
     color: var(--color-text-primary) !important;
     font-family: var(--font-family) !important;
-    font-size: 17px !important;
-    line-height: 1.75 !important;
+    font-size: 18px !important;
+    line-height: 1.9 !important;
 }
 
 .markdown h1,
@@ -164,9 +202,18 @@
 
 .markdown p,
 .markdown li {
-    font-size: 17px !important;
-    line-height: 1.75 !important;
+    font-size: 18px !important;
+    line-height: 1.9 !important;
 }
+
+.markdown h2 { display: flex !important; align-items: center !important; gap: 10px !important; margin: 36px 0 12px !important; font-size: 22px !important; letter-spacing: -0.02em !important; }
+.markdown h2::before { flex: none; width: 4px; height: 20px; border-radius: 999px; background: var(--g500); content: ""; }
+.markdown > :first-child { margin-top: 0 !important; }
+.markdown strong { color: var(--color-text-primary) !important; font-weight: var(--font-weight-extrabold) !important; }
+.markdown p + p { margin-top: 14px !important; }
+.markdown ul { margin: 10px 0 0 !important; padding-left: 0 !important; list-style: none !important; }
+.markdown li { position: relative; margin-top: 8px !important; padding-left: 18px !important; }
+.markdown li::before { position: absolute; top: .75em; left: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--g500); content: ""; }
 
 .markdown ul,
 .markdown ol {
@@ -190,14 +237,34 @@
     color: var(--color-primary-text) !important;
 }
 
+/* 중요 공지 안내: 배경 없이 옅은 빨간 테두리 + 느낌표 원 */
 .importantNote {
-    margin-top: 40px;
-    padding: 2px 0 2px 14px;
-    border-left: 2px solid var(--color-danger);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 48px;
+    padding: 16px 20px;
+    border: 1px solid #f2cfc6;
+    border-radius: 16px;
     font-size: 15px;
     font-weight: var(--font-weight-semibold);
     line-height: 1.6;
-    color: var(--color-primary-text);
+    color: var(--color-danger);
+    word-break: keep-all;
+}
+
+.importantNote::before {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-danger);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: var(--font-weight-extrabold);
+    content: "!";
 }
 
 /* ── 반응형 ───────────────────────────────────────── */
@@ -211,9 +278,23 @@
         font-size: 28px;
     }
 
+    .articleHead {
+        padding: 24px 0 24px;
+    }
+
+    .headIcon {
+        display: none;
+    }
+
+    .contentArea {
+        padding: 28px 20px 32px;
+        border-radius: 22px;
+    }
+
     .markdown,
     .markdown p,
     .markdown li {
-        font-size: var(--font-size-lg) !important;
+        font-size: 16px !important;
+        line-height: 1.9 !important;
     }
 }
