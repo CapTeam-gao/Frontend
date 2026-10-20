@@ -10,7 +10,8 @@ import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestNoticeList } from "../../../api/noticeApi";
-import noticeIcon from "../../../assets/images/dashboardNoticeIcon.webp";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
+import noticeEmptyIcon from "../../../assets/images/noticeEmptyV3.webp";
 
 const NOTICE_PER_PAGE = 6;
 
@@ -114,7 +115,7 @@ const UserNoticeList = () => {
                     />
                 ) : notices.length === 0 ? (
                     <div className={styles.emptyState}>
-                        <img src={noticeIcon} alt="" aria-hidden="true" />
+                        <img src={noticeEmptyIcon} alt="" aria-hidden="true" />
                         <h2>아직 등록된 공지가 없어요</h2>
                         <p>새 공지가 올라오면 여기에 보여요.</p>
                     </div>

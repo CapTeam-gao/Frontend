@@ -30,8 +30,40 @@
     color: var(--color-text-primary);
 }
 
+/* 머리: 공지 상세와 같은 모양(아이콘 + 초록 점 라벨) */
+.pageHead {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.headIcon {
+    flex-shrink: 0;
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-text);
+}
+
+.eyebrow::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--g500);
+    content: "";
+}
+
 .headline {
-    margin-top: 20px;
+    margin-top: 8px;
     font-size: 34px;
     font-weight: var(--font-weight-extrabold);
     letter-spacing: -0.03em;
@@ -363,4 +395,16 @@
         padding: 0 20px;
     }
     .submitHint { flex-basis: 100%; margin: 4px 0 0; }
+}
+
+@media (max-width: 900px) {
+    .pageHead {
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .headIcon {
+        width: 64px;
+        height: 64px;
+    }
 }

@@ -10,7 +10,8 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { NoticeListSkeleton } from "../../user/notice/UserNoticeList";
 import { requestNoticeList } from "../../../api/noticeApi";
-import noticeIcon from "../../../assets/images/adminNoticeIcon.webp";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
+import noticeEmptyIcon from "../../../assets/images/noticeEmptyV3.webp";
 
 const NOTICE_PER_PAGE = 6;
 
@@ -106,7 +107,7 @@ const AdminNoticeList = () => {
                     />
                 ) : notices.length === 0 ? (
                     <div className={styles.emptyState}>
-                        <img src={noticeIcon} alt="" aria-hidden="true" />
+                        <img src={noticeEmptyIcon} alt="" aria-hidden="true" />
                         <h2>아직 작성한 공지가 없어요</h2>
                         <p>첫 공지를 작성하면 학생 화면에 바로 보여요.</p>
                     </div>

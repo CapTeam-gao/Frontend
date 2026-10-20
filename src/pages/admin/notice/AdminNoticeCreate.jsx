@@ -8,6 +8,7 @@ import Header from "../../../components/common/header/Header";
 import AppFooter from "../../../components/common/footer/AppFooter";
 import NoticeForm from "../../../components/common/notice/NoticeForm";
 import styles from "./AdminNoticeCreate.module.css";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
 import { requestCreateNotice } from "../../../api/noticeApi";
 import useNoticeForm from "../../../hooks/useNoticeForm";
 
@@ -34,10 +35,20 @@ const AdminNoticeCreate = () => {
                         </Link>
                     </div>
 
-                    <h1 className={styles.headline}>새 공지 작성</h1>
-                    <p className={styles.subline}>
-                        등록하면 학생 홈과 공지 목록에 바로 올라가요.
-                    </p>
+                    <div className={styles.pageHead}>
+                        <img
+                            className={styles.headIcon}
+                            src={noticeIcon}
+                            alt=""
+                        />
+                        <div>
+                            <p className={styles.eyebrow}>공지</p>
+                            <h1 className={styles.headline}>새 공지 작성</h1>
+                            <p className={styles.subline}>
+                                등록하면 학생 홈과 공지 목록에 바로 올라가요.
+                            </p>
+                        </div>
+                    </div>
 
                     <NoticeForm
                         {...form}

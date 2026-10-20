@@ -8,6 +8,7 @@ import MDEditor from "@uiw/react-md-editor";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import styles from "./AdminNoticeCreate.module.css";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
 import { requestNoticeDetail, requestUpdateNotice } from "../../../api/noticeApi";
 import useNoticeForm from "../../../hooks/useNoticeForm";
 
@@ -81,10 +82,20 @@ const AdminNoticeEdit = () => {
                         </Link>
                     </div>
 
-                    <h1 className={styles.headline}>공지 수정</h1>
-                    <p className={styles.subline}>
-                        수정한 내용은 저장하는 즉시 반영돼요.
-                    </p>
+                    <div className={styles.pageHead}>
+                        <img
+                            className={styles.headIcon}
+                            src={noticeIcon}
+                            alt=""
+                        />
+                        <div>
+                            <p className={styles.eyebrow}>공지</p>
+                            <h1 className={styles.headline}>공지 수정</h1>
+                            <p className={styles.subline}>
+                                수정한 내용은 저장하는 즉시 반영돼요.
+                            </p>
+                        </div>
+                    </div>
 
                     {isLoading ? (
                         <div className={styles.field}>

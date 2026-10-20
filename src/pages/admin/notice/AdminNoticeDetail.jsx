@@ -16,7 +16,7 @@ import {
 } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
 import ChatAvatar from "../../../components/common/chat/ChatAvatar";
-import noticeIcon from "../../../assets/images/adminNoticeIcon.webp";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
 import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
 

@@ -11,7 +11,7 @@ import useInView from "../../../hooks/useInView";
 import { requestNoticeDetail } from "../../../api/noticeApi";
 import { formatCreatedAt } from "../../../utils/format";
 import ChatAvatar from "../../../components/common/chat/ChatAvatar";
-import noticeIcon from "../../../assets/images/dashboardNoticeIcon.webp";
+import noticeIcon from "../../../assets/images/noticeBoardV3.webp";
 import TeamResultNoticeDetail from "../../../components/common/notice/TeamResultNoticeDetail";
 import { parseTeamResultNoticeContent } from "../../../utils/teamResultNotice";
 import authStore from "../../../store/authStore";
