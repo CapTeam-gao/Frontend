@@ -21,18 +21,25 @@ const ChatChannel = ({
         <div
             className={`${styles.channelRow} ${
                 selected ? styles.selected : ""
-            }`}
+            } ${unreadCount > 0 ? styles.hasUnread : ""}`}
         >
             <button
                 type="button"
                 className={styles.channelButton}
+                aria-current={selected ? "true" : undefined}
                 onClick={onClick}
             >
+                <span className={styles.channelHash} aria-hidden="true">
+                    #
+                </span>
                 <span className={styles.channelName}>
                     {channel.channelName}
                 </span>
                 {unreadCount > 0 && (
-                    <span className={styles.unreadBadge}>
+                    <span
+                        className={styles.unreadCount}
+                        aria-label={`안 읽은 메시지 ${unreadCount}개`}
+                    >
                         {unreadCount > 99 ? "99+" : unreadCount}
                     </span>
                 )}

@@ -13,7 +13,10 @@ import useAdminChatListRealtime from "../../../hooks/useAdminChatListRealtime";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
+import ChatAvatar from "../../../components/common/chat/ChatAvatar";
 import styles from "./AdminChatList.module.css";
+import chatTitleImage from "../../../assets/images/adminChatTitleV3.webp";
+import chatEmptyImage from "../../../assets/images/adminChatEmptyV3.webp";
 
 const GRADE_ORDER = ["GRADE_2", "GRADE_3"];
 const ROOM_REFRESH_DELAY = 150;
@@ -173,7 +176,11 @@ const AdminChatList = () => {
                     return {
                         ...room,
                         grade: team?.grade ?? "",
-                        memberCount: team?.members?.length ?? 0,
+                        // 팀 목록 조회가 실패하면 인원을 모르므로 빈 목록으로 두고 인원 줄을 숨긴다.
+                        members: team?.members ?? [],
+                        projectTeamName: team?.serviceName
+                            ? team.projectTeamName
+                            : null,
                         lastMessage: preview.lastMessage,
                         unreadCount: preview.unreadCount,
                     };
@@ -336,16 +343,23 @@ const AdminChatList = () => {
 
             <main className={styles.body}>
                 <section className={styles.pageHead}>
-                    <div>
-                        <p className={styles.eyebrow}>채팅 관리</p>
-                        <h1 className={styles.headline}>
-                            팀별 대화를
-                            <br />
-                            확인할 수 있어요
-                        </h1>
-                        <p className={styles.subline}>
-                            팀을 누르면 그 팀의 채팅방으로 이동해요.
-                        </p>
+                    <div className={styles.titleBlock}>
+                        <img
+                            className={styles.titleImage}
+                            src={chatTitleImage}
+                            alt=""
+                        />
+                        <div>
+                            <p className={styles.eyebrow}>채팅 관리</p>
+                            <h1 className={styles.headline}>
+                                팀별 대화를
+                                <br />
+                                확인할 수 있어요
+                            </h1>
+                            <p className={styles.subline}>
+                                팀을 누르면 그 팀의 채팅방으로 이동해요.
+                            </p>
+                        </div>
                     </div>
 
                     {!isLoading && rooms.length > 0 && (
@@ -359,6 +373,8 @@ const AdminChatList = () => {
                     )}
                 </section>
 
+                {/* 채팅방이 하나도 없으면 고를 것이 없으니 필터·검색을 숨긴다 */}
+                {(isLoading || error || rooms.length > 0) && (
                 <div className={styles.controls}>
                     {gradeTabs.length > 0 && (
                         <div className={styles.segments}>
@@ -404,16 +420,21 @@ const AdminChatList = () => {
                         />
                     </div>
                 </div>
+                )}
 
                 {isLoading ? (
                     <div className={styles.list}>
                         {[0, 1, 2].map((index) => (
-                            <div key={index} className={styles.skeletonRow}>
-                                <Skeleton width={208} height={24} />
+                            <div key={index} className={styles.skeletonTile}>
+                                <Skeleton width={64} height={18} />
                                 <Skeleton
-                                    width={320}
-                                    height={20}
-                                    style={{ marginTop: 12 }}
+                                    width={120}
+                                    height={28}
+                                    style={{ marginTop: 16 }}
+                                />
+                                <Skeleton
+                                    height={56}
+                                    style={{ marginTop: 24 }}
                                 />
                             </div>
                         ))}
@@ -423,6 +444,12 @@ const AdminChatList = () => {
                         variant="error"
                         title="채팅방 목록을 불러오지 못했어요"
                         description={error}
+                    />
+                ) : rooms.length === 0 ? (
+                    <EmptyState
+                        icon={chatEmptyImage}
+                        title="아직 채팅방이 없어요"
+                        description="팀 구성을 승인하면 팀마다 채팅방이 만들어져요."
                     />
                 ) : visibleRooms.length === 0 ? (
                     <EmptyState
@@ -443,76 +470,118 @@ const AdminChatList = () => {
                     />
                 ) : (
                     <div className={styles.list} ref={listRef}>
-                        {visibleRooms.map((room) => (
-                            <button
-                                key={room.id}
-                                type="button"
-                                data-reveal
-                                className={styles.row}
-                                onClick={() =>
-                                    navigate(`/admin/chat/${room.id}`)
-                                }
-                            >
-                                <span className={styles.rowMain}>
-                                    <span className={styles.rowTitleLine}>
-                                        <span className={styles.rowTeam}>
-                                            {room.teamName}
+                        {visibleRooms.map((room) => {
+                            const members = room.members ?? [];
+                            const lastMessage = room.lastMessage;
+                            return (
+                                <button
+                                    key={room.id}
+                                    type="button"
+                                    data-reveal
+                                    className={styles.tile}
+                                    onClick={() =>
+                                        navigate(`/admin/chat/${room.id}`)
+                                    }
+                                >
+                                    <span className={styles.tileTop}>
+                                        <span className={styles.tileGrade}>
+                                            채널 {room.channels?.length ?? 0}개
                                         </span>
-                                        {room.grade && (
+                                        {room.unreadCount > 0 ? (
+                                            <span className={styles.tileUnread}>
+                                                새 메시지{" "}
+                                                {room.unreadCount > 99
+                                                    ? "99+"
+                                                    : room.unreadCount}
+                                            </span>
+                                        ) : (
+                                            lastMessage && (
+                                                <span className={styles.tileRead}>
+                                                    모두 읽음
+                                                </span>
+                                            )
+                                        )}
+                                    </span>
+
+                                    <span className={styles.tileName}>
+                                        {room.teamName}
+                                        {room.projectTeamName && (
                                             <span
-                                                className={styles.gradeBadge}
+                                                className={styles.tileProject}
                                             >
-                                                {gradeLabels[room.grade] ??
-                                                    room.grade}
+                                                {room.projectTeamName}
                                             </span>
                                         )}
-                                        {room.unreadCount > 0 && (
-                                            <span
-                                                className={styles.unreadDot}
-                                                aria-label="읽지 않은 메시지"
-                                            />
-                                        )}
                                     </span>
 
-                                    <span
-                                        className={
-                                            room.lastMessage
-                                                ? styles.rowPreview
-                                                : styles.rowPreviewEmpty
-                                        }
-                                    >
-                                        {room.lastMessage ? (
-                                            <>
-                                                <b>
-                                                    {
-                                                        room.lastMessage
-                                                            .senderName
-                                                    }
-                                                    :
-                                                </b>{" "}
-                                                {room.lastMessage.message ??
-                                                    "파일을 보냈습니다."}
-                                            </>
-                                        ) : (
-                                            "아직 대화가 없어요."
-                                        )}
-                                    </span>
-                                </span>
-
-                                <span className={styles.rowMeta}>
-                                    {room.lastMessage && (
-                                        <span className={styles.rowTime}>
-                                            {formatChatTime(
-                                                room.lastMessage.createdAt
-                                            )}
+                                    {members.length > 0 && (
+                                        <span className={styles.tileMembers}>
+                                            <span className={styles.avatarStack}>
+                                                {members
+                                                    .slice(0, 5)
+                                                    .map((member, index) => (
+                                                        <ChatAvatar
+                                                            key={`${member.name}-${index}`}
+                                                            name={member.name}
+                                                            size={30}
+                                                            className={
+                                                                styles.stackAvatar
+                                                            }
+                                                        />
+                                                    ))}
+                                            </span>
+                                            팀원 {members.length}명
                                         </span>
                                     )}
-                                    <span className={styles.rowMembers}>
-                                        팀원 {room.memberCount}명
+
+                                    <span className={styles.preview}>
+                                        {lastMessage ? (
+                                            <>
+                                                <ChatAvatar
+                                                    name={lastMessage.senderName}
+                                                    size={32}
+                                                />
+                                                <span
+                                                    className={styles.previewBody}
+                                                >
+                                                    <span
+                                                        className={
+                                                            styles.previewMeta
+                                                        }
+                                                    >
+                                                        <b>
+                                                            {
+                                                                lastMessage.senderName
+                                                            }
+                                                        </b>
+                                                        {formatChatTime(
+                                                            lastMessage.createdAt
+                                                        )}
+                                                    </span>
+                                                    <span
+                                                        className={
+                                                            styles.previewText
+                                                        }
+                                                    >
+                                                        {lastMessage.message ??
+                                                            "파일을 보냈습니다."}
+                                                    </span>
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className={styles.previewEmpty}>
+                                                아직 대화가 없어요.
+                                            </span>
+                                        )}
                                     </span>
-                                </span>
-                            </button>
-                        ))}
+
+                                    <span className={styles.tileFoot}>
+                                        채팅방 열기
+                                        <span aria-hidden="true">→</span>
+                                    </span>
+                                </button>
+                            );
+                        })}
                     </div>
                 )}
             </main>

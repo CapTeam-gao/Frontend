@@ -1,13 +1,22 @@
+/* 상대 메시지는 왼쪽 50px에 아바타 자리를 두고, 묶음 첫 줄에만 아바타를 그린다 */
 .messageItem {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
-    max-width: 640px;
+    max-width: 720px;
+    padding-left: 50px;
+}
+
+.avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .messageItem.timeSeparated {
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 .messageItem:not(.timeSeparated) {
@@ -19,6 +28,7 @@
 }
 
 .messageItem.mine {
+    padding-left: 0;
     align-self: flex-end;
     align-items: flex-end;
     text-align: right;
@@ -27,12 +37,12 @@
 .messageMeta {
     display: flex;
     align-items: center;
-    gap: 6px;
-    min-height: 18px;
-    margin-bottom: 6px;
+    gap: 8px;
+    min-height: 20px;
+    margin-bottom: 8px;
     color: var(--color-text-muted);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
 }
 
 .mine .messageMeta {
@@ -41,8 +51,14 @@
 
 .senderName {
     color: var(--color-text-primary);
-    font-size: var(--font-size-md);
+    font-size: 15px;
     font-weight: var(--font-weight-bold);
+}
+
+.senderRole {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
 }
 
 .messageBody {
@@ -63,16 +79,20 @@
     max-width: 100%;
 }
 
+/* 상대 말풍선은 흰 바탕 + 옅은 테두리, 내 말풍선은 초록. 묶음의 첫 말풍선만 꼬리 쪽 모서리를 덜 둥글게 한다. */
 .messageBubble {
-    padding: 10px 16px;
-    border-radius: 18px;
-    background-color: var(--color-bubble);
+    padding: 11px 16px;
+    border: 1px solid #e3e8e6;
+    border-radius: 20px;
+    background-color: #ffffff;
     color: var(--color-text-primary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-regular);
     line-height: 1.6;
     text-align: left;
-    word-break: break-word;
+    /* 한글은 단어 단위로 줄바꿈하고, 공백 없는 긴 문자열만 어디서든 끊는다 */
+    word-break: keep-all;
+    overflow-wrap: anywhere;
 }
 
 .messageLink {
@@ -87,9 +107,19 @@
     color: var(--color-primary-dark);
 }
 
+.timeSeparated .messageBubble {
+    border-top-left-radius: 6px;
+}
+
 .mine .messageBubble {
+    border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: #ffffff;
+}
+
+.mine.timeSeparated .messageBubble {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 6px;
 }
 
 .flash .messageBubble {
@@ -98,10 +128,12 @@
 
 @keyframes pinFlash {
     0% {
-        background-color: var(--color-primary-bg);
+        border-color: var(--g500);
+        background-color: #ffffff;
     }
     100% {
-        background-color: var(--color-bubble);
+        border-color: #e3e8e6;
+        background-color: #ffffff;
     }
 }
 
@@ -133,23 +165,24 @@
     gap: 10px;
     max-width: 320px;
     padding: 10px 14px;
-    border: none;
+    border: 1px solid #e3e8e6;
     border-radius: 16px;
-    background-color: var(--color-bubble);
+    background-color: #ffffff;
     color: var(--color-text-primary);
     font-family: var(--font-family);
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .mine .fileMessage {
+    border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: #ffffff;
 }
 
 .fileMessage:hover {
-    background-color: var(--color-border);
+    border-color: var(--g500);
 }
 
 .mine .fileMessage:hover {
@@ -209,9 +242,9 @@
     display: block;
     max-width: min(320px, 100%);
     padding: 0;
-    border: none;
-    border-radius: 12px;
-    background-color: var(--color-bubble);
+    border: 1px solid #e3e8e6;
+    border-radius: 14px;
+    background-color: #ffffff;
     cursor: pointer;
 }
 
@@ -242,8 +275,8 @@
     flex-shrink: 0;
     align-self: flex-end;
     color: var(--color-text-muted);
-    font-size: 10px;
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
     white-space: nowrap;
 }
 
@@ -256,13 +289,15 @@
     transition: opacity var(--transition);
 }
 
-.messageItem:hover .messageActions {
+.messageItem:hover .messageActions,
+.messageItem:focus-within .messageActions {
     visibility: visible;
     opacity: 1;
 }
 
 .messageActions button {
-    padding: 4px 6px;
+    min-height: 28px;
+    padding: 0 6px;
     border: 0;
     background-color: transparent;
     color: var(--color-text-muted);
@@ -291,7 +326,7 @@
     min-width: 280px;
     padding: 10px;
     border: 1px solid var(--color-primary);
-    border-radius: 10px;
+    border-radius: 16px;
     background-color: #ffffff;
 }
 
@@ -301,18 +336,17 @@
     max-height: 140px;
     padding: 9px 10px;
     resize: none;
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: 8px;
     background-color: #ffffff;
     color: var(--color-text-primary);
     font-family: var(--font-family);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.6;
 }
 
 .inlineEditBox textarea:focus {
-    border-color: var(--color-primary);
     outline: none;
 }
 
@@ -328,25 +362,28 @@
 }
 
 .deleteModal {
-    width: min(380px, 100%);
-    padding: 24px;
-    border-radius: 14px;
+    width: min(400px, 100%);
+    padding: 32px;
+    border-radius: 24px;
     background-color: #ffffff;
+    box-shadow: 0 24px 64px rgba(17, 24, 39, 0.16);
+    text-align: left;
 }
 
 .deleteModal strong {
     display: block;
     color: var(--color-text-primary);
-    font-size: var(--font-size-lg);
+    font-size: 20px;
     font-weight: var(--font-weight-bold);
 }
 
 .deleteModal p {
-    margin: 8px 0 0;
+    margin: 10px 0 0;
     color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.45;
+    font-size: 15px;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.6;
+    word-break: keep-all;
 }
 
 .panelActions {
@@ -358,40 +395,59 @@
 }
 
 .panelActions button {
-    height: 36px;
-    padding: 0 14px;
-    border: 1.5px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    background-color: #ffffff;
-    color: var(--color-text-primary);
-    font-family: var(--font-family);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    cursor: pointer;
-}
-
-.panelActions button:hover {
-    border-color: var(--color-text-muted);
-}
-
-.panelActions .primaryButton {
+    height: 40px;
+    padding: 0 16px;
     border: none;
+    border-radius: 999px;
+    background: none;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease,
+        transform 0.1s ease;
+}
+
+.panelActions button:hover:not(:disabled) {
+    color: var(--color-text-primary);
+}
+
+.panelActions .primaryButton,
+.panelActions .dangerButton {
+    padding: 0 20px;
+    border: 1px solid var(--g650);
     background-color: var(--color-primary);
     color: #ffffff;
+    font-weight: var(--font-weight-bold);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.14);
 }
 
-.panelActions .primaryButton:hover {
+.panelActions .primaryButton:hover:not(:disabled) {
     background-color: var(--color-primary-dark);
+    color: #ffffff;
 }
 
 .panelActions .dangerButton {
-    border: none;
+    border-color: var(--color-danger-dark);
     background-color: var(--color-danger);
+}
+
+.panelActions .dangerButton:hover:not(:disabled) {
+    background-color: var(--color-danger-dark);
     color: #ffffff;
 }
 
-.panelActions .dangerButton:hover {
-    background-color: var(--color-danger-dark);
+.panelActions .primaryButton:active:not(:disabled),
+.panelActions .dangerButton:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.panelActions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 .actionError {
@@ -471,6 +527,15 @@
 @media (max-width: 560px) {
     .messageItem {
         max-width: 100%;
+        padding-left: 42px;
+    }
+
+    .messageItem.mine {
+        padding-left: 0;
+    }
+
+    .avatar {
+        --avatar-size: 32px !important;
     }
 
     .messageBubble {
@@ -492,5 +557,12 @@
     .messageActions {
         visibility: visible;
         opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flash .messageBubble,
+    .flash.mine .messageBubble {
+        animation: none;
     }
 }

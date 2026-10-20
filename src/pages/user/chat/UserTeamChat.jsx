@@ -15,6 +15,7 @@ import {
 } from "../../../api/chatApi";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import styles from "./UserTeamChat.module.css";
+import chatEmptyIcon from "../../../assets/images/chatEmptyV3.webp";
 
 const FLASH_DURATION_MS = 1100;
 
@@ -156,6 +157,7 @@ const UserTeamChat = () => {
                     >
                         <ChatSidebar
                             teamName={room?.teamName}
+                            members={members}
                             channels={room?.channels ?? []}
                             selectedChannelId={selectedChannel?.id}
                             getChannelUnreadCount={getChannelUnreadCount}
@@ -195,6 +197,14 @@ const UserTeamChat = () => {
 
                             <div className={styles.chatHeaderMain}>
                                 <p className={styles.chatHeaderTitle}>
+                                    {selectedChannel && (
+                                        <span
+                                            className={styles.chatHeaderHash}
+                                            aria-hidden="true"
+                                        >
+                                            #
+                                        </span>
+                                    )}
                                     {selectedChannel?.channelName ?? "채팅"}
                                 </p>
                                 <p className={styles.chatHeaderMeta}>
@@ -205,6 +215,11 @@ const UserTeamChat = () => {
                             </div>
 
                             <div className={styles.chatHeaderRight}>
+                                {hasPresenceLoaded && members.length > 0 && (
+                                    <span className={styles.onlineSummary}>
+                                        접속 중 <b>{onlineMembers.length}</b>
+                                    </span>
+                                )}
                                 {!socketConnected && (
                                     <span className={styles.connectingChip}>
                                         <span className={styles.connectingDot} />
@@ -288,6 +303,11 @@ const UserTeamChat = () => {
                                 </div>
                             ) : showEmptyChannel ? (
                                 <div className={styles.emptyState}>
+                                    <img
+                                        className={styles.emptyIcon}
+                                        src={chatEmptyIcon}
+                                        alt=""
+                                    />
                                     <p className={styles.emptyTitle}>
                                         아직 생성된 채팅 채널이 없어요
                                     </p>
@@ -298,6 +318,11 @@ const UserTeamChat = () => {
                                 </div>
                             ) : showEmptyMessage ? (
                                 <div className={styles.emptyState}>
+                                    <img
+                                        className={styles.emptyIcon}
+                                        src={chatEmptyIcon}
+                                        alt=""
+                                    />
                                     <p className={styles.emptyTitle}>
                                         첫 메시지를 보내 팀 대화를 시작해보세요
                                     </p>
@@ -309,6 +334,7 @@ const UserTeamChat = () => {
                                 showMessageList && (
                                     <ChatMessageList
                                         messages={messages}
+                                        members={members}
                                         currentUserId={currentUserId}
                                         isLoadingMoreMessages={
                                             isLoadingMoreMessages

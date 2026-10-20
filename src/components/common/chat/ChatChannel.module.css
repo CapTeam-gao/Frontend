@@ -1,66 +1,87 @@
+/* 선택된 채널은 바탕 없이 초록 #·초록 굵은 글자로, 안 읽은 수는 초록 알약으로 표시한다. */
 .channelRow {
     display: flex;
     align-items: center;
     gap: 4px;
-    border-radius: 8px;
+    border-radius: 12px;
     transition: background-color 0.15s ease;
 }
 
 .channelRow:hover {
-    background-color: var(--color-bg-secondary);
-}
-
-.selected {
-    background-color: var(--color-primary-bg);
+    background-color: #f4f6f5;
 }
 
 .channelButton {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
     flex: 1;
     min-width: 0;
-    padding: 9px 12px;
+    min-height: 46px;
+    padding: 0 12px;
     border: none;
+    border-radius: 12px;
     background: none;
     font-family: var(--font-family);
     text-align: left;
     color: var(--color-text-secondary);
 }
 
-.selected .channelButton {
-    color: var(--color-primary-text);
+.channelButton:focus-visible {
+    outline: 3px solid var(--g500);
+    outline-offset: -3px;
+}
+
+.channelHash {
+    flex-shrink: 0;
+    width: 16px;
+    font-size: 17px;
+    font-weight: var(--font-weight-bold);
+    color: #a9b4ae;
+    text-align: center;
+}
+
+.selected .channelHash {
+    color: var(--g500);
 }
 
 .channelName {
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: var(--font-weight-medium);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.selected .channelName {
+.hasUnread .channelName {
     font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
 }
 
-.unreadBadge {
+.selected .channelName {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-text);
+}
+
+.unreadCount {
     flex-shrink: 0;
-    min-width: 20px;
-    padding: 2px 6px;
+    min-width: 22px;
+    padding: 2px 7px;
     border-radius: 999px;
     background-color: var(--color-primary);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
     color: #ffffff;
     text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
 .channelActions {
     display: none;
     gap: 2px;
-    padding-right: 8px;
+    padding-right: 6px;
 }
 
 .channelRow:hover .channelActions,
@@ -69,20 +90,24 @@
 }
 
 .channelActions button {
-    padding: 4px 6px;
+    min-height: 32px;
+    padding: 0 6px;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 8px;
     background: none;
     font-family: var(--font-family);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .channelActions button:hover {
-    background-color: var(--color-border);
     color: var(--color-text-primary);
+}
+
+.channelActions button:last-child:hover {
+    color: var(--color-danger);
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -91,7 +116,7 @@
     }
 
     .channelActions button {
-        min-height: 36px;
-        padding: 6px 8px;
+        min-height: 40px;
+        padding: 0 8px;
     }
 }

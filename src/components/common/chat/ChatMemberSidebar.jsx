@@ -1,4 +1,5 @@
 import { roleLabels } from "../../../constants/student";
+import ChatAvatar from "./ChatAvatar";
 import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const MemberItem = ({ member, online }) => {
@@ -7,19 +8,19 @@ const MemberItem = ({ member, online }) => {
     return (
         <li
             className={`${styles.memberItem} ${
-                online ? styles.onlineMember : styles.offlineMember
+                online ? "" : styles.offlineMember
             }`}
         >
-            <span
-                className={`${styles.statusDot} ${
-                    online ? styles.online : ""
-                }`}
+            <ChatAvatar
+                name={member.name}
+                size={34}
+                online={online}
             />
             <div className={styles.memberInfo}>
-                <span className={styles.memberName}>
-                    {member.name}
-                    {roleLabel ? ` · ${roleLabel}` : ""}
-                </span>
+                <span className={styles.memberName}>{member.name}</span>
+                {roleLabel && (
+                    <span className={styles.memberRole}>{roleLabel}</span>
+                )}
             </div>
         </li>
     );
@@ -55,7 +56,7 @@ const ChatMemberSidebar = ({
                 <>
                     <div className={styles.memberGroup}>
                         <p className={styles.memberGroupTitle}>
-                            온라인 - {onlineMembers.length}
+                            온라인 <b>{onlineMembers.length}</b>
                         </p>
 
                         <ul className={styles.memberList}>
@@ -71,7 +72,7 @@ const ChatMemberSidebar = ({
 
                     <div className={styles.memberGroup}>
                         <p className={styles.memberGroupTitle}>
-                            오프라인 - {offlineMembers.length}
+                            오프라인 <b>{offlineMembers.length}</b>
                         </p>
 
                         {offlineMembers.length === 0 ? (

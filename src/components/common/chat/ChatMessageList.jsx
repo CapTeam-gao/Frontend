@@ -9,6 +9,7 @@ import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const ChatMessageList = ({
     messages = [],
+    members = [],
     currentUserId,
     isLoadingMoreMessages,
     onEditMessage,
@@ -17,6 +18,10 @@ const ChatMessageList = ({
     flashingMessageId,
     onTogglePin,
 }) => {
+    const roleByUserId = new Map(
+        members.map((member) => [member.userId, member.studentRole])
+    );
+
     return (
         <ul
             className={styles.messageList}
@@ -54,6 +59,7 @@ const ChatMessageList = ({
                         <ChatMessage
                             message={message}
                             mine={message.senderId === currentUserId}
+                            senderRole={roleByUserId.get(message.senderId)}
                             showTime={showTime}
                             isPinned={message.id === pinnedMessageId}
                             isFlashing={message.id === flashingMessageId}

@@ -3,6 +3,8 @@ import api from "../../../api/api";
 import { getAssetUrl } from "../../../api/baseUrl";
 import { formatChatTime, parseMessageTextWithLinks } from "../../../utils/chat";
 import fileIcon from "../../../assets/icons/file.svg";
+import { roleLabels } from "../../../constants/student";
+import ChatAvatar from "./ChatAvatar";
 import styles from "./ChatMessage.module.css";
 
 const formatFileSize = (size) => {
@@ -34,6 +36,7 @@ const getFileExtension = (fileName = "") => {
 const ChatMessage = ({
     message,
     mine,
+    senderRole,
     showTime,
     isPinned,
     isFlashing,
@@ -207,12 +210,27 @@ const ChatMessage = ({
                 showTime ? styles.timeSeparated : ""
             } ${isFlashing ? styles.flash : ""}`}
         >
+            {!mine && showTime && (
+                <ChatAvatar
+                    name={message.senderName}
+                    size={38}
+                    className={styles.avatar}
+                />
+            )}
+
             {showTime && (
                 <div className={styles.messageMeta}>
                     {!mine && (
-                        <strong className={styles.senderName}>
-                            {message.senderName}
-                        </strong>
+                        <>
+                            <strong className={styles.senderName}>
+                                {message.senderName}
+                            </strong>
+                            {roleLabels[senderRole] && (
+                                <span className={styles.senderRole}>
+                                    {roleLabels[senderRole]}
+                                </span>
+                            )}
+                        </>
                     )}
                     <span>{formatChatTime(message.createdAt)}</span>
                 </div>

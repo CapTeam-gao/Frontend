@@ -12,6 +12,7 @@ import useAdminChatSocket from "../../../hooks/useAdminChatSocket";
 import useChatPresence from "../../../hooks/useChatPresence";
 import Skeleton from "../../../components/common/skeleton/Skeleton";
 import styles from "../../user/chat/UserTeamChat.module.css";
+import chatEmptyIcon from "../../../assets/images/chatEmptyV3.webp";
 import useDelayedLoading from "../../../hooks/useDelayedLoading";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -318,6 +319,7 @@ const AdminChatManage = () => {
 
                         <ChatSidebar
                             teamName={selectedRoom?.teamName}
+                            members={members}
                             channels={selectedRoom?.channels ?? []}
                             selectedChannelId={selectedChannel?.id}
                             getChannelUnreadCount={getChannelUnreadCount}
@@ -357,6 +359,14 @@ const AdminChatManage = () => {
 
                             <div className={styles.chatHeaderMain}>
                                 <p className={styles.chatHeaderTitle}>
+                                    {selectedChannel && (
+                                        <span
+                                            className={styles.chatHeaderHash}
+                                            aria-hidden="true"
+                                        >
+                                            #
+                                        </span>
+                                    )}
                                     {selectedChannel?.channelName ?? "채팅"}
                                 </p>
                                 <p className={styles.chatHeaderMeta}>
@@ -367,6 +377,11 @@ const AdminChatManage = () => {
                             </div>
 
                             <div className={styles.chatHeaderRight}>
+                                {hasPresenceLoaded && members.length > 0 && (
+                                    <span className={styles.onlineSummary}>
+                                        접속 중 <b>{onlineMembers.length}</b>
+                                    </span>
+                                )}
                                 <button
                                     type="button"
                                     className={`${styles.iconButton} ${styles.memberToggle}`}
@@ -433,6 +448,11 @@ const AdminChatManage = () => {
                                 </div>
                             ) : showEmptyChannel ? (
                                 <div className={styles.emptyState}>
+                                    <img
+                                        className={styles.emptyIcon}
+                                        src={chatEmptyIcon}
+                                        alt=""
+                                    />
                                     <p className={styles.emptyTitle}>
                                         선택할 수 있는 채널이 없어요
                                     </p>
@@ -443,6 +463,11 @@ const AdminChatManage = () => {
                                 </div>
                             ) : showEmptyMessage ? (
                                 <div className={styles.emptyState}>
+                                    <img
+                                        className={styles.emptyIcon}
+                                        src={chatEmptyIcon}
+                                        alt=""
+                                    />
                                     <p className={styles.emptyTitle}>
                                         아직 작성된 메시지가 없어요
                                     </p>
@@ -454,6 +479,7 @@ const AdminChatManage = () => {
                                 showMessageList && (
                                     <ChatMessageList
                                         messages={messages}
+                                        members={members}
                                         currentUserId={currentUserId}
                                         isLoadingMoreMessages={
                                             isLoadingMoreMessages

@@ -1,12 +1,12 @@
 .inputForm {
     flex-shrink: 0;
-    padding: 16px 24px;
+    padding: 12px 0 4px;
     background-color: var(--color-bg);
 }
 
 .errorText {
-    margin-bottom: 8px;
-    font-size: var(--font-size-sm);
+    margin: 0 4px 10px;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--color-danger);
 }
@@ -17,10 +17,11 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 8px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background-color: var(--color-bg-secondary);
+    margin-bottom: 10px;
+    padding: 10px 10px 10px 12px;
+    border: 1px solid #e3e9e6;
+    border-radius: 16px;
+    background-color: #ffffff;
 }
 
 .imagePreview {
@@ -35,8 +36,8 @@
     place-items: center;
     width: 40px;
     height: 40px;
-    border-radius: 8px;
-    background-color: var(--color-bg);
+    border-radius: 10px;
+    background-color: #f4f6f5;
 }
 
 .documentIcon img {
@@ -69,18 +70,17 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: none;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--color-text-muted);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .removeFileButton:hover {
-    background-color: var(--color-border);
     color: var(--color-text-primary);
 }
 
@@ -89,10 +89,11 @@
 .inputRow {
     display: flex;
     align-items: flex-end;
-    gap: 8px;
-    padding: 8px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
+    gap: 6px;
+    padding: 8px 8px 8px 6px;
+    border: 1px solid #dfe6e2;
+    border-radius: 24px;
+    background-color: #ffffff;
     transition: border-color 0.15s ease;
 }
 
@@ -104,19 +105,17 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border: none;
-    border-radius: 8px;
+    border-radius: 50%;
     background: none;
-    font-size: 20px;
-    line-height: 1;
     color: var(--color-text-muted);
-    transition: background-color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .fileButton:hover:not(:disabled) {
-    background-color: var(--color-bg-secondary);
+    color: var(--color-primary-text);
 }
 
 .fileButton:disabled {
@@ -131,9 +130,9 @@
 .messageInput {
     flex: 1;
     min-width: 0;
-    min-height: 36px;
-    max-height: 128px;
-    padding: 7px 0;
+    min-height: 40px;
+    max-height: 144px;
+    padding: 8px 0;
     border: none;
     background: none;
     font-family: var(--font-family);
@@ -142,6 +141,10 @@
     color: var(--color-text-primary);
     resize: none !important;
     overflow-y: auto;
+}
+
+.messageInput:focus {
+    outline: none;
 }
 
 .messageInput::placeholder {
@@ -154,15 +157,17 @@
 
 .sendButton {
     flex-shrink: 0;
-    height: 36px;
-    padding: 0 16px;
-    border: none;
-    border-radius: 8px;
+    height: 40px;
+    padding: 0 20px;
+    border: 1px solid var(--g650);
+    border-radius: 999px;
     background-color: var(--color-primary);
     font-family: var(--font-family);
     font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.14);
     transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
@@ -171,17 +176,26 @@
 }
 
 .sendButton:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.sendButton:focus-visible,
+.fileButton:focus-visible {
+    outline: 3px solid var(--g500);
+    outline-offset: 2px;
 }
 
 .sendButton:disabled {
-    background-color: var(--color-border);
+    border-color: #e3e9e6;
+    background-color: #e3e9e6;
     color: var(--color-text-muted);
+    box-shadow: none;
     cursor: not-allowed;
 }
 
 @media (max-width: 900px) {
     .inputForm {
-        padding: 12px 16px;
+        padding: 8px 12px 12px;
     }
 }

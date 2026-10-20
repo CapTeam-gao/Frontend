@@ -1,8 +1,10 @@
+import ChatAvatar from "./ChatAvatar";
 import ChatChannel from "./ChatChannel";
 import styles from "../../../pages/user/chat/UserTeamChat.module.css";
 
 const ChatSidebar = ({
     teamName,
+    members = [],
     channels = [],
     selectedChannelId,
     getChannelUnreadCount,
@@ -16,9 +18,24 @@ const ChatSidebar = ({
     return (
         <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
-                <div>
+                <div className={styles.teamCard}>
+                    <p className={styles.teamCardLabel}>팀 채팅방</p>
                     <h1>{teamName ?? "\u00A0"}</h1>
-                    <p>프로젝트 대화 공간</p>
+                    {members.length > 0 && (
+                        <div className={styles.teamCardMembers}>
+                            <span className={styles.avatarStack}>
+                                {members.slice(0, 5).map((member) => (
+                                    <ChatAvatar
+                                        key={member.userId}
+                                        name={member.name}
+                                        size={34}
+                                        className={styles.stackAvatar}
+                                    />
+                                ))}
+                            </span>
+                            <span>팀원 {members.length}명</span>
+                        </div>
+                    )}
                 </div>
                 <button
                     type="button"
@@ -37,10 +54,9 @@ const ChatSidebar = ({
                         <button
                             type="button"
                             className={styles.addChannelButton}
-                            aria-label="채널 추가"
                             onClick={onOpenChannelModal}
                         >
-                            +
+                            + 추가
                         </button>
                     )}
                 </div>
