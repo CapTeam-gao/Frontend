@@ -677,7 +677,7 @@
 .poolList::-webkit-scrollbar { width: 6px; }
 .poolList::-webkit-scrollbar-thumb { border-radius: 6px; background: #cfdcd5; }
 .poolItem { display: flex; align-items: center; gap: 12px; padding: 15px 14px; border-radius: 12px; cursor: grab; user-select: none; }
-.poolItem:hover { background: var(--color-primary-bg); }
+.poolItem:hover { background: #f4f6f5; }
 .poolItem:active { cursor: grabbing; }
 .poolItem:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
 .grip { width: 10px; height: 16px; flex: none; opacity: 0; background: radial-gradient(circle, #a9b4ae 1.3px, transparent 1.6px) 0 0/5px 5px; transition: opacity .15s ease; }
@@ -702,7 +702,7 @@
 .search { height: 50px; padding: 0 16px 0 42px; border-radius: 14px; font-size: 16px; }
 .searchResults { top: calc(100% + 6px); z-index: 5; padding: 6px; border: 0; border-radius: 16px; box-shadow: 0 0 0 1px rgba(25,31,40,.06), 0 24px 48px -20px rgba(25,31,40,.3); }
 .searchResult { padding: 12px; border-radius: 10px; font-size: 16px; }
-.searchResult:hover, .searchResult:focus-visible { background: var(--color-primary-bg); outline: none; }
+.searchResult:hover, .searchResult:focus-visible { background: #f4f6f5; outline: none; }
 .fullNote { display: flex; align-items: center; gap: 8px; height: 50px; margin-top: 20px; font-size: 15px; font-weight: var(--font-weight-bold); color: var(--color-primary-text); }
 .fullNote::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ""; }
 .memberList { margin-top: 14px; }

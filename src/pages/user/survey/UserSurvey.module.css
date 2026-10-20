@@ -120,9 +120,11 @@
 
 .stepStatusList span { padding: 6px 12px; border-radius: 999px; background: #f1f4f2; }
 
-.completedStep {
+/* 완료 단계: 연초록 바탕 대신 흰 바탕 + 초록 테두리 */
+.stepStatusList .completedStep {
     color: var(--color-primary-text);
-    background: var(--g50);
+    border: 1px solid #cdebd9;
+    background: #ffffff;
 }
 
 /* ── 폼 ───────────────────────────────────────────── */

@@ -33,7 +33,7 @@
 .step + .step { padding-left: 40px; border-left: 1px solid var(--color-border); }
 .step:last-child { padding-right: 0; }
 .step > img { width: 96px; height: 96px; border-radius: 22px; object-fit: contain; }
-.step span { display: inline-block; padding: 5px 12px; border-radius: 999px; color: var(--g700); background: var(--g50); font-size: 13px; font-weight: 700; }
+.step span { display: inline-block; padding: 5px 12px; border-radius: 999px; color: var(--g700); border: 1px solid #cdebd9; background: #fff; font-size: 13px; font-weight: 700; }
 .step h3 { margin-top: 10px; color: var(--color-text-primary); font-size: 21px; font-weight: 800; }
 .step p { margin-top: 8px; color: var(--color-text-secondary); font-size: 15px; line-height: 1.6; }
 .startSection { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding-top: 36px; border-top: 1px solid var(--color-border); }
