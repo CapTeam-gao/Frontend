@@ -57,3 +57,64 @@
         transform: translateY(16px) scale(0.98);
     }
 }
+
+.drawerPanel {
+    animation: drawerEnter var(--duration-modal) var(--ease-out) both;
+}
+
+.drawerPanelClosing {
+    animation: drawerExit var(--duration-modal) var(--ease-out) both;
+}
+
+@keyframes drawerEnter {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+@keyframes drawerExit {
+    from {
+        transform: none;
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@media (max-width: 960px) {
+    @keyframes drawerEnter {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: none;
+        }
+    }
+
+    @keyframes drawerExit {
+        from {
+            transform: none;
+        }
+
+        to {
+            transform: translateY(100%);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay,
+    .overlayClosing,
+    .panel,
+    .panelClosing,
+    .drawerPanel,
+    .drawerPanelClosing {
+        animation-duration: 1ms;
+    }
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ModalCloseContext } from "./modalCloseContext";
 import styles from "./ModalOverlay.module.css";
@@ -11,12 +11,19 @@ const ModalOverlay = ({
     overlayClassName = "",
     modalClassName = "",
     ariaLabelledby,
+    // "drawer"면 오른쪽에서 밀려 나오는 서랍(모바일은 아래에서 올라오는 시트)으로 열고 닫는다
+    variant = "modal",
     children,
 }) => {
     const [isClosing, setIsClosing] = useState(false);
     const closeTimerRef = useRef(null);
     const panelRef = useRef(null);
     const previousFocusRef = useRef(null);
+    const onCloseRef = useRef(onClose);
+
+    useLayoutEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
 
     useEffect(() => {
         return () => clearTimeout(closeTimerRef.current);
@@ -26,8 +33,10 @@ const ModalOverlay = ({
         if (closeTimerRef.current) return;
 
         setIsClosing(true);
-        closeTimerRef.current = setTimeout(onClose, CLOSE_DURATION);
-    }, [onClose]);
+        closeTimerRef.current = setTimeout(() => {
+            onCloseRef.current();
+        }, CLOSE_DURATION);
+    }, []);
 
     useEffect(() => {
         previousFocusRef.current = document.activeElement;
@@ -42,7 +51,7 @@ const ModalOverlay = ({
                     element.getClientRects().length > 0
             );
 
-        (getFocusableElements()[0] || panel)?.focus();
+        (panel?.querySelector("[data-autofocus]") || getFocusableElements()[0] || panel)?.focus();
 
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
@@ -107,7 +116,15 @@ const ModalOverlay = ({
             >
                 <section
                     ref={panelRef}
-                    className={`${modalClassName} ${styles.panel} ${isClosing ? styles.panelClosing : ""}`}
+                    className={`${modalClassName} ${
+                        variant === "drawer" ? styles.drawerPanel : styles.panel
+                    } ${
+                        isClosing
+                            ? variant === "drawer"
+                                ? styles.drawerPanelClosing
+                                : styles.panelClosing
+                            : ""
+                    }`}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby={ariaLabelledby}

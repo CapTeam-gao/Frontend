@@ -46,3 +46,6 @@ export const summaryRoleOrder = [
     "SECURITY",
     "GAME",
 ];
+
+// 역할 구성 막대: 인원이 많은 역할부터 진한 초록 → 옅은 초록으로 이어진다
+export const ROLE_SHADES = ["#0e9f62", "#3cbf83", "#86d9b0", "#bfe9d2", "#d5f3e1"];

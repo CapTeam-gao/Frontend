@@ -1,0 +1,32 @@
+.avatar {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: 50%;
+    /* 직군별 색 없이 한 톤으로 통일한다 */
+    background-color: #eef1f0;
+    color: #4e5968;
+    font-size: calc(var(--avatar-size) * 0.34);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    user-select: none;
+}
+
+.presence {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 11px;
+    height: 11px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background-color: #c4ccc8;
+}
+
+.online {
+    background-color: var(--g500);
+}

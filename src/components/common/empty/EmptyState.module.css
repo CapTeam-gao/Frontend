@@ -8,6 +8,13 @@
     text-align: center;
 }
 
+.icon {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 12px;
+    object-fit: contain;
+}
+
 .title {
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
