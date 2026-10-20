@@ -332,9 +332,7 @@ const AdminTeamManage = () => {
                                             {otherMemberNames && <span>{teamLeader ? " · " : ""}{otherMemberNames}</span>}
                                             {memberCount > 0 && <span className={styles.memberCount}> · {memberCount}명</span>}
                                         </span>
-                                        <svg className={styles.chevron} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <path d="m9 18 6-6-6-6" />
-                                        </svg>
+                                        <span className={styles.chevron} aria-hidden="true">→</span>
                                     </span>
                                 </button>
                             );
