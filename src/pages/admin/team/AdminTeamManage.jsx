@@ -11,7 +11,7 @@ import {
     requestAdminTeamDetail,
     requestAdminTeamList,
 } from "../../../api/teamApi";
-import { gradeLabels, roleLabels, summaryRoleOrder } from "../../../constants/team";
+import { gradeLabels, roleLabels, ROLE_SHADES, summaryRoleOrder } from "../../../constants/team";
 import {
     getTeamDisplayName,
     hasProjectInfo,
@@ -24,8 +24,6 @@ const GRADE_FILTERS = [
     { key: "GRADE_2", label: "2학년" },
     { key: "GRADE_3", label: "3학년" },
 ];
-
-const ROLE_COLORS = ["#0e9f62", "#3cbf83", "#86d9b0", "#bfe9d2", "#d5f3e1"];
 
 const ListSkeleton = () => (
     <div className={styles.list}>
@@ -273,7 +271,7 @@ const AdminTeamManage = () => {
                                 .map((role, index) => ({
                                     role,
                                     count: roleCounts[role],
-                                    color: ROLE_COLORS[index % ROLE_COLORS.length],
+                                    color: ROLE_SHADES[index % ROLE_SHADES.length],
                                 }));
                             const roleSummary = roles
                                 .map(({ role, count }) => `${roleLabels[role] || role} ${count}`)
