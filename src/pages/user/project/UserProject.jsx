@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "motion/react";
 import Header from "../../../components/common/header/Header";
-import UserPlanForm from "../../../components/user/project/UserPlanForm";
+import UserPlanForm, {
+    PROJECT_PLAN_FORM_ID,
+} from "../../../components/user/project/UserPlanForm";
 import {
     requestSaveUserProjectPlan,
     requestUserProjectPlan,
@@ -14,6 +16,7 @@ import {
     normalizeProjectPlan,
 } from "../../../utils/projectPlan";
 import styles from "./UserProject.module.css";
+import projectIcon from "../../../assets/images/projectPlanV3.webp";
 
 const contentVariants = {
     hidden: { opacity: 0, y: 12 },
@@ -32,6 +35,30 @@ const UserProject = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const shouldReduceMotion = useReducedMotion();
     const hasSavedPlan = Boolean(projectPlan.projectId);
+    // 저장 조건(hasEmptyProjectPlanField)과 같은 기준으로 섹션별 완료를 판단한다
+    const sections = [
+        {
+            id: "project-basic",
+            label: "기본 정보",
+            done: Boolean(
+                projectPlan.teamName.trim() && projectPlan.serviceName.trim()
+            ),
+        },
+        {
+            id: "project-intro",
+            label: "서비스 소개",
+            done: Boolean(projectPlan.serviceSummary.trim()),
+        },
+        {
+            id: "project-features",
+            label: "주요 기능",
+            done: projectPlan.coreFeatures.every((feature) =>
+                feature.value.trim()
+            ),
+        },
+    ];
+    const doneCount = sections.filter((section) => section.done).length;
+    const isAllDone = doneCount === sections.length;
 
     useEffect(() => {
         const getProjectPlan = async () => {
@@ -125,58 +152,37 @@ const UserProject = () => {
 
             <main className={styles.body}>
                 <div className={styles.inner}>
-                    <motion.section
-                        className={styles.pageHead}
-                        initial={shouldReduceMotion ? false : "hidden"}
-                        animate="visible"
-                        variants={contentVariants}
-                    >
-                        <h1 className={styles.headline}>프로젝트 기획서</h1>
-                    </motion.section>
-
                     <motion.div
                         className={styles.workspace}
                         initial={shouldReduceMotion ? false : "hidden"}
                         animate="visible"
                         variants={contentVariants}
                     >
-                        <aside className={styles.guide} aria-label="기획서 항목">
-                            <p className={styles.guideLabel}>작성 항목</p>
-                            <nav className={styles.guideNav}>
-                                <a
-                                    href="#project-basic"
-                                    onClick={(event) =>
-                                        scrollToSection(event, "project-basic")
-                                    }
-                                >
-                                    <span>01</span> 기본 정보
-                                </a>
-                                <a
-                                    href="#project-intro"
-                                    onClick={(event) =>
-                                        scrollToSection(event, "project-intro")
-                                    }
-                                >
-                                    <span>02</span> 서비스 소개
-                                </a>
-                                <a
-                                    href="#project-features"
-                                    onClick={(event) =>
-                                        scrollToSection(event, "project-features")
-                                    }
-                                >
-                                    <span>03</span> 주요 기능
-                                </a>
-                            </nav>
-                        </aside>
-
                         <div className={styles.formArea}>
+                            <section className={styles.pageHead}>
+                                <img
+                                    className={styles.headIcon}
+                                    src={projectIcon}
+                                    alt=""
+                                />
+                                <div>
+                                    <p className={styles.eyebrow}>
+                                        프로젝트 기획서
+                                    </p>
+                                    <h1 className={styles.headline}>
+                                        우리 팀 프로젝트를 소개해주세요
+                                    </h1>
+                                    <p className={styles.subline}>
+                                        저장한 기획서는 관리자 팀 관리 화면에
+                                        그대로 보여요.
+                                    </p>
+                                </div>
+                            </section>
+
                             <UserPlanForm
                                 projectPlan={projectPlan}
-                                hasSavedPlan={hasSavedPlan}
-                                error={error}
+                                sections={sections}
                                 isLoading={isLoading}
-                                isSubmitting={isSubmitting}
                                 onSubmit={handleSubmit}
                                 onFieldChange={updateField}
                                 onAddFeature={addCoreFeature}
@@ -184,6 +190,88 @@ const UserProject = () => {
                                 onRemoveFeature={removeCoreFeature}
                             />
                         </div>
+
+                        <aside className={styles.rail} aria-label="작성 현황">
+                            <div className={styles.railInner}>
+                                <div className={styles.progressHead}>
+                                    <span>작성 진행률</span>
+                                    <b>
+                                        {doneCount} / {sections.length}
+                                    </b>
+                                </div>
+                                <div
+                                    className={styles.progressSteps}
+                                    role="progressbar"
+                                    aria-label="기획서 작성 진행률"
+                                    aria-valuemin="0"
+                                    aria-valuemax={sections.length}
+                                    aria-valuenow={doneCount}
+                                >
+                                    {sections.map((section) => (
+                                        <i
+                                            key={section.id}
+                                            className={
+                                                section.done
+                                                    ? styles.progressStepOn
+                                                    : ""
+                                            }
+                                        />
+                                    ))}
+                                </div>
+
+                                <nav className={styles.sectionNav}>
+                                    {sections.map((section, index) => (
+                                        <a
+                                            key={section.id}
+                                            href={`#${section.id}`}
+                                            className={
+                                                section.done
+                                                    ? styles.sectionNavDone
+                                                    : ""
+                                            }
+                                            onClick={(event) =>
+                                                scrollToSection(event, section.id)
+                                            }
+                                        >
+                                            <span aria-hidden="true">
+                                                {section.done ? "✓" : index + 1}
+                                            </span>
+                                            {section.label}
+                                            <em>
+                                                {section.done
+                                                    ? "작성 완료"
+                                                    : "작성 전"}
+                                            </em>
+                                        </a>
+                                    ))}
+                                </nav>
+
+                                <button
+                                    type="submit"
+                                    form={PROJECT_PLAN_FORM_ID}
+                                    className={styles.submitButton}
+                                    disabled={isLoading || isSubmitting}
+                                >
+                                    {isSubmitting
+                                        ? "저장 중..."
+                                        : hasSavedPlan
+                                          ? "수정 저장"
+                                          : "저장"}
+                                </button>
+
+                                <p
+                                    className={
+                                        error ? styles.railError : styles.railHint
+                                    }
+                                    role={error ? "alert" : undefined}
+                                >
+                                    {error ||
+                                        (isAllDone
+                                            ? "저장하면 대시보드로 이동해요."
+                                            : "모든 항목을 채워야 저장할 수 있어요.")}
+                                </p>
+                            </div>
+                        </aside>
                     </motion.div>
                 </div>
             </main>

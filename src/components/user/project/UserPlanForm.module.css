@@ -1,234 +1,244 @@
 .form {
     display: flex;
     flex-direction: column;
-}
-
-.planSection + .planSection {
-    margin-top: 58px;
+    gap: 56px;
+    margin-top: 40px;
 }
 
 .planSection {
     scroll-margin-top: calc(var(--header-height) + 24px);
 }
 
+/* 섹션 머리: 번호 원 + 제목·설명. 다 채우면 초록 원 + 체크 */
 .sectionHead {
     display: flex;
     align-items: flex-start;
+    gap: 12px;
+}
+
+.sectionIndex {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    margin-top: 1px;
+    border: 1.5px solid #d5ddd9;
+    border-radius: 50%;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.sectionDone .sectionIndex {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
 .sectionTitle {
-    font-size: 20px;
+    font-size: 21px;
     font-weight: var(--font-weight-bold);
+    line-height: 1.4;
 }
 
-/* ── 필드 ─────────────────────────────────────────── */
+.sectionDesc {
+    margin-top: 4px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    word-break: keep-all;
+}
+
+/* 번호 원(30px) + 간격(12px)만큼 들여 써서 제목 글자와 입력칸 왼쪽을 맞춘다 */
+.fieldIndent,
+.fieldGrid {
+    margin-left: 42px;
+}
 
 .fieldGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
-    margin-top: 28px;
+    margin-top: 20px;
 }
 
 .field {
     display: block;
-    margin-top: 28px;
 }
 
-.fieldGrid .field {
-    margin-top: 0;
+.fieldIndent.field {
+    margin-top: 16px;
 }
 
 .field > span {
     display: block;
-    font-size: 16px;
-    font-weight: var(--font-weight-semibold);
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+}
+
+.srOnly {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.featureRow input {
     width: 100%;
-    margin-top: 10px;
-    padding: 13px 15px;
-    border: 1px solid #c9d0d8;
-    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #dfe6e2;
+    border-radius: 14px;
+    background-color: #ffffff;
     font-family: var(--font-family);
     font-size: var(--font-size-lg);
-    line-height: 1.7;
+    line-height: 1.6;
     color: var(--color-text-primary);
-    background-color: var(--color-bg);
     transition: border-color 0.15s ease;
 }
 
+.field input {
+    margin-top: 10px;
+}
+
 .field textarea {
-    min-height: 160px;
+    display: block;
+    min-height: 180px;
+    padding: 18px 18px 36px;
+    border-radius: 18px;
+    line-height: 1.75;
+    resize: vertical;
 }
 
 .field input::placeholder,
-.field textarea::placeholder {
-    color: var(--color-text-muted);
+.field textarea::placeholder,
+.featureRow input::placeholder {
+    color: #9aa5ae;
 }
 
 .field input:focus,
-.field textarea:focus {
+.field textarea:focus,
+.featureRow input:focus {
     border-color: var(--color-primary);
-    box-shadow: none;
+    outline: none;
 }
 
-.field small {
-    display: block;
-    margin-top: 8px;
-    font-size: var(--font-size-md);
-    line-height: 1.6;
+.textareaWrap {
+    position: relative;
+}
+
+.charCount {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
 }
 
 /* ── 주요 기능 ───────────────────────────────────── */
 
-.featureHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.addFeatureButton {
-    display: inline-flex;
-    align-items: center;
-    height: 32px;
-    padding: 0 8px;
-    border: 0;
-    border-radius: 6px;
-    background: transparent;
-    font-family: var(--font-family);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary-text);
-    transition: background-color 0.15s ease, transform 0.1s ease;
-}
-
-.addFeatureButton:hover {
-    background-color: #f2f4f6;
-}
-
-.addFeatureButton:active {
-    transform: scale(0.97);
-}
-
 .featureList {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: 16px;
 }
 
 .featureRow {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0;
-    border: 0;
-    background: transparent;
+    gap: 12px;
+}
+
+.featureIndex {
+    flex-shrink: 0;
+    width: 18px;
+    font-size: 16px;
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-primary-text);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
 .featureRow input {
     flex: 1;
     min-width: 0;
-    margin-top: 0;
-    padding: 11px 13px;
-    border: 1px solid #c9d0d8;
-    border-radius: 10px;
-    background-color: transparent;
-    font-family: var(--font-family);
-    font-size: var(--font-size-lg);
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.featureRow input:focus {
-    border-color: var(--color-primary);
-    box-shadow: none;
 }
 
 .removeFeature {
+    display: grid;
+    place-items: center;
     flex-shrink: 0;
-    height: 36px;
-    padding: 0 12px;
+    width: 40px;
+    height: 40px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: none;
-    font-family: var(--font-family);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
     color: var(--color-text-muted);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .removeFeature:hover {
-    background-color: #fff2f3;
     color: var(--color-danger);
 }
 
-/* ── 액션 ─────────────────────────────────────────── */
-
-.actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 18px;
-    margin-top: 58px;
-    padding: 0;
-}
-
-.actionHint {
-    flex: 1;
-    min-width: 200px;
-    font-size: 15px;
-    color: var(--color-text-muted);
-}
-
-.errorMessage {
-    flex: 1;
-    min-width: 200px;
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-danger);
-}
-
-.submitButton {
-    height: 50px;
-    padding: 0 28px;
-    border: 0;
-    border-radius: 10px;
-    background-color: var(--color-primary);
+.addFeatureButton {
+    height: 52px;
+    margin-left: 30px;
+    border: 1.5px dashed #cfd8d3;
+    border-radius: 14px;
+    background: none;
     font-family: var(--font-family);
-    font-size: 17px;
-    font-weight: var(--font-weight-semibold);
-    color: #ffffff;
-    transition: background-color 0.15s ease, transform 0.1s ease;
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.submitButton:hover:not(:disabled) {
-    background-color: var(--color-primary-dark);
+.addFeatureButton:hover {
+    border-color: var(--g500);
+    color: var(--color-primary-text);
 }
 
-.submitButton:active:not(:disabled) {
-    transform: scale(0.98);
-}
-
-.submitButton:disabled {
-    background-color: var(--color-border);
-    color: var(--color-text-muted);
-    cursor: not-allowed;
+.removeFeature:focus-visible,
+.addFeatureButton:focus-visible {
+    outline: 3px solid var(--g500);
+    outline-offset: 2px;
 }
 
 @media (max-width: 900px) {
-    .fieldGrid {
-        grid-template-columns: minmax(0, 1fr);
+    .form {
+        gap: 44px;
+        margin-top: 32px;
     }
 
-    .submitButton {
-        width: 100%;
-        padding: 0 24px;
+    .fieldIndent,
+    .fieldGrid {
+        margin-left: 0;
+    }
+
+    .fieldGrid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .sectionTitle {
+        font-size: 19px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sectionIndex {
+        transition: none;
     }
 }
