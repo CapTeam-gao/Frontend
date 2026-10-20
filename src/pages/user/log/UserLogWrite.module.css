@@ -17,7 +17,7 @@
 
 .layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 56px;
     padding-top: 48px;
 }
@@ -26,17 +26,49 @@
     min-width: 0;
 }
 
+.formHead {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.formIcon,
+.noticeIcon {
+    flex-shrink: 0;
+    width: 104px;
+    height: 104px;
+    object-fit: contain;
+}
+
+.noticeIcon {
+    display: block;
+    width: 112px;
+    height: 112px;
+    margin: 0 0 20px -6px;
+}
+
 .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
+.eyebrow::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--g500);
+    content: "";
+}
+
 .formTitle {
-    margin-top: 8px;
-    font-size: 32px;
-    font-weight: var(--font-weight-bold);
-    letter-spacing: -0.01em;
+    margin-top: 10px;
+    font-size: 34px;
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: -0.02em;
 }
 
 .formSub {
@@ -53,9 +85,9 @@
 }
 
 .headline {
-    margin-top: 12px;
-    font-size: 42px;
-    font-weight: var(--font-weight-bold);
+    margin-top: 14px;
+    font-size: 44px;
+    font-weight: var(--font-weight-extrabold);
     line-height: 1.25;
     letter-spacing: -0.01em;
 }
@@ -74,8 +106,7 @@
 }
 
 .noticeDetail {
-    margin-top: 24px;
-    padding-top: 24px;
+    margin-top: 16px;
     font-size: var(--font-size-lg);
     line-height: 1.6;
     color: var(--color-text-secondary);
@@ -88,42 +119,48 @@
     margin-top: 36px;
 }
 
-.primaryButton {
+.primaryButton,
+.submitButton {
     height: 56px;
     padding: 0 32px;
-    border: none;
-    border-radius: 8px;
+    border: 1px solid var(--g650);
+    border-radius: 999px;
     background-color: var(--color-primary);
     font-family: var(--font-family);
     font-size: 17px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.14);
     transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-.primaryButton:hover {
+.primaryButton:hover,
+.submitButton:hover:not(:disabled) {
     background-color: var(--color-primary-dark);
 }
 
-.primaryButton:active {
-    transform: scale(0.98);
+.primaryButton:active,
+.submitButton:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.18);
 }
 
 .ghostButton {
     height: 56px;
-    padding: 0 20px;
+    padding: 0 22px;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     background: none;
     font-family: var(--font-family);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
-    transition: background-color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .ghostButton:hover {
-    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
 }
 
 /* ── 상태 레일 ───────────────────────────────────── */
@@ -132,28 +169,25 @@
     min-width: 0;
 }
 
+/* 상태 카드: 흰 바탕 + 옅은 테두리, 스크롤해도 따라온다 */
 .railInner {
     position: sticky;
-    top: calc(var(--header-height) + 32px);
-    padding-top: 28px;
+    top: calc(var(--header-height) + 24px);
+    padding: 28px 24px 24px;
+    border: 1px solid #e3ece7;
+    border-radius: 24px;
+    background-color: #ffffff;
 }
 
 .railLabel {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-muted);
-}
-
-.countdown {
-    margin-top: 4px;
-    font-size: 36px;
+    margin-bottom: 12px;
+    font-size: 15px;
     font-weight: var(--font-weight-bold);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
 }
 
 .railNote {
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: var(--font-size-md);
     color: var(--color-text-muted);
 }
@@ -178,27 +212,32 @@
     color: var(--color-primary-text);
 }
 
-.progressTrack {
-    height: 8px;
-    margin-top: 8px;
-    border-radius: 999px;
-    background-color: var(--color-bg-secondary);
-    overflow: hidden;
+/* 항목 수만큼 칸을 나눈 진행 막대 */
+.progressSteps {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
 }
 
-.progressFill {
-    height: 100%;
+.progressSteps i {
+    flex: 1;
+    height: 8px;
     border-radius: 999px;
+    background-color: #e6ebe9;
+    transition: background-color 0.3s ease;
+}
+
+.progressSteps .progressStepOn {
     background-color: var(--color-primary);
-    transition: width 0.5s var(--ease-out);
 }
 
 .railMeta {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 28px;
-    padding-top: 24px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #edf1ef;
     font-size: 15px;
 }
 
@@ -222,29 +261,14 @@
 
 .submitButton {
     width: 100%;
-    height: 56px;
-    margin-top: 28px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--color-primary);
-    font-family: var(--font-family);
-    font-size: 17px;
-    font-weight: var(--font-weight-semibold);
-    color: #ffffff;
-    transition: background-color 0.15s ease, transform 0.1s ease;
-}
-
-.submitButton:hover:not(:disabled) {
-    background-color: var(--color-primary-dark);
-}
-
-.submitButton:active:not(:disabled) {
-    transform: scale(0.98);
+    margin-top: 24px;
 }
 
 .submitButton:disabled {
-    background-color: var(--color-border);
+    border-color: #e3e9e6;
+    background-color: #e3e9e6;
     color: var(--color-text-muted);
+    box-shadow: none;
     cursor: not-allowed;
 }
 
@@ -303,6 +327,20 @@
 
     .formTitle {
         font-size: 26px;
+    }
+
+    .formHead {
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .formIcon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .railInner {
+        padding: 20px;
     }
 
     .primaryButton,

@@ -1,54 +1,113 @@
 .fieldList {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 40px;
     margin-top: 40px;
 }
 
 .fieldTitle {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 18px;
+    gap: 12px;
+    font-size: 19px;
     font-weight: var(--font-weight-bold);
+    word-break: keep-all;
 }
 
+/* 번호 원: 비었을 때 회색 테두리, 채우면 초록 원 + 체크 */
 .fieldIndex {
-    font-size: 15px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid #d5ddd9;
+    border-radius: 50%;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
-    color: var(--color-primary-text);
+    color: var(--color-text-muted);
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.filled .fieldIndex {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
 .fieldDesc {
-    margin-top: 6px;
+    margin: 6px 0 0 42px;
     font-size: 15px;
     line-height: 1.6;
     color: var(--color-text-secondary);
+    word-break: keep-all;
+}
+
+.textareaWrap {
+    position: relative;
+    margin: 14px 0 0 42px;
 }
 
 .textarea {
+    display: block;
     width: 100%;
-    min-height: 132px;
-    margin-top: 12px;
-    padding: 16px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+    min-height: 148px;
+    padding: 18px 18px 36px;
+    border: 1px solid #dfe6e2;
+    border-radius: 18px;
     font-family: var(--font-family);
     font-size: var(--font-size-lg);
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--color-text-primary);
+    resize: vertical;
     transition: border-color 0.15s ease;
 }
 
 .textarea::placeholder {
-    color: var(--color-text-muted);
+    color: #9aa5ae;
 }
 
 .textarea:focus {
     border-color: var(--color-primary);
+    outline: none;
 }
 
 .textarea:disabled {
-    background-color: var(--color-bg-secondary);
+    background-color: #f4f6f5;
+    color: var(--color-text-secondary);
     cursor: not-allowed;
+}
+
+.charCount {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .fieldList {
+        gap: 32px;
+        margin-top: 32px;
+    }
+
+    .fieldTitle {
+        font-size: 17px;
+    }
+
+    .fieldDesc,
+    .textareaWrap {
+        margin-left: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fieldIndex {
+        transition: none;
+    }
 }

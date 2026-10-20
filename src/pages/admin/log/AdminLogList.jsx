@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import Header from "../../../components/common/header/Header";
 import AdminLogItem from "../../../components/admin/log/AdminLogItem";
 import styles from "./AdminLogList.module.css";
+import logTitleImage from "../../../assets/images/adminLogTitleV3.webp";
 import { requestAdminLogList } from "../../../api/logApi";
 import {
     getLogTeamName,
@@ -81,11 +82,18 @@ const AdminLogList = () => {
             <main className={styles.body}>
                 <section className={styles.pageHead}>
                     <div className={styles.titleBlock}>
-                        <h1 className={styles.headline}>캡스톤 일지</h1>
-                        <p className={styles.schedule}>
-                            <span aria-hidden="true" />
-                            매주 수요일 15:40–18:10
-                        </p>
+                        <img
+                            className={styles.titleImage}
+                            src={logTitleImage}
+                            alt=""
+                        />
+                        <div>
+                            <h1 className={styles.headline}>캡스톤 일지</h1>
+                            <p className={styles.schedule}>
+                                <span aria-hidden="true" />
+                                매주 수요일 15:40–18:10
+                            </p>
+                        </div>
                     </div>
 
                     {!isLoading && summary.all > 0 && (
@@ -190,13 +198,14 @@ const AdminLogList = () => {
                 {isLoading ? (
                     <div className={styles.list}>
                         {[0, 1, 2].map((index) => (
-                            <div key={index} className={styles.skeletonRow}>
-                                <Skeleton width={224} height={24} />
+                            <div key={index} className={styles.skeletonTile}>
+                                <Skeleton width={96} height={18} />
                                 <Skeleton
-                                    width={288}
-                                    height={20}
-                                    style={{ marginTop: 12 }}
+                                    width={160}
+                                    height={28}
+                                    style={{ marginTop: 16 }}
                                 />
+                                <Skeleton height={8} style={{ marginTop: 28 }} />
                             </div>
                         ))}
                     </div>
@@ -225,12 +234,6 @@ const AdminLogList = () => {
                     />
                 ) : (
                     <div className={styles.list} ref={listRef}>
-                        <div className={styles.listHead} aria-hidden="true">
-                            <span>팀 / 프로젝트</span>
-                            <span>제출 현황</span>
-                            <span>작성일</span>
-                            <span />
-                        </div>
                         {filteredLogs.map((log) => (
                             <AdminLogItem
                                 key={

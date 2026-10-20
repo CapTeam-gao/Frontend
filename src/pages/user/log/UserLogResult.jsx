@@ -8,7 +8,9 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestUserLogDetail, requestUserLogList } from "../../../api/logApi";
 import { getLogTeamName } from "../../../utils/log";
+import ChatAvatar from "../../../components/common/chat/ChatAvatar";
 import styles from "./UserLogResult.module.css";
+import logWriteIcon from "../../../assets/images/logWriteV3.webp";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -144,31 +146,40 @@ const UserLogResult = () => {
                     ) : (
                         journalDetail && (
                             <>
-                                <section className={styles.pageHead}>
-                                    <p
-                                        data-reveal
-                                        className={styles.eyebrow}
-                                    >
-                                        캡스톤 일지
-                                    </p>
-                                    <div
-                                        data-reveal
-                                        className={styles.titleRow}
-                                    >
-                                        <h1 className={styles.headline}>
-                                            {getLogTeamName(journalDetail)}
-                                        </h1>
-                                        <div className={styles.titleMeta}>
-                                            <span
-                                                className={styles.statusBadge}
-                                            >
-                                                {entryCount}명 작성 완료
-                                            </span>
-                                            <span className={styles.dateText}>
-                                                {formatFullDate(
-                                                    journalDetail.date
-                                                )}
-                                            </span>
+                                <section
+                                    className={`${styles.pageHead} ${styles.pageHeadWithIcon}`}
+                                >
+                                    <img
+                                        className={styles.headIcon}
+                                        src={logWriteIcon}
+                                        alt=""
+                                    />
+                                    <div className={styles.headMain}>
+                                        <p
+                                            data-reveal
+                                            className={styles.eyebrow}
+                                        >
+                                            캡스톤 일지
+                                        </p>
+                                        <div
+                                            data-reveal
+                                            className={styles.titleRow}
+                                        >
+                                            <h1 className={styles.headline}>
+                                                {getLogTeamName(journalDetail)}
+                                            </h1>
+                                            <div className={styles.titleMeta}>
+                                                <span
+                                                    className={styles.statusBadge}
+                                                >
+                                                    {entryCount}명 작성 완료
+                                                </span>
+                                                <span className={styles.dateText}>
+                                                    {formatFullDate(
+                                                        journalDetail.date
+                                                    )}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -299,15 +310,12 @@ const UserLogResult = () => {
                                                                 styles.entry
                                                             }
                                                         >
-                                                            <h3
-                                                                className={
-                                                                    styles.entryName
-                                                                }
-                                                            >
-                                                                {
-                                                                    entry.writerName
-                                                                }
-                                                            </h3>
+                                                            <div className={styles.entryHead}>
+                                                                <ChatAvatar name={entry.writerName} size={40} />
+                                                                <h3 className={styles.entryName}>
+                                                                    {entry.writerName}
+                                                                </h3>
+                                                            </div>
                                                             <div
                                                                 className={
                                                                     styles.entryBlocks

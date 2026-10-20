@@ -8,6 +8,7 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestAdminLogDetail } from "../../../api/logApi";
 import { formatLogDate, getLogTeamName } from "../../../utils/log";
+import ChatAvatar from "../../../components/common/chat/ChatAvatar";
 import styles from "../../user/log/UserLogResult.module.css";
 
 const ENTRY_BLOCKS = [
@@ -162,9 +163,12 @@ const AdminLogDetail = () => {
                                             data-reveal
                                             className={styles.entry}
                                         >
-                                            <h3 className={styles.entryName}>
-                                                {entry.writerName}
-                                            </h3>
+                                            <div className={styles.entryHead}>
+                                                <ChatAvatar name={entry.writerName} size={40} />
+                                                <h3 className={styles.entryName}>
+                                                    {entry.writerName}
+                                                </h3>
+                                            </div>
                                             <div
                                                 className={styles.entryBlocks}
                                             >

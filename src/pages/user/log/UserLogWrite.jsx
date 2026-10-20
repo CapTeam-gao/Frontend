@@ -9,8 +9,8 @@ import {
     requestUserLogDetail,
     requestUserLogList,
 } from "../../../api/logApi";
+import LogCountdown from "../../../components/user/log/LogCountdown";
 import {
-    formatCountdownTime,
     getCapstoneLogRemainingMs,
     getCapstoneLogUnavailableText,
     isCapstoneLogTime,
@@ -20,6 +20,8 @@ import useInView from "../../../hooks/useInView";
 import { getFilledFieldCount, getLogFields } from "../../../utils/log";
 import { getApiErrorMessage } from "../../../utils/apiError";
 import styles from "./UserLogWrite.module.css";
+import logWriteIcon from "../../../assets/images/logWriteV3.webp";
+import logWaitIcon from "../../../assets/images/logWaitV3.webp";
 
 const initialFormData = {
     activityContent: "",
@@ -95,9 +97,6 @@ const UserLogWrite = () => {
     const logUnavailableText = getCapstoneLogUnavailableText(currentTime);
     const fields = getLogFields(isLeader);
     const filledCount = getFilledFieldCount(formData, fields);
-    const progressPercent = fields.length
-        ? Math.round((filledCount / fields.length) * 100)
-        : 0;
 
     const handleFieldChange = (fieldName, value) => {
         setSuccessMessage("");
@@ -234,6 +233,12 @@ const UserLogWrite = () => {
                         </div>
                     ) : !hasTeam ? (
                         <section className={styles.noticeSection}>
+                            <img
+                                data-reveal
+                                className={styles.noticeIcon}
+                                src={logWriteIcon}
+                                alt=""
+                            />
                             <p data-reveal className={styles.eyebrow}>
                                 캡스톤 일지
                             </p>
@@ -258,6 +263,12 @@ const UserLogWrite = () => {
                         </section>
                     ) : !canWriteLog ? (
                         <section className={styles.noticeSection}>
+                            <img
+                                data-reveal
+                                className={styles.noticeIcon}
+                                src={logWaitIcon}
+                                alt=""
+                            />
                             <p data-reveal className={styles.eyebrow}>
                                 캡스톤 일지
                             </p>
@@ -295,16 +306,25 @@ const UserLogWrite = () => {
                     ) : (
                         <form className={styles.layout} onSubmit={handleSubmit}>
                             <div className={styles.formColumn}>
-                                <p data-reveal className={styles.eyebrow}>
-                                    캡스톤 일지 · {getTodayText()}
-                                </p>
-                                <h1 data-reveal className={styles.formTitle}>
-                                    오늘 활동을 기록해주세요
-                                </h1>
-                                <p data-reveal className={styles.formSub}>
-                                    작성한 내용은 팀원 일지와 함께 취합돼 담당
-                                    교사에게 전달돼요.
-                                </p>
+                                <div data-reveal className={styles.formHead}>
+                                    <img
+                                        className={styles.formIcon}
+                                        src={logWriteIcon}
+                                        alt=""
+                                    />
+                                    <div>
+                                        <p className={styles.eyebrow}>
+                                            캡스톤 일지 · {getTodayText()}
+                                        </p>
+                                        <h1 className={styles.formTitle}>
+                                            오늘 활동을 기록해주세요
+                                        </h1>
+                                        <p className={styles.formSub}>
+                                            작성한 내용은 팀원 일지와 함께 취합돼
+                                            담당 교사에게 전달돼요.
+                                        </p>
+                                    </div>
+                                </div>
 
                                 <UserLogForm
                                     formData={formData}
@@ -319,13 +339,12 @@ const UserLogWrite = () => {
                                     <p className={styles.railLabel}>
                                         작성 마감까지
                                     </p>
-                                    <p className={styles.countdown}>
-                                        {formatCountdownTime(
-                                            getCapstoneLogRemainingMs(
-                                                currentTime
-                                            )
+                                    <LogCountdown
+                                        size="sm"
+                                        milliseconds={getCapstoneLogRemainingMs(
+                                            currentTime
                                         )}
-                                    </p>
+                                    />
                                     <p className={styles.railNote}>
                                         오늘 18:10에 마감돼요
                                     </p>
@@ -347,13 +366,24 @@ const UserLogWrite = () => {
                                                 {filledCount} / {fields.length}
                                             </span>
                                         </div>
-                                        <div className={styles.progressTrack}>
-                                            <div
-                                                className={styles.progressFill}
-                                                style={{
-                                                    width: `${progressPercent}%`,
-                                                }}
-                                            />
+                                        <div
+                                            className={styles.progressSteps}
+                                            role="progressbar"
+                                            aria-label="작성 진행률"
+                                            aria-valuemin="0"
+                                            aria-valuemax={fields.length}
+                                            aria-valuenow={filledCount}
+                                        >
+                                            {fields.map((field, index) => (
+                                                <i
+                                                    key={field.name}
+                                                    className={
+                                                        index < filledCount
+                                                            ? styles.progressStepOn
+                                                            : ""
+                                                    }
+                                                />
+                                            ))}
                                         </div>
                                     </div>
 

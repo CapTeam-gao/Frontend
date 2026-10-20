@@ -4,88 +4,131 @@
 }
 
 .body {
+    display: flex;
+    align-items: center;
     max-width: var(--max-width);
     min-height: calc(100dvh - var(--header-height));
     margin: 0 auto;
-    padding: 0 var(--page-padding) 112px;
+    padding: 56px var(--page-padding) 80px;
 }
 
+/* 왼쪽 안내 · 오른쪽 타이머를 위아래 가운데로 맞춘다 */
 .inner {
-    max-width: 1240px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 64px;
+    width: 100%;
+    max-width: 1160px;
     margin: 0 auto;
-    padding: 96px 0;
+}
+
+.copy {
+    min-width: 0;
+}
+
+.heroIcon {
+    display: block;
+    width: 112px;
+    height: 112px;
+    margin: 0 0 20px -6px;
+    object-fit: contain;
 }
 
 .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--color-primary-text);
 }
 
+.eyebrow::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--g500);
+    content: "";
+}
+
 .headline {
-    margin-top: 12px;
-    font-size: 42px;
-    font-weight: var(--font-weight-bold);
+    margin-top: 14px;
+    font-size: 44px;
+    font-weight: var(--font-weight-extrabold);
     line-height: 1.25;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
 }
 
 .subline {
-    max-width: 32rem;
     margin-top: 20px;
     font-size: 19px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--color-text-secondary);
 }
 
 .subline b {
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--color-text-primary);
 }
 
-.timerBlock {
-    margin-top: 40px;
-    padding-top: 32px;
+/* 주간 일정: 수요일만 초록 테두리 + 시간 */
+.week {
+    display: flex;
+    gap: 8px;
+    margin-top: 32px;
+    list-style: none;
 }
 
-.timerLabel {
-    font-size: 15px;
-    font-weight: var(--font-weight-semibold);
+.week li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 56px;
+    height: 64px;
+    padding: 0 12px;
+    border: 1px solid #e3ece7;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: var(--font-weight-bold);
     color: var(--color-text-muted);
 }
 
-.countdown {
-    margin-top: 4px;
-    font-size: 56px;
-    font-weight: var(--font-weight-bold);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+.week .weekOn {
+    border: 1.5px solid var(--g500);
+    color: var(--color-primary-text);
 }
 
-.timerNote {
-    margin-top: 16px;
-    font-size: var(--font-size-lg);
-    line-height: 1.6;
-    color: var(--color-text-secondary);
+.week b {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-text);
+    font-variant-numeric: tabular-nums;
 }
 
 .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
     margin-top: 36px;
 }
 
 .primaryButton {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     height: 56px;
     padding: 0 32px;
-    border-radius: 8px;
+    border: 1px solid var(--g650);
+    border-radius: 999px;
     background-color: var(--color-primary);
     font-size: 17px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.14);
     transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
@@ -94,32 +137,111 @@
 }
 
 .primaryButton:active {
-    transform: scale(0.98);
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.18);
 }
 
 .ghostButton {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     height: 56px;
-    padding: 0 20px;
-    border-radius: 8px;
-    font-size: 15px;
+    padding: 0 22px;
+    border-radius: 999px;
+    font-size: 16px;
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
-    transition: background-color 0.15s ease;
+    transition: color 0.15s ease;
 }
 
 .ghostButton:hover {
-    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
 }
 
-@media (max-width: 900px) {
+/* 오른쪽 타이머: 카드 안 요소를 모두 가운데 정렬, 세 칸이 카드 폭을 채운다 */
+.timerPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 440px;
+    padding: 36px 32px 32px;
+    border: 1px solid #e3ece7;
+    border-radius: 28px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.timerPanel > div {
+    width: 100%;
+}
+
+.timerState {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.timerState::before {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #c4ccc8;
+    content: "";
+}
+
+.timerStateOpen {
+    color: var(--color-primary-text);
+}
+
+.timerStateOpen::before {
+    background-color: var(--g500);
+    animation: openPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes openPulse {
+    50% {
+        box-shadow: 0 0 0 5px rgba(34, 181, 115, 0.18);
+    }
+}
+
+.timerLabel {
+    margin: 14px 0 20px;
+    font-size: 20px;
+    font-weight: var(--font-weight-bold);
+}
+
+.timerNote {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #edf1ef;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+}
+
+.timerNote b {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 960px) {
     .body {
-        padding: 0 20px 80px;
+        align-items: flex-start;
+        padding: 40px 20px 64px;
     }
 
     .inner {
-        padding: 56px 0;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
     }
 
     .headline {
@@ -130,14 +252,30 @@
         font-size: 17px;
     }
 
-    .countdown {
-        font-size: 40px;
+    .week li {
+        flex: 1;
+        min-width: 0;
+        padding: 0 4px;
+    }
+
+    .week li:has(b) {
+        flex: 2;
+    }
+
+    .timerPanel {
+        width: 100%;
+        padding: 28px 20px 24px;
     }
 
     .primaryButton,
     .ghostButton {
         flex: 1;
-        justify-content: center;
         padding: 0 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .timerStateOpen::before {
+        animation: none;
     }
 }
