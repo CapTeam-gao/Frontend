@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/header/Header";
+import AppFooter from "../../../components/common/footer/AppFooter";
 import {
     clearAdminStudentListCache,
     requestAdminStudentList,
@@ -19,6 +20,7 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import ModalOverlay from "../../../components/common/modal/ModalOverlay";
 import useInView from "../../../hooks/useInView";
 import styles from "./AdminTeamManualCreate.module.css";
+import manualTitleImage from "../../../assets/images/adminTeamCreateManualV3.webp";
 
 const MAX_TEAM_SIZE = 5;
 
@@ -249,17 +251,17 @@ const AdminTeamManualCreate = () => {
                 </div>
 
                 <section className={styles.pageHead}>
-                    <p className={styles.eyebrow}>
-                        {gradeLabels[grade]} · 직접 구성
-                    </p>
-                    <h1 className={styles.headline}>팀을 직접 짜주세요</h1>
-                    <p className={styles.subline}>
-                        학생을 검색해 팀에 추가하고 팀장을 지정하세요.
-                        <br />한 팀은 최대 <b>{MAX_TEAM_SIZE}명</b>까지예요.
-                        <br />
-                        먼저 넣은 학생이 자동으로 팀장이 되고, 언제든 바꿀 수
-                        있어요.
-                    </p>
+                    <img src={manualTitleImage} alt="" aria-hidden="true" />
+                    <div>
+                        <p className={styles.eyebrow}>
+                            {gradeLabels[grade]} · 직접 구성
+                        </p>
+                        <h1 className={styles.headline}>팀을 직접 짜주세요</h1>
+                        <p className={styles.subline}>
+                            학생을 검색하거나 끌어다 놓아 팀에 추가하고 팀장을 지정하세요. 한 팀은 최대 <b>{MAX_TEAM_SIZE}명</b>까지예요.
+                            <br />먼저 넣은 학생이 자동으로 팀장이 되고, 언제든 바꿀 수 있어요.
+                        </p>
+                    </div>
                 </section>
 
                 {/* 스크롤해도 따라오는 배정 현황 + 액션 */}
@@ -271,6 +273,10 @@ const AdminTeamManualCreate = () => {
                                 {assignedCount}{" "}
                                 <span>/ {students.length}명</span>
                             </p>
+                        </div>
+
+                        <div className={styles.progress} aria-hidden="true">
+                            <span style={{ width: `${students.length ? (assignedCount / students.length) * 100 : 0}%` }} />
                         </div>
                         <div className={styles.stat}>
                             <p className={styles.statLabel}>만든 팀</p>
@@ -337,9 +343,7 @@ const AdminTeamManualCreate = () => {
                                     </span>
                                 </div>
 
-                                <p className={styles.poolHint}>
-                                    학생을 끌어다 놓거나 각 팀의 검색창에서 추가할 수 있어요.
-                                </p>
+                                <p className={styles.poolHint}>학생을 팀으로 끌어다 놓으면 바로 배정돼요.</p>
 
                                 <div className={styles.poolList}>
                                     {unassignedStudents.length ? (
@@ -353,6 +357,8 @@ const AdminTeamManualCreate = () => {
                                                         : ""
                                                 }`}
                                                 draggable
+                                                tabIndex={0}
+                                                aria-label={`${student.name} ${getStudentNumberInfo(student.userId).number} ${roleLabels[student.studentRole] || student.studentRole}`}
                                                 onDragStart={(event) => {
                                                     event.dataTransfer.setData(
                                                         "text/plain",
@@ -369,6 +375,7 @@ const AdminTeamManualCreate = () => {
                                                     setDragOverTeamId(null);
                                                 }}
                                             >
+                                                <span className={styles.grip} aria-hidden="true" />
                                                 <span
                                                     className={styles.poolName}
                                                 >
@@ -469,8 +476,6 @@ const AdminTeamManualCreate = () => {
                                                                 .length
                                                         }
                                                         /{MAX_TEAM_SIZE}명
-                                                        {roleSummary &&
-                                                            ` · ${roleSummary}`}
                                                     </span>
                                                 </h3>
                                                 <button
@@ -489,8 +494,7 @@ const AdminTeamManualCreate = () => {
                                                 </button>
                                             </div>
 
-                                            {members.length > 0 && (
-                                                <div className={styles.roleBar} aria-hidden="true">
+                                            <div className={styles.roleBar} aria-hidden="true">
                                                     {getRoleBarSegments(
                                                         members
                                                     ).map((segment) => (
@@ -501,8 +505,10 @@ const AdminTeamManualCreate = () => {
                                                             }}
                                                         />
                                                     ))}
-                                                </div>
-                                            )}
+                                            </div>
+                                            <p className={styles.roleSummary}>
+                                                {roleSummary || "아직 배정된 학생이 없어요"}
+                                            </p>
 
                                             {isFull ? (
                                                 <p className={styles.fullNote}>
@@ -515,6 +521,7 @@ const AdminTeamManualCreate = () => {
                                                         styles.searchWrap
                                                     }
                                                 >
+                                                    <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
                                                     <input
                                                         type="text"
                                                         className={
@@ -709,6 +716,13 @@ const AdminTeamManualCreate = () => {
                                     );
                                 })
                             )}
+                            <button
+                                type="button"
+                                className={styles.addTeam}
+                                onClick={handleAddTeam}
+                            >
+                                + 팀 추가
+                            </button>
                         </section>
                     </div>
                 )}
@@ -753,6 +767,9 @@ const AdminTeamManualCreate = () => {
                     </>
                 </ModalOverlay>
             )}
+            <div className={styles.footerWrap}>
+                <AppFooter role="admin" />
+            </div>
         </div>
     );
 };

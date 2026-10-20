@@ -482,11 +482,15 @@
 }
 
 /* Team edit v3 layout refinements */
-.body { max-width: 1440px; }
-.headRow { align-items: center; }
+.body { max-width: 1360px; }
+.pageHead { padding: 40px 0 28px; }
+.headRow { align-items: flex-end; gap: 32px; }
 .titleLine { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
 .titleLine img { width: 48px; height: 48px; object-fit: contain; }
 .headline { margin-top: 0; font-size: 36px; }
+.subline { font-size: 16px; }
+.actions { gap: 10px; }
+.outlineButton, .primaryButton { height: 52px; }
 .selectionBar {
     position: sticky;
     top: var(--header-height);
@@ -504,9 +508,116 @@
 @keyframes streamPulse { 50% { opacity: .35; transform: scale(.8); } }
 .outlineButton, .primaryButton { border-radius: 999px; }
 .primaryButton { box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -3px 0 rgba(0,0,0,.14); }
-@media (max-width: 900px) {
+.regenerateModal { border-radius: 28px; padding: 36px 36px 28px; }
+.modalTitle { font-size: 24px; }
+.modalDescription { line-height: 1.7; }
+.promptTextarea { height: 180px; min-height: 120px; margin-top: 22px; padding: 16px 18px; border-radius: 16px; line-height: 1.7; resize: vertical; }
+.promptTextarea:focus-visible { outline: 3px solid rgba(34, 181, 115, .22); outline-offset: 2px; }
+.modalActionArea { margin-top: 24px; }
+.modalCancelButton, .modalConfirmButton { min-height: 48px; border-radius: 999px; }
+.outlineButton {
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 #edf2ef;
+}
+.primaryButton {
+    border: 1px solid var(--color-primary-dark);
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -3px 0 rgba(0,0,0,.14);
+}
+.primaryButton:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.18), inset 0 -1px 0 rgba(0,0,0,.1);
+}
+.outlineButton:active:not(:disabled) { transform: translateY(2px); }
+@media (max-width: 960px) {
+    .pageHead { padding: 24px 0; }
+    .headRow { align-items: stretch; gap: 24px; }
+    .actions { width: 100%; }
+    .actions .primaryButton { flex-basis: 100%; }
     .titleLine img { width: 40px; height: 40px; }
     .headline { font-size: 28px; }
+    .subline { font-size: 15px; }
     .selectionBar { margin: 0 -20px; padding: 12px 20px; }
+    .regenerateModal { padding: 28px 20px 20px; }
 }
 @media (prefers-reduced-motion: reduce) { .streamNote::before { animation: none; } }
+
+/* Design/team-edit-v3.html의 재생성 전·후 비교 모달 */
+.changesModal {
+    width: min(1280px, calc(100% - 48px));
+    max-width: 1280px;
+    max-height: min(900px, calc(100dvh - 48px));
+    padding: 0;
+    border-radius: 28px;
+}
+.changesModal > :global(*) { flex-shrink: 0; }
+.modalHeader { padding: 40px 48px 8px; }
+.modalTitle { font-size: 28px; letter-spacing: -0.02em; }
+.modalDescription { max-width: 760px; margin-top: 14px; line-height: 1.7; }
+.conditionLabel {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 2px;
+    font-size: 13px;
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-primary-text);
+}
+.conditionLabel::before { width: 7px; height: 7px; border-radius: 50%; background: var(--g500); content: ""; }
+.modalCloseButton { border-radius: 50%; }
+.compareTabs {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+    padding: 24px 40px 0;
+    border-radius: 0;
+    background: transparent;
+}
+.compareTab {
+    position: relative;
+    height: 44px;
+    padding: 0 14px 0 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    background: transparent;
+    box-shadow: none;
+}
+.compareTab::before {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--g600);
+    content: "";
+    transform: translateY(-50%) scale(0);
+    transition: transform 0.15s ease;
+}
+.compareTabActive { background: transparent; box-shadow: none; font-weight: var(--font-weight-bold); }
+.compareTabActive::before { transform: translateY(-50%) scale(1); }
+.compareBody {
+    margin-top: 0;
+    padding: 20px 48px 48px;
+}
+.compareGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.diffCard { margin-top: 16px; padding: 24px 24px 12px; border: 1px solid var(--color-border); border-radius: 22px; }
+.diffMemberChanged { border-radius: 12px; }
+@media (max-width: 1100px) {
+    .compareGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 960px) {
+    .changesModal {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92dvh;
+        margin: auto 0 0;
+        border-radius: 24px 24px 0 0;
+    }
+    .modalHeader { padding: 24px 20px 4px; }
+    .modalTitle { font-size: 22px; }
+    .compareTabs { overflow-x: auto; padding: 12px 12px 0; scrollbar-width: none; }
+    .compareTab { flex: none; }
+    .compareBody { padding: 12px 20px 32px; }
+    .compareGrid { grid-template-columns: 1fr; gap: 12px; }
+}

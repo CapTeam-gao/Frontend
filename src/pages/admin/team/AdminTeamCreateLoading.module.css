@@ -13,14 +13,22 @@
     padding: 80px var(--page-padding);
 }
 
+/* 본문(왼쪽 안내 + 오른쪽 단계)은 남는 높이의 위아래 가운데에 두고, 취소 버튼은 맨 아래 줄로 뺀다. */
 .running {
+    flex: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
+    grid-template-rows: 1fr auto;
+    align-items: center;
     gap: 40px 80px;
     width: 100%;
     max-width: 1080px;
     margin: 0 auto;
+}
+
+.running > .ghostButton {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
 
 .runningMain {
@@ -315,7 +323,10 @@
     }
 
     .running {
+        flex: none;
         grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        align-items: start;
         gap: 32px;
     }
 

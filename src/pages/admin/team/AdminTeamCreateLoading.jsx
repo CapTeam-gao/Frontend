@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+    requestCancelTeamMatchingJob,
     requestStartTeamMatchingJob,
     requestTeamMatchingJob,
 } from "../../../api/teamApi";
@@ -124,11 +125,29 @@ const AdminTeamCreateLoading = () => {
     const [error, setError] = useState("");
     const [progressStep, setProgressStep] = useState(0);
     const [progressPercent, setProgressPercent] = useState(null);
+    const [isCancelling, setIsCancelling] = useState(false);
     const pendingSurveyGroups = parsePendingSurveyStudents(error);
     const hasPartialTeams = (job) =>
         Array.isArray(job?.partialTeams) && job.partialTeams.length > 0;
     const isMatchingInProgress = Boolean(grade) && !error;
     const activeStepIndex = getActiveStepIndex(progressStep);
+
+    const handleCancelMatching = async () => {
+        const activeLock = getActiveMatchingJobLock();
+
+        if (!activeLock?.jobId || isCancelling) return;
+
+        setIsCancelling(true);
+
+        try {
+            await requestCancelTeamMatchingJob(activeLock.jobId);
+            clearMatchingJobLock();
+            navigate("/admin/team-create", { replace: true });
+        } catch (cancelError) {
+            setIsCancelling(false);
+            setError(getErrorMessage(cancelError));
+        }
+    };
 
     useEffect(() => {
         if (!isMatchingInProgress) return;
@@ -242,6 +261,7 @@ const AdminTeamCreateLoading = () => {
                             jobId: currentJob.jobId,
                             versionId: currentJob.versionId,
                             baseVersionId,
+                            regenerationPrompt,
                         },
                     });
                     return;
@@ -273,6 +293,7 @@ const AdminTeamCreateLoading = () => {
                                 jobId: currentJob.jobId,
                                 versionId: currentJob.versionId,
                                 baseVersionId,
+                                regenerationPrompt,
                             },
                         });
                         return;
@@ -290,6 +311,7 @@ const AdminTeamCreateLoading = () => {
                             jobId: currentJob.jobId,
                             versionId: currentJob.versionId,
                             baseVersionId,
+                            regenerationPrompt,
                         },
                     });
                     return;
@@ -487,6 +509,14 @@ const AdminTeamCreateLoading = () => {
                                 </li>
                             ))}
                         </ol>
+                        <button
+                            type="button"
+                            className={styles.ghostButton}
+                            disabled={isCancelling || !getActiveMatchingJobLock()?.jobId}
+                            onClick={handleCancelMatching}
+                        >
+                            {isCancelling ? "취소하는 중..." : "팀 생성 취소"}
+                        </button>
                     </section>
                 )}
             </main>

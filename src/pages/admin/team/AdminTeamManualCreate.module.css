@@ -635,3 +635,125 @@
         transform: none;
     }
 }
+
+/* Design/team-manual-v3.html: 직접 구성 화면 레이아웃 */
+.body { max-width: 1360px; padding-right: 32px; padding-left: 32px; }
+.body { padding-bottom: 0; }
+.backRow { padding-top: 36px; }
+.pageHead { display: flex; align-items: center; gap: 24px; padding: 20px 0 32px; }
+.pageHead > img { width: 96px; height: 96px; flex: none; object-fit: contain; }
+.headline { margin-top: 6px; font-size: 36px; letter-spacing: -0.03em; }
+.subline { max-width: 52rem; margin-top: 8px; font-size: 16px; line-height: 1.7; }
+.summaryBar {
+    position: sticky;
+    top: var(--header-height);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(8px);
+}
+.summaryRow { min-height: 88px; flex-wrap: nowrap; gap: 48px; }
+.statLabel { font-size: 13px; font-weight: var(--font-weight-bold); }
+.statValue { margin-top: 2px; font-size: 24px; font-weight: var(--font-weight-extrabold); }
+.statValue span { margin-left: 3px; font-size: 15px; font-weight: var(--font-weight-bold); }
+.progress { width: 160px; height: 8px; flex: none; align-self: center; overflow: hidden; border-radius: 999px; background: #e8eeeb; }
+.progress span { display: block; height: 100%; border-radius: inherit; background: var(--g500); transition: width .4s var(--ease-out); }
+.summaryActions { gap: 10px; }
+.outlineButton, .primaryButton { min-height: 50px; height: 50px; border-radius: 999px; font-weight: var(--font-weight-bold); }
+.outlineButton { box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 #edf2ef; }
+.primaryButton { border: 1px solid var(--color-primary-dark); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -3px 0 rgba(0,0,0,.14); }
+.primaryButton:active:not(:disabled), .outlineButton:active { transform: translateY(2px); }
+.primaryButton:disabled { box-shadow: none; transform: none; }
+.submitHint { padding-top: 10px; font-size: 14px; }
+.board { grid-template-columns: 340px minmax(0, 1fr); gap: 80px; padding: 40px 0 72px; }
+.poolSticky { top: calc(var(--header-height) + 112px); }
+.poolHeader { align-items: baseline; }
+.poolTitle { font-size: 20px; font-weight: var(--font-weight-extrabold); }
+.poolCount { font-size: 16px; font-weight: var(--font-weight-extrabold); color: var(--color-primary-text); }
+.poolHint { margin-top: 6px; font-size: 14px; }
+.poolScroll { position: relative; margin-top: 18px; }
+.poolList { display: grid; gap: 4px; max-height: min(calc(100dvh - 360px), 640px); margin-top: 0; padding: 4px 12px 16px 4px; scrollbar-width: thin; scrollbar-color: #cfdcd5 transparent; }
+.poolList::-webkit-scrollbar { width: 6px; }
+.poolList::-webkit-scrollbar-thumb { border-radius: 6px; background: #cfdcd5; }
+.poolItem { display: flex; align-items: center; gap: 12px; padding: 15px 14px; border-radius: 12px; cursor: grab; user-select: none; }
+.poolItem:hover { background: var(--color-primary-bg); }
+.poolItem:active { cursor: grabbing; }
+.poolItem:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+.grip { width: 10px; height: 16px; flex: none; opacity: 0; background: radial-gradient(circle, #a9b4ae 1.3px, transparent 1.6px) 0 0/5px 5px; transition: opacity .15s ease; }
+.poolItem:hover .grip, .poolItem:focus-visible .grip { opacity: 1; }
+.poolName { font-size: 17px; font-weight: var(--font-weight-extrabold); }
+.poolMeta { margin: 0 0 0 auto; font-size: 14px; font-weight: var(--font-weight-semibold); }
+.teamColumn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 64px; align-content: start; }
+.team { position: relative; margin: -20px; padding: 20px; border-radius: 24px; }
+.team::after { position: absolute; inset: 0; border: 2px dashed transparent; border-radius: 24px; content: ""; pointer-events: none; transition: border-color .15s ease, transform .2s var(--ease-out); }
+.teamDropActive { background: transparent; box-shadow: none; }
+.teamDropActive::after { border-color: var(--g500); transform: scale(1.01); }
+.teamDropBlocked { background: transparent; box-shadow: none; }
+.teamDropBlocked::after { border-color: #f0a58f; }
+.teamHead { align-items: baseline; justify-content: flex-start; gap: 12px; }
+.teamName { flex: none; gap: 12px; font-size: 24px; font-weight: var(--font-weight-extrabold); letter-spacing: -0.02em; }
+.capacity, .capacityFull { margin-left: 0; font-size: 15px; font-weight: var(--font-weight-bold); }
+.removeTeamButton { margin-left: auto; padding: 6px 0; font-size: 14px; font-weight: var(--font-weight-bold); }
+.roleBar { height: 6px; margin-top: 16px; background: #eef3f0; }
+.roleSummary { min-height: 20px; margin-top: 10px; font-size: 14px; font-weight: var(--font-weight-semibold); color: var(--color-text-muted); }
+.searchWrap { max-width: none; margin-top: 20px; }
+.searchIcon { position: absolute; top: 50%; left: 15px; z-index: 1; color: var(--color-text-muted); pointer-events: none; transform: translateY(-50%); }
+.search { height: 50px; padding: 0 16px 0 42px; border-radius: 14px; font-size: 16px; }
+.searchResults { top: calc(100% + 6px); z-index: 5; padding: 6px; border: 0; border-radius: 16px; box-shadow: 0 0 0 1px rgba(25,31,40,.06), 0 24px 48px -20px rgba(25,31,40,.3); }
+.searchResult { padding: 12px; border-radius: 10px; font-size: 16px; }
+.searchResult:hover, .searchResult:focus-visible { background: var(--color-primary-bg); outline: none; }
+.fullNote { display: flex; align-items: center; gap: 8px; height: 50px; margin-top: 20px; font-size: 15px; font-weight: var(--font-weight-bold); color: var(--color-primary-text); }
+.fullNote::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ""; }
+.memberList { margin-top: 14px; }
+.memberRow { min-height: 52px; padding: 0; }
+.memberName { font-size: 17px; font-weight: var(--font-weight-extrabold); }
+.leaderBadge { background: transparent; color: var(--color-primary-text); }
+.memberActions { gap: 16px; opacity: 0; transition: opacity .15s ease; }
+.memberRow:hover .memberActions, .memberRow:focus-within .memberActions { opacity: 1; }
+.textButton, .dangerTextButton { height: auto; padding: 6px 0; border-radius: 0; font-size: 14px; }
+.memberEmpty { padding: 8px 0 0; }
+.addTeam { align-self: start; justify-self: start; margin-top: 4px; padding: 8px 0; border: 0; background: none; color: var(--color-primary-text); font: inherit; font-size: 17px; font-weight: var(--font-weight-extrabold); }
+.addTeam:hover { text-decoration: underline; }
+.confirmModal { max-width: 440px; padding: 36px; border-radius: 28px; text-align: center; }
+.confirmTitle { font-size: 22px; font-weight: var(--font-weight-extrabold); }
+.confirmText { margin-top: 8px; font-size: 15px; line-height: 1.7; }
+.confirmActions { gap: 10px; margin-top: 28px; }
+.confirmActions .textButton, .confirmActions .primaryButton { flex: 1; height: 50px; border-radius: 999px; }
+.confirmActions .textButton { border: 1px solid var(--color-border); box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 #edf2ef; }
+.footerWrap { margin-top: 96px; }
+@media (max-width: 1100px) {
+    .board { grid-template-columns: 260px minmax(0, 1fr); gap: 48px; }
+    .teamColumn { grid-template-columns: 1fr; gap: 56px; }
+}
+@media (max-width: 960px) {
+    .body { padding-right: 16px; padding-left: 16px; }
+    .pageHead { gap: 16px; padding: 16px 0 24px; }
+    .pageHead > img { width: 64px; height: 64px; }
+    .headline { font-size: 28px; }
+    .subline { font-size: 15px; }
+    .summaryBar { top: 72px; }
+    .summaryRow { min-height: 0; flex-wrap: wrap; gap: 12px 24px; padding-top: 12px; padding-bottom: 12px; }
+    .progress { display: none; }
+    .summaryActions { width: 100%; margin: 0; }
+    .summaryActions button { flex: 1; }
+    .board { grid-template-columns: 1fr; gap: 40px; padding-top: 32px; }
+    .poolSticky { position: static; }
+    .poolList { max-height: 360px; }
+    .teamColumn { grid-template-columns: 1fr; gap: 32px; }
+    .team { margin: -12px; padding: 12px; }
+    .poolMeta { display: none; }
+    .memberActions { opacity: 1; }
+}
+@media (max-width: 600px) {
+    .pageHead { align-items: flex-start; }
+    .teamHead { flex-wrap: wrap; }
+    .teamName { flex: 1; min-width: 0; font-size: 22px; }
+    .capacity, .capacityFull { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .removeTeamButton { font-size: 13px; }
+    .memberRow { align-items: flex-start; }
+    .memberActions { gap: 10px; }
+    .memberActions button { font-size: 13px; }
+    .confirmModal { padding: 28px 20px 24px; }
+}
+@media (max-width: 960px) { .footerWrap { margin-top: 64px; } }

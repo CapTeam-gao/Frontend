@@ -10,6 +10,7 @@ import EmptyState from "../../../components/common/empty/EmptyState";
 import useInView from "../../../hooks/useInView";
 import { requestAdminDashboard } from "../../../api/dashboardApi";
 import { requestAdminStudentList } from "../../../api/studentApi";
+import { requestTeamMatchingJob } from "../../../api/teamApi";
 import {
     DEFAULT_TEAM_CREATE_GRADE,
     getAdminTeamCreationStatus,
@@ -17,7 +18,9 @@ import {
 } from "../../../utils/teamStatus";
 import {
     getActiveMatchingJobLock,
+    clearMatchingJobLock,
     gradeLabels,
+    WAITING_JOB_STATUSES,
 } from "../../../utils/matchingJobLock";
 import { isSurveyCompleted } from "../../../utils/survey";
 import styles from "./AdminTeamCreate.module.css";
@@ -156,7 +159,7 @@ const AdminTeamCreate = () => {
         setError("");
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         if (selectedMode === "MANUAL") {
             navigate("/admin/team-manual-create", {
                 state: { grade: selectedGrade },
@@ -164,7 +167,36 @@ const AdminTeamCreate = () => {
             return;
         }
 
-        const activeLock = getActiveMatchingJobLock();
+        let activeLock = getActiveMatchingJobLock();
+
+        if (activeLock) {
+            // 로컬 저장소 잠금은 탭을 닫아도 남을 수 있으므로 서버 작업 상태를 기준으로 판정한다.
+            if (activeLock.jobId) {
+                try {
+                    const job = await requestTeamMatchingJob(activeLock.jobId);
+
+                    if (!WAITING_JOB_STATUSES.includes(job?.status)) {
+                        clearMatchingJobLock();
+                        activeLock = null;
+                    }
+                } catch (requestError) {
+                    if (requestError.response?.status === 404) {
+                        clearMatchingJobLock();
+                        activeLock = null;
+                    } else {
+                        setError("팀 생성 상태를 확인하지 못했어요. 잠시 후 다시 시도해주세요.");
+                        return;
+                    }
+                }
+            } else if (
+                !activeLock.startedAt ||
+                Date.now() - Number(activeLock.startedAt) > 2 * 60 * 1000
+            ) {
+                // 서버 jobId를 받기 전에 브라우저가 닫힌 오래된 시작 잠금은 만료 처리한다.
+                clearMatchingJobLock();
+                activeLock = null;
+            }
+        }
 
         if (activeLock) {
             const activeGradeLabel =

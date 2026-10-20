@@ -39,6 +39,7 @@ const AdminTeamEdit = () => {
     const streamingJobId = location.state?.jobId || null;
     const streamingVersionId = location.state?.versionId || null;
     const baseVersionId = location.state?.baseVersionId || null;
+    const appliedRegenerationPrompt = location.state?.regenerationPrompt || "";
     const [teams, setTeams] = useState([]);
     const [streamingJobStatus, setStreamingJobStatus] = useState(
         streamingJobId ? "RUNNING" : null
@@ -63,7 +64,9 @@ const AdminTeamEdit = () => {
     const [isLoading, setIsLoading] = useState(true);
     const highlightTimerRef = useRef(null);
     const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
-    const [regenerationPrompt, setRegenerationPrompt] = useState("");
+    const [regenerationPrompt, setRegenerationPrompt] = useState(
+        appliedRegenerationPrompt
+    );
     const movedByUserId = useMemo(() => {
         if (!diffData?.movedStudents) return {};
 
@@ -605,6 +608,7 @@ const AdminTeamEdit = () => {
                         <textarea
                             className={styles.promptTextarea}
                             aria-label="팀 재생성 요청사항"
+                            data-autofocus
                             value={regenerationPrompt}
                             onChange={(event) =>
                                 setRegenerationPrompt(event.target.value)
@@ -646,9 +650,15 @@ const AdminTeamEdit = () => {
                 >
                     <>
                         <div className={styles.modalHeader}>
-                            <h2 id="team-changes-modal-title" className={styles.modalTitle}>
-                                재생성 전·후 비교
-                            </h2>
+                            <div>
+                                <h2 id="team-changes-modal-title" className={styles.modalTitle}>
+                                    재생성 전·후 비교
+                                </h2>
+                                <div className={styles.modalDescription}>
+                                    <span className={styles.conditionLabel}>적용한 조건</span>
+                                    {appliedRegenerationPrompt || "기존 추천안을 바탕으로 팀 구성을 다시 조정했어요."}
+                                </div>
+                            </div>
                             <button
                                 type="button"
                                 className={styles.modalCloseButton}
@@ -659,9 +669,11 @@ const AdminTeamEdit = () => {
                             </button>
                         </div>
 
-                        <div className={styles.compareTabs}>
+                        <div className={styles.compareTabs} role="tablist" aria-label="팀 구성 비교 보기">
                             <button
                                 type="button"
+                                role="tab"
+                                aria-selected={compareTab === "before"}
                                 className={`${styles.compareTab} ${
                                     compareTab === "before"
                                         ? styles.compareTabActive
@@ -673,6 +685,8 @@ const AdminTeamEdit = () => {
                             </button>
                             <button
                                 type="button"
+                                role="tab"
+                                aria-selected={compareTab === "after"}
                                 className={`${styles.compareTab} ${
                                     compareTab === "after"
                                         ? styles.compareTabActive
@@ -684,6 +698,8 @@ const AdminTeamEdit = () => {
                             </button>
                             <button
                                 type="button"
+                                role="tab"
+                                aria-selected={compareTab === "changed"}
                                 className={`${styles.compareTab} ${
                                     compareTab === "changed"
                                         ? styles.compareTabActive
